@@ -1,7 +1,9 @@
 NUGET
   remote: https://nuget.org/api/v2
   specs:
+    Newtonsoft.Json (6.0.8)
     Owin (1.0)
+    Spark (1.8.1.0)
     Superscribe (0.4.4.16)
     Superscribe.Owin (0.4.3.14)
       Owin (>= 1.0.0)

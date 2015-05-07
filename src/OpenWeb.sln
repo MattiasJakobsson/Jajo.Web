@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Owin", "OpenWeb.Owi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Superscribe", "OpenWeb.Superscribe\OpenWeb.Superscribe.csproj", "{F7C90359-1BCD-4640-8D5E-D52883933ABC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Output", "OpenWeb.Output\OpenWeb.Output.csproj", "{6B23D3CA-BE27-4F70-9E4C-C54E81557F4F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Output.Spark", "OpenWeb.Output.Spark\OpenWeb.Output.Spark.csproj", "{398CB3D5-983E-48B7-8F72-07B2DC735909}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F7C90359-1BCD-4640-8D5E-D52883933ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F7C90359-1BCD-4640-8D5E-D52883933ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F7C90359-1BCD-4640-8D5E-D52883933ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B23D3CA-BE27-4F70-9E4C-C54E81557F4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B23D3CA-BE27-4F70-9E4C-C54E81557F4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B23D3CA-BE27-4F70-9E4C-C54E81557F4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B23D3CA-BE27-4F70-9E4C-C54E81557F4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{398CB3D5-983E-48B7-8F72-07B2DC735909}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{398CB3D5-983E-48B7-8F72-07B2DC735909}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{398CB3D5-983E-48B7-8F72-07B2DC735909}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{398CB3D5-983E-48B7-8F72-07B2DC735909}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
