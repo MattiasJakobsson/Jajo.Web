@@ -66,6 +66,7 @@
     <Compile Include="ModelBinding\IValueConverter.cs" />
     <Compile Include="ModelBinding\IValueConverterCollection.cs" />
     <Compile Include="ModelBinding\ModelBinderCollection.cs" />
+    <Compile Include="ModelBinding\OpenWebModelBindingMiddleware.cs" />
     <Compile Include="ModelBinding\PropertyBinderCollection.cs" />
     <Compile Include="ModelBinding\SimpleTypePropertyBinder.cs" />
     <Compile Include="ModelBinding\ValueConverterCollection.cs" />

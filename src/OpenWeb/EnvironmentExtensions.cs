@@ -35,6 +35,16 @@ namespace OpenWeb
             environment["openweb.DependencyResolver"] = dependencyResolver;
         }
 
+        public static void SetModelBinder(this IDictionary<string, object> environment, IModelBinderCollection modelBinderCollection)
+        {
+            environment["openweb.ModelBinder"] = modelBinderCollection;
+        }
+
+        public static string GetApplicationBasePath(this IDictionary<string, object> environment)
+        {
+            return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+        }
+
         public static Task WriteToOutput(this IDictionary<string, object> environment, Stream data)
         {
             data.Position = 0;
