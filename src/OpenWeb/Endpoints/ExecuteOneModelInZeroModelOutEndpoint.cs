@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -12,12 +13,12 @@ namespace OpenWeb.Endpoints
             _endpoint = endpoint;
         }
 
-        public async Task Execute(MethodInfo endpointMethod, IOpenWebContext openWebContext)
+        public async Task Execute(MethodInfo endpointMethod, IDictionary<string, object> environment)
         {
             if (endpointMethod.IsAsyncMethod())
-                await (Task)endpointMethod.Invoke(_endpoint, new object[] { openWebContext.Get<TInput>() });
+                await (Task)endpointMethod.Invoke(_endpoint, new object[] { environment.Bind<TInput>() });
             else
-                endpointMethod.Invoke(_endpoint, new object[] { openWebContext.Get<TInput>() });
+                endpointMethod.Invoke(_endpoint, new object[] { environment.Bind<TInput>() });
         }
     }
 }

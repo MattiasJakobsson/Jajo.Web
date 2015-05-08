@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -7,11 +8,11 @@ namespace OpenWeb.Endpoints
 {
     public static class EndpointExtensions
     {
-        public static IExecuteEndpoint GetCorrectEndpointExecutor(this MethodInfo endpoint, IOpenWebContext openWebContext)
+        public static IExecuteEndpoint GetCorrectEndpointExecutor(this MethodInfo endpoint, IDictionary<string, object> environment)
         {
             var endpointType = GetCorrectEndpointExecutorType(endpoint);
 
-            return openWebContext.DependencyResolver.Resolve(endpointType) as IExecuteEndpoint;
+            return environment.GetDependencyResolver().Resolve(endpointType) as IExecuteEndpoint;
         }
 
         public static bool IsAsyncMethod(this MethodInfo method)
