@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenWeb.Owin
+namespace OpenWeb.Endpoints
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebMiddleware
+    public class OpenWebEndpointsMiddleware
     {
         private readonly AppFunc _next;
         private readonly IWebEngine _webEngine;
 
-        public OpenWebMiddleware(AppFunc next, IWebEngine webEngine)
+        public OpenWebEndpointsMiddleware(AppFunc next, IWebEngine webEngine)
         {
             if (next == null)
                 throw new ArgumentNullException("next");

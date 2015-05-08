@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
-namespace OpenWeb
+namespace OpenWeb.Endpoints
 {
     public interface IRequest
     {

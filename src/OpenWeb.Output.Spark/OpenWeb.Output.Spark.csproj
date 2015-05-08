@@ -43,10 +43,6 @@
     <Compile Include="RenderOutputUsingSpark.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenWeb.Output\OpenWeb.Output.csproj">
-      <Project>{6b23d3ca-be27-4f70-9e4c-c54e81557f4f}</Project>
-      <Name>OpenWeb.Output</Name>
-    </ProjectReference>
     <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
       <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
       <Name>OpenWeb</Name>

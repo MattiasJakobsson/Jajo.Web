@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace OpenWeb
+namespace OpenWeb.Endpoints
 {
     public interface IWebEngine
     {

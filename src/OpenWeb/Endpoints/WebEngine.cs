@@ -3,7 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace OpenWeb
+namespace OpenWeb.Endpoints
 {
     public class WebEngine : IWebEngine
     {
