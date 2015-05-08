@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Superscribe.Engine;
-using Superscribe.Models;
 
 namespace OpenWeb.Routing.Superscribe
 {
@@ -32,22 +31,14 @@ namespace OpenWeb.Routing.Superscribe
             var walker = _routeEngine.Walker();
             var data = walker.WalkRoute(path, method, routeData);
 
+            var routeTo = data.Response as MethodInfo;
+
+            if (routeTo != null)
+                environment["route.RoutedTo"] = routeTo;
+
             environment["route.Parameters"] = data.Parameters;
 
             await _next(environment);
-        }
-    }
-
-    public static class GraphNodeExtensions
-    {
-        public static GraphNode RouteTo(this GraphNode node, MethodInfo method)
-        {
-            node.ActionFunctions.Add("OpenWeb", (routeData, x) =>
-            {
-                routeData.Environment["route.RoutedTo"] = method;
-            });
-
-            return node;
         }
     }
 }

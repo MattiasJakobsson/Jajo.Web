@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -39,11 +38,6 @@ namespace OpenWeb
         public static void SetModelBinder(this IDictionary<string, object> environment, IModelBinderCollection modelBinderCollection)
         {
             environment["openweb.ModelBinder"] = modelBinderCollection;
-        }
-
-        public static string GetApplicationBasePath(this IDictionary<string, object> environment)
-        {
-            return AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
         }
 
         public static Task WriteToOutput(this IDictionary<string, object> environment, Stream data)
@@ -117,7 +111,7 @@ namespace OpenWeb
             }
 
             public IReadOnlyDictionary<string, string[]> RawHeaders { get; private set; }
-            public string ContentType { get { return GetHeader(RawHeaders, "Content-Type"); } }
+            public string Accept { get { return GetHeader(RawHeaders, "Accept"); } }
 
             private static string GetHeader(IReadOnlyDictionary<string, string[]> headers, string key)
             {

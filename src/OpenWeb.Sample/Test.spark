@@ -1,0 +1,10 @@
+﻿<viewdata model="OpenWeb.Sample.TestEndpointQueryResult" />
+
+<html>
+<head>
+    <title>${Model.Message}</title>
+</head>
+<body>
+    <h1>${Model.Message}</h1>
+</body>
+</html>

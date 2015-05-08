@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using Microsoft.Owin.Hosting;
 using OpenWeb.Endpoints;
 using OpenWeb.ExceptionManagement;
 using OpenWeb.ModelBinding;
 using OpenWeb.Output;
+using OpenWeb.Output.Spark;
 using OpenWeb.Routing.Superscribe;
 using OpenWeb.StructureMap;
 using Owin;
+using Spark;
 using StructureMap;
 using Superscribe.Engine;
 
@@ -22,10 +25,22 @@ namespace OpenWeb.Sample
             var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
             var define = RouteEngineFactory.Create();
 
-            define.Get(x => x/"test", x => "").RouteTo(typeof(TestEndpoint).GetMethod("Query"));
+            define.Get(x => x / "test", x => typeof(TestEndpoint).GetMethod("Query"));
+
+            var assemblies = new List<Assembly>
+            {
+                typeof (Program).Assembly
+            };
+
+            var sparkViewEngine = new SparkViewEngine(new SparkSettings())
+            {
+                DefaultPageBaseType = typeof(OpenWebSparkView).FullName,
+                ViewFolder = new OpenWebViewFolder(new RenderOutputUsingSpark(new FileScanner(), null, assemblies).FindAllTemplates(assemblies))
+            };
 
             var rendererHandler = new HandleOutputRendering(new List<Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>>
             {
+                new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => x.GetHeaders().Accept.Contains("text/html"), new RenderOutputUsingSpark(new FileScanner(), sparkViewEngine, assemblies)),
                 new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => true, new RenderOutputAsJson())
             });
 
@@ -43,9 +58,19 @@ namespace OpenWeb.Sample
 
     public class TestEndpoint
     {
-        public string Query()
+        public TestEndpointQueryResult Query()
         {
-            return "Hello world!";
+            return new TestEndpointQueryResult("Hello world!");
         }
+    }
+
+    public class TestEndpointQueryResult
+    {
+        public TestEndpointQueryResult(string message)
+        {
+            Message = message;
+        }
+
+        public string Message { get; private set; } 
     }
 }

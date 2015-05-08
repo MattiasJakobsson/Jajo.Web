@@ -295,25 +295,25 @@ namespace OpenWeb.Output.Spark
 
         private readonly FileScanner _fileScanner;
         private readonly ISparkViewEngine _engine;
+        private readonly IEnumerable<Assembly> _assemblies;
         private readonly UseMasterGrammar _grammar;
 
         private readonly CompositeAction<ScanRequest> _requestConfig = new CompositeAction<ScanRequest>();
 
-        public RenderOutputUsingSpark(FileScanner fileScanner, ISparkViewEngine engine)
+        public RenderOutputUsingSpark(FileScanner fileScanner, ISparkViewEngine engine, IEnumerable<Assembly> assemblies)
         {
             _fileScanner = fileScanner;
             _engine = engine;
+            _assemblies = assemblies;
             _requestConfig += x => x.Include("*.spark");
-            _grammar = new UseMasterGrammar(engine.Settings.Prefix);
+
+            if (engine != null)
+                _grammar = new UseMasterGrammar(engine.Settings.Prefix);
         }
 
         public async Task<Stream> Render(IDictionary<string, object> environment)
         {
-            var templates = new List<Template>();
-            var assemblies = new List<Assembly>();
-
-            templates.AddRange(FindEmbeddedTemplates(assemblies));
-            templates.AddRange(FindTemplatesFromFileSystem(assemblies, environment));
+            var templates = FindAllTemplates(_assemblies.ToList()).ToList();
 
             var matchingTemplates = templates.Where(x => x.ModelType == environment.GetOutput().GetType()).ToList();
 
@@ -346,10 +346,21 @@ namespace OpenWeb.Output.Spark
 
                 view.Render(new ViewContext(environment.GetOutput()), writer);
 
+                writer.Flush();
                 output.Position = 0;
 
                 return output;
             });
+        }
+
+        public IEnumerable<Template> FindAllTemplates(ICollection<Assembly> assemblies)
+        {
+            var templates = new List<Template>();
+
+            templates.AddRange(FindEmbeddedTemplates(assemblies));
+            templates.AddRange(FindTemplatesFromFileSystem(assemblies));
+
+            return templates;
         }
 
         private SparkViewDescriptor BuildDescriptor(Template template, bool searchForMaster, ICollection<string> searchedLocations)
@@ -461,24 +472,24 @@ namespace OpenWeb.Output.Spark
             return resources.Select(x => GetTemplate(x, assemblies));
         }
 
-        private IEnumerable<Template> FindTemplatesFromFileSystem(IEnumerable<Assembly> assemblies, IDictionary<string, object> environment)
+        private IEnumerable<Template> FindTemplatesFromFileSystem(IEnumerable<Assembly> assemblies)
         {
             var templates = new List<Template>();
 
-            var request = BuildRequest(templates, assemblies, environment, environment.GetApplicationBasePath());
+            var request = BuildRequest(templates, assemblies, AppDomain.CurrentDomain.SetupInformation.ApplicationBase);
 
             _fileScanner.Scan(request);
 
             return templates;
         }
 
-        private ScanRequest BuildRequest(ICollection<Template> templates, IEnumerable<Assembly> assemblies, IDictionary<string, object> environment, params string[] roots)
+        private ScanRequest BuildRequest(ICollection<Template> templates, IEnumerable<Assembly> assemblies, params string[] roots)
         {
             var request = new ScanRequest();
             _requestConfig.Do(request);
 
             roots.ToList().ForEach(request.AddRoot);
-            request.AddHandler(fileFound => templates.Add(GetTemplate(fileFound, environment.GetApplicationBasePath(), assemblies)));
+            request.AddHandler(fileFound => templates.Add(GetTemplate(fileFound, AppDomain.CurrentDomain.SetupInformation.ApplicationBase, assemblies)));
 
             return request;
         }
