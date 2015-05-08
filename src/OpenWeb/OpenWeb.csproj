@@ -47,6 +47,7 @@
     <Compile Include="Endpoints\IExecuteEndpoint.cs" />
     <Compile Include="Endpoints\IOpenWebContext.cs" />
     <Compile Include="Endpoints\OpenWebContext.cs" />
+    <Compile Include="ExceptionManagement\OpenWebExceptionManagementMiddleware.cs" />
     <Compile Include="IResolveDependencies.cs" />
     <Compile Include="ModelBinding\BindingContext.cs" />
     <Compile Include="ModelBinding\BindingSourceCollection.cs" />
