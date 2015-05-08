@@ -48,6 +48,42 @@
     <Compile Include="Endpoints\IOpenWebContext.cs" />
     <Compile Include="Endpoints\OpenWebContext.cs" />
     <Compile Include="IResolveDependencies.cs" />
+    <Compile Include="ModelBinding\BindingContext.cs" />
+    <Compile Include="ModelBinding\BindingSourceCollection.cs" />
+    <Compile Include="Cache.cs" />
+    <Compile Include="ModelBinding\CollectionPropertyBinder.cs" />
+    <Compile Include="ModelBinding\ComplexTypePropertyBinder.cs" />
+    <Compile Include="ModelBinding\DefaultModelBinder.cs" />
+    <Compile Include="ModelBinding\DefaultRequestBinder.cs" />
+    <Compile Include="ModelBinding\IBindingContext.cs" />
+    <Compile Include="ModelBinding\IBindingSource.cs" />
+    <Compile Include="ModelBinding\IBindingSourceCollection.cs" />
+    <Compile Include="ModelBinding\IModelBinder.cs" />
+    <Compile Include="ModelBinding\IModelBinderCollection.cs" />
+    <Compile Include="ModelBinding\IPropertyBinder.cs" />
+    <Compile Include="ModelBinding\IPropertyBinderCollection.cs" />
+    <Compile Include="ModelBinding\IRequestBinder.cs" />
+    <Compile Include="ModelBinding\IValueConverter.cs" />
+    <Compile Include="ModelBinding\IValueConverterCollection.cs" />
+    <Compile Include="ModelBinding\ModelBinderCollection.cs" />
+    <Compile Include="ModelBinding\PropertyBinderCollection.cs" />
+    <Compile Include="ModelBinding\SimpleTypePropertyBinder.cs" />
+    <Compile Include="ModelBinding\ValueConverterCollection.cs" />
+    <Compile Include="ModelBinding\ValueConverters\BoolValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\ByteValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\CharValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\DecimalValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\DoubleValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\FloatValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\IntValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\LongValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\ParseValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\SByteValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\ShortValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\StringValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\UIntValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\ULongValueConverter.cs" />
+    <Compile Include="ModelBinding\ValueConverters\UShortValueConverter.cs" />
     <Compile Include="Output\HandleOutputRendering.cs" />
     <Compile Include="Output\IHandleOutputRendering.cs" />
     <Compile Include="Output\IRenderOutput.cs" />
@@ -60,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
-    <Folder Include="ModelBinding\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />

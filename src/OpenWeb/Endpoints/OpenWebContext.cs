@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
+using OpenWeb.ModelBinding;
 
 namespace OpenWeb.Endpoints
 {
     public class OpenWebContext : IOpenWebContext
     {
         private readonly WebEnvironment _environment;
+        private readonly IModelBinderCollection _modelBinderCollection;
 
-        public OpenWebContext(IDictionary<string, object> environment)
+        public OpenWebContext(IDictionary<string, object> environment, IModelBinderCollection modelBinderCollection)
         {
+            _modelBinderCollection = modelBinderCollection;
             _environment = new WebEnvironment(environment);
         }
 
@@ -34,7 +37,7 @@ namespace OpenWeb.Endpoints
         {
             var requestTypedParameters = _environment.Get<IDictionary<Type, object>>("openweb.RequestTypedParameters");
 
-            return requestTypedParameters.ContainsKey(typeof(T)) ? (T)requestTypedParameters[typeof(T)] : default(T);
+            return requestTypedParameters.ContainsKey(typeof(T)) ? (T)requestTypedParameters[typeof(T)] : (T)_modelBinderCollection.Bind(typeof(T), new BindingContext(_modelBinderCollection));
         }
 
         public void Set<T>(T data)

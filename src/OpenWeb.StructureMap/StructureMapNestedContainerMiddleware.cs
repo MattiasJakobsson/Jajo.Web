@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using OpenWeb.Endpoints;
+using OpenWeb.ModelBinding;
 using StructureMap;
 
 namespace OpenWeb.StructureMap
@@ -12,8 +13,9 @@ namespace OpenWeb.StructureMap
     {
         private readonly AppFunc _next;
         private readonly IContainer _container;
+        private readonly IModelBinderCollection _modelBinderCollection;
 
-        public StructureMapNestedContainerMiddleware(AppFunc next, IContainer container)
+        public StructureMapNestedContainerMiddleware(AppFunc next, IContainer container, IModelBinderCollection modelBinderCollection)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
@@ -23,11 +25,12 @@ namespace OpenWeb.StructureMap
 
             _next = next;
             _container = container;
+            _modelBinderCollection = modelBinderCollection;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var context = new OpenWebContext(environment);
+            var context = new OpenWebContext(environment, _modelBinderCollection);
 
             using (var container = _container.GetNestedContainer())
             {
