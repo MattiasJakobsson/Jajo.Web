@@ -46,7 +46,9 @@
     <Compile Include="Endpoints\ExecuteZeroModelInOneModelOutEndpoint.cs" />
     <Compile Include="Endpoints\IExecuteEndpoint.cs" />
     <Compile Include="Endpoints\IOpenWebContext.cs" />
+    <Compile Include="Endpoints\OpenWebContext.cs" />
     <Compile Include="IResolveDependencies.cs" />
+    <Compile Include="Output\HandleOutputRendering.cs" />
     <Compile Include="Output\IHandleOutputRendering.cs" />
     <Compile Include="Output\IRenderOutput.cs" />
     <Compile Include="Endpoints\OpenWebEndpointsMiddleware.cs" />
@@ -56,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
+    <Folder Include="ModelBinding\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
