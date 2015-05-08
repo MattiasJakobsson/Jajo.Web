@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F7C90359-1BCD-4640-8D5E-D52883933ABC}</ProjectGuid>
+    <ProjectGuid>{B5DCE00F-7C1D-4C18-A552-9B5C8C94C202}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenWeb.Superscribe</RootNamespace>
-    <AssemblyName>OpenWeb.Superscribe</AssemblyName>
+    <RootNamespace>OpenWeb.Routing.Superscribe</RootNamespace>
+    <AssemblyName>OpenWeb.Routing.Superscribe</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,12 +40,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
-      <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
-      <Name>OpenWeb</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
