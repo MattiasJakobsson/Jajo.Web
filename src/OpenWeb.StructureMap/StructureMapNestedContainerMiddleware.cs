@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using StructureMap;
 
@@ -28,7 +29,9 @@ namespace OpenWeb.StructureMap
         {
             using (var container = _container.GetNestedContainer())
             {
-                environment.SetDependencyResolver(new ResolveDependenciesUsingStructureMap(container));
+                var currentContainer = container;
+
+                environment.ConfigureResolvers(currentContainer.GetInstance, x => currentContainer.GetAllInstances(x).OfType<object>());
 
                 await _next(environment);   
             }

@@ -52,9 +52,25 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OpenWeb.Endpoints\OpenWeb.Endpoints.csproj">
+      <Project>{12f8f1f4-2249-4c0b-991d-60f629cb82f1}</Project>
+      <Name>OpenWeb.Endpoints</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.ExceptionManagement\OpenWeb.ExceptionManagement.csproj">
+      <Project>{cf7ca649-d8d8-41e1-8adc-19b95d4ea94d}</Project>
+      <Name>OpenWeb.ExceptionManagement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.ModelBinding\OpenWeb.ModelBinding.csproj">
+      <Project>{b2244942-cfd4-4cd1-a43a-33d24041e17d}</Project>
+      <Name>OpenWeb.ModelBinding</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenWeb.Output.Spark\OpenWeb.Output.Spark.csproj">
       <Project>{398cb3d5-983e-48b7-8f72-07b2dc735909}</Project>
       <Name>OpenWeb.Output.Spark</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.Output\OpenWeb.Output.csproj">
+      <Project>{03129102-f787-4f77-81cd-e78682edf293}</Project>
+      <Name>OpenWeb.Output</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenWeb.Routing.Superscribe\OpenWeb.Routing.Superscribe.csproj">
       <Project>{b5dce00f-7c1d-4c18-a552-9b5c8c94c202}</Project>
@@ -63,6 +79,10 @@
     <ProjectReference Include="..\OpenWeb.StructureMap\OpenWeb.StructureMap.csproj">
       <Project>{ae9fe8fd-159d-4d94-a104-521eaa55ef54}</Project>
       <Name>OpenWeb.StructureMap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.UnitOfWork\OpenWeb.UnitOfWork.csproj">
+      <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
+      <Name>OpenWeb.UnitOfWork</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
       <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>

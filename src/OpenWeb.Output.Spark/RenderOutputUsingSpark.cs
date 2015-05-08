@@ -60,7 +60,7 @@ namespace OpenWeb.Output.Spark
                 var output = new MemoryStream();
                 var writer = new StreamWriter(output);
 
-                view.Render(new ViewContext(environment.GetOutput()), writer);
+                view.Render(new ViewContext(environment.GetOutput(), environment), writer);
 
                 writer.Flush();
                 output.Position = 0;

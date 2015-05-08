@@ -13,6 +13,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Routing.Superscribe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Sample", "OpenWeb.Sample\OpenWeb.Sample.csproj", "{68AB3839-D86E-42C3-A565-FEB39106C981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.ModelBinding", "OpenWeb.ModelBinding\OpenWeb.ModelBinding.csproj", "{B2244942-CFD4-4CD1-A43A-33D24041E17D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Output", "OpenWeb.Output\OpenWeb.Output.csproj", "{03129102-F787-4F77-81CD-E78682EDF293}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Endpoints", "OpenWeb.Endpoints\OpenWeb.Endpoints.csproj", "{12F8F1F4-2249-4C0B-991D-60F629CB82F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.UnitOfWork", "OpenWeb.UnitOfWork\OpenWeb.UnitOfWork.csproj", "{692410ED-060A-4049-91BC-A08BE4C0B57B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.ExceptionManagement", "OpenWeb.ExceptionManagement\OpenWeb.ExceptionManagement.csproj", "{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +49,26 @@ Global
 		{68AB3839-D86E-42C3-A565-FEB39106C981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68AB3839-D86E-42C3-A565-FEB39106C981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68AB3839-D86E-42C3-A565-FEB39106C981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2244942-CFD4-4CD1-A43A-33D24041E17D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2244942-CFD4-4CD1-A43A-33D24041E17D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2244942-CFD4-4CD1-A43A-33D24041E17D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2244942-CFD4-4CD1-A43A-33D24041E17D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{03129102-F787-4F77-81CD-E78682EDF293}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03129102-F787-4F77-81CD-E78682EDF293}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03129102-F787-4F77-81CD-E78682EDF293}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03129102-F787-4F77-81CD-E78682EDF293}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12F8F1F4-2249-4C0B-991D-60F629CB82F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12F8F1F4-2249-4C0B-991D-60F629CB82F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12F8F1F4-2249-4C0B-991D-60F629CB82F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12F8F1F4-2249-4C0B-991D-60F629CB82F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{692410ED-060A-4049-91BC-A08BE4C0B57B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{692410ED-060A-4049-91BC-A08BE4C0B57B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{692410ED-060A-4049-91BC-A08BE4C0B57B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{692410ED-060A-4049-91BC-A08BE4C0B57B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

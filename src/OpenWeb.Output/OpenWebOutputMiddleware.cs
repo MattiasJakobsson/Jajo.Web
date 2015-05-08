@@ -1,35 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace OpenWeb.UnitOfWork
+namespace OpenWeb.Output
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebUnitOfWorkMiddleware
+    public class OpenWebOutputMiddleware
     {
         private readonly AppFunc _next;
+        private readonly IHandleOutputRendering _handleOutputRendering;
 
-        public OpenWebUnitOfWorkMiddleware(AppFunc next)
+        public OpenWebOutputMiddleware(AppFunc next, IHandleOutputRendering handleOutputRendering)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
             _next = next;
+            _handleOutputRendering = handleOutputRendering;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var unitOfWorks = environment.GetDependencyResolver().ResolveAll<IOpenWebUnitOfWork>().ToList();
-
-            foreach (var unitOfWork in unitOfWorks)
-                unitOfWork.Begin();
+            await _handleOutputRendering.Render(environment);
 
             await _next(environment);
-
-            foreach (var unitOfWork in unitOfWorks)
-                unitOfWork.Commit();
-        } 
+        }
     }
 }

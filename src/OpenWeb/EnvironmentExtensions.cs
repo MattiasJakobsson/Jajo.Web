@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using OpenWeb.ModelBinding;
 
 namespace OpenWeb
 {
@@ -25,19 +25,35 @@ namespace OpenWeb
             return new RoutingData(new ReadOnlyDictionary<string, object>(environment.Get<IDictionary<string, object>>("route.Parameters")), environment.Get<MethodInfo>("route.RoutedTo"));
         }
 
-        public static IResolveDependencies GetDependencyResolver(this IDictionary<string, object> environment)
+        public static TService Resolve<TService>(this IDictionary<string, object> environment)
         {
-            return environment.Get<IResolveDependencies>("openweb.DependencyResolver");
+            return (TService) Resolve(environment, typeof (TService));
         }
 
-        public static void SetDependencyResolver(this IDictionary<string, object> environment, IResolveDependencies dependencyResolver)
+        public static object Resolve(this IDictionary<string, object> environment, Type serviceType)
         {
-            environment["openweb.DependencyResolver"] = dependencyResolver;
+            return environment.Get<Func<Type, object>>("openweb.ResolveInstance")(serviceType);
         }
 
-        public static void SetModelBinder(this IDictionary<string, object> environment, IModelBinderCollection modelBinderCollection)
+        public static IEnumerable<TService> ResolveAll<TService>(this IDictionary<string, object> environment)
         {
-            environment["openweb.ModelBinder"] = modelBinderCollection;
+            return ResolveAll(environment, typeof (TService)).OfType<TService>();
+        }
+
+        public static IEnumerable<object> ResolveAll(this IDictionary<string, object> environment, Type serviceType)
+        {
+            return environment.Get<Func<Type, IEnumerable<object>>>("openweb.ResolveAllInstances")(serviceType);
+        }
+
+        public static void ConfigureResolvers(this IDictionary<string, object> environment, Func<Type, object> resolve, Func<Type, IEnumerable<object>> resolveAll)
+        {
+            environment["openweb.ResolveInstance"] = resolve;
+            environment["openweb.ResolveAllInstances"] = resolveAll;
+        }
+
+        public static void SetModelBinder(this IDictionary<string, object> environment, Func<Type, object> binder)
+        {
+            environment["openweb.ModelBinder"] = binder;
         }
 
         public static Task WriteToOutput(this IDictionary<string, object> environment, Stream data)
@@ -68,10 +84,10 @@ namespace OpenWeb
 
         public static T Bind<T>(this IDictionary<string, object> environment)
         {
-            var modelBinder = environment.Get<IModelBinderCollection>("openweb.ModelBinder");
+            var modelBinder = environment.Get<Func<Type, object>>("openweb.ModelBinder");
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
-            return requestTypedParameters.ContainsKey(typeof(T)) ? (T)requestTypedParameters[typeof(T)] : (T)modelBinder.Bind(typeof(T), new BindingContext(modelBinder));
+            return requestTypedParameters.ContainsKey(typeof(T)) ? (T)requestTypedParameters[typeof(T)] : (T)modelBinder(typeof(T));
         }
 
         public static void Set<T>(this IDictionary<string, object> environment, T data)

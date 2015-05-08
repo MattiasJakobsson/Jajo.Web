@@ -12,7 +12,7 @@ namespace OpenWeb.Endpoints
         {
             var endpointType = GetCorrectEndpointExecutorType(endpoint);
 
-            return environment.GetDependencyResolver().Resolve(endpointType) as IExecuteEndpoint;
+            return environment.Resolve(endpointType) as IExecuteEndpoint;
         }
 
         public static bool IsAsyncMethod(this MethodInfo method)
