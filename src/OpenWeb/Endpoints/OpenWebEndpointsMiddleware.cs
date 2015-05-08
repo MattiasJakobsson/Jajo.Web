@@ -9,25 +9,23 @@ namespace OpenWeb.Endpoints
     public class OpenWebEndpointsMiddleware
     {
         private readonly AppFunc _next;
-        private readonly IWebEngine _webEngine;
 
-        public OpenWebEndpointsMiddleware(AppFunc next, IWebEngine webEngine)
+        public OpenWebEndpointsMiddleware(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
-            if (webEngine == null)
-                throw new ArgumentNullException("webEngine");
-
             _next = next;
-            _webEngine = webEngine;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var request = new Request(environment);
+            var context = new OpenWebContext(environment);
 
-            await _webEngine.ExecuteRequest(request);
+            var executor = context.RoutedTo.GetCorrectEndpointExecutor(context);
+
+            if (executor != null)
+                await executor.Execute(context.RoutedTo, context);
 
             await _next(environment);
         }

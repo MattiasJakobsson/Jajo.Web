@@ -19,13 +19,18 @@ namespace OpenWeb
         public IReadOnlyDictionary<string, object> RouteParameters { get { return new ReadOnlyDictionary<string, object>(Get<IDictionary<string, object>>("route.Parameters")); } }
         public object Output { get { return Get<object>("openweb.Output"); } }
 
-        private T Get<T>(string key)
+        public T Get<T>(string key)
         {
             object obj;
             if (!_environment.TryGetValue(key, out obj) || !(obj is T))
                 return default(T);
 
             return (T)obj;
+        }
+
+        public void Set(string key, object item)
+        {
+            _environment[key] = item;
         }
 
         private static string GetHeader(IReadOnlyDictionary<string, string[]> headers, string key)

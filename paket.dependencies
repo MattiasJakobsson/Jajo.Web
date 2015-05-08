@@ -4,3 +4,4 @@ nuget Newtonsoft.Json
 nuget Spark
 nuget Superscribe
 nuget Superscribe.Owin
+nuget structuremap

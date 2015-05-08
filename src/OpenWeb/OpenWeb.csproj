@@ -40,13 +40,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppDomainAssemblyTypeScanner.cs" />
-    <Compile Include="Endpoints\IRequest.cs" />
-    <Compile Include="Endpoints\IWebEngine.cs" />
+    <Compile Include="Endpoints\EndpointExtensions.cs" />
+    <Compile Include="Endpoints\ExecuteOneModelInOneModelOutEndpoint.cs" />
+    <Compile Include="Endpoints\ExecuteOneModelInZeroModelOutEndpoint.cs" />
+    <Compile Include="Endpoints\ExecuteZeroModelInOneModelOutEndpoint.cs" />
+    <Compile Include="Endpoints\IExecuteEndpoint.cs" />
+    <Compile Include="Endpoints\IOpenWebContext.cs" />
+    <Compile Include="IResolveDependencies.cs" />
     <Compile Include="Output\IHandleOutputRendering.cs" />
     <Compile Include="Output\IRenderOutput.cs" />
     <Compile Include="Endpoints\OpenWebEndpointsMiddleware.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Endpoints\WebEngine.cs" />
+    <Compile Include="Endpoints\ExecuteZeroModelInZeroModelOutEndpoint.cs" />
     <Compile Include="WebEnvironment.cs" />
   </ItemGroup>
   <ItemGroup>
