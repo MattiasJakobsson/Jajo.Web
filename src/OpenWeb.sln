@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.StructureMap", "Ope
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Routing.Superscribe", "OpenWeb.Routing.Superscribe\OpenWeb.Routing.Superscribe.csproj", "{B5DCE00F-7C1D-4C18-A552-9B5C8C94C202}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Sample", "OpenWeb.Sample\OpenWeb.Sample.csproj", "{68AB3839-D86E-42C3-A565-FEB39106C981}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B5DCE00F-7C1D-4C18-A552-9B5C8C94C202}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5DCE00F-7C1D-4C18-A552-9B5C8C94C202}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5DCE00F-7C1D-4C18-A552-9B5C8C94C202}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68AB3839-D86E-42C3-A565-FEB39106C981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68AB3839-D86E-42C3-A565-FEB39106C981}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68AB3839-D86E-42C3-A565-FEB39106C981}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68AB3839-D86E-42C3-A565-FEB39106C981}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

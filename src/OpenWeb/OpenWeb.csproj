@@ -89,6 +89,7 @@
     <Compile Include="Output\IHandleOutputRendering.cs" />
     <Compile Include="Output\IRenderOutput.cs" />
     <Compile Include="Endpoints\OpenWebEndpointsMiddleware.cs" />
+    <Compile Include="Output\OpenWebOutputMiddleware.cs" />
     <Compile Include="Output\RenderOutputAsJson.cs" />
     <Compile Include="Output\RenderOutputAsXml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

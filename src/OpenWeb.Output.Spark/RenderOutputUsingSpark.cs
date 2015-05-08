@@ -107,226 +107,6 @@ namespace OpenWeb.Output.Spark
             return System.IO.Path.GetFileName(Path);
         }
     }
-    public class FileSystem
-    {
-        public const int BufferSize = 32768;
-
-        public void CreateDirectory(string path)
-        {
-            if (string.IsNullOrEmpty(path)) return;
-
-            var dir = new DirectoryInfo(path);
-            if (dir.Exists)
-            {
-                return;
-            }
-
-            dir.Create();
-        }
-
-        public long FileSizeOf(string path)
-        {
-            return new FileInfo(path).Length;
-        }
-
-        public bool IsFile(string path)
-        {
-            path = Path.GetFullPath(path);
-
-            if (!File.Exists(path) && !Directory.Exists(path))
-            {
-                throw new IOException(string.Format("This path '{0}' doesn't exist!", path));
-            }
-
-            var attr = File.GetAttributes(path);
-
-            return (attr & FileAttributes.Directory) != FileAttributes.Directory;
-        }
-
-        public bool FileExists(string filename)
-        {
-            return File.Exists(filename);
-        }
-
-        public void WriteStreamToFile(string filename, Stream stream)
-        {
-            CreateDirectory(Path.GetDirectoryName(filename));
-
-            using (var fileStream = new FileStream(filename, FileMode.Create, FileAccess.Write))
-            {
-                int bytesRead;
-                var buffer = new byte[BufferSize];
-                do
-                {
-                    bytesRead = stream.Read(buffer, 0, buffer.Length);
-
-                    if (bytesRead > 0)
-                    {
-                        fileStream.Write(buffer, 0, bytesRead);
-                    }
-                } while (bytesRead > 0);
-                fileStream.Flush();
-            }
-        }
-
-        public void WriteStringToFile(string filename, string text)
-        {
-            CreateDirectory(Path.GetDirectoryName(filename));
-
-            File.WriteAllText(filename, text);
-        }
-
-        public void AppendStringToFile(string filename, string text)
-        {
-            File.AppendAllText(filename, text);
-        }
-
-
-        public string ReadStringFromFile(string filename)
-        {
-            return File.ReadAllText(filename);
-        }
-
-        public string GetFileName(string path)
-        {
-            return Path.GetFileName(path);
-        }
-
-        public void AlterFlatFile(string path, Action<List<string>> alteration)
-        {
-            var list = new List<string>();
-
-            if (FileExists(path))
-            {
-                ReadTextFile(path, list.Add);
-            }
-
-            list.RemoveAll(x => x.Trim() == string.Empty);
-
-            alteration(list);
-
-            using (var writer = new StreamWriter(path))
-            {
-                list.ForEach(writer.WriteLine);
-            }
-        }
-
-        public void DeleteDirectory(string directory)
-        {
-            if (Directory.Exists(directory))
-            {
-                Directory.Delete(directory, true);
-            }
-        }
-
-        public void CleanDirectory(string directory)
-        {
-            if (string.IsNullOrEmpty(directory)) return;
-
-
-            DeleteDirectory(directory);
-            Thread.Sleep(10);
-
-            CreateDirectory(directory);
-        }
-
-        public bool DirectoryExists(string directory)
-        {
-            return Directory.Exists(directory);
-        }
-
-        public void DeleteFile(string filename)
-        {
-            if (!File.Exists(filename)) return;
-
-            File.Delete(filename);
-        }
-
-        public void MoveFile(string from, string to)
-        {
-            CreateDirectory(Path.GetDirectoryName(to));
-
-            try
-            {
-                File.Move(from, to);
-            }
-            catch (IOException ex)
-            {
-                var msg = string.Format("Trying to move '{0}' to '{1}'", from, to);
-                throw new Exception(msg, ex);
-            }
-        }
-
-        public void MoveFiles(string from, string to)
-        {
-            var files = Directory.GetFiles(from, "*.*", SearchOption.AllDirectories);
-            foreach (var file in files)
-            {
-                var partialPath = file.Replace(from, "");
-                if (partialPath.StartsWith(@"\")) partialPath = partialPath.Substring(1);
-                var newPath = Combine(to, partialPath);
-                MoveFile(file, newPath);
-            }
-        }
-
-        public void MoveDirectory(string from, string to)
-        {
-            Directory.Move(from, to);
-        }
-
-        public IEnumerable<string> ChildDirectoriesFor(string directory)
-        {
-            if (Directory.Exists(directory))
-            {
-                return Directory.GetDirectories(directory);
-            }
-
-            return new string[0];
-        }
-
-        public void ReadTextFile(string path, Action<string> callback)
-        {
-            if (!FileExists(path)) return;
-
-            using (var reader = new StreamReader(path))
-            {
-                string line;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    callback(line.Trim());
-                }
-            }
-        }
-
-        public string GetFullPath(string path)
-        {
-            return Path.GetFullPath(path);
-        }
-
-        public string GetDirectory(string path)
-        {
-            return Path.GetDirectoryName(path);
-        }
-
-        public static string Combine(params string[] paths)
-        {
-            return paths.Aggregate(Path.Combine);
-        }
-
-        public void LaunchBrowser(string filename)
-        {
-            Process.Start("explorer", filename);
-        }
-
-        public static IEnumerable<string> GetChildDirectories(string directory)
-        {
-            if (!Directory.Exists(directory))
-                return new string[0];
-
-
-            return Directory.GetDirectories(directory);
-        }
-    }
     public class FileSet
     {
         public FileSet()
@@ -470,13 +250,7 @@ namespace OpenWeb.Output.Spark
 
     public class FileScanner
     {
-        private readonly FileSystem _fileSystem;
         private IList<string> _scannedDirectories;
-
-        public FileScanner(FileSystem fileSystem)
-        {
-            _fileSystem = fileSystem;
-        }
 
         public void Scan(ScanRequest request)
         {
@@ -496,7 +270,9 @@ namespace OpenWeb.Output.Spark
 
             var excludeList = excludes.ToList();
 
-            foreach (var childDirectory in _fileSystem.ChildDirectoriesFor(directory))
+            var childDirectories = Directory.Exists(directory) ? Directory.GetDirectories(directory) : new string[0];
+
+            foreach (var childDirectory in childDirectories)
                 Scan(root, childDirectory, fileSet, onFound, excludeList);
 
             var included = fileSet.IncludedFilesFor(directory).ToList();
@@ -509,7 +285,7 @@ namespace OpenWeb.Output.Spark
 
         private bool AlreadyScannedOrNonexistent(string path)
         {
-            return _scannedDirectories.Contains(path) || !_fileSystem.DirectoryExists(path);
+            return _scannedDirectories.Contains(path) || !Directory.Exists(path);
         }
     }
 

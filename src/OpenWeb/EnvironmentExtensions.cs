@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -57,6 +58,11 @@ namespace OpenWeb
             return environment.Get<object>("openweb.Output");
         }
 
+        public static void SetOutput(this IDictionary<string, object> environment, object output)
+        {
+            environment["openweb.Output"] = output;
+        }
+
         public static T Get<T>(this IDictionary<string, object> environment, string key)
         {
             object obj;
@@ -69,16 +75,28 @@ namespace OpenWeb
         public static T Bind<T>(this IDictionary<string, object> environment)
         {
             var modelBinder = environment.Get<IModelBinderCollection>("openweb.ModelBinder");
-            var requestTypedParameters = environment.Get<IDictionary<Type, object>>("openweb.RequestTypedParameters");
+            var requestTypedParameters = GetRequestTypedParameters(environment);
 
             return requestTypedParameters.ContainsKey(typeof(T)) ? (T)requestTypedParameters[typeof(T)] : (T)modelBinder.Bind(typeof(T), new BindingContext(modelBinder));
         }
 
         public static void Set<T>(this IDictionary<string, object> environment, T data)
         {
-            var requestTypedParameters = environment.Get<IDictionary<Type, object>>("openweb.RequestTypedParameters");
+            var requestTypedParameters = GetRequestTypedParameters(environment);
 
             requestTypedParameters[typeof(T)] = data;
+        }
+
+        private static IDictionary<Type, object> GetRequestTypedParameters(IDictionary<string, object> environment)
+        {
+            var requestTypedParameters = environment.Get<IDictionary<Type, object>>("openweb.RequestTypedParameters");
+
+            if (requestTypedParameters != null) return requestTypedParameters;
+            
+            requestTypedParameters = new Dictionary<Type, object>();
+            environment["openweb.RequestTypedParameters"] = requestTypedParameters;
+
+            return requestTypedParameters;
         }
 
         public class RequestData

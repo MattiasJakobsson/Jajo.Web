@@ -23,6 +23,7 @@ namespace OpenWeb.Endpoints
                 result = (TOutput)endpointMethod.Invoke(_endpoint, new object[] { environment.Bind<TInput>() });
 
             environment.Set(result);
+            environment.SetOutput(result);
         }
     }
 }

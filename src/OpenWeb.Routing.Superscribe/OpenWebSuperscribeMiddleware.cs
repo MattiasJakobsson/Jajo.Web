@@ -44,7 +44,7 @@ namespace OpenWeb.Routing.Superscribe
         {
             node.ActionFunctions.Add("OpenWeb", (routeData, x) =>
             {
-                routeData.Environment["routing.RoutedTo"] = method;
+                routeData.Environment["route.RoutedTo"] = method;
             });
 
             return node;
