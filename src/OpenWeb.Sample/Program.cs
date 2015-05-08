@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 using Microsoft.Owin.Hosting;
 using OpenWeb.Endpoints;
 using OpenWeb.ExceptionManagement;
@@ -32,15 +31,17 @@ namespace OpenWeb.Sample
                 typeof (Program).Assembly
             };
 
+            var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner()));
+
             var sparkViewEngine = new SparkViewEngine(new SparkSettings())
             {
                 DefaultPageBaseType = typeof(OpenWebSparkView).FullName,
-                ViewFolder = new OpenWebViewFolder(new RenderOutputUsingSpark(new FileScanner(), null, assemblies).FindAllTemplates(assemblies))
+                ViewFolder = new OpenWebViewFolder(templateSource.FindTemplates())
             };
 
             var rendererHandler = new HandleOutputRendering(new List<Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>>
             {
-                new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => x.GetHeaders().Accept.Contains("text/html"), new RenderOutputUsingSpark(new FileScanner(), sparkViewEngine, assemblies)),
+                new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => x.GetHeaders().Accept.Contains("text/html"), new RenderOutputUsingSpark(sparkViewEngine, templateSource)),
                 new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => true, new RenderOutputAsJson())
             });
 

@@ -39,10 +39,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregatedTemplateSource.cs" />
+    <Compile Include="BaseTemplateSource.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Class2.cs" />
+    <Compile Include="CompositeAction.cs" />
+    <Compile Include="EmbeddedTemplateSource.cs" />
+    <Compile Include="FileFound.cs" />
+    <Compile Include="FileScanner.cs" />
+    <Compile Include="FileSet.cs" />
+    <Compile Include="FileSystemTemplateSource.cs" />
+    <Compile Include="ITemplateSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderOutputUsingSpark.cs" />
+    <Compile Include="ScanRequest.cs" />
+    <Compile Include="Template.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
