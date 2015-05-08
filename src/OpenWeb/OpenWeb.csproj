@@ -54,11 +54,16 @@
     <Compile Include="Endpoints\OpenWebEndpointsMiddleware.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Endpoints\ExecuteZeroModelInZeroModelOutEndpoint.cs" />
+    <Compile Include="UnitOfWork\IOpenWebUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\OpenWebUnitOfWorkMiddleware.cs" />
     <Compile Include="WebEnvironment.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configuration\" />
     <Folder Include="ModelBinding\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="paket.references" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
