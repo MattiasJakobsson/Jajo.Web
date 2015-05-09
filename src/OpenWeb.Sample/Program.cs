@@ -12,6 +12,7 @@ using OpenWeb.Output;
 using OpenWeb.Output.Spark;
 using OpenWeb.Owin;
 using OpenWeb.Routing.Superscribe;
+using OpenWeb.Routing.Superscribe.Conventional;
 using OpenWeb.StructureMap;
 using OpenWeb.UnitOfWork;
 using OpenWeb.Validation;
@@ -44,9 +45,20 @@ namespace OpenWeb.Sample
             });
 
             var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
-            var define = RouteEngineFactory.Create();
 
-            define.Get(x => x / "test", x => typeof(TestEndpoint).GetMethod("Query"));
+            var assemblies = new List<Assembly>
+            {
+                typeof (Program).Assembly
+            };
+
+            var define = new ConventionalRoutingConfiguration(new List<IFilterEndpoints>
+            {
+                new QueryAndCommandEndpointFilter()
+            }, new List<IRoutePolicy>
+            {
+                new DefaultRoutePolicy()
+            }).Configure(assemblies);
+
             define.Get(x => x / "exception", x =>
             {
                 return ((Action)(() =>
@@ -59,11 +71,6 @@ namespace OpenWeb.Sample
             {
                 return ((Action)(() => ((RouteData)x).Environment.WriteToOutput("Test")));
             }));
-
-            var assemblies = new List<Assembly>
-            {
-                typeof (Program).Assembly
-            };
 
             var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner()));
 

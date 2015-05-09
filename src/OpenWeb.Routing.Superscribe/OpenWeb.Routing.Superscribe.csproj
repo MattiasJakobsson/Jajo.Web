@@ -39,7 +39,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GraphNodeExtensions.cs" />
+    <Compile Include="AppDomainAssemblyTypeScanner.cs" />
+    <Compile Include="Conventional\ConventionalRoutingConfiguration.cs" />
+    <Compile Include="Conventional\Guid.cs" />
+    <Compile Include="Conventional\IFilterEndpoints.cs" />
+    <Compile Include="Conventional\IRouteBuilder.cs" />
+    <Compile Include="Conventional\QueryAndCommandEndpointFilter.cs" />
+    <Compile Include="Conventional\RouteBuilder.cs" />
     <Compile Include="OpenWebSuperscribeMiddleware.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
