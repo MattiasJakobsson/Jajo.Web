@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="EndpointExtensions.cs" />
     <Compile Include="ExecuteActionEndpoint.cs" />
+    <Compile Include="ExecuteEndpointMiddleware.cs" />
     <Compile Include="ExecuteMethodInfoEndpoint.cs" />
     <Compile Include="ExecuteOneModelInOneModelOutEndpoint.cs" />
     <Compile Include="ExecuteOneModelInZeroModelOutEndpoint.cs" />

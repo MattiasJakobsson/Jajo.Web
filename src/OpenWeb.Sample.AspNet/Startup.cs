@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Owin.Hosting;
+using Microsoft.Owin;
 using OpenWeb.Authorization;
 using OpenWeb.Endpoints;
 using OpenWeb.ExceptionManagement;
@@ -14,6 +13,7 @@ using OpenWeb.Output.Spark;
 using OpenWeb.Owin;
 using OpenWeb.Routing.Superscribe;
 using OpenWeb.Routing.Superscribe.Conventional;
+using OpenWeb.Sample.AspNet;
 using OpenWeb.StructureMap;
 using OpenWeb.UnitOfWork;
 using OpenWeb.Validation;
@@ -23,17 +23,15 @@ using StructureMap;
 using Superscribe.Engine;
 using Superscribe.Models;
 
-namespace OpenWeb.Sample
+[assembly: OwinStartup(typeof(Startup))]
+namespace OpenWeb.Sample.AspNet
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    class Program
+    public class Startup
     {
-        static void Main(string[] args)
+        public void Configuration(IAppBuilder app)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
             var container = new Container();
 
             container.Configure(x =>
@@ -41,7 +39,7 @@ namespace OpenWeb.Sample
                 x.Scan(y =>
                 {
                     y.AssemblyContainingType(typeof(IExecuteTypeOfEndpoint<>));
-                    y.AssemblyContainingType<Program>();
+                    y.AssemblyContainingType<Startup>();
 
                     y.ConnectImplementationsToTypesClosing(typeof(IExecuteTypeOfEndpoint<>));
                     y.AddAllTypesOf<IOpenWebUnitOfWork>();
@@ -52,7 +50,7 @@ namespace OpenWeb.Sample
 
             var assemblies = new List<Assembly>
             {
-                typeof (Program).Assembly
+                typeof (Startup).Assembly
             };
 
             var define = new ConventionalRoutingConfiguration(new List<IFilterEndpoints>
@@ -90,24 +88,23 @@ namespace OpenWeb.Sample
                 new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => true, new RenderOutputAsJson())
             });
 
-            WebApp.Start("http://localhost:8020", x =>
-                x.Use<SpecialCaseMiddleware>(new SpecialCaseConfiguration()
-                    .AddCase(y => y.GetException() != null, (AppFunc)x
+            app.Use<SpecialCaseMiddleware>(new SpecialCaseConfiguration()
+                    .AddCase(y => y.GetException() != null, (AppFunc)app
                             .New()
                             .Use<SetStatusCodeMiddleware>(500)
                             .Use<RollbackTransactionsMiddleware>()
                             .Use<HandledExceptionMiddleware>()
                             .Build(typeof(AppFunc)))
-                    .AddCase(y => y.Get<bool>("openweb.AuthorizationFailed"), (AppFunc)x
+                    .AddCase(y => y.Get<bool>("openweb.AuthorizationFailed"), (AppFunc)app
                             .New()
                             .Use<SetStatusCodeMiddleware>(401)
                             .Use<HandleUnauthorizedMiddleware>()
                             .Build(typeof(AppFunc)))
-                    .AddCase(y => !(y.Get<ValidationResult>("openweb.ValidationResult") ?? new ValidationResult(new List<ValidationResult.ValidationError>())).IsValid, (AppFunc)x
+                    .AddCase(y => !(y.Get<ValidationResult>("openweb.ValidationResult") ?? new ValidationResult(new List<ValidationResult.ValidationError>())).IsValid, (AppFunc)app
                             .New()
                             .Use<HandleValidationErrorMiddleware>()
                             .Build(typeof(AppFunc)))
-                     .AddCase(y => y.GetOutput() == null, (AppFunc)x
+                     .AddCase(y => y.GetOutput() == null, (AppFunc)app
                             .New()
                             .Use<SetStatusCodeMiddleware>(404)
                             .Use<HandleNotFoundMiddleware>()
@@ -121,13 +118,7 @@ namespace OpenWeb.Sample
                     .Use<OpenWebSuperscribeMiddleware>(define)
                     .If(y => y["owin.RequestPath"].ToString().Contains("asd"), y => y.Use<TestMiddleware>())
                     .Use<OpenWebEndpointsMiddleware>()
-                    .Use<OpenWebOutputMiddleware>(rendererHandler));
-
-            stopwatch.Stop();
-
-            Console.WriteLine("Startup time: {0}ms", stopwatch.ElapsedMilliseconds);
-
-            Console.ReadLine();
+                    .Use<OpenWebOutputMiddleware>(rendererHandler);
         }
     }
 
@@ -143,7 +134,7 @@ namespace OpenWeb.Sample
     {
         public ValidationResult Validate(IDictionary<string, object> environment)
         {
-            if(environment["owin.RequestPath"].ToString().Contains("invalid"))
+            if (environment["owin.RequestPath"].ToString().Contains("invalid"))
                 return new ValidationResult(new List<ValidationResult.ValidationError>
                 {
                     new ValidationResult.ValidationError("Key", "Error")

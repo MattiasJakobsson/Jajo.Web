@@ -41,9 +41,11 @@
   <ItemGroup>
     <Compile Include="AppDomainAssemblyTypeScanner.cs" />
     <Compile Include="Conventional\ConventionalRoutingConfiguration.cs" />
+    <Compile Include="Conventional\DefaultRoutePolicy.cs" />
     <Compile Include="Conventional\Guid.cs" />
     <Compile Include="Conventional\IFilterEndpoints.cs" />
     <Compile Include="Conventional\IRouteBuilder.cs" />
+    <Compile Include="Conventional\IRoutePolicy.cs" />
     <Compile Include="Conventional\QueryAndCommandEndpointFilter.cs" />
     <Compile Include="Conventional\RouteBuilder.cs" />
     <Compile Include="OpenWebSuperscribeMiddleware.cs" />
