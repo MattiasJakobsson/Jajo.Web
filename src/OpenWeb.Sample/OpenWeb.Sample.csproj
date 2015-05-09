@@ -96,6 +96,10 @@
       <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
       <Name>OpenWeb.UnitOfWork</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.Validation\OpenWeb.Validation.csproj">
+      <Project>{f466c803-e04e-493d-91d6-25001dc5a281}</Project>
+      <Name>OpenWeb.Validation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
       <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
       <Name>OpenWeb</Name>

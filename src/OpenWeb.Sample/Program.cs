@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
 using OpenWeb.Authorization;
@@ -13,6 +14,7 @@ using OpenWeb.Owin;
 using OpenWeb.Routing.Superscribe;
 using OpenWeb.StructureMap;
 using OpenWeb.UnitOfWork;
+using OpenWeb.Validation;
 using Owin;
 using Spark;
 using StructureMap;
@@ -90,6 +92,10 @@ namespace OpenWeb.Sample
                             .Use<SetStatusCodeMiddleware>(401)
                             .Use<HandleUnauthorizedMiddleware>()
                             .Build(typeof(AppFunc)))
+                    .AddCase(y => !(y.Get<ValidationResult>("openweb.ValidationResult") ?? new ValidationResult(new List<ValidationResult.ValidationError>())).IsValid, (AppFunc)x
+                            .New()
+                            .Use<HandleValidationErrorMiddleware>()
+                            .Build(typeof(AppFunc)))
                      .AddCase(y => y.GetOutput() == null, (AppFunc)x
                             .New()
                             .Use<SetStatusCodeMiddleware>(404)
@@ -100,6 +106,7 @@ namespace OpenWeb.Sample
                     .Use<OpenWebModelBindingMiddleware>(modelBindingCollection)
                     .Use<OpenWebUnitOfWorkMiddleware>()
                     .Use<OpenWebAuthorizationMiddleware>(new OpenWebAuthorizationOptions().WithAuthorizer(new TestAuthorizer()))
+                    .Use<OpenWebValidationMiddleware>(new OpenWebValidationOptions().UsingValidator(new TestValidator()))
                     .Use<OpenWebSuperscribeMiddleware>(define)
                     .If(y => y["owin.RequestPath"].ToString().Contains("asd"), y => y.Use<TestMiddleware>())
                     .Use<OpenWebEndpointsMiddleware>()
@@ -114,6 +121,20 @@ namespace OpenWeb.Sample
         public bool IsAuthorized(IEnumerable<AuthenticationToken> tokens, IDictionary<string, object> environment)
         {
             return !environment["owin.RequestPath"].ToString().Contains("unauthorized");
+        }
+    }
+
+    public class TestValidator : IValidateRequest
+    {
+        public ValidationResult Validate(IDictionary<string, object> environment)
+        {
+            if(environment["owin.RequestPath"].ToString().Contains("invalid"))
+                return new ValidationResult(new List<ValidationResult.ValidationError>
+                {
+                    new ValidationResult.ValidationError("Key", "Error")
+                });
+
+            return new ValidationResult(new List<ValidationResult.ValidationError>());
         }
     }
 
@@ -180,6 +201,34 @@ namespace OpenWeb.Sample
             await environment.WriteToOutput("Not found!");
 
             environment.SetOutput("Not found!");
+
+            await _next(environment);
+        }
+    }
+
+    public class HandleValidationErrorMiddleware
+    {
+        private readonly AppFunc _next;
+
+        public HandleValidationErrorMiddleware(AppFunc next)
+        {
+            if (next == null)
+                throw new ArgumentNullException("next");
+
+            _next = next;
+        }
+
+        public async Task Invoke(IDictionary<string, object> environment)
+        {
+            var result = new StringBuilder();
+            var validationResult = environment.Get<ValidationResult>("openweb.ValidationResult");
+
+            foreach (var error in validationResult.Errors)
+                result.AppendFormat("Error {0}: {1}<br/>", error.Key, error.Message);
+
+            await environment.WriteToOutput(result.ToString());
+
+            environment.SetOutput(result.ToString());
 
             await _next(environment);
         }

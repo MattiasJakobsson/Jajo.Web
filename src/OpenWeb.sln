@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Owin", "OpenWeb.Owi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Authorization", "OpenWeb.Authorization\OpenWeb.Authorization.csproj", "{F9035886-8B03-42BD-8F31-9BAEF4D949A3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Validation", "OpenWeb.Validation\OpenWeb.Validation.csproj", "{F466C803-E04E-493D-91D6-25001DC5A281}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F466C803-E04E-493D-91D6-25001DC5A281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F466C803-E04E-493D-91D6-25001DC5A281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F466C803-E04E-493D-91D6-25001DC5A281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F466C803-E04E-493D-91D6-25001DC5A281}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
