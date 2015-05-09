@@ -29,9 +29,14 @@ namespace OpenWeb.Output.Spark
 
         public async Task<Stream> Render(IDictionary<string, object> environment)
         {
+            var output = environment.GetOutput();
+
+            if (output == null)
+                return null;
+
             var templates = _templateSource.FindTemplates().ToList();
 
-            var matchingTemplates = templates.Where(x => x.ModelType == environment.GetOutput().GetType()).ToList();
+            var matchingTemplates = templates.Where(x => x.ModelType == output.GetType()).ToList();
 
             if (matchingTemplates.Count < 1) return new MemoryStream();
 
@@ -54,15 +59,15 @@ namespace OpenWeb.Output.Spark
 
             return await Task.Factory.StartNew(() =>
             {
-                var output = new MemoryStream();
-                var writer = new StreamWriter(output);
+                var outputStream = new MemoryStream();
+                var writer = new StreamWriter(outputStream);
 
-                view.Render(new ViewContext(environment.GetOutput(), environment), writer);
+                view.Render(new ViewContext(output, environment), writer);
 
                 writer.Flush();
-                output.Position = 0;
+                outputStream.Position = 0;
 
-                return output;
+                return outputStream;
             });
         }
 

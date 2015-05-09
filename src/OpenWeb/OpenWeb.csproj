@@ -43,6 +43,8 @@
     <Compile Include="EnvironmentExtensions.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetStatusCodeMiddleware.cs" />
+    <Compile Include="SpecialCaseMiddleware.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />

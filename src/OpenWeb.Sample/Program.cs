@@ -11,10 +11,12 @@ using OpenWeb.Output.Spark;
 using OpenWeb.Owin;
 using OpenWeb.Routing.Superscribe;
 using OpenWeb.StructureMap;
+using OpenWeb.UnitOfWork;
 using Owin;
 using Spark;
 using StructureMap;
 using Superscribe.Engine;
+using Superscribe.Models;
 
 namespace OpenWeb.Sample
 {
@@ -31,8 +33,10 @@ namespace OpenWeb.Sample
                 x.Scan(y =>
                 {
                     y.AssemblyContainingType(typeof(IExecuteTypeOfEndpoint<>));
+                    y.AssemblyContainingType<Program>();
 
                     y.ConnectImplementationsToTypesClosing(typeof(IExecuteTypeOfEndpoint<>));
+                    y.AddAllTypesOf<IOpenWebUnitOfWork>();
                 });
             });
 
@@ -40,6 +44,18 @@ namespace OpenWeb.Sample
             var define = RouteEngineFactory.Create();
 
             define.Get(x => x / "test", x => typeof(TestEndpoint).GetMethod("Query"));
+            define.Get(x => x / "exception", x =>
+            {
+                return ((Action)(() =>
+                {
+                    throw new Exception("Exception");
+                }));
+            });
+
+            define.Base.FinalFunctions.Add(new FinalFunction("GET", x =>
+            {
+                return ((Action)(() => ((RouteData)x).Environment.WriteToOutput("Test")));
+            }));
 
             var assemblies = new List<Assembly>
             {
@@ -61,9 +77,22 @@ namespace OpenWeb.Sample
             });
 
             WebApp.Start("http://localhost:8020", x =>
-                x.Use<StructureMapNestedContainerMiddleware>(container)
+                x.Use<SpecialCaseMiddleware>(new SpecialCaseConfiguration()
+                    .AddCase(y => y.GetException() != null, (AppFunc)x
+                            .New()
+                            .Use<SetStatusCodeMiddleware>(500)
+                            .Use<RollbackTransactionsMiddleware>()
+                            .Use<HandledExceptionMiddleware>()
+                            .Build(typeof(AppFunc)))
+                     .AddCase(y => y.GetOutput() == null, (AppFunc)x
+                            .New()
+                            .Use<SetStatusCodeMiddleware>(404)
+                            .Use<HandleNotFoundMiddleware>()
+                            .Build(typeof(AppFunc))))
+                    .Use<StructureMapNestedContainerMiddleware>(container)
                     .Use<OpenWebExceptionManagementMiddleware>()
                     .Use<OpenWebModelBindingMiddleware>(modelBindingCollection)
+                    .Use<OpenWebUnitOfWorkMiddleware>()
                     .Use<OpenWebSuperscribeMiddleware>(define)
                     .If(y => y["owin.RequestPath"].ToString().Contains("asd"), y => y.Use<TestMiddleware>())
                     .Use<OpenWebEndpointsMiddleware>()
@@ -89,9 +118,58 @@ namespace OpenWeb.Sample
         {
             await environment.WriteToOutput("Testing if statement");
 
+            environment.SetOutput("Testing if statement");
+
             await _next(environment);
         }
     }
+
+    public class HandledExceptionMiddleware
+    {
+        private readonly AppFunc _next;
+
+        public HandledExceptionMiddleware(AppFunc next)
+        {
+            if (next == null)
+                throw new ArgumentNullException("next");
+
+            _next = next;
+        }
+
+        public async Task Invoke(IDictionary<string, object> environment)
+        {
+            var exception = environment.Get<Exception>("openweb.Exception");
+
+            await environment.WriteToOutput(exception.Message);
+
+            environment.SetOutput(exception.Message);
+
+            await _next(environment);
+        }
+    }
+
+    public class HandleNotFoundMiddleware
+    {
+        private readonly AppFunc _next;
+
+        public HandleNotFoundMiddleware(AppFunc next)
+        {
+            if (next == null)
+                throw new ArgumentNullException("next");
+
+            _next = next;
+        }
+
+        public async Task Invoke(IDictionary<string, object> environment)
+        {
+            await environment.WriteToOutput("Not found!");
+
+            environment.SetOutput("Not found!");
+
+            await _next(environment);
+        }
+    }
+
     public class TestEndpoint
     {
         public TestEndpointQueryResult Query()

@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RollbackTransactionsMiddleware.cs" />
     <Compile Include="IOpenWebUnitOfWork.cs" />
     <Compile Include="OpenWebUnitOfWorkMiddleware.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

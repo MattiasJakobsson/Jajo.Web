@@ -27,10 +27,15 @@ namespace OpenWeb.Endpoints
                 var executor = environment.Resolve(typeof(IExecuteTypeOfEndpoint<>).MakeGenericType(routeInformation.RoutedTo.GetType()));
 
                 if (executor != null)
+                {
                     await (Task)executor
                         .GetType()
                         .GetMethod("Execute", new[] { routeInformation.RoutedTo.GetType(), typeof(IDictionary<string, object>) })
                         .Invoke(executor, new[] { routeInformation.RoutedTo, environment });
+
+                    if(environment.GetOutput() == null)
+                        environment.SetOutput("");
+                }
             }
 
             await _next(environment);

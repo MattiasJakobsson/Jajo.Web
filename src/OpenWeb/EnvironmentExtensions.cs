@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenWeb
@@ -55,11 +56,24 @@ namespace OpenWeb
             environment["openweb.ModelBinder"] = binder;
         }
 
-        public static Task WriteToOutput(this IDictionary<string, object> environment, Stream data)
+        public static void SetStatusCode(this IDictionary<string, object> environment, int statusCode)
         {
+            environment["owin.ResponseStatusCode"] = statusCode;
+        }
+
+        public static Exception GetException(this IDictionary<string, object> environment)
+        {
+            return environment.Get<Exception>("openweb.Exception");
+        }
+
+        public static async Task WriteToOutput(this IDictionary<string, object> environment, Stream data)
+        {
+            if (data == null)
+                return;
+
             data.Position = 0;
 
-            return data.CopyToAsync(environment.Get<Stream>("owin.ResponseBody"));
+            await data.CopyToAsync(environment.Get<Stream>("owin.ResponseBody"));
         }
 
         public static async Task WriteToOutput(this IDictionary<string, object> environment, string content)

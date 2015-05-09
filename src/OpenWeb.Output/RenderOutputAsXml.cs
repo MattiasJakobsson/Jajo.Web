@@ -13,6 +13,9 @@ namespace OpenWeb.Output
             {
                 var output = environment.GetOutput();
 
+                if (output == null)
+                    return null;
+
                 var serializer = new XmlSerializer(output.GetType());
 
                 var stream = new MemoryStream();

@@ -2,32 +2,29 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenWeb.ExceptionManagement
+namespace OpenWeb
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebExceptionManagementMiddleware
+    public class SetStatusCodeMiddleware
     {
         private readonly AppFunc _next;
+        private readonly int _statusCode;
 
-        public OpenWebExceptionManagementMiddleware(AppFunc next)
+        public SetStatusCodeMiddleware(AppFunc next, int statusCode)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
             _next = next;
+            _statusCode = statusCode;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            try
-            {
-                await _next(environment);
-            }
-            catch (Exception ex)
-            {
-                environment["openweb.Exception"] = ex;
-            }
+            environment.SetStatusCode(_statusCode);
+
+            await _next(environment);
         }
     }
 }

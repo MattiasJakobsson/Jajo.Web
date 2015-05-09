@@ -12,7 +12,12 @@ namespace OpenWeb.Output
         {
             return Task.Factory.StartNew(() =>
             {
-                var serialized = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(environment.GetOutput()));
+                var output = environment.GetOutput();
+
+                if (output == null)
+                    return null;
+
+                var serialized = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(output));
 
                 var stream = (Stream)new MemoryStream(serialized);
 

@@ -31,9 +31,29 @@ namespace OpenWeb.StructureMap
             {
                 var currentContainer = container;
 
-                environment.ConfigureResolvers(currentContainer.GetInstance, x => currentContainer.GetAllInstances(x).OfType<object>());
+                environment.ConfigureResolvers(x =>
+                {
+                    try
+                    {
+                        return currentContainer.GetInstance(x);
+                    }
+                    catch (Exception)
+                    {
+                        return null;
+                    }
+                }, x =>
+                {
+                    try
+                    {
+                        return currentContainer.GetAllInstances(x).OfType<object>();
+                    }
+                    catch (Exception)
+                    {
+                        return Enumerable.Empty<object>();
+                    }
+                });
 
-                await _next(environment);   
+                await _next(environment);
             }
         }
     }
