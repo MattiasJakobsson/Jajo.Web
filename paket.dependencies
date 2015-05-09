@@ -2,6 +2,7 @@ source https://nuget.org/api/v2
 
 nuget Microsoft.Owin.SelfHost
 nuget Newtonsoft.Json
+nuget Owin
 nuget Spark
 nuget Superscribe
 nuget structuremap

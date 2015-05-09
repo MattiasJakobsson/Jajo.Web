@@ -23,6 +23,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.UnitOfWork", "OpenW
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.ExceptionManagement", "OpenWeb.ExceptionManagement\OpenWeb.ExceptionManagement.csproj", "{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Assets", "OpenWeb.Assets\OpenWeb.Assets.csproj", "{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Owin", "OpenWeb.Owin\OpenWeb.Owin.csproj", "{45124BD2-0CB3-4BE6-89D0-C86CD10A891B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +73,14 @@ Global
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45124BD2-0CB3-4BE6-89D0-C86CD10A891B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45124BD2-0CB3-4BE6-89D0-C86CD10A891B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45124BD2-0CB3-4BE6-89D0-C86CD10A891B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45124BD2-0CB3-4BE6-89D0-C86CD10A891B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

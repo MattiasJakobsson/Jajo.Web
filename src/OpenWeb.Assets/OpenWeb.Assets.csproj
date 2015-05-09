@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{12F8F1F4-2249-4C0B-991D-60F629CB82F1}</ProjectGuid>
+    <ProjectGuid>{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenWeb.Endpoints</RootNamespace>
-    <AssemblyName>OpenWeb.Endpoints</AssemblyName>
+    <RootNamespace>OpenWeb.Assets</RootNamespace>
+    <AssemblyName>OpenWeb.Assets</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,23 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EndpointExtensions.cs" />
-    <Compile Include="ExecuteActionEndpoint.cs" />
-    <Compile Include="ExecuteMethodInfoEndpoint.cs" />
-    <Compile Include="ExecuteOneModelInOneModelOutEndpoint.cs" />
-    <Compile Include="ExecuteOneModelInZeroModelOutEndpoint.cs" />
-    <Compile Include="ExecuteZeroModelInOneModelOutEndpoint.cs" />
-    <Compile Include="ExecuteZeroModelInZeroModelOutEndpoint.cs" />
-    <Compile Include="IExecuteEndpoint.cs" />
-    <Compile Include="IExecuteTypeOfEndpoint.cs" />
-    <Compile Include="OpenWebEndpointsMiddleware.cs" />
+    <Compile Include="IAssetPipeline.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
-      <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
-      <Name>OpenWeb</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

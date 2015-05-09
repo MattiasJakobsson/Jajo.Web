@@ -20,10 +20,18 @@ namespace OpenWeb.Endpoints
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var executor = environment.GetRouteInformation().RoutedTo.GetCorrectEndpointExecutor(environment);
+            var routeInformation = environment.GetRouteInformation();
 
-            if (executor != null)
-                await executor.Execute(environment.GetRouteInformation().RoutedTo, environment);
+            if (routeInformation.RoutedTo != null)
+            {
+                var executor = environment.Resolve(typeof(IExecuteTypeOfEndpoint<>).MakeGenericType(routeInformation.RoutedTo.GetType()));
+
+                if (executor != null)
+                    await (Task)executor
+                        .GetType()
+                        .GetMethod("Execute", new[] { routeInformation.RoutedTo.GetType(), typeof(IDictionary<string, object>) })
+                        .Invoke(executor, new[] { routeInformation.RoutedTo, environment });
+            }
 
             await _next(environment);
         }

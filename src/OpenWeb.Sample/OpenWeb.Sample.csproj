@@ -52,6 +52,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OpenWeb.Assets\OpenWeb.Assets.csproj">
+      <Project>{b3aba39d-db7b-4f11-8287-3c264dfce26d}</Project>
+      <Name>OpenWeb.Assets</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenWeb.Endpoints\OpenWeb.Endpoints.csproj">
       <Project>{12f8f1f4-2249-4c0b-991d-60f629cb82f1}</Project>
       <Name>OpenWeb.Endpoints</Name>
@@ -71,6 +75,10 @@
     <ProjectReference Include="..\OpenWeb.Output\OpenWeb.Output.csproj">
       <Project>{03129102-f787-4f77-81cd-e78682edf293}</Project>
       <Name>OpenWeb.Output</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.Owin\OpenWeb.Owin.csproj">
+      <Project>{45124bd2-0cb3-4be6-89d0-c86cd10a891b}</Project>
+      <Name>OpenWeb.Owin</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenWeb.Routing.Superscribe\OpenWeb.Routing.Superscribe.csproj">
       <Project>{b5dce00f-7c1d-4c18-a552-9b5c8c94c202}</Project>

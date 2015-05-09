@@ -35,13 +35,10 @@ namespace OpenWeb.Output.Spark
 
             if (matchingTemplates.Count < 1) return new MemoryStream();
 
-            var endpoint = environment.GetRouteInformation().RoutedTo;
-
             if (matchingTemplates.Count > 1)
                 throw new Exception(
                     string.Format(
-                        "More then one template was found for endpoint '{0}.{1}'.\nThe following templates were found: {2}",
-                        (endpoint.ReflectedType != null ? endpoint.ReflectedType.Name : ""), endpoint.Name,
+                        "More then one template was found for endpoint.\nThe following templates were found: {0}",
                         string.Join(", ", templates.Select(x => x.Name))));
 
             var template = templates.Single();

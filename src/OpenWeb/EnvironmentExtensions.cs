@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace OpenWeb
@@ -22,7 +21,7 @@ namespace OpenWeb
 
         public static RoutingData GetRouteInformation(this IDictionary<string, object> environment)
         {
-            return new RoutingData(new ReadOnlyDictionary<string, object>(environment.Get<IDictionary<string, object>>("route.Parameters")), environment.Get<MethodInfo>("route.RoutedTo"));
+            return new RoutingData(new ReadOnlyDictionary<string, object>(environment.Get<IDictionary<string, object>>("route.Parameters")), environment.Get<object>("route.RoutedTo"));
         }
 
         public static TService Resolve<TService>(this IDictionary<string, object> environment)
@@ -61,6 +60,14 @@ namespace OpenWeb
             data.Position = 0;
 
             return data.CopyToAsync(environment.Get<Stream>("owin.ResponseBody"));
+        }
+
+        public static async Task WriteToOutput(this IDictionary<string, object> environment, string content)
+        {
+            var textWriter = new StreamWriter(environment.Get<Stream>("owin.ResponseBody"));
+
+            await textWriter.WriteAsync(content);
+            await textWriter.FlushAsync();
         }
 
         public static object GetOutput(this IDictionary<string, object> environment)
@@ -148,14 +155,14 @@ namespace OpenWeb
 
         public class RoutingData
         {
-            public RoutingData(IReadOnlyDictionary<string, object> parameters, MethodInfo routedTo)
+            public RoutingData(IReadOnlyDictionary<string, object> parameters, object routedTo)
             {
                 Parameters = parameters;
                 RoutedTo = routedTo;
             }
 
             public IReadOnlyDictionary<string, object> Parameters { get; private set; }
-            public MethodInfo RoutedTo { get; private set; }
+            public object RoutedTo { get; private set; }
         }
     }
 }
