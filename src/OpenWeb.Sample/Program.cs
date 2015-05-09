@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
+using OpenWeb.Authorization;
 using OpenWeb.Endpoints;
 using OpenWeb.ExceptionManagement;
 using OpenWeb.ModelBinding;
@@ -84,6 +85,11 @@ namespace OpenWeb.Sample
                             .Use<RollbackTransactionsMiddleware>()
                             .Use<HandledExceptionMiddleware>()
                             .Build(typeof(AppFunc)))
+                    .AddCase(y => y.Get<bool>("openweb.AuthorizationFailed"), (AppFunc)x
+                            .New()
+                            .Use<SetStatusCodeMiddleware>(401)
+                            .Use<HandleUnauthorizedMiddleware>()
+                            .Build(typeof(AppFunc)))
                      .AddCase(y => y.GetOutput() == null, (AppFunc)x
                             .New()
                             .Use<SetStatusCodeMiddleware>(404)
@@ -93,12 +99,21 @@ namespace OpenWeb.Sample
                     .Use<OpenWebExceptionManagementMiddleware>()
                     .Use<OpenWebModelBindingMiddleware>(modelBindingCollection)
                     .Use<OpenWebUnitOfWorkMiddleware>()
+                    .Use<OpenWebAuthorizationMiddleware>(new OpenWebAuthorizationOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<OpenWebSuperscribeMiddleware>(define)
                     .If(y => y["owin.RequestPath"].ToString().Contains("asd"), y => y.Use<TestMiddleware>())
                     .Use<OpenWebEndpointsMiddleware>()
                     .Use<OpenWebOutputMiddleware>(rendererHandler));
 
             Console.ReadLine();
+        }
+    }
+
+    public class TestAuthorizer : IAuthorizeRequest
+    {
+        public bool IsAuthorized(IEnumerable<AuthenticationToken> tokens, IDictionary<string, object> environment)
+        {
+            return !environment["owin.RequestPath"].ToString().Contains("unauthorized");
         }
     }
 
@@ -165,6 +180,28 @@ namespace OpenWeb.Sample
             await environment.WriteToOutput("Not found!");
 
             environment.SetOutput("Not found!");
+
+            await _next(environment);
+        }
+    }
+
+    public class HandleUnauthorizedMiddleware
+    {
+        private readonly AppFunc _next;
+
+        public HandleUnauthorizedMiddleware(AppFunc next)
+        {
+            if (next == null)
+                throw new ArgumentNullException("next");
+
+            _next = next;
+        }
+
+        public async Task Invoke(IDictionary<string, object> environment)
+        {
+            await environment.WriteToOutput("Unauthorized");
+
+            environment.SetOutput("Unauthorized");
 
             await _next(environment);
         }
