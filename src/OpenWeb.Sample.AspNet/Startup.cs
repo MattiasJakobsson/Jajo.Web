@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin;
 using OpenWeb.Authorization;
+using OpenWeb.Configuration;
 using OpenWeb.Endpoints;
 using OpenWeb.ExceptionManagement;
 using OpenWeb.Http;
@@ -21,10 +21,7 @@ using OpenWeb.StructureMap;
 using OpenWeb.UnitOfWork;
 using OpenWeb.Validation;
 using Owin;
-using Spark;
 using StructureMap;
-using Superscribe.Engine;
-using Superscribe.Models;
 
 [assembly: OwinStartup(typeof(Startup))]
 namespace OpenWeb.Sample.AspNet
@@ -37,12 +34,23 @@ namespace OpenWeb.Sample.AspNet
         {
             var container = new Container();
 
+            var subApplications = SubApplications.Init().ToList();
+
+            var assemblies = new List<Assembly>
+            {
+                typeof (Startup).Assembly
+            };
+
+            assemblies.AddRange(subApplications.Select(x => x.Assembly));
+
             container.Configure(x =>
             {
                 x.Scan(y =>
                 {
                     y.AssemblyContainingType(typeof(IExecuteTypeOfEndpoint<>));
-                    y.AssemblyContainingType<Startup>();
+
+                    foreach (var assembly in assemblies)
+                        y.Assembly(assembly);
 
                     y.ConnectImplementationsToTypesClosing(typeof(IExecuteTypeOfEndpoint<>));
                     y.AddAllTypesOf<IOpenWebUnitOfWork>();
@@ -51,47 +59,22 @@ namespace OpenWeb.Sample.AspNet
 
             var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
 
-            var assemblies = new List<Assembly>
+            var settings = new Dictionary<string, object>
             {
-                typeof (Startup).Assembly
+                {"openweb.StructureMap.Container", container}
             };
 
-            var define = new ConventionalRoutingConfiguration(new List<IFilterEndpoints>
-            {
-                new QueryAndCommandEndpointFilter()
-            }, new List<IRoutePolicy>
-            {
-                new DefaultRoutePolicy()
-            }).Configure(assemblies);
+            var define = ConventionalRoutingConfiguration.New()
+                .UseEndpointFilterer(new QueryAndCommandEndpointFilter())
+                .UseRoutePolicy(new DefaultRoutePolicy())
+                .Configure(assemblies, settings);
 
-            define.Get(x => x / "exception", x =>
-            {
-                return ((Action)(() =>
-                {
-                    throw new Exception("Exception");
-                }));
-            });
+            var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner(), subApplications.Select(x => x.Path)));
 
-            define.Base.FinalFunctions.Add(new FinalFunction("GET", x =>
-            {
-                return ((Action)(() => ((RouteData)x).Environment.WriteToOutput("Test")));
-            }));
-
-            var links = (File.Exists("subapps.txt") ? File.ReadAllText("subapps.txt") : "").Split('\n').Where(x => !string.IsNullOrEmpty(x)).ToList();
-
-            var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner(), links));
-
-            var sparkViewEngine = new SparkViewEngine(new SparkSettings())
-            {
-                DefaultPageBaseType = typeof(OpenWebSparkView).FullName,
-                ViewFolder = new OpenWebViewFolder(templateSource.FindTemplates())
-            };
-
-            var rendererHandler = new HandleOutputRendering(new List<Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>>
-            {
-                new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => x.GetHeaders().Accept.Contains("text/html"), new RenderOutputUsingSpark(sparkViewEngine, templateSource)),
-                new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => true, new RenderOutputAsJson())
-            });
+            var rendererHandler = OutputRendererBuilder.New()
+                .When(x => x.GetHeaders().Accept.Contains("text/html")).UseRenderer(RenderOutputUsingSpark.Configure(templateSource, settings))
+                .When(x => true).UseRenderer(new RenderOutputAsJson())
+                .Build();
 
             app.Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)app

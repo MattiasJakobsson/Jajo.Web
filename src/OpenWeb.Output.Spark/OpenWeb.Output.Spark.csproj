@@ -45,6 +45,7 @@
     </Compile>
     <Compile Include="AggregatedTemplateSource.cs" />
     <Compile Include="BaseTemplateSource.cs" />
+    <Compile Include="OpenWebPartialProvider.cs" />
     <Compile Include="ContentType.cs" />
     <Compile Include="OpenWebViewFolder.cs" />
     <Compile Include="CompositeAction.cs" />

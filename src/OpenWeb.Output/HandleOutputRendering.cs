@@ -7,9 +7,9 @@ namespace OpenWeb.Output
 {
     public class HandleOutputRendering : IHandleOutputRendering
     {
-        private readonly IEnumerable<Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>> _outputRenderers;
+        private readonly ICollection<Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>> _outputRenderers;
 
-        public HandleOutputRendering(IEnumerable<Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>> outputRenderers)
+        public HandleOutputRendering(ICollection<Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>> outputRenderers)
         {
             _outputRenderers = outputRenderers;
         }

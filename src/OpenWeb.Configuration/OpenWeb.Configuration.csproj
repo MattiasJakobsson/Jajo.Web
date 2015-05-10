@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InitializedSubApplication.cs" />
     <Compile Include="IRunAtConfigurationTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SubApplications.cs" />

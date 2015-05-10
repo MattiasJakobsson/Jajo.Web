@@ -86,6 +86,10 @@
       <Project>{f9035886-8b03-42bd-8f31-9baef4d949a3}</Project>
       <Name>OpenWeb.Authorization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.Configuration\OpenWeb.Configuration.csproj">
+      <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
+      <Name>OpenWeb.Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenWeb.Endpoints\OpenWeb.Endpoints.csproj">
       <Project>{12f8f1f4-2249-4c0b-991d-60f629cb82f1}</Project>
       <Name>OpenWeb.Endpoints</Name>

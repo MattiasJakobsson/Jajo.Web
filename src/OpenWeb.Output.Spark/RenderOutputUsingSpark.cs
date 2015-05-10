@@ -12,16 +12,13 @@ namespace OpenWeb.Output.Spark
     public class RenderOutputUsingSpark : IRenderOutput
     {
         private readonly ISparkViewEngine _engine;
-        private readonly ITemplateSource _templateSource;
+        private readonly IEnumerable<Template> _availableTemplates;
         private readonly UseMasterGrammar _grammar;
 
-        private readonly CompositeAction<ScanRequest> _requestConfig = new CompositeAction<ScanRequest>();
-
-        public RenderOutputUsingSpark(ISparkViewEngine engine, ITemplateSource templateSource)
+        protected RenderOutputUsingSpark(ISparkViewEngine engine, IEnumerable<Template> availableTemplates)
         {
             _engine = engine;
-            _templateSource = templateSource;
-            _requestConfig += x => x.Include("*.spark");
+            _availableTemplates = availableTemplates;
 
             if (engine != null)
                 _grammar = new UseMasterGrammar(engine.Settings.Prefix);
@@ -34,7 +31,7 @@ namespace OpenWeb.Output.Spark
             if (output == null)
                 return null;
 
-            var templates = _templateSource.FindTemplates().ToList();
+            var templates = _availableTemplates.ToList();
 
             var matchingTemplates = templates.Where(x => x.ModelType == output.GetType()).ToList();
 
@@ -69,6 +66,22 @@ namespace OpenWeb.Output.Spark
 
                 return outputStream;
             });
+        }
+
+        public static RenderOutputUsingSpark Configure(ITemplateSource templateSource, IDictionary<string, object> environmentSettings)
+        {
+            var templates = templateSource.FindTemplates().ToList();
+
+            var sparkViewEngine = new SparkViewEngine(new SparkSettings())
+            {
+                DefaultPageBaseType = typeof(OpenWebSparkView).FullName,
+                ViewFolder = new OpenWebViewFolder(templates),
+                PartialProvider = new OpenWebPartialProvider()
+            };
+
+            environmentSettings["openweb.Spark.ViewEngine"] = sparkViewEngine;
+
+            return new RenderOutputUsingSpark(sparkViewEngine, templates);
         }
 
         private SparkViewDescriptor BuildDescriptor(Template template, bool searchForMaster, ICollection<string> searchedLocations)

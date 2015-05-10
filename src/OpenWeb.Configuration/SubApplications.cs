@@ -10,7 +10,7 @@ namespace OpenWeb.Configuration
     {
         private static readonly List<string> SubApplicationPaths = new List<string>();
 
-        public static IEnumerable<Assembly> Init()
+        public static IEnumerable<InitializedSubApplication> Init()
         {
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
 
@@ -34,7 +34,7 @@ namespace OpenWeb.Configuration
 
                     var assembly = Assembly.LoadFile(Path.GetFullPath(assemblyPath));
 
-                    yield return assembly;
+                    yield return new InitializedSubApplication(subApplicationPath, assembly.FullName, assembly);
                 }
             }
         }

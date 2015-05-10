@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using Superscribe.Engine;
@@ -7,16 +8,32 @@ namespace OpenWeb.Routing.Superscribe.Conventional
 {
     public class ConventionalRoutingConfiguration
     {
-        private readonly IEnumerable<IFilterEndpoints> _filterEndpoints;
-        private readonly IEnumerable<IRoutePolicy> _policies;
+        private readonly ICollection<IFilterEndpoints> _filterEndpoints = new Collection<IFilterEndpoints>();
+        private readonly ICollection<IRoutePolicy> _policies = new Collection<IRoutePolicy>();
 
-        public ConventionalRoutingConfiguration(IEnumerable<IFilterEndpoints> filterEndpoints, IEnumerable<IRoutePolicy> policies)
+        private ConventionalRoutingConfiguration()
         {
-            _filterEndpoints = filterEndpoints;
-            _policies = policies;
+
         }
 
-        public IRouteEngine Configure(IEnumerable<Assembly> assemblies)
+        public static ConventionalRoutingConfiguration New()
+        {
+            return new ConventionalRoutingConfiguration();
+        }
+
+        public ConventionalRoutingConfiguration UseEndpointFilterer(IFilterEndpoints filterEndpoints)
+        {
+            _filterEndpoints.Add(filterEndpoints);
+            return this;
+        }
+
+        public ConventionalRoutingConfiguration UseRoutePolicy(IRoutePolicy routePolicy)
+        {
+            _policies.Add(routePolicy);
+            return this;
+        }
+
+        public IRouteEngine Configure(IEnumerable<Assembly> assemblies, IDictionary<string, object> environmentSettings)
         {
             var possibleEndpoints = AppDomainAssemblyTypeScanner.GetMethodsInAssemblies(assemblies);
 
@@ -28,7 +45,7 @@ namespace OpenWeb.Routing.Superscribe.Conventional
             {
                 var matchingPolicy = _policies.FirstOrDefault(x => x.Matches(endpoint));
 
-                if(matchingPolicy == null)
+                if (matchingPolicy == null)
                     continue;
 
                 var routeBuilder = new RouteBuilder();
@@ -37,6 +54,8 @@ namespace OpenWeb.Routing.Superscribe.Conventional
 
                 routeBuilder.Build(define.Base, endpoint);
             }
+
+            environmentSettings["openweb.Superscribe.Engine"] = define;
 
             return define;
         }

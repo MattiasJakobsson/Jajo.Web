@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -22,10 +21,7 @@ using OpenWeb.StructureMap;
 using OpenWeb.UnitOfWork;
 using OpenWeb.Validation;
 using Owin;
-using Spark;
 using StructureMap;
-using Superscribe.Engine;
-using Superscribe.Models;
 
 namespace OpenWeb.Sample
 {
@@ -38,12 +34,14 @@ namespace OpenWeb.Sample
             var stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            var subApplications = SubApplications.Init().ToList();
+
             var assemblies = new List<Assembly>
             {
                 typeof (Program).Assembly
             };
 
-            assemblies.AddRange(SubApplications.Init());
+            assemblies.AddRange(subApplications.Select(x => x.Assembly));
 
             var container = new Container();
 
@@ -64,50 +62,22 @@ namespace OpenWeb.Sample
 
             var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
 
-            var define = new ConventionalRoutingConfiguration(new List<IFilterEndpoints>
-            {
-                new QueryAndCommandEndpointFilter()
-            }, new List<IRoutePolicy>
-            {
-                new DefaultRoutePolicy()
-            }).Configure(assemblies);
-
-            define.Get(x => x / "exception", x =>
-            {
-                return ((Action)(() =>
-                {
-                    throw new Exception("Exception");
-                }));
-            });
-
-            define.Base.FinalFunctions.Add(new FinalFunction("GET", x =>
-            {
-                return ((Action)(() => ((RouteData)x).Environment.WriteToOutput("Test")));
-            }));
-
-            var links = (File.Exists("subapps.txt") ? File.ReadAllText("subapps.txt") : "").Split('\n').Where(x => !string.IsNullOrEmpty(x)).ToList();
-
-            var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner(), links));
-
-            var sparkViewEngine = new SparkViewEngine(new SparkSettings())
-            {
-                DefaultPageBaseType = typeof (OpenWebSparkView).FullName,
-                ViewFolder = new OpenWebViewFolder(templateSource.FindTemplates()),
-                PartialProvider = new OpenWebPartialProvider()
-            };
-
-            var rendererHandler = new HandleOutputRendering(new List<Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>>
-            {
-                new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => x.GetHeaders().Accept.Contains("text/html"), new RenderOutputUsingSpark(sparkViewEngine, templateSource)),
-                new Tuple<Func<IDictionary<string, object>, bool>, IRenderOutput>(x => true, new RenderOutputAsJson())
-            });
-
             var settings = new Dictionary<string, object>
             {
-                {"openweb.StructureMap.Container", container},
-                {"openweb.Superscribe.Engine", define},
-                {"openweb.Spark.ViewEngine", sparkViewEngine}
+                {"openweb.StructureMap.Container", container}
             };
+
+            var define = ConventionalRoutingConfiguration.New()
+                .UseEndpointFilterer(new QueryAndCommandEndpointFilter())
+                .UseRoutePolicy(new DefaultRoutePolicy())
+                .Configure(assemblies, settings);
+
+            var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner(), subApplications.Select(x => x.Path)));
+
+            var rendererHandler = OutputRendererBuilder.New()
+                .When(x => x.GetHeaders().Accept.Contains("text/html")).UseRenderer(RenderOutputUsingSpark.Configure(templateSource, settings))
+                .When(x => true).UseRenderer(new RenderOutputAsJson())
+                .Build();
 
             var configurers = container.GetAllInstances<IRunAtConfigurationTime>();
 
@@ -154,25 +124,6 @@ namespace OpenWeb.Sample
         }
     }
 
-    public class OpenWebPartialProvider : IPartialProvider
-    {
-        public IEnumerable<string> GetPaths(string viewPath)
-        {
-            do
-            {
-                viewPath = Path.GetDirectoryName(viewPath);
-
-                if(string.IsNullOrEmpty(viewPath))
-                    break;
-
-                yield return viewPath;
-                yield return Path.Combine(viewPath, Constants.Shared);
-            }
-            while (!string.IsNullOrEmpty(viewPath));
-        }
-    }
-
-
     public class TestAuthorizer : IAuthorizeRequest
     {
         public bool IsAuthorized(IEnumerable<AuthenticationToken> tokens, IDictionary<string, object> environment)
@@ -192,28 +143,6 @@ namespace OpenWeb.Sample
                 });
 
             return new ValidationResult(new List<ValidationResult.ValidationError>());
-        }
-    }
-
-    public class TestMiddleware
-    {
-        private readonly AppFunc _next;
-
-        public TestMiddleware(AppFunc next)
-        {
-            if (next == null)
-                throw new ArgumentNullException("next");
-
-            _next = next;
-        }
-
-        public async Task Invoke(IDictionary<string, object> environment)
-        {
-            await environment.WriteToOutput("Testing if statement");
-
-            environment["openweb.Output"] = "Testing if statement";
-
-            await _next(environment);
         }
     }
 
