@@ -1,6 +1,13 @@
 NUGET
   remote: https://nuget.org/api/v2
   specs:
+    Microsoft.CodeAnalysis.Analyzers (1.0.0-rc2)
+    Microsoft.CodeAnalysis.Common (1.0.0-rc2)
+      Microsoft.CodeAnalysis.Analyzers (1.0.0-rc2)
+      System.Collections.Immutable (1.1.33-beta)
+      System.Reflection.Metadata (1.0.18-beta)
+    Microsoft.CodeAnalysis.CSharp (1.0.0-rc2)
+      Microsoft.CodeAnalysis.Common (1.0.0-rc2)
     Microsoft.Owin (3.0.1)
       Owin (>= 1.0)
     Microsoft.Owin.Diagnostics (3.0.1)
@@ -24,3 +31,6 @@ NUGET
     Spark (1.8.1.0)
     structuremap (3.1.5.154)
     Superscribe (0.4.4.16)
+    System.Collections.Immutable (1.1.33-beta)
+    System.Reflection.Metadata (1.0.18-beta)
+      System.Collections.Immutable (>= 1.1.33-beta)

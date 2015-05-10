@@ -46,7 +46,7 @@ namespace OpenWeb.Output.Spark
                         "More then one template was found for endpoint.\nThe following templates were found: {0}",
                         string.Join(", ", templates.Select(x => x.Name))));
 
-            var template = templates.Single();
+            var template = matchingTemplates.Single();
 
             var descriptor = BuildDescriptor(template, true, null);
 

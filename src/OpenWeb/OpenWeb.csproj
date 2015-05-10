@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\IRunAtConfigurationTime.cs" />
     <Compile Include="EnvironmentExtensions.cs" />
     <Compile Include="Cache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

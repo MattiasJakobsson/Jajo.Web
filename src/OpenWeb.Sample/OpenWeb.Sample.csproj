@@ -92,6 +92,10 @@
       <Project>{ae9fe8fd-159d-4d94-a104-521eaa55ef54}</Project>
       <Name>OpenWeb.StructureMap</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.SubApplications\OpenWeb.SubApplications.csproj">
+      <Project>{25ddf7d7-2119-40e1-bc39-bbb1067f5c9a}</Project>
+      <Name>OpenWeb.SubApplications</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenWeb.UnitOfWork\OpenWeb.UnitOfWork.csproj">
       <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
       <Name>OpenWeb.UnitOfWork</Name>

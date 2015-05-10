@@ -55,6 +55,8 @@ namespace OpenWeb.Sample
                 typeof (Program).Assembly
             };
 
+            assemblies.AddRange(SubApplications.SubApplications.Init());
+
             var define = new ConventionalRoutingConfiguration(new List<IFilterEndpoints>
             {
                 new QueryAndCommandEndpointFilter()
@@ -192,6 +194,7 @@ namespace OpenWeb.Sample
             var exception = environment.Get<Exception>("openweb.Exception");
 
             await environment.WriteToOutput(exception.Message);
+            await environment.WriteToOutput(exception.StackTrace);
 
             environment.SetOutput(exception.Message);
 
