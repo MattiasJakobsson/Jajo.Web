@@ -85,27 +85,28 @@ namespace OpenWeb.Sample
                 configurer.Configure(settings);
 
             WebApp.Start("http://localhost:8020", x =>
-                x.Use<BranchRequest>(new BranchRequestConfiguration()
-                    .AddCase(y => y.GetException() != null, (AppFunc)x
-                            .New()
-                            .Use<SetStatusCode>(500)
-                            .Use<RollbackUnitOfWork>()
-                            .Use<HandledExceptionMiddleware>()
-                            .Build(typeof(AppFunc)))
-                    .AddCase(y => y.Get<bool>("openweb.AuthorizationFailed"), (AppFunc)x
-                            .New()
-                            .Use<SetStatusCode>(401)
-                            .Use<HandleUnauthorizedMiddleware>()
-                            .Build(typeof(AppFunc)))
-                    .AddCase(y => !(y.Get<ValidationResult>("openweb.ValidationResult") ?? new ValidationResult(new List<ValidationResult.ValidationError>())).IsValid, (AppFunc)x
-                            .New()
-                            .Use<HandleValidationErrorMiddleware>()
-                            .Build(typeof(AppFunc)))
-                     .AddCase(y => y.GetOutput() == null, (AppFunc)x
-                            .New()
-                            .Use<SetStatusCode>(404)
-                            .Use<HandleNotFoundMiddleware>()
-                            .Build(typeof(AppFunc))))
+                x.Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions(y => y.ToLower()))
+                    .Use<BranchRequest>(new BranchRequestConfiguration()
+                        .AddCase(y => y.GetException() != null, (AppFunc)x
+                                .New()
+                                .Use<SetStatusCode>(500)
+                                .Use<RollbackUnitOfWork>()
+                                .Use<HandledExceptionMiddleware>()
+                                .Build(typeof(AppFunc)))
+                        .AddCase(y => y.Get<bool>("openweb.AuthorizationFailed"), (AppFunc)x
+                                .New()
+                                .Use<SetStatusCode>(401)
+                                .Use<HandleUnauthorizedMiddleware>()
+                                .Build(typeof(AppFunc)))
+                        .AddCase(y => !(y.Get<ValidationResult>("openweb.ValidationResult") ?? new ValidationResult(new List<ValidationResult.ValidationError>())).IsValid, (AppFunc)x
+                                .New()
+                                .Use<HandleValidationErrorMiddleware>()
+                                .Build(typeof(AppFunc)))
+                         .AddCase(y => y.GetOutput() == null, (AppFunc)x
+                                .New()
+                                .Use<SetStatusCode>(404)
+                                .Use<HandleNotFoundMiddleware>()
+                                .Build(typeof(AppFunc))))
                     .Use<NestedStructureMapContainer>(container)
                     .Use<HandleExceptions>()
                     .Use<BindModels>(modelBindingCollection)

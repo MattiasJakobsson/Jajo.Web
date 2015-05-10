@@ -19,6 +19,11 @@ namespace OpenWeb
             return new HeaderData(new ReadOnlyDictionary<string, string[]>(environment.Get<IDictionary<string, string[]>>("owin.RequestHeaders")));
         }
 
+        public static IDictionary<string, string[]> GetResponseHeaders(this IDictionary<string, object> environment)
+        {
+            return environment.Get<IDictionary<string, string[]>>("owin.ResponseHeaders");
+        }
+
         public static RoutingData GetRouteInformation(this IDictionary<string, object> environment)
         {
             return new RoutingData(new ReadOnlyDictionary<string, object>(environment.Get<IDictionary<string, object>>("route.Parameters")), environment.Get<object>("route.RoutedTo"));
@@ -47,6 +52,11 @@ namespace OpenWeb
         public static Exception GetException(this IDictionary<string, object> environment)
         {
             return environment.Get<Exception>("openweb.Exception");
+        }
+
+        public static Uri GetUri(this IDictionary<string, object> environment)
+        {
+            return new Uri(environment.Get<string>("owin.RequestScheme") + Uri.SchemeDelimiter + environment.GetHeaders().Host + environment.Get<string>("owin.RequestPathBase") + environment.Get<string>("owin.RequestPath") + environment.Get<string>("owin.RequestQueryString"));
         }
 
         public static async Task WriteToOutput(this IDictionary<string, object> environment, Stream data)
@@ -126,11 +136,12 @@ namespace OpenWeb
             }
 
             public IReadOnlyDictionary<string, string[]> RawHeaders { get; private set; }
-            public string Accept { get { return GetHeader(RawHeaders, "Accept"); } }
+            public string Accept { get { return GetHeader("Accept"); } }
+            public string Host{get { return GetHeader("Host"); }}
 
-            private static string GetHeader(IReadOnlyDictionary<string, string[]> headers, string key)
+            public string GetHeader(string key)
             {
-                var headerUnmodified = GetHeaderUnmodified(headers, key);
+                var headerUnmodified = GetHeaderUnmodified(RawHeaders, key);
                 return headerUnmodified != null ? string.Join(",", headerUnmodified) : null;
             }
 
