@@ -10,33 +10,38 @@ namespace OpenWeb.Output.Spark
     {
         private readonly IEnumerable<Assembly> _assemblies;
         private readonly FileScanner _fileScanner;
+        private readonly IEnumerable<string> _extraPaths;
 
-        public FileSystemTemplateSource(IEnumerable<Assembly> assemblies, FileScanner fileScanner)
+        public FileSystemTemplateSource(IEnumerable<Assembly> assemblies, FileScanner fileScanner, IEnumerable<string> extraPaths)
         {
             _assemblies = assemblies;
             _fileScanner = fileScanner;
+            _extraPaths = extraPaths;
         }
 
         public override IEnumerable<Template> FindTemplates()
         {
             var templates = new List<Template>();
 
-            var request = BuildRequest(templates, _assemblies, AppDomain.CurrentDomain.SetupInformation.ApplicationBase);
+            var paths = _extraPaths.Select(Path.GetFullPath).ToList();
+            paths.Add(AppDomain.CurrentDomain.SetupInformation.ApplicationBase);
+            
+            var request = BuildRequest(templates, _assemblies, paths.ToArray());
 
             _fileScanner.Scan(request);
 
             return templates;
         }
 
-        private static Template GetTemplate(FileFound fileFound, string root, IEnumerable<Assembly> availableAssemblies)
+        private static Template GetTemplate(FileFound fileFound, IEnumerable<Assembly> availableAssemblies)
         {
             Func<TextReader> getContentReader = () => new StreamReader(fileFound.Path);
 
             var fullDirectory = fileFound.Directory + "\\";
-            var applicationPath = fullDirectory.Replace(root, string.Empty).Substring(1);
+            //var applicationPath = fullDirectory.Replace(fileFound.Root, string.Empty).Substring(1);
 
             return new Template(fileFound.GetFileName(),
-                applicationPath,
+                fullDirectory,
                 "\\",
                 FindModelType(getContentReader(), availableAssemblies),
                 getContentReader);
@@ -48,7 +53,7 @@ namespace OpenWeb.Output.Spark
             request.Include("*.spark");
 
             roots.ToList().ForEach(request.AddRoot);
-            request.AddHandler(fileFound => templates.Add(GetTemplate(fileFound, AppDomain.CurrentDomain.SetupInformation.ApplicationBase, assemblies)));
+            request.AddHandler(fileFound => templates.Add(GetTemplate(fileFound, assemblies)));
 
             return request;
         }

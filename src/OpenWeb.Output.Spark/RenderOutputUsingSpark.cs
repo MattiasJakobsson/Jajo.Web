@@ -170,7 +170,7 @@ namespace OpenWeb.Output.Spark
 
         private static string GetNamespaceEncodedPathViewPath(string viewPath)
         {
-            return viewPath.Replace('\\', '_');
+            return viewPath.Replace('\\', '_').Replace(':', '_');
         }
 
         private class UseMasterGrammar : CharGrammar

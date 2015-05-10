@@ -31,6 +31,9 @@ namespace OpenWeb.Output.Spark
 
         public IList<string> ListViews(string path)
         {
+            if(path == null)
+                return new List<string>();
+
             var views = _viewTemplates.
                 Where(v => v.Path.StartsWith(path, StringComparison.OrdinalIgnoreCase))
                 .Select(v => v.Path.Length == path.Length ? v.Name : v.Path.Substring(path.Length) + v.Name)
@@ -41,8 +44,7 @@ namespace OpenWeb.Output.Spark
 
         public bool HasView(string path)
         {
-            var searchPath =
-                ConvertPath(path);
+            var searchPath = ConvertPath(path);
 
             return _viewTemplates.Any(v => CompareViewPaths(GetFullPath(v), searchPath));
         }
