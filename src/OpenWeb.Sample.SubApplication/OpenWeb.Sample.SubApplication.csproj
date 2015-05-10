@@ -52,9 +52,9 @@
     <None Include="paket.references" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
-      <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
-      <Name>OpenWeb</Name>
+    <ProjectReference Include="..\OpenWeb.Configuration\OpenWeb.Configuration.csproj">
+      <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
+      <Name>OpenWeb.Configuration</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

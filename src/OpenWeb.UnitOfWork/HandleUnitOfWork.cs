@@ -7,11 +7,11 @@ namespace OpenWeb.UnitOfWork
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebUnitOfWorkMiddleware
+    public class HandleUnitOfWork
     {
         private readonly AppFunc _next;
 
-        public OpenWebUnitOfWorkMiddleware(AppFunc next)
+        public HandleUnitOfWork(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");

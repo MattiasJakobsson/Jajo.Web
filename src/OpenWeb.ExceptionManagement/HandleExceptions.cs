@@ -2,29 +2,32 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenWeb.Output
+namespace OpenWeb.ExceptionManagement
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebOutputMiddleware
+    public class HandleExceptions
     {
         private readonly AppFunc _next;
-        private readonly IHandleOutputRendering _handleOutputRendering;
 
-        public OpenWebOutputMiddleware(AppFunc next, IHandleOutputRendering handleOutputRendering)
+        public HandleExceptions(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
             _next = next;
-            _handleOutputRendering = handleOutputRendering;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await _handleOutputRendering.Render(environment);
-
-            await _next(environment);
+            try
+            {
+                await _next(environment);
+            }
+            catch (Exception ex)
+            {
+                environment["openweb.Exception"] = ex;
+            }
         }
     }
 }

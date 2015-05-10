@@ -6,26 +6,26 @@ namespace OpenWeb.Endpoints
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class ExecuteEndpointMiddleware
+    public class ExecuteSpecificEndpoint
     {
         private readonly AppFunc _next;
-        private readonly Func<IDictionary<string, object>, object> _getRoute;
+        private readonly ExecuteSpecificEndpointOptions _options;
 
-        public ExecuteEndpointMiddleware(AppFunc next, Func<IDictionary<string, object>, object> getRoute)
+        public ExecuteSpecificEndpoint(AppFunc next, ExecuteSpecificEndpointOptions options)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
-            if (getRoute == null)
-                throw new ArgumentNullException("getRoute");
+            if (options == null)
+                throw new ArgumentNullException("options");
 
             _next = next;
-            _getRoute = getRoute;
+            _options = options;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var routedTo = _getRoute(environment);
+            var routedTo = _options.GetRoute(environment);
 
             if (routedTo != null)
             {
@@ -39,11 +39,21 @@ namespace OpenWeb.Endpoints
                         .Invoke(executor, new[] { routedTo, environment });
 
                     if (environment.GetOutput() == null)
-                        environment.SetOutput("");
+                        environment["openweb.Output"] = "";
                 }
             }
 
             await _next(environment);
         }
+    }
+
+    public class ExecuteSpecificEndpointOptions
+    {
+        public ExecuteSpecificEndpointOptions(Func<IDictionary<string, object>, object> getRoute)
+        {
+            GetRoute = getRoute;
+        }
+
+        public Func<IDictionary<string, object>, object> GetRoute { get; private set; } 
     }
 }

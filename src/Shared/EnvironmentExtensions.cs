@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace OpenWeb
 {
-    public static class EnvironmentExtensions
+    internal static class EnvironmentExtensions
     {
         public static RequestData GetRequestData(this IDictionary<string, object> environment)
         {
@@ -45,22 +44,6 @@ namespace OpenWeb
             return environment.Get<Func<Type, IEnumerable<object>>>("openweb.ResolveAllInstances")(serviceType);
         }
 
-        public static void ConfigureResolvers(this IDictionary<string, object> environment, Func<Type, object> resolve, Func<Type, IEnumerable<object>> resolveAll)
-        {
-            environment["openweb.ResolveInstance"] = resolve;
-            environment["openweb.ResolveAllInstances"] = resolveAll;
-        }
-
-        public static void SetModelBinder(this IDictionary<string, object> environment, Func<Type, object> binder)
-        {
-            environment["openweb.ModelBinder"] = binder;
-        }
-
-        public static void SetStatusCode(this IDictionary<string, object> environment, int statusCode)
-        {
-            environment["owin.ResponseStatusCode"] = statusCode;
-        }
-
         public static Exception GetException(this IDictionary<string, object> environment)
         {
             return environment.Get<Exception>("openweb.Exception");
@@ -87,11 +70,6 @@ namespace OpenWeb
         public static object GetOutput(this IDictionary<string, object> environment)
         {
             return environment.Get<object>("openweb.Output");
-        }
-
-        public static void SetOutput(this IDictionary<string, object> environment, object output)
-        {
-            environment["openweb.Output"] = output;
         }
 
         public static T Get<T>(this IDictionary<string, object> environment, string key)

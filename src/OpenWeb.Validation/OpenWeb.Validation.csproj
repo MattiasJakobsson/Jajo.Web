@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IValidateRequest.cs" />
-    <Compile Include="OpenWebValidationMiddleware.cs" />
+    <Compile Include="ValidateRequest.cs" />
     <Compile Include="ValidationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,27 +2,27 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OpenWeb
+namespace OpenWeb.Output
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class SetStatusCodeMiddleware
+    public class RenderOutput
     {
         private readonly AppFunc _next;
-        private readonly int _statusCode;
+        private readonly IHandleOutputRendering _handleOutputRendering;
 
-        public SetStatusCodeMiddleware(AppFunc next, int statusCode)
+        public RenderOutput(AppFunc next, IHandleOutputRendering handleOutputRendering)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
             _next = next;
-            _statusCode = statusCode;
+            _handleOutputRendering = handleOutputRendering;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            environment.SetStatusCode(_statusCode);
+            await _handleOutputRendering.Render(environment);
 
             await _next(environment);
         }

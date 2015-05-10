@@ -8,12 +8,12 @@ namespace OpenWeb.StructureMap
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class StructureMapNestedContainerMiddleware
+    public class NestedStructureMapContainer
     {
         private readonly AppFunc _next;
         private readonly IContainer _container;
 
-        public StructureMapNestedContainerMiddleware(AppFunc next, IContainer container)
+        public NestedStructureMapContainer(AppFunc next, IContainer container)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
@@ -31,7 +31,7 @@ namespace OpenWeb.StructureMap
             {
                 var currentContainer = container;
 
-                environment.ConfigureResolvers(x =>
+                environment["openweb.ResolveInstance"] = (Func<Type, object>) (x =>
                 {
                     try
                     {
@@ -41,7 +41,9 @@ namespace OpenWeb.StructureMap
                     {
                         return null;
                     }
-                }, x =>
+                });
+
+                environment["openweb.ResolveAllInstances"] = (Func<Type, IEnumerable<object>>)(x =>
                 {
                     try
                     {

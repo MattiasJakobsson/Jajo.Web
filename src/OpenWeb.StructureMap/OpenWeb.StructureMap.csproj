@@ -40,13 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StructureMapNestedContainerMiddleware.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
-      <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
-      <Name>OpenWeb</Name>
-    </ProjectReference>
+    <Compile Include="NestedStructureMapContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />

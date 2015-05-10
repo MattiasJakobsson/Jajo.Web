@@ -39,16 +39,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RollbackTransactionsMiddleware.cs" />
+    <Compile Include="..\Shared\EnvironmentExtensions.cs">
+      <Link>EnvironmentExtensions.cs</Link>
+    </Compile>
+    <Compile Include="RollbackUnitOfWork.cs" />
     <Compile Include="IOpenWebUnitOfWork.cs" />
-    <Compile Include="OpenWebUnitOfWorkMiddleware.cs" />
+    <Compile Include="HandleUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
-      <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
-      <Name>OpenWeb</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

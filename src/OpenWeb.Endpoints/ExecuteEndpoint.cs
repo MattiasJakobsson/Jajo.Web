@@ -6,11 +6,11 @@ namespace OpenWeb.Endpoints
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebEndpointsMiddleware
+    public class ExecuteEndpoint
     {
         private readonly AppFunc _next;
 
-        public OpenWebEndpointsMiddleware(AppFunc next)
+        public ExecuteEndpoint(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
@@ -34,7 +34,7 @@ namespace OpenWeb.Endpoints
                         .Invoke(executor, new[] { routeInformation.RoutedTo, environment });
 
                     if(environment.GetOutput() == null)
-                        environment.SetOutput("");
+                        environment["openweb.Output"] = "";
                 }
             }
 

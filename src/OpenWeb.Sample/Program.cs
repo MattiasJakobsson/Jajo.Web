@@ -11,10 +11,11 @@ using OpenWeb.Authorization;
 using OpenWeb.Configuration;
 using OpenWeb.Endpoints;
 using OpenWeb.ExceptionManagement;
+using OpenWeb.Http;
 using OpenWeb.ModelBinding;
 using OpenWeb.Output;
 using OpenWeb.Output.Spark;
-using OpenWeb.Owin;
+using OpenWeb.RequestBranching;
 using OpenWeb.Routing.Superscribe;
 using OpenWeb.Routing.Superscribe.Conventional;
 using OpenWeb.StructureMap;
@@ -42,7 +43,7 @@ namespace OpenWeb.Sample
                 typeof (Program).Assembly
             };
 
-            assemblies.AddRange(SubApplications.SubApplications.Init());
+            assemblies.AddRange(SubApplications.Init());
 
             var container = new Container();
 
@@ -114,16 +115,16 @@ namespace OpenWeb.Sample
                 configurer.Configure(settings);
 
             WebApp.Start("http://localhost:8020", x =>
-                x.Use<SpecialCaseMiddleware>(new SpecialCaseConfiguration()
+                x.Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)x
                             .New()
-                            .Use<SetStatusCodeMiddleware>(500)
-                            .Use<RollbackTransactionsMiddleware>()
+                            .Use<SetStatusCode>(500)
+                            .Use<RollbackUnitOfWork>()
                             .Use<HandledExceptionMiddleware>()
                             .Build(typeof(AppFunc)))
                     .AddCase(y => y.Get<bool>("openweb.AuthorizationFailed"), (AppFunc)x
                             .New()
-                            .Use<SetStatusCodeMiddleware>(401)
+                            .Use<SetStatusCode>(401)
                             .Use<HandleUnauthorizedMiddleware>()
                             .Build(typeof(AppFunc)))
                     .AddCase(y => !(y.Get<ValidationResult>("openweb.ValidationResult") ?? new ValidationResult(new List<ValidationResult.ValidationError>())).IsValid, (AppFunc)x
@@ -132,19 +133,18 @@ namespace OpenWeb.Sample
                             .Build(typeof(AppFunc)))
                      .AddCase(y => y.GetOutput() == null, (AppFunc)x
                             .New()
-                            .Use<SetStatusCodeMiddleware>(404)
+                            .Use<SetStatusCode>(404)
                             .Use<HandleNotFoundMiddleware>()
                             .Build(typeof(AppFunc))))
-                    .Use<StructureMapNestedContainerMiddleware>(container)
-                    .Use<OpenWebExceptionManagementMiddleware>()
-                    .Use<OpenWebModelBindingMiddleware>(modelBindingCollection)
-                    .Use<OpenWebUnitOfWorkMiddleware>()
-                    .Use<OpenWebAuthorizationMiddleware>(new OpenWebAuthorizationOptions().WithAuthorizer(new TestAuthorizer()))
-                    .Use<OpenWebValidationMiddleware>(new OpenWebValidationOptions().UsingValidator(new TestValidator()))
-                    .Use<OpenWebSuperscribeMiddleware>(define)
-                    .If(y => y["owin.RequestPath"].ToString().Contains("asd"), y => y.Use<TestMiddleware>())
-                    .Use<OpenWebEndpointsMiddleware>()
-                    .Use<OpenWebOutputMiddleware>(rendererHandler));
+                    .Use<NestedStructureMapContainer>(container)
+                    .Use<HandleExceptions>()
+                    .Use<BindModels>(modelBindingCollection)
+                    .Use<HandleUnitOfWork>()
+                    .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
+                    .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new TestValidator()))
+                    .Use<RouteUsingSuperscribe>(define)
+                    .Use<ExecuteEndpoint>()
+                    .Use<RenderOutput>(rendererHandler));
 
             stopwatch.Stop();
 
@@ -211,7 +211,7 @@ namespace OpenWeb.Sample
         {
             await environment.WriteToOutput("Testing if statement");
 
-            environment.SetOutput("Testing if statement");
+            environment["openweb.Output"] = "Testing if statement";
 
             await _next(environment);
         }
@@ -236,7 +236,7 @@ namespace OpenWeb.Sample
             await environment.WriteToOutput(exception.Message);
             await environment.WriteToOutput(exception.StackTrace);
 
-            environment.SetOutput(exception.Message);
+            environment["openweb.Output"] = exception.Message;
 
             await _next(environment);
         }
@@ -258,7 +258,7 @@ namespace OpenWeb.Sample
         {
             await environment.WriteToOutput("Not found!");
 
-            environment.SetOutput("Not found!");
+            environment["openweb.Output"] = "Not found!";
 
             await _next(environment);
         }
@@ -286,7 +286,7 @@ namespace OpenWeb.Sample
 
             await environment.WriteToOutput(result.ToString());
 
-            environment.SetOutput(result.ToString());
+            environment["openweb.Output"] = result.ToString();
 
             await _next(environment);
         }
@@ -308,7 +308,7 @@ namespace OpenWeb.Sample
         {
             await environment.WriteToOutput("Unauthorized");
 
-            environment.SetOutput("Unauthorized");
+            environment["openweb.Output"] = "Unauthorized";
 
             await _next(environment);
         }

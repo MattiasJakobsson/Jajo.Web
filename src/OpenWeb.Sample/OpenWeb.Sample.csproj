@@ -42,6 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\EnvironmentExtensions.cs">
+      <Link>EnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,6 +63,10 @@
       <Project>{f9035886-8b03-42bd-8f31-9baef4d949a3}</Project>
       <Name>OpenWeb.Authorization</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.Configuration\OpenWeb.Configuration.csproj">
+      <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
+      <Name>OpenWeb.Configuration</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenWeb.Endpoints\OpenWeb.Endpoints.csproj">
       <Project>{12f8f1f4-2249-4c0b-991d-60f629cb82f1}</Project>
       <Name>OpenWeb.Endpoints</Name>
@@ -67,6 +74,10 @@
     <ProjectReference Include="..\OpenWeb.ExceptionManagement\OpenWeb.ExceptionManagement.csproj">
       <Project>{cf7ca649-d8d8-41e1-8adc-19b95d4ea94d}</Project>
       <Name>OpenWeb.ExceptionManagement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.Http\OpenWeb.Http.csproj">
+      <Project>{a240378a-f813-47e3-8a69-5f3d8a7e9e85}</Project>
+      <Name>OpenWeb.Http</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenWeb.ModelBinding\OpenWeb.ModelBinding.csproj">
       <Project>{b2244942-cfd4-4cd1-a43a-33d24041e17d}</Project>
@@ -80,9 +91,9 @@
       <Project>{03129102-f787-4f77-81cd-e78682edf293}</Project>
       <Name>OpenWeb.Output</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenWeb.Owin\OpenWeb.Owin.csproj">
-      <Project>{45124bd2-0cb3-4be6-89d0-c86cd10a891b}</Project>
-      <Name>OpenWeb.Owin</Name>
+    <ProjectReference Include="..\OpenWeb.RequestBranching\OpenWeb.RequestBranching.csproj">
+      <Project>{b6653538-428d-4467-b8dd-64a52d945648}</Project>
+      <Name>OpenWeb.RequestBranching</Name>
     </ProjectReference>
     <ProjectReference Include="..\OpenWeb.Routing.Superscribe\OpenWeb.Routing.Superscribe.csproj">
       <Project>{b5dce00f-7c1d-4c18-a552-9b5c8c94c202}</Project>
@@ -92,10 +103,6 @@
       <Project>{ae9fe8fd-159d-4d94-a104-521eaa55ef54}</Project>
       <Name>OpenWeb.StructureMap</Name>
     </ProjectReference>
-    <ProjectReference Include="..\OpenWeb.SubApplications\OpenWeb.SubApplications.csproj">
-      <Project>{25ddf7d7-2119-40e1-bc39-bbb1067f5c9a}</Project>
-      <Name>OpenWeb.SubApplications</Name>
-    </ProjectReference>
     <ProjectReference Include="..\OpenWeb.UnitOfWork\OpenWeb.UnitOfWork.csproj">
       <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
       <Name>OpenWeb.UnitOfWork</Name>
@@ -103,10 +110,6 @@
     <ProjectReference Include="..\OpenWeb.Validation\OpenWeb.Validation.csproj">
       <Project>{f466c803-e04e-493d-91d6-25001dc5a281}</Project>
       <Name>OpenWeb.Validation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
-      <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
-      <Name>OpenWeb</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

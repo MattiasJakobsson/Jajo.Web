@@ -8,12 +8,12 @@ namespace OpenWeb.Validation
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebValidationMiddleware
+    public class ValidateRequest
     {
         private readonly AppFunc _next;
-        private readonly OpenWebValidationOptions _options;
+        private readonly ValidateRequestOptions _options;
 
-        public OpenWebValidationMiddleware(AppFunc next, OpenWebValidationOptions options)
+        public ValidateRequest(AppFunc next, ValidateRequestOptions options)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
@@ -38,13 +38,13 @@ namespace OpenWeb.Validation
         }
     }
 
-    public class OpenWebValidationOptions
+    public class ValidateRequestOptions
     {
         private readonly IList<IValidateRequest> _validators = new List<IValidateRequest>();
 
         public IReadOnlyCollection<IValidateRequest> Validators { get { return new ReadOnlyCollection<IValidateRequest>(_validators); } }
 
-        public OpenWebValidationOptions UsingValidator(IValidateRequest validator)
+        public ValidateRequestOptions UsingValidator(IValidateRequest validator)
         {
             _validators.Add(validator);
 

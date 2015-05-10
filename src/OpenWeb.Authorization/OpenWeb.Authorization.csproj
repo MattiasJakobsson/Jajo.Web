@@ -40,7 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuthenticationToken.cs" />
-    <Compile Include="OpenWebAuthorizationMiddleware.cs" />
+    <Compile Include="AuthorizeRequest.cs" />
     <Compile Include="IAuthenticationTokenSource.cs" />
     <Compile Include="IAuthorizeRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

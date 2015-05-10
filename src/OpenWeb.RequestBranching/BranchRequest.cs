@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
-namespace OpenWeb
+namespace OpenWeb.RequestBranching
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class SpecialCaseMiddleware
+    public class BranchRequest
     {
         private readonly AppFunc _next;
-        private readonly SpecialCaseConfiguration _configuration;
+        private readonly BranchRequestConfiguration _configuration;
 
-        public SpecialCaseMiddleware(AppFunc next, SpecialCaseConfiguration configuration)
+        public BranchRequest(AppFunc next, BranchRequestConfiguration configuration)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
@@ -33,13 +33,13 @@ namespace OpenWeb
         }
     }
 
-    public class SpecialCaseConfiguration
+    public class BranchRequestConfiguration
     {
         private readonly IList<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>> _cases = new List<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>>();
 
         public IReadOnlyCollection<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>> Cases { get { return new ReadOnlyCollection<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>>(_cases); } }
 
-        public SpecialCaseConfiguration AddCase(Func<IDictionary<string, object>, bool> check, AppFunc result)
+        public BranchRequestConfiguration AddCase(Func<IDictionary<string, object>, bool> check, AppFunc result)
         {
             _cases.Add(new Tuple<Func<IDictionary<string, object>, bool>, AppFunc>(check, result));
 

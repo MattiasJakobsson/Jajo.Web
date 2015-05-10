@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OpenWeb.SubApplications")]
+[assembly: AssemblyTitle("OpenWeb.RequestBranching")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OpenWeb.SubApplications")]
+[assembly: AssemblyProduct("OpenWeb.RequestBranching")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0aef3a7a-14d9-4db9-9d91-8d5074096b0e")]
+[assembly: Guid("38dbd089-606f-4860-9076-ac3916788527")]
 
 // Version information for an assembly consists of the following four values:
 //

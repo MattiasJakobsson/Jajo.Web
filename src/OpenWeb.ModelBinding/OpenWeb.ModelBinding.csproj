@@ -39,6 +39,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Shared\Cache.cs">
+      <Link>Cache.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\EnvironmentExtensions.cs">
+      <Link>EnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="BindingContext.cs" />
     <Compile Include="BindingSourceCollection.cs" />
     <Compile Include="CollectionPropertyBinder.cs" />
@@ -56,7 +62,7 @@
     <Compile Include="IValueConverter.cs" />
     <Compile Include="IValueConverterCollection.cs" />
     <Compile Include="ModelBinderCollection.cs" />
-    <Compile Include="OpenWebModelBindingMiddleware.cs" />
+    <Compile Include="BindModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyBinderCollection.cs" />
     <Compile Include="SimpleTypePropertyBinder.cs" />
@@ -76,12 +82,6 @@
     <Compile Include="ValueConverters\UIntValueConverter.cs" />
     <Compile Include="ValueConverters\ULongValueConverter.cs" />
     <Compile Include="ValueConverters\UShortValueConverter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\OpenWeb\OpenWeb.csproj">
-      <Project>{c3fb721f-4463-4bab-9d9f-41578ccd7eb2}</Project>
-      <Name>OpenWeb</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

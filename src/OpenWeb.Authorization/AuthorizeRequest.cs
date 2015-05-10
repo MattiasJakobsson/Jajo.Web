@@ -8,12 +8,12 @@ namespace OpenWeb.Authorization
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebAuthorizationMiddleware
+    public class AuthorizeRequest
     {
         private readonly AppFunc _next;
-        private readonly OpenWebAuthorizationOptions _options;
+        private readonly AuthorizeRequestOptions _options;
 
-        public OpenWebAuthorizationMiddleware(AppFunc next, OpenWebAuthorizationOptions options)
+        public AuthorizeRequest(AppFunc next, AuthorizeRequestOptions options)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
@@ -35,7 +35,7 @@ namespace OpenWeb.Authorization
         }
     }
 
-    public class OpenWebAuthorizationOptions
+    public class AuthorizeRequestOptions
     {
         private readonly IList<IAuthenticationTokenSource> _authenticationTokenSources = new List<IAuthenticationTokenSource>();
         private readonly IList<IAuthorizeRequest> _authorizeRequests = new List<IAuthorizeRequest>();
@@ -43,14 +43,14 @@ namespace OpenWeb.Authorization
         public IReadOnlyCollection<IAuthenticationTokenSource> AuthenticationTokenSources { get { return new ReadOnlyCollection<IAuthenticationTokenSource>(_authenticationTokenSources); } }
         public IReadOnlyCollection<IAuthorizeRequest> AuthorizeRequests { get { return new ReadOnlyCollection<IAuthorizeRequest>(_authorizeRequests); } }
 
-        public OpenWebAuthorizationOptions WithTokenSource(IAuthenticationTokenSource source)
+        public AuthorizeRequestOptions WithTokenSource(IAuthenticationTokenSource source)
         {
             _authenticationTokenSources.Add(source);
 
             return this;
         }
 
-        public OpenWebAuthorizationOptions WithAuthorizer(IAuthorizeRequest authorizeRequest)
+        public AuthorizeRequestOptions WithAuthorizer(IAuthorizeRequest authorizeRequest)
         {
             _authorizeRequests.Add(authorizeRequest);
 

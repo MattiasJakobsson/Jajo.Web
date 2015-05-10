@@ -7,12 +7,12 @@ namespace OpenWeb.Routing.Superscribe
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class OpenWebSuperscribeMiddleware
+    public class RouteUsingSuperscribe
     {
         private readonly AppFunc _next;
         private readonly IRouteEngine _routeEngine;
 
-        public OpenWebSuperscribeMiddleware(AppFunc next, IRouteEngine routeEngine)
+        public RouteUsingSuperscribe(AppFunc next, IRouteEngine routeEngine)
         {
             if (next == null)
                 throw new ArgumentNullException("next");

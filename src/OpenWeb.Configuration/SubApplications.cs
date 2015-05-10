@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
-namespace OpenWeb.SubApplications
+namespace OpenWeb.Configuration
 {
     public static class SubApplications
     {
-        private static IEnumerable<string> _subApplicationPaths;
+        private static readonly List<string> SubApplicationPaths = new List<string>();
 
         public static IEnumerable<Assembly> Init()
         {
@@ -18,14 +18,12 @@ namespace OpenWeb.SubApplications
 
             var applications = Directory.GetDirectories("SubApplications\\");
 
-            var subApplicationPaths = new List<string>();
+            SubApplicationPaths.Clear();
 
-            subApplicationPaths.AddRange(links);
-            subApplicationPaths.AddRange(applications.Where(x => !links.Any(y => y.Contains(new DirectoryInfo(x).Name))));
+            SubApplicationPaths.AddRange(links);
+            SubApplicationPaths.AddRange(applications.Where(x => !links.Any(y => y.Contains(new DirectoryInfo(x).Name))));
 
-            _subApplicationPaths = subApplicationPaths;
-
-            foreach (var subApplicationPath in subApplicationPaths)
+            foreach (var subApplicationPath in SubApplicationPaths)
             {
                 var assembliesPaths = Directory.GetFiles(subApplicationPath, "*.dll");
 
@@ -43,7 +41,7 @@ namespace OpenWeb.SubApplications
 
         private static Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)
         {
-            var pluginsFolders = _subApplicationPaths.Select(x =>new DirectoryInfo(Path.GetFullPath(x)));
+            var pluginsFolders = SubApplicationPaths.Select(x =>new DirectoryInfo(Path.GetFullPath(x)));
             return (from f in pluginsFolders.SelectMany(x =>x.GetFiles("*.dll", SearchOption.AllDirectories))
                 let assemblyName = AssemblyName.GetAssemblyName(f.FullName)
                 where assemblyName.FullName == args.Name || assemblyName.FullName.Split(',')[0] == args.Name

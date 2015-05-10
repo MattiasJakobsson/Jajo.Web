@@ -7,11 +7,11 @@ namespace OpenWeb.UnitOfWork
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class RollbackTransactionsMiddleware
+    public class RollbackUnitOfWork
     {
         private readonly AppFunc _next;
 
-        public RollbackTransactionsMiddleware(AppFunc next)
+        public RollbackUnitOfWork(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
