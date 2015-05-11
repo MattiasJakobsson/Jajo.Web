@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace OpenWeb
@@ -80,6 +81,26 @@ namespace OpenWeb
         public static object GetOutput(this IDictionary<string, object> environment)
         {
             return environment.Get<object>("openweb.Output");
+        }
+
+        public static string RouteTo(this IDictionary<string, object> environment, object input)
+        {
+            var reverseRoute = environment.Get<Func<object, IDictionary<string, object>, string>>("openweb.ReverseRoute");
+
+            if (reverseRoute == null)
+                return "";
+
+            var inputToRoute = environment.Get<IDictionary<Type, MethodInfo>>("openweb.RoutedEndpoints.Inputs");
+
+            if (inputToRoute == null || !inputToRoute.ContainsKey(input.GetType()))
+                return "";
+
+            var inputParameters = input
+                .GetType()
+                .GetProperties()
+                .ToDictionary(x => x.Name, x => x.GetValue(input));
+
+            return reverseRoute(inputToRoute[input.GetType()], inputParameters);
         }
 
         public static T Get<T>(this IDictionary<string, object> environment, string key)

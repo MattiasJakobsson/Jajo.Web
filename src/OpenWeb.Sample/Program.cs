@@ -133,7 +133,7 @@ namespace OpenWeb.Sample
                 .Use<HandleUnitOfWork>()
                 .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                 .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new TestValidator()))
-                .Use<RouteUsingSuperscribe>(define)
+                .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define, settings))
                 .Use<ExecuteEndpoint>()
                 .Use<RenderOutput>(rendererHandler);
         }

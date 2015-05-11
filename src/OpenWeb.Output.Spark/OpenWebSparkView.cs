@@ -16,6 +16,11 @@ namespace OpenWeb.Output.Spark
 
         public IDictionary<string, object> Environment { get; private set; }
 
+        public string RouteTo(object input)
+        {
+            return Environment.RouteTo(input);
+        }
+
         protected virtual void SetModel(object model)
         {
 

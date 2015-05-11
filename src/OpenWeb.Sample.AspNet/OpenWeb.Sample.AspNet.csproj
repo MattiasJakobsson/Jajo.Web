@@ -114,6 +114,10 @@
       <Project>{03129102-f787-4f77-81cd-e78682edf293}</Project>
       <Name>OpenWeb.Output</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.PartialRequests\OpenWeb.PartialRequests.csproj">
+      <Project>{186551e5-9bef-428a-aef0-1fec9c73a39a}</Project>
+      <Name>OpenWeb.PartialRequests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenWeb.RequestBranching\OpenWeb.RequestBranching.csproj">
       <Project>{b6653538-428d-4467-b8dd-64a52d945648}</Project>
       <Name>OpenWeb.RequestBranching</Name>

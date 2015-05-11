@@ -17,9 +17,14 @@ namespace OpenWeb.Sample.SubApplication
         public SubAppEndpointQueryResult(string message)
         {
             Message = message;
+            Input = new SubAppPartialEndpointQueryInput
+            {
+                Slug = "test"
+            };
         }
 
         public string Message { get; private set; }
+        public SubAppPartialEndpointQueryInput Input { get; private set; }
 
         public string Partial(IDictionary<string, object> environment)
         {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Superscribe.Engine;
 using Superscribe.Models;
@@ -62,6 +61,11 @@ namespace OpenWeb.Routing.Superscribe.Conventional
             }
 
             environmentSettings["openweb.Superscribe.Engine"] = define;
+
+            environmentSettings["openweb.RoutedEndpoints.Inputs"] = endpointRoutes
+                .Where(x => x.Key.GetParameters().Length == 1)
+                .ToDictionary(x => x.Key.GetParameters()[0].ParameterType, x => x.Key);
+
             environmentSettings["openweb.ReverseRoute"] = (Func<object, IDictionary<string, object>, string>) ((endpoint, parameters) =>
             {
                 var method = endpoint as MethodInfo;

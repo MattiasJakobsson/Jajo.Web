@@ -2,10 +2,15 @@
 {
     public class SubAppPartialEndpoint
     {
-        public SubAppPartialEndpointQueryResult Query()
+        public SubAppPartialEndpointQueryResult Query(SubAppPartialEndpointQueryInput input)
         {
             return new SubAppPartialEndpointQueryResult("Test partial in subapp");
         }
+    }
+
+    public class SubAppPartialEndpointQueryInput
+    {
+        public string Slug { get; set; }
     }
 
     public class SubAppPartialEndpointQueryResult

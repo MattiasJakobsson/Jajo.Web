@@ -13,6 +13,7 @@ using OpenWeb.Http;
 using OpenWeb.ModelBinding;
 using OpenWeb.Output;
 using OpenWeb.Output.Spark;
+using OpenWeb.PartialRequests;
 using OpenWeb.RequestBranching;
 using OpenWeb.Routing.Superscribe;
 using OpenWeb.Routing.Superscribe.Conventional;
@@ -32,8 +33,6 @@ namespace OpenWeb.Sample.AspNet
     {
         public void Configuration(IAppBuilder app)
         {
-            var container = new Container();
-
             var subApplications = SubApplications.Init().ToList();
 
             var assemblies = new List<Assembly>
@@ -42,6 +41,8 @@ namespace OpenWeb.Sample.AspNet
             };
 
             assemblies.AddRange(subApplications.Select(x => x.Assembly));
+
+            var container = new Container();
 
             container.Configure(x =>
             {
@@ -54,6 +55,7 @@ namespace OpenWeb.Sample.AspNet
 
                     y.ConnectImplementationsToTypesClosing(typeof(IExecuteTypeOfEndpoint<>));
                     y.AddAllTypesOf<IOpenWebUnitOfWork>();
+                    y.AddAllTypesOf<IRunAtConfigurationTime>();
                 });
             });
 
@@ -76,7 +78,22 @@ namespace OpenWeb.Sample.AspNet
                 .When(x => true).UseRenderer(new RenderOutputAsJson())
                 .Build();
 
-            app.Use<BranchRequest>(new BranchRequestConfiguration()
+            var configurers = container.GetAllInstances<IRunAtConfigurationTime>();
+
+            foreach (var configurer in configurers)
+                configurer.Configure(settings);
+
+            var partialFlow = (AppFunc)app.New()
+                    .Use<HandleExceptions>()
+                    .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
+                    .Use<ExecuteEndpoint>()
+                    .Use<RenderOutput>(rendererHandler)
+                    .Build(typeof(AppFunc));
+
+            Partials.Initialize(partialFlow);
+
+            app.Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions(y => y.ToLower()))
+                .Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)app
                             .New()
                             .Use<SetStatusCode>(500)
@@ -97,15 +114,15 @@ namespace OpenWeb.Sample.AspNet
                             .Use<SetStatusCode>(404)
                             .Use<HandleNotFoundMiddleware>()
                             .Build(typeof(AppFunc))))
-                    .Use<NestedStructureMapContainer>(container)
-                    .Use<HandleExceptions>()
-                    .Use<BindModels>(modelBindingCollection)
-                    .Use<HandleUnitOfWork>()
-                    .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
-                    .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new TestValidator()))
-                    .Use<RouteUsingSuperscribe>(define)
-                    .Use<ExecuteEndpoint>()
-                    .Use<RenderOutput>(rendererHandler);
+                .Use<NestedStructureMapContainer>(container)
+                .Use<HandleExceptions>()
+                .Use<BindModels>(modelBindingCollection)
+                .Use<HandleUnitOfWork>()
+                .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
+                .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new TestValidator()))
+                .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define, settings))
+                .Use<ExecuteEndpoint>()
+                .Use<RenderOutput>(rendererHandler);
         }
     }
 
