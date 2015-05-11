@@ -6,27 +6,15 @@ namespace OpenWeb.Output.Spark
 {
     public abstract class OpenWebSparkView : SparkViewBase
     {
-        private IDictionary<string, object> _environment;
-
-        protected OpenWebSparkView()
-        {
-            ContentType = ContentType.Html;
-        }
-
         public void Render(ViewContext viewContext, TextWriter writer)
         {
             SetModel(viewContext.Model);
-            _environment = viewContext.Environment;
+            Environment = viewContext.Environment;
 
             RenderView(writer);
         }
 
-        public ContentType ContentType { get; set; }
-
-        public T ContentRenderer<T>() where T : class
-        {
-            return _environment.Resolve<T>();
-        }
+        public IDictionary<string, object> Environment { get; private set; }
 
         protected virtual void SetModel(object model)
         {

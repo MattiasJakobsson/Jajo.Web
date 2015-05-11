@@ -9,6 +9,7 @@ namespace OpenWeb.Configuration
     public static class SubApplications
     {
         private static readonly List<string> SubApplicationPaths = new List<string>();
+        private static readonly ICollection<InitializedSubApplication> InitializedApplications = new List<InitializedSubApplication>();
 
         public static IEnumerable<InitializedSubApplication> Init()
         {
@@ -19,6 +20,7 @@ namespace OpenWeb.Configuration
             var applications = Directory.GetDirectories("SubApplications\\");
 
             SubApplicationPaths.Clear();
+            InitializedApplications.Clear();
 
             SubApplicationPaths.AddRange(links);
             SubApplicationPaths.AddRange(applications.Where(x => !links.Any(y => y.Contains(new DirectoryInfo(x).Name))));
@@ -29,23 +31,27 @@ namespace OpenWeb.Configuration
 
                 foreach (var assemblyPath in assembliesPaths)
                 {
-                    if(AppDomain.CurrentDomain.GetAssemblies().Any(x => x.FullName == AssemblyName.GetAssemblyName(assemblyPath).FullName))
+                    if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.FullName == AssemblyName.GetAssemblyName(assemblyPath).FullName))
                         continue;
 
                     var assembly = Assembly.LoadFile(Path.GetFullPath(assemblyPath));
 
-                    yield return new InitializedSubApplication(subApplicationPath, assembly.FullName, assembly);
+                    var application = new InitializedSubApplication(subApplicationPath, assembly.FullName, assembly);
+                    InitializedApplications.Add(application);
+
+                    yield return application;
                 }
             }
         }
 
         private static Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)
         {
-            var pluginsFolders = SubApplicationPaths.Select(x =>new DirectoryInfo(Path.GetFullPath(x)));
-            return (from f in pluginsFolders.SelectMany(x =>x.GetFiles("*.dll", SearchOption.AllDirectories))
-                let assemblyName = AssemblyName.GetAssemblyName(f.FullName)
-                where assemblyName.FullName == args.Name || assemblyName.FullName.Split(',')[0] == args.Name
-                select Assembly.LoadFile(f.FullName)).FirstOrDefault();
+            var pluginsFolders = SubApplicationPaths.Select(x => new DirectoryInfo(Path.GetFullPath(x)));
+
+            return (from f in pluginsFolders.SelectMany(x => x.GetFiles("*.dll", SearchOption.AllDirectories))
+                    let assemblyName = AssemblyName.GetAssemblyName(f.FullName)
+                    where (assemblyName.FullName == args.Name || assemblyName.FullName.Split(',')[0] == args.Name) && InitializedApplications.Any(x => x.Assembly.FullName == args.Name || x.Assembly.FullName.Split(',')[0] == args.Name)
+                    select Assembly.LoadFile(f.FullName)).FirstOrDefault();
         }
     }
 }

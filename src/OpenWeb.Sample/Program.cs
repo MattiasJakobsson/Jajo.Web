@@ -14,6 +14,7 @@ using OpenWeb.Http;
 using OpenWeb.ModelBinding;
 using OpenWeb.Output;
 using OpenWeb.Output.Spark;
+using OpenWeb.PartialRequests;
 using OpenWeb.RequestBranching;
 using OpenWeb.Routing.Superscribe;
 using OpenWeb.Routing.Superscribe.Conventional;
@@ -33,6 +34,8 @@ namespace OpenWeb.Sample
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
+
+            Partials.Initialize(null);
 
             var subApplications = SubApplications.Init().ToList();
 
@@ -85,6 +88,16 @@ namespace OpenWeb.Sample
                 configurer.Configure(settings);
 
             WebApp.Start("http://localhost:8020", x =>
+            {
+                var partialFlow = (AppFunc)x.New()
+                    .Use<HandleExceptions>()
+                    .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
+                    .Use<ExecuteEndpoint>()
+                    .Use<RenderOutput>(rendererHandler)
+                    .Build(typeof(AppFunc));
+
+                Partials.Initialize(partialFlow);
+
                 x.Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions(y => y.ToLower()))
                     .Use<BranchRequest>(new BranchRequestConfiguration()
                         .AddCase(y => y.GetException() != null, (AppFunc)x
@@ -115,7 +128,8 @@ namespace OpenWeb.Sample
                     .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new TestValidator()))
                     .Use<RouteUsingSuperscribe>(define)
                     .Use<ExecuteEndpoint>()
-                    .Use<RenderOutput>(rendererHandler));
+                    .Use<RenderOutput>(rendererHandler);
+            });
 
             stopwatch.Stop();
 
@@ -137,7 +151,7 @@ namespace OpenWeb.Sample
     {
         public ValidationResult Validate(IDictionary<string, object> environment)
         {
-            if(environment["owin.RequestPath"].ToString().Contains("invalid"))
+            if (environment["owin.RequestPath"].ToString().Contains("invalid"))
                 return new ValidationResult(new List<ValidationResult.ValidationError>
                 {
                     new ValidationResult.ValidationError("Key", "Error")

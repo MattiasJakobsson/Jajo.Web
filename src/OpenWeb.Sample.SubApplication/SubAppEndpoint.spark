@@ -6,5 +6,7 @@
 </head>
 <body>
     <h1>${Model.Message}</h1>
+    ${Model.Partial(Environment)}
+    <h1>${Model.Message}</h1>
 </body>
 </html>

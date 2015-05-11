@@ -31,7 +31,7 @@ namespace OpenWeb
 
         public static TService Resolve<TService>(this IDictionary<string, object> environment)
         {
-            return (TService) Resolve(environment, typeof (TService));
+            return (TService)Resolve(environment, typeof(TService));
         }
 
         public static object Resolve(this IDictionary<string, object> environment, Type serviceType)
@@ -41,7 +41,7 @@ namespace OpenWeb
 
         public static IEnumerable<TService> ResolveAll<TService>(this IDictionary<string, object> environment)
         {
-            return ResolveAll(environment, typeof (TService)).OfType<TService>();
+            return ResolveAll(environment, typeof(TService)).OfType<TService>();
         }
 
         public static IEnumerable<object> ResolveAll(this IDictionary<string, object> environment, Type serviceType)
@@ -111,7 +111,7 @@ namespace OpenWeb
             var requestTypedParameters = environment.Get<IDictionary<Type, object>>("openweb.RequestTypedParameters");
 
             if (requestTypedParameters != null) return requestTypedParameters;
-            
+
             requestTypedParameters = new Dictionary<Type, object>();
             environment["openweb.RequestTypedParameters"] = requestTypedParameters;
 
@@ -137,7 +137,7 @@ namespace OpenWeb
 
             public IReadOnlyDictionary<string, string[]> RawHeaders { get; private set; }
             public string Accept { get { return GetHeader("Accept"); } }
-            public string Host{get { return GetHeader("Host"); }}
+            public string Host { get { return GetHeader("Host"); } }
 
             public string GetHeader(string key)
             {
