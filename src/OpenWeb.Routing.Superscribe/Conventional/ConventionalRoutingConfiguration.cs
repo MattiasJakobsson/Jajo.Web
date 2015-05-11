@@ -1,8 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using Superscribe.Engine;
+using Superscribe.Models;
 
 namespace OpenWeb.Routing.Superscribe.Conventional
 {
@@ -41,6 +45,8 @@ namespace OpenWeb.Routing.Superscribe.Conventional
 
             var define = RouteEngineFactory.Create();
 
+            var endpointRoutes = new Dictionary<MethodInfo, GraphNode>();
+
             foreach (var endpoint in possibleEndpoints)
             {
                 var matchingPolicy = _policies.FirstOrDefault(x => x.Matches(endpoint));
@@ -52,10 +58,32 @@ namespace OpenWeb.Routing.Superscribe.Conventional
 
                 matchingPolicy.Build(endpoint, routeBuilder);
 
-                routeBuilder.Build(define.Base, endpoint);
+                endpointRoutes[endpoint] = routeBuilder.Build(define.Base, endpoint);
             }
 
             environmentSettings["openweb.Superscribe.Engine"] = define;
+            environmentSettings["openweb.ReverseRoute"] = (Func<object, string>) (x =>
+            {
+                var method = x as MethodInfo;
+
+                if (method == null)
+                    return "";
+
+                if (!endpointRoutes.ContainsKey(method))
+                    return "";
+
+                var node = endpointRoutes[method].Base();
+
+                var patternBuilder = new StringBuilder();
+
+                while (node != null)
+                {
+                    patternBuilder.Append("/").Append(node.Template);
+                    node = node.Edges.FirstOrDefault();
+                }
+
+                return patternBuilder.ToString();
+            });
 
             return define;
         }

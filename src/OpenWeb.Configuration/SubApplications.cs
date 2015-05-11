@@ -31,7 +31,7 @@ namespace OpenWeb.Configuration
 
                 foreach (var assemblyPath in assembliesPaths)
                 {
-                    if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.FullName == AssemblyName.GetAssemblyName(assemblyPath).FullName))
+                    if (AppDomain.CurrentDomain.GetAssemblies().Any(x => x.FullName == AssemblyName.GetAssemblyName(assemblyPath).FullName || AssemblyName.GetAssemblyName(assemblyPath).FullName.Split(',')[0] == x.FullName.Split(',')[0]))
                         continue;
 
                     var assembly = Assembly.LoadFile(Path.GetFullPath(assemblyPath));
@@ -50,7 +50,7 @@ namespace OpenWeb.Configuration
 
             return (from f in pluginsFolders.SelectMany(x => x.GetFiles("*.dll", SearchOption.AllDirectories))
                     let assemblyName = AssemblyName.GetAssemblyName(f.FullName)
-                    where (assemblyName.FullName == args.Name || assemblyName.FullName.Split(',')[0] == args.Name) && InitializedApplications.Any(x => x.Assembly.FullName == args.Name || x.Assembly.FullName.Split(',')[0] == args.Name)
+                    where (assemblyName.FullName == args.Name || assemblyName.FullName.Split(',')[0] == args.Name) && InitializedApplications.Any(x => x.Assembly.FullName == args.Name || x.Assembly.FullName.Split(',')[0] == args.Name.Split(',')[0])
                     select Assembly.LoadFile(f.FullName)).FirstOrDefault();
         }
     }
