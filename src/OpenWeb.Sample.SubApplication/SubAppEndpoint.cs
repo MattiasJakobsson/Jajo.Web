@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using OpenWeb.PartialRequests;
 
 namespace OpenWeb.Sample.SubApplication
@@ -9,20 +8,18 @@ namespace OpenWeb.Sample.SubApplication
     {
         public SubAppEndpointQueryResult Query()
         {
-            return new SubAppEndpointQueryResult("Hello from subapp", typeof(SubAppPartialEndpoint).GetMethod("Query"));
+            return new SubAppEndpointQueryResult("Hello from subapp");
         }
     }
 
     public class SubAppEndpointQueryResult
     {
-        public SubAppEndpointQueryResult(string message, MethodInfo routeTo)
+        public SubAppEndpointQueryResult(string message)
         {
             Message = message;
-            RouteTo = routeTo;
         }
 
         public string Message { get; private set; }
-        public MethodInfo RouteTo { get; private set; }
 
         public string Partial(IDictionary<string, object> environment)
         {

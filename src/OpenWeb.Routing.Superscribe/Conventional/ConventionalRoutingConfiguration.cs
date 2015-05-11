@@ -62,9 +62,9 @@ namespace OpenWeb.Routing.Superscribe.Conventional
             }
 
             environmentSettings["openweb.Superscribe.Engine"] = define;
-            environmentSettings["openweb.ReverseRoute"] = (Func<object, string>) (x =>
+            environmentSettings["openweb.ReverseRoute"] = (Func<object, IDictionary<string, object>, string>) ((endpoint, parameters) =>
             {
-                var method = x as MethodInfo;
+                var method = endpoint as MethodInfo;
 
                 if (method == null)
                     return "";
@@ -78,7 +78,20 @@ namespace OpenWeb.Routing.Superscribe.Conventional
 
                 while (node != null)
                 {
-                    patternBuilder.Append("/").Append(node.Template);
+                    patternBuilder.Append("/");
+
+                    var paramNode = node as ParamNode;
+
+                    if (paramNode != null)
+                    {
+                        if (parameters.ContainsKey(paramNode.Name))
+                            patternBuilder.Append(parameters[paramNode.Name]);
+                    }
+                    else
+                    {
+                        patternBuilder.Append(node.Template);
+                    }
+
                     node = node.Edges.FirstOrDefault();
                 }
 

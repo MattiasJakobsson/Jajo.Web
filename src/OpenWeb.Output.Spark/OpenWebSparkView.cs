@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Spark;
 
@@ -11,13 +10,11 @@ namespace OpenWeb.Output.Spark
         {
             SetModel(viewContext.Model);
             Environment = viewContext.Environment;
-            ReverseRoute = viewContext.ApplicationSettings.Get<Func<object, string>>("openweb.ReverseRoute");
 
             RenderView(writer);
         }
 
         public IDictionary<string, object> Environment { get; private set; }
-        public Func<object, string> ReverseRoute { get; private set; }
 
         protected virtual void SetModel(object model)
         {
