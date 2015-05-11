@@ -52,9 +52,14 @@ namespace OpenWeb.Routing.Superscribe.Conventional
             var input = endpoint.GetParameters().FirstOrDefault();
             if (input == null) return;
 
-            var inputParameters = input.ParameterType.GetProperties().Where(x => _availableParameterNames.Any(y => y.Equals(x.Name, StringComparison.OrdinalIgnoreCase))).ToList();
+            var inputParameters = GetAvailableRouteParameters(input.ParameterType);
             foreach (var parameter in inputParameters)
                 builder.AppendParameter(parameter);
+        }
+
+        public IEnumerable<RouteParameter> GetAvailableRouteParameters(Type input)
+        {
+            return input.GetProperties().Where(x => _availableParameterNames.Any(y => y.Equals(x.Name, StringComparison.OrdinalIgnoreCase))).Select(RouteParameter.FromProperty).ToList();
         }
     }
 }

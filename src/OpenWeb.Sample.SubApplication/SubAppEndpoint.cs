@@ -19,7 +19,8 @@ namespace OpenWeb.Sample.SubApplication
             Message = message;
             Input = new SubAppPartialEndpointQueryInput
             {
-                Slug = "test"
+                Slug = "test",
+                Id = 2
             };
         }
 

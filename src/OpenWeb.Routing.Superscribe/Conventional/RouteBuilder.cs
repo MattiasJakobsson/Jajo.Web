@@ -36,12 +36,12 @@ namespace OpenWeb.Routing.Superscribe.Conventional
             _node = _node == null ? new ConstantNode(segment.ToLower()) : _node.Slash(new ConstantNode(segment.ToLower()));
         }
 
-        public void AppendParameter(PropertyInfo parameter)
+        public void AppendParameter(RouteParameter parameter)
         {
-            if (!ParamNodeFactories.ContainsKey(parameter.PropertyType))
+            if (!ParamNodeFactories.ContainsKey(parameter.Type))
                 return;
 
-            var parameterNode = ParamNodeFactories[parameter.PropertyType](parameter.Name);
+            var parameterNode = ParamNodeFactories[parameter.Type](parameter.Name);
 
             _node = _node == null ? parameterNode : _node.Slash(parameterNode);
         }

@@ -67,6 +67,10 @@
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
       <Name>OpenWeb.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\OpenWeb.Diagnostics\OpenWeb.Diagnostics.csproj">
+      <Project>{eb3ebea6-d5c3-4295-b2d4-5c0a868e7a9f}</Project>
+      <Name>OpenWeb.Diagnostics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\OpenWeb.Endpoints\OpenWeb.Endpoints.csproj">
       <Project>{12f8f1f4-2249-4c0b-991d-60f629cb82f1}</Project>
       <Name>OpenWeb.Endpoints</Name>

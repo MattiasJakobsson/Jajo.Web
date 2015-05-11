@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Configuration", "Op
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.PartialRequests", "OpenWeb.PartialRequests\OpenWeb.PartialRequests.csproj", "{186551E5-9BEF-428A-AEF0-1FEC9C73A39A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenWeb.Diagnostics", "OpenWeb.Diagnostics\OpenWeb.Diagnostics.csproj", "{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{186551E5-9BEF-428A-AEF0-1FEC9C73A39A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{186551E5-9BEF-428A-AEF0-1FEC9C73A39A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{186551E5-9BEF-428A-AEF0-1FEC9C73A39A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

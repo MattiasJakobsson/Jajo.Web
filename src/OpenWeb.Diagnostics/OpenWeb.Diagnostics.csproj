@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B5DCE00F-7C1D-4C18-A552-9B5C8C94C202}</ProjectGuid>
+    <ProjectGuid>{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OpenWeb.Routing.Superscribe</RootNamespace>
-    <AssemblyName>OpenWeb.Routing.Superscribe</AssemblyName>
+    <RootNamespace>OpenWeb.Diagnostics</RootNamespace>
+    <AssemblyName>OpenWeb.Diagnostics</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,21 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppDomainAssemblyTypeScanner.cs" />
-    <Compile Include="Conventional\ConventionalRoutingConfiguration.cs" />
-    <Compile Include="Conventional\DefaultRoutePolicy.cs" />
-    <Compile Include="Conventional\Guid.cs" />
-    <Compile Include="Conventional\IFilterEndpoints.cs" />
-    <Compile Include="Conventional\IRouteBuilder.cs" />
-    <Compile Include="Conventional\IRoutePolicy.cs" />
-    <Compile Include="Conventional\QueryAndCommandEndpointFilter.cs" />
-    <Compile Include="Conventional\RouteBuilder.cs" />
-    <Compile Include="Conventional\RouteParameter.cs" />
-    <Compile Include="RouteUsingSuperscribe.cs" />
+    <Compile Include="MeasureInner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="paket.references" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -63,15 +50,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Choose>
-    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
-      <ItemGroup>
-        <Reference Include="Superscribe">
-          <HintPath>..\..\packages\Superscribe\lib\net40\Superscribe.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
 </Project>

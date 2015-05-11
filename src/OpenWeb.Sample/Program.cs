@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
 using OpenWeb.Authorization;
 using OpenWeb.Configuration;
+using OpenWeb.Diagnostics;
 using OpenWeb.Endpoints;
 using OpenWeb.ExceptionManagement;
 using OpenWeb.Http;
@@ -97,6 +98,7 @@ namespace OpenWeb.Sample
                 configurer.Configure(settings);
 
             var partialFlow = (AppFunc)app.New()
+                    .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed partial in {0}ms.", (int)time.TotalMilliseconds)))
                     .Use<HandleExceptions>()
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ExecuteEndpoint>()
@@ -105,7 +107,8 @@ namespace OpenWeb.Sample
 
             Partials.Initialize(partialFlow);
 
-            app.Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions(y => y.ToLower()))
+            app.Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment["owin.RequestPath"].ToString(), (int)time.TotalMilliseconds)))
+                .Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions(y => y.ToLower()))
                 .Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)app
                             .New()

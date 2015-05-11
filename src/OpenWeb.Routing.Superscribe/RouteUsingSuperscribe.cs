@@ -39,6 +39,9 @@ namespace OpenWeb.Routing.Superscribe
             if (_options.ApplicationSettings.ContainsKey("openweb.RoutedEndpoints.Inputs"))
                 environment["openweb.RoutedEndpoints.Inputs"] = _options.ApplicationSettings["openweb.RoutedEndpoints.Inputs"];
 
+            if (_options.ApplicationSettings.ContainsKey("openweb.RoutedEnpoints.ParametersFromInput"))
+                environment["openweb.RoutedEnpoints.ParametersFromInput"] = _options.ApplicationSettings["openweb.RoutedEnpoints.ParametersFromInput"];
+
             await _next(environment);
         }
     }

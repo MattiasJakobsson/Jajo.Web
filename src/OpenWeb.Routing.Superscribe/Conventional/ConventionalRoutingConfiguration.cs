@@ -45,6 +45,7 @@ namespace OpenWeb.Routing.Superscribe.Conventional
             var define = RouteEngineFactory.Create();
 
             var endpointRoutes = new Dictionary<MethodInfo, GraphNode>();
+            var routePolicyByEndpoint = new Dictionary<MethodInfo, IRoutePolicy>();
 
             foreach (var endpoint in possibleEndpoints)
             {
@@ -58,13 +59,33 @@ namespace OpenWeb.Routing.Superscribe.Conventional
                 matchingPolicy.Build(endpoint, routeBuilder);
 
                 endpointRoutes[endpoint] = routeBuilder.Build(define.Base, endpoint);
+                routePolicyByEndpoint[endpoint] = matchingPolicy;
             }
 
             environmentSettings["openweb.Superscribe.Engine"] = define;
 
-            environmentSettings["openweb.RoutedEndpoints.Inputs"] = endpointRoutes
+            var inputToEndpoint = endpointRoutes
                 .Where(x => x.Key.GetParameters().Length == 1)
                 .ToDictionary(x => x.Key.GetParameters()[0].ParameterType, x => x.Key);
+
+            environmentSettings["openweb.RoutedEndpoints.Inputs"] = inputToEndpoint;
+
+            environmentSettings["openweb.RoutedEnpoints.ParametersFromInput"] = (Func<object, IDictionary<string, object>>) (x =>
+                {
+                    if(!inputToEndpoint.ContainsKey(x.GetType()))
+                        return new Dictionary<string, object>();
+
+                    var endpoint = inputToEndpoint[x.GetType()];
+
+                    if(!routePolicyByEndpoint.ContainsKey(endpoint))
+                        return new Dictionary<string, object>();
+
+                    var routePolicy = routePolicyByEndpoint[endpoint];
+
+                    return routePolicy
+                        .GetAvailableRouteParameters(x.GetType())
+                        .ToDictionary(y => y.Name, y => y.GetValue(x));
+                });
 
             environmentSettings["openweb.ReverseRoute"] = (Func<object, IDictionary<string, object>, string>) ((endpoint, parameters) =>
             {

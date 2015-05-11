@@ -7,7 +7,7 @@ namespace OpenWeb.Routing.Superscribe.Conventional
     {
         void RestrictMethods(params string[] methods);
         void Append(string segment);
-        void AppendParameter(PropertyInfo parameter);
+        void AppendParameter(RouteParameter parameter);
 
         GraphNode Build(GraphNode baseNode, MethodInfo routeTo);
     }

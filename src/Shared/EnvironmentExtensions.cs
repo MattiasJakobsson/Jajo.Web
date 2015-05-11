@@ -95,10 +95,7 @@ namespace OpenWeb
             if (inputToRoute == null || !inputToRoute.ContainsKey(input.GetType()))
                 return "";
 
-            var inputParameters = input
-                .GetType()
-                .GetProperties()
-                .ToDictionary(x => x.Name, x => x.GetValue(input));
+            var inputParameters = environment.Get<Func<object, IDictionary<string, object>>>("openweb.RoutedEnpoints.ParametersFromInput")(input);
 
             return reverseRoute(inputToRoute[input.GetType()], inputParameters);
         }
