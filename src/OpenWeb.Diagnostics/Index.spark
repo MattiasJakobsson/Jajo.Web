@@ -1,0 +1,17 @@
+﻿<viewdata model="OpenWeb.Diagnostics.IndexQueryResult" />
+
+<html>
+<head>
+    <title>Diagnostics</title>
+</head>
+<body>
+    <div each="var area in Model.AverageTimes">
+        <h1>${area.Key}</h1>
+        <ul>
+            <li each="var times in area.Value">
+                ${times.Key}: ${times.Value.TotalMilliseconds} ms
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

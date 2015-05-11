@@ -51,12 +51,15 @@ namespace OpenWeb.Sample
 
             var assemblies = new List<Assembly>
             {
-                typeof (Program).Assembly
+                typeof (Program).Assembly,
+                typeof(IManageDiagnosticsInformation).Assembly
             };
 
             assemblies.AddRange(subApplications.Select(x => x.Assembly));
 
             var container = new Container();
+
+            var diagnosticsManager = new ManageDiagnosticsInformationInMemory();
 
             container.Configure(x =>
             {
@@ -71,6 +74,8 @@ namespace OpenWeb.Sample
                     y.AddAllTypesOf<IOpenWebUnitOfWork>();
                     y.AddAllTypesOf<IRunAtConfigurationTime>();
                 });
+
+                x.For<IManageDiagnosticsInformation>().Use(diagnosticsManager);
             });
 
             var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
@@ -107,7 +112,8 @@ namespace OpenWeb.Sample
 
             Partials.Initialize(partialFlow);
 
-            app.Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment["owin.RequestPath"].ToString(), (int)time.TotalMilliseconds)))
+            app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager))
+                .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment["owin.RequestPath"].ToString(), (int)time.TotalMilliseconds)))
                 .Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions(y => y.ToLower()))
                 .Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)app
@@ -130,13 +136,13 @@ namespace OpenWeb.Sample
                             .Use<SetStatusCode>(404)
                             .Use<HandleNotFoundMiddleware>()
                             .Build(typeof(AppFunc))))
+                .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define, settings))
                 .Use<NestedStructureMapContainer>(container)
                 .Use<HandleExceptions>()
                 .Use<BindModels>(modelBindingCollection)
                 .Use<HandleUnitOfWork>()
                 .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                 .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new TestValidator()))
-                .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define, settings))
                 .Use<ExecuteEndpoint>()
                 .Use<RenderOutput>(rendererHandler);
         }
