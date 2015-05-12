@@ -1,0 +1,8 @@
+﻿type file
+id Jajo.Web.Diagnostics
+version 1.0
+authors Mattias Jakobsson
+description
+        Authorization middleware
+files
+    bin/Debug/**/*.* ==> lib

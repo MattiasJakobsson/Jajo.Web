@@ -21,8 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jajo.Web.UnitOfWork", "Jajo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jajo.Web.ExceptionManagement", "Jajo.Web.ExceptionManagement\Jajo.Web.ExceptionManagement.csproj", "{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jajo.Web.Assets", "Jajo.Web.Assets\Jajo.Web.Assets.csproj", "{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jajo.Web.Authorization", "Jajo.Web.Authorization\Jajo.Web.Authorization.csproj", "{F9035886-8B03-42BD-8F31-9BAEF4D949A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jajo.Web.Validation", "Jajo.Web.Validation\Jajo.Web.Validation.csproj", "{F466C803-E04E-493D-91D6-25001DC5A281}"
@@ -83,10 +81,6 @@ Global
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3ABA39D-DB7B-4F11-8287-3C264DFCE26D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Release|Any CPU.ActiveCfg = Release|Any CPU

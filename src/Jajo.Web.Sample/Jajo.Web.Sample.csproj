@@ -61,10 +61,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jajo.Web.Assets\Jajo.Web.Assets.csproj">
-      <Project>{b3aba39d-db7b-4f11-8287-3c264dfce26d}</Project>
-      <Name>Jajo.Web.Assets</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Jajo.Web.Authorization\Jajo.Web.Authorization.csproj">
       <Project>{f9035886-8b03-42bd-8f31-9baef4d949a3}</Project>
       <Name>Jajo.Web.Authorization</Name>
