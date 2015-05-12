@@ -5,4 +5,4 @@ authors Mattias Jakobsson
 description
         Middleware
 files
-    bin/Debug/**/*.* ==> lib
+    bin/Release/Jajo.Web.Output.Spark.dll ==> lib

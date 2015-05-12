@@ -42,7 +42,7 @@ directory 'build/pkg'
 desc 'package nugets - finds all projects and package them'
 nugets_pack :create_nugets => [:versioning] do |p|
   FileUtils.rm_rf(Dir.glob('build/pkg/*'))
-  system 'tools/paket.exe', 'pack', 'output', 'build/pkg', 'version', ENV['NUGET_VERSION'] + '.' + (ENV['BUILD_COUNTER'] || '0')
+  system 'tools/paket.exe', 'pack', 'output', 'build/pkg', 'buildconfig', Configuration, 'version', ENV['NUGET_VERSION'] + '.' + (ENV['BUILD_COUNTER'] || '0')
 end
 
 task :default => :compile

@@ -5,4 +5,4 @@ authors Mattias Jakobsson
 description
         Endpoints middleware
 files
-    bin/Debug/**/*.* ==> lib
+    bin/Release/Jajo.Web.Endpoints.dll ==> lib
