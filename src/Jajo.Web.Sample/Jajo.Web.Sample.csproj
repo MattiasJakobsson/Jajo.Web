@@ -45,6 +45,12 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\ExceptionExtensions.cs">
+      <Link>ExceptionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\OutputExtensions.cs">
+      <Link>OutputExtensions.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
