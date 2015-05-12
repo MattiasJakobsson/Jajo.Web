@@ -6,3 +6,4 @@ description
         Authorization middleware
 files
     bin/Release/Jajo.Web.Diagnostics.dll ==> lib
+	bin/Release/*.spark ==> lib
