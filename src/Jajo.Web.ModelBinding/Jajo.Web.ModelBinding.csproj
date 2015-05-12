@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B2244942-CFD4-4CD1-A43A-33D24041E17D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jajo.Web.ModelBinding</RootNamespace>
+    <AssemblyName>Jajo.Web.ModelBinding</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Shared\Cache.cs">
+      <Link>Cache.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\EnvironmentExtensions.cs">
+      <Link>EnvironmentExtensions.cs</Link>
+    </Compile>
+    <Compile Include="BindingContext.cs" />
+    <Compile Include="BindingSourceCollection.cs" />
+    <Compile Include="CollectionPropertyBinder.cs" />
+    <Compile Include="ComplexTypePropertyBinder.cs" />
+    <Compile Include="DefaultModelBinder.cs" />
+    <Compile Include="DefaultRequestBinder.cs" />
+    <Compile Include="IBindingContext.cs" />
+    <Compile Include="IBindingSource.cs" />
+    <Compile Include="IBindingSourceCollection.cs" />
+    <Compile Include="IModelBinder.cs" />
+    <Compile Include="IModelBinderCollection.cs" />
+    <Compile Include="IPropertyBinder.cs" />
+    <Compile Include="IPropertyBinderCollection.cs" />
+    <Compile Include="IRequestBinder.cs" />
+    <Compile Include="IValueConverter.cs" />
+    <Compile Include="IValueConverterCollection.cs" />
+    <Compile Include="ModelBinderCollection.cs" />
+    <Compile Include="BindModels.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PropertyBinderCollection.cs" />
+    <Compile Include="SimpleTypePropertyBinder.cs" />
+    <Compile Include="ValueConverterCollection.cs" />
+    <Compile Include="ValueConverters\BoolValueConverter.cs" />
+    <Compile Include="ValueConverters\ByteValueConverter.cs" />
+    <Compile Include="ValueConverters\CharValueConverter.cs" />
+    <Compile Include="ValueConverters\DecimalValueConverter.cs" />
+    <Compile Include="ValueConverters\DoubleValueConverter.cs" />
+    <Compile Include="ValueConverters\FloatValueConverter.cs" />
+    <Compile Include="ValueConverters\IntValueConverter.cs" />
+    <Compile Include="ValueConverters\LongValueConverter.cs" />
+    <Compile Include="ValueConverters\ParseValueConverter.cs" />
+    <Compile Include="ValueConverters\SByteValueConverter.cs" />
+    <Compile Include="ValueConverters\ShortValueConverter.cs" />
+    <Compile Include="ValueConverters\StringValueConverter.cs" />
+    <Compile Include="ValueConverters\UIntValueConverter.cs" />
+    <Compile Include="ValueConverters\ULongValueConverter.cs" />
+    <Compile Include="ValueConverters\UShortValueConverter.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

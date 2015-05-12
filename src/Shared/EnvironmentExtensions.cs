@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace OpenWeb
+namespace Jajo.Web
 {
     internal static class EnvironmentExtensions
     {
@@ -37,7 +37,7 @@ namespace OpenWeb
 
         public static object Resolve(this IDictionary<string, object> environment, Type serviceType)
         {
-            return environment.Get<Func<Type, object>>("openweb.ResolveInstance")(serviceType);
+            return environment.Get<Func<Type, object>>("jajo.ResolveInstance")(serviceType);
         }
 
         public static IEnumerable<TService> ResolveAll<TService>(this IDictionary<string, object> environment)
@@ -47,12 +47,12 @@ namespace OpenWeb
 
         public static IEnumerable<object> ResolveAll(this IDictionary<string, object> environment, Type serviceType)
         {
-            return environment.Get<Func<Type, IEnumerable<object>>>("openweb.ResolveAllInstances")(serviceType);
+            return environment.Get<Func<Type, IEnumerable<object>>>("jajo.ResolveAllInstances")(serviceType);
         }
 
         public static Exception GetException(this IDictionary<string, object> environment)
         {
-            return environment.Get<Exception>("openweb.Exception");
+            return environment.Get<Exception>("jajo.Exception");
         }
 
         public static Uri GetUri(this IDictionary<string, object> environment)
@@ -80,22 +80,22 @@ namespace OpenWeb
 
         public static object GetOutput(this IDictionary<string, object> environment)
         {
-            return environment.Get<object>("openweb.Output");
+            return environment.Get<object>("jajo.Output");
         }
 
         public static string RouteTo(this IDictionary<string, object> environment, object input)
         {
-            var reverseRoute = environment.Get<Func<object, IDictionary<string, object>, string>>("openweb.ReverseRoute");
+            var reverseRoute = environment.Get<Func<object, IDictionary<string, object>, string>>("jajo.ReverseRoute");
 
             if (reverseRoute == null)
                 return "";
 
-            var inputToRoute = environment.Get<IDictionary<Type, MethodInfo>>("openweb.RoutedEndpoints.Inputs");
+            var inputToRoute = environment.Get<IDictionary<Type, MethodInfo>>("jajo.RoutedEndpoints.Inputs");
 
             if (inputToRoute == null || !inputToRoute.ContainsKey(input.GetType()))
                 return "";
 
-            var inputParameters = environment.Get<Func<object, IDictionary<string, object>>>("openweb.RoutedEnpoints.ParametersFromInput")(input);
+            var inputParameters = environment.Get<Func<object, IDictionary<string, object>>>("jajo.RoutedEnpoints.ParametersFromInput")(input);
 
             return reverseRoute(inputToRoute[input.GetType()], inputParameters);
         }
@@ -111,7 +111,7 @@ namespace OpenWeb
 
         public static T Bind<T>(this IDictionary<string, object> environment)
         {
-            var modelBinder = environment.Get<Func<Type, object>>("openweb.ModelBinder");
+            var modelBinder = environment.Get<Func<Type, object>>("jajo.ModelBinder");
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
             return requestTypedParameters.ContainsKey(typeof(T)) ? (T)requestTypedParameters[typeof(T)] : (T)modelBinder(typeof(T));
@@ -126,12 +126,12 @@ namespace OpenWeb
 
         private static IDictionary<Type, object> GetRequestTypedParameters(IDictionary<string, object> environment)
         {
-            var requestTypedParameters = environment.Get<IDictionary<Type, object>>("openweb.RequestTypedParameters");
+            var requestTypedParameters = environment.Get<IDictionary<Type, object>>("jajo.RequestTypedParameters");
 
             if (requestTypedParameters != null) return requestTypedParameters;
 
             requestTypedParameters = new Dictionary<Type, object>();
-            environment["openweb.RequestTypedParameters"] = requestTypedParameters;
+            environment["jajo.RequestTypedParameters"] = requestTypedParameters;
 
             return requestTypedParameters;
         }

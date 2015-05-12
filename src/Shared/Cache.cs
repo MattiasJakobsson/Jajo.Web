@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace OpenWeb
+namespace Jajo.Web
 {
     [Serializable]
     public class Cache<TKey, TValue> : IEnumerable<TValue>
