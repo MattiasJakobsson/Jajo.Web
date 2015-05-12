@@ -44,6 +44,7 @@ installation_report.htm
 *.swp
 output
 output/*
+build/pkg/*
 *.dotCover
 src/packages
 repositories.config

@@ -39,6 +39,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="AuthenticationToken.cs" />
     <Compile Include="AuthorizeRequest.cs" />
     <Compile Include="IAuthenticationTokenSource.cs" />

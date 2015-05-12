@@ -1,11 +1,10 @@
 require 'bundler/setup'
 
 require 'albacore'
-# require 'albacore/tasks/release'
 require 'albacore/tasks/versionizer'
 require 'albacore/ext/teamcity'
 
-Configuration = ENV['CONFIGURATION'] || 'Release'
+Configuration = ENV['CONFIGURATION'] || 'Debug'
 
 Albacore::Tasks::Versionizer.new :versioning
 
@@ -20,6 +19,13 @@ asmver_files :assembly_info do |a|
                assembly_version: ENV['LONG_VERSION'],
                assembly_file_version: ENV['LONG_VERSION'],
                assembly_informational_version: ENV['BUILD_VERSION']
+end
+
+asmver :asmver do |a|
+  a.file_path  = 'src/CommonAssemblyInfo.cs'
+  a.attributes assembly_version: ENV['BUILD_VERSION'],
+    assembly_file_version: ENV['BUILD_VERSION']
+  a.using 'System'
 end
 
 desc 'Perform fast build (warn: doesn\'t d/l deps)'
@@ -39,7 +45,7 @@ task :restore => :paket_bootstrap do
 end
 
 desc 'Perform full build'
-build :compile => [:versioning, :restore, :assembly_info] do |b|
+build :compile => [:versioning, :restore, :asmver] do |b|
   b.prop 'Configuration', Configuration
   b.sln = 'src/Jajo.Web.sln'
 end
@@ -47,21 +53,9 @@ end
 directory 'build/pkg'
 
 desc 'package nugets - finds all projects and package them'
-nugets_pack :create_nugets => ['build/pkg', :versioning, :compile] do |p|
-  p.configuration = Configuration
-  p.files   = FileList['src/**/*.{csproj,fsproj,nuspec}'].
-    exclude(/Tests/)
-  p.out     = 'build/pkg'
-  p.exe     = 'packages/NuGet.CommandLine/tools/NuGet.exe'
-  p.with_metadata do |m|
-    # m.id          = 'MyProj'
-    m.title       = 'TODO'
-    m.description = 'TODO'
-    m.authors     = 'John Doe, Foretag AB'
-    m.project_url = 'http://example.com'
-    m.tags        = ''
-    m.version     = ENV['NUGET_VERSION']
-  end
+nugets_pack :create_nugets => [:versioning] do |p|
+  FileUtils.rm_rf(Dir.glob('build/pkg/*'))
+  system 'tools/paket.exe', 'pack', 'output', 'build/pkg', 'version', ENV['BUILD_VERSION']
 end
 
 namespace :tests do
@@ -72,7 +66,9 @@ end
 
 # task :tests => :'tests:unit'
 
-task :default => :create_nugets #, :tests ]
+task :default => :compile
+
+task :ci => [:restore, :default, :create_nugets]
 
 #task :ensure_nuget_key do
 #  raise 'missing env NUGET_KEY value' unless ENV['NUGET_KEY']
