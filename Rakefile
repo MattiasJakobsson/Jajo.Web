@@ -23,8 +23,8 @@ end
 
 asmver :asmver do |a|
   a.file_path  = 'src/CommonAssemblyInfo.cs'
-  a.attributes assembly_version: ENV['BUILD_VERSION'],
-    assembly_file_version: ENV['BUILD_VERSION']
+  a.attributes assembly_version: ENV['LONG_VERSION'],
+    assembly_file_version: ENV['LONG_VERSION']
   a.using 'System'
 end
 
