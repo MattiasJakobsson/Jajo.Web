@@ -10,8 +10,8 @@ Albacore::Tasks::Versionizer.new :versioning
 desc 'create assembly infos'
 asmver :asmver do |a|
   a.file_path  = 'src/CommonAssemblyInfo.cs'
-  a.attributes assembly_version: ENV['NUGET_VERSION'] + '.' + (ENV['BUILD_COUNTER'] || '0'),
-    assembly_file_version: ENV['NUGET_VERSION']
+  a.attributes assembly_version: ENV['LONG_VERSION'],
+    assembly_file_version: ENV['LONG_VERSION']
   a.using 'System'
 end
 
@@ -42,7 +42,7 @@ directory 'build/pkg'
 desc 'package nugets - finds all projects and package them'
 task :create_nugets => [:versioning] do |p|
   FileUtils.rm_rf(Dir.glob('build/pkg/*'))
-  system 'tools/paket.exe', 'pack', 'output', 'build/pkg', 'buildconfig', Configuration, 'version', ENV['NUGET_VERSION'] + '.' + (ENV['BUILD_COUNTER'] || '0')
+  system 'tools/paket.exe', 'pack', 'output', 'build/pkg', 'buildconfig', Configuration, 'version', ENV['NUGET_VERSION']
 end
 
 task :default => :compile
