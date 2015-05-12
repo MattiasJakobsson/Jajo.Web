@@ -1,0 +1,8 @@
+﻿type file
+id Jajo.Web.Endpoints
+version 1.0
+authors Mattias Jakobsson
+description
+        Endpoints middleware
+files
+    bin/Debug/**/*.* ==> lib
