@@ -4,11 +4,11 @@ using SuperGlue.Web.Configuration;
 
 namespace SuperGlue.Web.Sample.SubApplication
 {
-    public class TestSetup : IRunAtConfigurationTime
+    public class TestSetup : ISetupConfigurations
     {
-        public void Configure(IDictionary<string, object> applicationData)
+        public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            Console.WriteLine("Test from subapp");
+            yield return new ConfigurationSetupResult("superglue.TestSetup", x => Console.WriteLine("Test from subapp"));
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

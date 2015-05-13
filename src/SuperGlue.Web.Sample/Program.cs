@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
 using Owin;
-using StructureMap;
 using SuperGlue.Security.Authentication;
 using SuperGlue.Web.Configuration;
 using SuperGlue.Web.Diagnostics;
@@ -58,33 +57,9 @@ namespace SuperGlue.Web.Sample
 
             assemblies.AddRange(subApplications.Select(x => x.Assembly));
 
-            var container = new Container();
-
-            var diagnosticsManager = new ManageDiagnosticsInformationInMemory();
-
-            container.Configure(x =>
-            {
-                x.Scan(y =>
-                {
-                    y.AssemblyContainingType(typeof(IExecuteTypeOfEndpoint<>));
-
-                    foreach (var assembly in assemblies)
-                        y.Assembly(assembly);
-
-                    y.ConnectImplementationsToTypesClosing(typeof(IExecuteTypeOfEndpoint<>));
-                    y.AddAllTypesOf<ISuperGlueUnitOfWork>();
-                    y.AddAllTypesOf<IRunAtConfigurationTime>();
-                });
-
-                x.For<IManageDiagnosticsInformation>().Use(diagnosticsManager);
-            });
-
             var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
 
-            var settings = new Dictionary<string, object>
-            {
-                {"superglue.StructureMap.Container", container}
-            };
+            var settings = Configurations.Configure(assemblies);
 
             var define = ConventionalRoutingConfiguration.New()
                 .UseEndpointFilterer(new QueryAndCommandEndpointFilter())
@@ -98,11 +73,6 @@ namespace SuperGlue.Web.Sample
                 .When(x => true).UseRenderer(new RenderOutputAsJson())
                 .Build();
 
-            var configurers = container.GetAllInstances<IRunAtConfigurationTime>();
-
-            foreach (var configurer in configurers)
-                configurer.Configure(settings);
-
             var partialFlow = (AppFunc)app.New()
                     .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed partial in {0}ms.", (int)time.TotalMilliseconds)))
                     .Use<HandleExceptions>()
@@ -112,6 +82,9 @@ namespace SuperGlue.Web.Sample
                     .Build(typeof(AppFunc));
 
             Partials.Initialize(partialFlow);
+
+            var container = settings.GetContainer();
+            var diagnosticsManager = container.GetInstance<IManageDiagnosticsInformation>();
 
             app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager))
                 .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment["owin.RequestPath"].ToString(), (int)time.TotalMilliseconds)))

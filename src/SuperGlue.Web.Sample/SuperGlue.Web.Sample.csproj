@@ -54,6 +54,7 @@
     <Compile Include="..\Shared\OutputExtensions.cs">
       <Link>OutputExtensions.cs</Link>
     </Compile>
+    <Compile Include="ConfigureStructureMapContainer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -2,9 +2,9 @@
 
 namespace SuperGlue.Web.Configuration
 {
-    public interface IRunAtConfigurationTime
+    public interface ISetupConfigurations
     {
-        void Configure(IDictionary<string, object> applicationData);
+        IEnumerable<ConfigurationSetupResult> Setup();
         void Shutdown(IDictionary<string, object> applicationData);
     }
 }
