@@ -37,13 +37,15 @@ namespace SuperGlue.Web.Sample.AspNet
         {
             var subApplications = SubApplications.Init().ToList();
 
-            var assemblies = new List<Assembly>
-            {
-                typeof (Startup).Assembly,
-                typeof(IManageDiagnosticsInformation).Assembly
-            };
+            var assemblies = new List<Assembly>();
 
             assemblies.AddRange(subApplications.Select(x => x.Assembly));
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName.StartsWith("SuperGlue")))
+            {
+                if (!assemblies.Contains(assembly))
+                    assemblies.Add(assembly);
+            }
 
             var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
 
@@ -75,7 +77,7 @@ namespace SuperGlue.Web.Sample.AspNet
             var diagnosticsManager = container.GetInstance<IManageDiagnosticsInformation>();
 
             app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager))
-                .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment["owin.RequestPath"].ToString(), (int)time.TotalMilliseconds)))
+                .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment.GetUri().ToString(), (int)time.TotalMilliseconds)))
                 .Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions((url, environment) => url.ToLower()))
                 .Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)app

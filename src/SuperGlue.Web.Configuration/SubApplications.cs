@@ -17,7 +17,7 @@ namespace SuperGlue.Web.Configuration
 
             var links = (File.Exists("subapps.txt") ? File.ReadAllText("subapps.txt") : "").Split('\n').Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Replace("\r", "")).ToList();
 
-            var applications = Directory.GetDirectories("SubApplications\\");
+            var applications = Directory.Exists("SubApplications\\") ? Directory.GetDirectories("SubApplications\\") : new string[0];
 
             SubApplicationPaths.Clear();
             InitializedApplications.Clear();

@@ -17,7 +17,7 @@ namespace SuperGlue.Web.Configuration
 
             var configurations = assemblies
                 .SelectMany(x => x.GetTypes())
-                .Where(x => typeof (ISetupConfigurations).IsAssignableFrom(x))
+                .Where(x => typeof (ISetupConfigurations).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
                 .Select(Activator.CreateInstance)
                 .OfType<ISetupConfigurations>()
                 .SelectMany(x => x.Setup())

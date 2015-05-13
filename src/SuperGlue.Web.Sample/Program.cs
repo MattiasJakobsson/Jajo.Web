@@ -50,13 +50,15 @@ namespace SuperGlue.Web.Sample
         {
             var subApplications = SubApplications.Init().ToList();
 
-            var assemblies = new List<Assembly>
-            {
-                typeof (Program).Assembly,
-                typeof(IManageDiagnosticsInformation).Assembly
-            };
+            var assemblies = new List<Assembly>();
 
             assemblies.AddRange(subApplications.Select(x => x.Assembly));
+
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName.StartsWith("SuperGlue")))
+            {
+                if(!assemblies.Contains(assembly))
+                    assemblies.Add(assembly);
+            }
 
             var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
 

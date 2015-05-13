@@ -49,6 +49,7 @@
       <Link>RouteExtensions.cs</Link>
     </Compile>
     <Compile Include="ConcurrentLruLSet.cs" />
+    <Compile Include="ConfigureDiagnostics.cs" />
     <Compile Include="Diagnose.cs" />
     <Compile Include="IManageDiagnosticsInformation.cs" />
     <Compile Include="Index.cs" />
@@ -69,7 +70,12 @@
     </None>
     <None Include="paket.template" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SuperGlue.Web.Configuration\SuperGlue.Web.Configuration.csproj">
+      <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
+      <Name>SuperGlue.Web.Configuration</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
