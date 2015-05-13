@@ -21,8 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.UnitOfWork", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.ExceptionManagement", "SuperGlue.Web.ExceptionManagement\SuperGlue.Web.ExceptionManagement.csproj", "{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Authorization", "SuperGlue.Web.Authorization\SuperGlue.Web.Authorization.csproj", "{F9035886-8B03-42BD-8F31-9BAEF4D949A3}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Validation", "SuperGlue.Web.Validation\SuperGlue.Web.Validation.csproj", "{F466C803-E04E-493D-91D6-25001DC5A281}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Sample.AspNet", "SuperGlue.Web.Sample.AspNet\SuperGlue.Web.Sample.AspNet.csproj", "{2007379C-521C-45AC-8CAB-325086CC6B54}"
@@ -38,6 +36,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.PartialRequests", "SuperGlue.Web.PartialRequests\SuperGlue.Web.PartialRequests.csproj", "{186551E5-9BEF-428A-AEF0-1FEC9C73A39A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Diagnostics", "SuperGlue.Web.Diagnostics\SuperGlue.Web.Diagnostics.csproj", "{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Security", "SuperGlue.Web.Security\SuperGlue.Web.Security.csproj", "{6070898A-49FC-4A94-8687-03209CB2F6F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,10 +81,6 @@ Global
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF7CA649-D8D8-41E1-8ADC-19B95D4EA94D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9035886-8B03-42BD-8F31-9BAEF4D949A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F466C803-E04E-493D-91D6-25001DC5A281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F466C803-E04E-493D-91D6-25001DC5A281}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F466C803-E04E-493D-91D6-25001DC5A281}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -117,6 +113,10 @@ Global
 		{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB3EBEA6-D5C3-4295-B2D4-5C0A868E7A9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6070898A-49FC-4A94-8687-03209CB2F6F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6070898A-49FC-4A94-8687-03209CB2F6F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6070898A-49FC-4A94-8687-03209CB2F6F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6070898A-49FC-4A94-8687-03209CB2F6F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

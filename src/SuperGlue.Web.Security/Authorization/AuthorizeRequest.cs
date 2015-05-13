@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SuperGlue.Web.Authorization
+namespace SuperGlue.Web.Security.Authorization
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 

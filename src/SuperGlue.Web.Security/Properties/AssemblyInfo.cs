@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SuperGlue.Web.Authorization")]
+[assembly: AssemblyTitle("SuperGlue.Web.Security")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SuperGlue.Web.Authorization")]
+[assembly: AssemblyProduct("SuperGlue.Web.Security")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,4 +20,4 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("439f5821-a850-44dd-8ca1-51edb5b3fba4")]
+[assembly: Guid("3c7b1458-89e5-49a8-beb5-b2cbf89ae84f")]
