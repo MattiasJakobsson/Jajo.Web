@@ -157,6 +157,7 @@ namespace SuperGlue.EventStore.Projections
             environment["superglue.EventStore.Projection"] = projection;
             environment["superglue.EventStore.Events"] = events;
             environment["superglue.EventStore.PartitionKey"] = partitionKey;
+            environment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnProjectionError(projection, evnt.Data, evnt.Metadata, exception));
 
             await chain(environment);
         }

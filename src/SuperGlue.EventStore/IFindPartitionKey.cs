@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SuperGlue.EventStore.Projections
+namespace SuperGlue.EventStore
 {
     public interface IFindPartitionKey
     {

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SuperGlue.EventStore.Subscribers
+namespace SuperGlue.EventStore.ProcessManagers
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public interface IInitializeServices
+    public interface IInitializeProcessManagers
     {
-        void Initialize(AppFunc chain, string name);
+        void Initialize(AppFunc chain);
         void Stop();
     }
 }

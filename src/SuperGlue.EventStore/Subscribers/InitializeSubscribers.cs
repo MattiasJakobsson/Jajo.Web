@@ -14,7 +14,7 @@ namespace SuperGlue.EventStore.Subscribers
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class InitializeServices : IInitializeServices
+    public class InitializeSubscribers : IInitializeSubscribers
     {
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly IWriteToErrorStream _writeToErrorStream;
@@ -27,7 +27,7 @@ namespace SuperGlue.EventStore.Subscribers
         private readonly int _dispatchWaitSeconds;
         private readonly int _numberOfEventsPerBatch;
 
-        public InitializeServices(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection, IFindPartitionKey findPartitionKey, IDictionary<string, object> environment)
+        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection, IFindPartitionKey findPartitionKey, IDictionary<string, object> environment)
         {
             _eventSerialization = eventSerialization;
             _writeToErrorStream = writeToErrorStream;
@@ -184,6 +184,7 @@ namespace SuperGlue.EventStore.Subscribers
             environment["superglue.EventStore.Events"] = events;
             environment["superglue.EventStore.PartitionKey"] = partitionKey;
             environment["superglue.EventStore.IsCatchUp"] = catchup;
+            environment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnServiceError(service, stream, evnt.Data, evnt.Metadata, exception));
 
             chain(environment);
         }
