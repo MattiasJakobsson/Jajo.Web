@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using StructureMap;
 using SuperGlue.Web.Configuration;
 
@@ -40,6 +41,8 @@ namespace SuperGlue.Web.StructureMap
                         return Enumerable.Empty<object>();
                     }
                 });
+
+                environment["superglue.Container.RegisterSingleton"] = (Action<Type, object>)((type, instance) => currentContainer.Configure(y => y.For(type).Singleton().Use(instance)));
             }, "superglue.StructureMap.ContainerSetup");
         }
 

@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Security", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Security", "SuperGlue.Security\SuperGlue.Security.csproj", "{A9E022F8-1AA3-4AFC-8EC2-1D4A8D2E9F7A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.EventStore", "SuperGlue.EventStore\SuperGlue.EventStore.csproj", "{023F8229-9F0F-47F3-9B25-ECD4DBC52090}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,10 @@ Global
 		{A9E022F8-1AA3-4AFC-8EC2-1D4A8D2E9F7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9E022F8-1AA3-4AFC-8EC2-1D4A8D2E9F7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9E022F8-1AA3-4AFC-8EC2-1D4A8D2E9F7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{023F8229-9F0F-47F3-9B25-ECD4DBC52090}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{023F8229-9F0F-47F3-9B25-ECD4DBC52090}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{023F8229-9F0F-47F3-9B25-ECD4DBC52090}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{023F8229-9F0F-47F3-9B25-ECD4DBC52090}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
