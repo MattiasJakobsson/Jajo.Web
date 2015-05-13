@@ -7,23 +7,23 @@ namespace SuperGlue.Web.Diagnostics
 {
     public class ManageDiagnosticsInformationInMemory : IManageDiagnosticsInformation
     {
-        private readonly IDictionary<string, ICollection<TimeSpan>> _routeExecutionTimes = new ConcurrentDictionary<string, ICollection<TimeSpan>>();
-        private readonly IDictionary<string, ICollection<TimeSpan>> _urlExecutionTimes = new ConcurrentDictionary<string, ICollection<TimeSpan>>();
+        private readonly IDictionary<string, ConcurrentLruLSet<TimeSpan>> _routeExecutionTimes = new ConcurrentDictionary<string, ConcurrentLruLSet<TimeSpan>>();
+        private readonly IDictionary<string, ConcurrentLruLSet<TimeSpan>> _urlExecutionTimes = new ConcurrentDictionary<string, ConcurrentLruLSet<TimeSpan>>();
 
         public void RouteExecuted(object routedTo, TimeSpan executionTime)
         {
             if(!_routeExecutionTimes.ContainsKey(routedTo.ToString()))
-                _routeExecutionTimes[routedTo.ToString()] = new List<TimeSpan>();
+                _routeExecutionTimes[routedTo.ToString()] = new ConcurrentLruLSet<TimeSpan>(100);
 
-            _routeExecutionTimes[routedTo.ToString()].Add(executionTime);
+            _routeExecutionTimes[routedTo.ToString()].Push(executionTime);
         }
 
         public void UrlVisited(Uri url, TimeSpan executionTime)
         {
             if (!_urlExecutionTimes.ContainsKey(url.ToString()))
-                _urlExecutionTimes[url.ToString()] = new List<TimeSpan>();
+                _urlExecutionTimes[url.ToString()] = new ConcurrentLruLSet<TimeSpan>(100);
 
-            _urlExecutionTimes[url.ToString()].Add(executionTime);
+            _urlExecutionTimes[url.ToString()].Push(executionTime);
         }
 
         public IDictionary<string, TimeSpan> GetRoutesWithAverageExecutionTime()

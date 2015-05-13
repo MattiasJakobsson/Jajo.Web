@@ -10,5 +10,10 @@ namespace SuperGlue.Web.Sample.SubApplication
         {
             Console.WriteLine("Test from subapp");
         }
+
+        public void Shutdown(IDictionary<string, object> applicationData)
+        {
+            Console.WriteLine("Test from subapp. Shutting down!");
+        }
     }
 }

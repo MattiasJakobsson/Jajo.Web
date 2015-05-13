@@ -92,7 +92,7 @@ namespace SuperGlue.Web.Sample.AspNet
 
             Partials.Initialize(partialFlow);
 
-            app.Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions(y => y.ToLower()))
+            app.Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions((url, environment) => url.ToLower()))
                 .Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)app
                             .New()

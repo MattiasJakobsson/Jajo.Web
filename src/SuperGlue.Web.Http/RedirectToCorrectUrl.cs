@@ -26,7 +26,7 @@ namespace SuperGlue.Web.Http
             var original = environment.GetUri().ToString();
             var currentUri = original;
 
-            currentUri = _options.CorrectionFunctions.Aggregate(currentUri, (current, correctionFunction) => correctionFunction(current));
+            currentUri = _options.CorrectionFunctions.Aggregate(currentUri, (current, correctionFunction) => correctionFunction(current, environment));
 
             if (currentUri != original)
             {
@@ -41,11 +41,11 @@ namespace SuperGlue.Web.Http
 
     public class RedirectToCorrectUrlOptions
     {
-        public RedirectToCorrectUrlOptions(params Func<string, string>[] correctionFunctions)
+        public RedirectToCorrectUrlOptions(params Func<string, IDictionary<string, object>, string>[] correctionFunctions)
         {
             CorrectionFunctions = correctionFunctions;
         }
 
-        public IEnumerable<Func<string, string>> CorrectionFunctions { get; private set; }
+        public IEnumerable<Func<string, IDictionary<string, object>, string>> CorrectionFunctions { get; private set; }
     }
 }
