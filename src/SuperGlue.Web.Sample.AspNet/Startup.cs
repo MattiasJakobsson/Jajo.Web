@@ -24,6 +24,7 @@ using SuperGlue.Web.Security.Authorization;
 using SuperGlue.Web.StructureMap;
 using SuperGlue.Web.UnitOfWork;
 using SuperGlue.Web.Validation;
+using SuperGlue.Web.Validation.InputValidation;
 
 [assembly: OwinStartup(typeof(Startup))]
 namespace SuperGlue.Web.Sample.AspNet
@@ -103,7 +104,7 @@ namespace SuperGlue.Web.Sample.AspNet
                 .Use<BindModels>(modelBindingCollection)
                 .Use<HandleUnitOfWork>()
                 .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
-                .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new TestValidator()))
+                .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))
                 .Use<ExecuteEndpoint>()
                 .Use<RenderOutput>(rendererHandler);
         }
@@ -114,20 +115,6 @@ namespace SuperGlue.Web.Sample.AspNet
         public bool IsAuthorized(IEnumerable<AuthenticationToken> tokens, IDictionary<string, object> environment)
         {
             return !environment["owin.RequestPath"].ToString().Contains("unauthorized");
-        }
-    }
-
-    public class TestValidator : IValidateRequest
-    {
-        public ValidationResult Validate(IDictionary<string, object> environment)
-        {
-            if (environment["owin.RequestPath"].ToString().Contains("invalid"))
-                return new ValidationResult(new List<ValidationResult.ValidationError>
-                {
-                    new ValidationResult.ValidationError("Key", "Error")
-                });
-
-            return new ValidationResult(new List<ValidationResult.ValidationError>());
         }
     }
 

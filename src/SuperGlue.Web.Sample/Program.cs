@@ -24,6 +24,7 @@ using SuperGlue.Web.Security.Authorization;
 using SuperGlue.Web.StructureMap;
 using SuperGlue.Web.UnitOfWork;
 using SuperGlue.Web.Validation;
+using SuperGlue.Web.Validation.InputValidation;
 
 namespace SuperGlue.Web.Sample
 {
@@ -87,7 +88,7 @@ namespace SuperGlue.Web.Sample
             var diagnosticsManager = container.GetInstance<IManageDiagnosticsInformation>();
 
             app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager))
-                .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment["owin.RequestPath"].ToString(), (int)time.TotalMilliseconds)))
+                .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment.GetUri().ToString(), (int)time.TotalMilliseconds)))
                 .Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions((url, environment) => url.ToLower()))
                 .Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)app
@@ -116,7 +117,7 @@ namespace SuperGlue.Web.Sample
                 .Use<BindModels>(modelBindingCollection)
                 .Use<HandleUnitOfWork>()
                 .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
-                .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new TestValidator()))
+                .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))
                 .Use<ExecuteEndpoint>()
                 .Use<RenderOutput>(rendererHandler);
         }
@@ -127,20 +128,6 @@ namespace SuperGlue.Web.Sample
         public bool IsAuthorized(IEnumerable<AuthenticationToken> tokens, IDictionary<string, object> environment)
         {
             return !environment["owin.RequestPath"].ToString().Contains("unauthorized");
-        }
-    }
-
-    public class TestValidator : IValidateRequest
-    {
-        public ValidationResult Validate(IDictionary<string, object> environment)
-        {
-            if (environment["owin.RequestPath"].ToString().Contains("invalid"))
-                return new ValidationResult(new List<ValidationResult.ValidationError>
-                {
-                    new ValidationResult.ValidationError("Key", "Error")
-                });
-
-            return new ValidationResult(new List<ValidationResult.ValidationError>());
         }
     }
 

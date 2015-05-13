@@ -7,10 +7,15 @@ namespace SuperGlue.Web
     {
         public static T Bind<T>(this IDictionary<string, object> environment)
         {
+            return (T) environment.Bind(typeof (T));
+        }
+
+        public static object Bind(this IDictionary<string, object> environment, Type type)
+        {
             var modelBinder = environment.Get<Func<Type, object>>("superglue.ModelBinder");
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
-            return requestTypedParameters.ContainsKey(typeof(T)) ? (T)requestTypedParameters[typeof(T)] : (T)modelBinder(typeof(T));
+            return requestTypedParameters.ContainsKey(type) ? requestTypedParameters[type] : modelBinder(type);
         }
 
         public static void Set<T>(this IDictionary<string, object> environment, T data)
