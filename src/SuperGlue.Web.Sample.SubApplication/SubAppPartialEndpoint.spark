@@ -1,0 +1,3 @@
+﻿<viewdata model="SuperGlue.Web.Sample.SubApplication.SubAppPartialEndpointQueryResult" />
+
+<h2>${Model.Message}</h2>

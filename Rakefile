@@ -19,7 +19,7 @@ desc 'Perform fast build (warn: doesn\'t d/l deps)'
 build :quick_compile do |b|
   b.prop 'Configuration', Configuration
   b.logging = 'detailed'
-  b.sln     = 'src/Jajo.Web.sln'
+  b.sln     = 'src/SuperGlue.sln'
 end
 
 task :paket_bootstrap do
@@ -34,7 +34,7 @@ end
 desc 'Perform full build'
 build :compile => [:versioning, :restore, :asmver] do |b|
   b.prop 'Configuration', Configuration
-  b.sln = 'src/Jajo.Web.sln'
+  b.sln = 'src/SuperGlue.sln'
 end
 
 directory 'build/pkg'

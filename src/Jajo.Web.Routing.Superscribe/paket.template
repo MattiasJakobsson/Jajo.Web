@@ -1,8 +1,0 @@
-﻿type file
-id Jajo.Web.Routing.Superscribe
-version 1.0
-authors Mattias Jakobsson
-description
-        Middleware
-files
-    bin/Release/Jajo.Web.Routing.Superscribe.dll ==> lib

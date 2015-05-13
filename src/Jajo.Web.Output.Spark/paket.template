@@ -1,8 +1,0 @@
-﻿type file
-id Jajo.Web.Output.Spark
-version 1.0
-authors Mattias Jakobsson
-description
-        Middleware
-files
-    bin/Release/Jajo.Web.Output.Spark.dll ==> lib

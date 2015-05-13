@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
-namespace Jajo.Web
+namespace SuperGlue.Web
 {
     internal static class RouteExtensions
     {
@@ -14,17 +14,17 @@ namespace Jajo.Web
 
         public static string RouteTo(this IDictionary<string, object> environment, object input)
         {
-            var reverseRoute = environment.Get<Func<object, IDictionary<string, object>, string>>("jajo.ReverseRoute");
+            var reverseRoute = environment.Get<Func<object, IDictionary<string, object>, string>>("superglue.ReverseRoute");
 
             if (reverseRoute == null)
                 return "";
 
-            var inputToRoute = environment.Get<IDictionary<Type, MethodInfo>>("jajo.RoutedEndpoints.Inputs");
+            var inputToRoute = environment.Get<IDictionary<Type, MethodInfo>>("superglue.RoutedEndpoints.Inputs");
 
             if (inputToRoute == null || !inputToRoute.ContainsKey(input.GetType()))
                 return "";
 
-            var inputParameters = environment.Get<Func<object, IDictionary<string, object>>>("jajo.RoutedEnpoints.ParametersFromInput")(input);
+            var inputParameters = environment.Get<Func<object, IDictionary<string, object>>>("superglue.RoutedEnpoints.ParametersFromInput")(input);
 
             return reverseRoute(inputToRoute[input.GetType()], inputParameters);
         }

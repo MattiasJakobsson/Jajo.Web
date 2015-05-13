@@ -1,0 +1,8 @@
+﻿type file
+id SuperGlue.Web.ModelBinding
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Web.ModelBinding.dll ==> lib

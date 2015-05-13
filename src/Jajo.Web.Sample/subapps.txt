@@ -1,1 +1,0 @@
-﻿..\..\..\Jajo.Web.Sample.SubApplication\bin\Debug

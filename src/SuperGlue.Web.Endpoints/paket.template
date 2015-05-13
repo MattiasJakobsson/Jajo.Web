@@ -1,0 +1,8 @@
+﻿type file
+id SuperGlue.Web.Endpoints
+version 1.0
+authors Mattias Jakobsson
+description
+        Endpoints middleware
+files
+    bin/Release/SuperGlue.Web.Endpoints.dll ==> lib

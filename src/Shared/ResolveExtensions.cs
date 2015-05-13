@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Jajo.Web
+namespace SuperGlue.Web
 {
     internal static class ResolveExtensions
     {
@@ -13,7 +13,7 @@ namespace Jajo.Web
 
         public static object Resolve(this IDictionary<string, object> environment, Type serviceType)
         {
-            return environment.Get<Func<Type, object>>("jajo.ResolveInstance")(serviceType);
+            return environment.Get<Func<Type, object>>("superglue.ResolveInstance")(serviceType);
         }
 
         public static IEnumerable<TService> ResolveAll<TService>(this IDictionary<string, object> environment)
@@ -23,7 +23,7 @@ namespace Jajo.Web
 
         public static IEnumerable<object> ResolveAll(this IDictionary<string, object> environment, Type serviceType)
         {
-            return environment.Get<Func<Type, IEnumerable<object>>>("jajo.ResolveAllInstances")(serviceType);
+            return environment.Get<Func<Type, IEnumerable<object>>>("superglue.ResolveAllInstances")(serviceType);
         }
     }
 }

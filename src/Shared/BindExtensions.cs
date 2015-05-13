@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Jajo.Web
+namespace SuperGlue.Web
 {
     internal static class BindExtensions
     {
         public static T Bind<T>(this IDictionary<string, object> environment)
         {
-            var modelBinder = environment.Get<Func<Type, object>>("jajo.ModelBinder");
+            var modelBinder = environment.Get<Func<Type, object>>("superglue.ModelBinder");
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
             return requestTypedParameters.ContainsKey(typeof(T)) ? (T)requestTypedParameters[typeof(T)] : (T)modelBinder(typeof(T));
@@ -22,12 +22,12 @@ namespace Jajo.Web
 
         private static IDictionary<Type, object> GetRequestTypedParameters(IDictionary<string, object> environment)
         {
-            var requestTypedParameters = environment.Get<IDictionary<Type, object>>("jajo.RequestTypedParameters");
+            var requestTypedParameters = environment.Get<IDictionary<Type, object>>("superglue.RequestTypedParameters");
 
             if (requestTypedParameters != null) return requestTypedParameters;
 
             requestTypedParameters = new Dictionary<Type, object>();
-            environment["jajo.RequestTypedParameters"] = requestTypedParameters;
+            environment["superglue.RequestTypedParameters"] = requestTypedParameters;
 
             return requestTypedParameters;
         }
