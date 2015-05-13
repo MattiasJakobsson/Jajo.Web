@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using StructureMap;
 using SuperGlue.Web.Configuration;
 
@@ -17,6 +16,7 @@ namespace SuperGlue.Web.StructureMap
             yield return new ConfigurationSetupResult("superglue.ContainerSetup", environment =>
             {
                 var currentContainer = environment.GetContainer();
+                var assemblies = environment.GetAssemblies();
 
                 environment["superglue.ResolveInstance"] = (Func<Type, object>)(x =>
                 {
@@ -42,7 +42,15 @@ namespace SuperGlue.Web.StructureMap
                     }
                 });
 
+                environment["superglue.Container.RegisterTransient"] = (Action<Type, Type>)((serviceType, implimentationType) => currentContainer.Configure(y => y.For(serviceType).Use(implimentationType)));
                 environment["superglue.Container.RegisterSingleton"] = (Action<Type, object>)((type, instance) => currentContainer.Configure(y => y.For(type).Singleton().Use(instance)));
+                environment["superglue.Container.RegisterAllClosing"] = (Action<Type>)(type => currentContainer.Configure(y => y.Scan(z =>
+                {
+                    foreach (var assembly in assemblies)
+                        z.Assembly(assembly);
+
+                    z.ConnectImplementationsToTypesClosing(type);
+                })));
             }, "superglue.StructureMap.ContainerSetup");
         }
 

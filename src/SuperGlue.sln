@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.EventStore", "Sup
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.EventStore.Timeouts.RavenDb", "SuperGlue.EventStore.Timeouts.RavenDb\SuperGlue.EventStore.Timeouts.RavenDb.csproj", "{4A84F4AE-E73D-4D72-8B67-F0C7D546DE9E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.RavenDb", "SuperGlue.RavenDb\SuperGlue.RavenDb.csproj", "{D1EE2D50-4338-4024-BC5D-9FCF24C2AA90}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,10 @@ Global
 		{4A84F4AE-E73D-4D72-8B67-F0C7D546DE9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4A84F4AE-E73D-4D72-8B67-F0C7D546DE9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4A84F4AE-E73D-4D72-8B67-F0C7D546DE9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1EE2D50-4338-4024-BC5D-9FCF24C2AA90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1EE2D50-4338-4024-BC5D-9FCF24C2AA90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1EE2D50-4338-4024-BC5D-9FCF24C2AA90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1EE2D50-4338-4024-BC5D-9FCF24C2AA90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
