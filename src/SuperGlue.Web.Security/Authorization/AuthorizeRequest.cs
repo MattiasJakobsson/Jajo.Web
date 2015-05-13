@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using SuperGlue.Security.Authentication;
 
 namespace SuperGlue.Web.Security.Authorization
 {

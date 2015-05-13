@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SuperGlue.Web.Security.Authorization
+namespace SuperGlue.Security.Authentication
 {
     public class AuthenticationToken
     {

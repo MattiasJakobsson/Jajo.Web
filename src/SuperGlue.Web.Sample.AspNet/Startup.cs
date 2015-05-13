@@ -5,7 +5,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin;
-using SuperGlue.Web.Authorization;
+using Owin;
+using StructureMap;
+using SuperGlue.Security.Authentication;
 using SuperGlue.Web.Configuration;
 using SuperGlue.Web.Endpoints;
 using SuperGlue.Web.ExceptionManagement;
@@ -18,11 +20,10 @@ using SuperGlue.Web.RequestBranching;
 using SuperGlue.Web.Routing.Superscribe;
 using SuperGlue.Web.Routing.Superscribe.Conventional;
 using SuperGlue.Web.Sample.AspNet;
+using SuperGlue.Web.Security.Authorization;
 using SuperGlue.Web.StructureMap;
 using SuperGlue.Web.UnitOfWork;
 using SuperGlue.Web.Validation;
-using Owin;
-using StructureMap;
 
 [assembly: OwinStartup(typeof(Startup))]
 namespace SuperGlue.Web.Sample.AspNet

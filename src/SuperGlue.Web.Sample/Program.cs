@@ -6,7 +6,9 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
-using SuperGlue.Web.Authorization;
+using Owin;
+using StructureMap;
+using SuperGlue.Security.Authentication;
 using SuperGlue.Web.Configuration;
 using SuperGlue.Web.Diagnostics;
 using SuperGlue.Web.Endpoints;
@@ -19,11 +21,10 @@ using SuperGlue.Web.PartialRequests;
 using SuperGlue.Web.RequestBranching;
 using SuperGlue.Web.Routing.Superscribe;
 using SuperGlue.Web.Routing.Superscribe.Conventional;
+using SuperGlue.Web.Security.Authorization;
 using SuperGlue.Web.StructureMap;
 using SuperGlue.Web.UnitOfWork;
 using SuperGlue.Web.Validation;
-using Owin;
-using StructureMap;
 
 namespace SuperGlue.Web.Sample
 {

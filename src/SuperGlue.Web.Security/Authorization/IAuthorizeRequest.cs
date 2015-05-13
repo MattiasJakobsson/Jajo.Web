@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SuperGlue.Security.Authentication;
 
 namespace SuperGlue.Web.Security.Authorization
 {
