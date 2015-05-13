@@ -78,6 +78,7 @@
     <Compile Include="Messages\ProjectionFailed.cs" />
     <Compile Include="ProcessManagers\BaseProcessManager.cs" />
     <Compile Include="ProcessManagers\ConfigureProcessManagers.cs" />
+    <Compile Include="ProcessManagers\ExecuteProcessManager.cs" />
     <Compile Include="ProcessManagers\InitializeProcessManagers.cs" />
     <Compile Include="ProcessManagers\ProcessManagerSubscription.cs" />
     <Compile Include="ProcessManagers\IInitializeProcessManagers.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="ProcessManagers\EventMappingContext.cs" />
     <Compile Include="ProcessManagers\IProcessManagerState.cs" />
     <Compile Include="ProcessManagers\IManageProcess.cs" />
+    <Compile Include="ProcessManagers\SetLastEvent.cs" />
     <Compile Include="Projections\ConfigureProjections.cs" />
     <Compile Include="Projections\ExecuteProjection.cs" />
     <Compile Include="IFindPartitionKey.cs" />
