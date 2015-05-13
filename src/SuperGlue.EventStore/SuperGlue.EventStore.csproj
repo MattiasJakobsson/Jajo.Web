@@ -73,7 +73,9 @@
     <Compile Include="IInstantiateAggregate.cs" />
     <Compile Include="IManageChanges.cs" />
     <Compile Include="Data\Repository.cs" />
+    <Compile Include="Messages\ServiceEventProcessingFailed.cs" />
     <Compile Include="Messages\ProjectionFailed.cs" />
+    <Compile Include="Projections\ConfigureProjections.cs" />
     <Compile Include="Projections\IFindPartitionKey.cs" />
     <Compile Include="Projections\IInitializeProjections.cs" />
     <Compile Include="Projections\IManageEventNumbersForProjections.cs" />
@@ -84,6 +86,12 @@
     <Compile Include="Projections\InitializeProjections.cs" />
     <Compile Include="Projections\IProjectionState.cs" />
     <Compile Include="Projections\ProjectionSubscription.cs" />
+    <Compile Include="Subscribers\CatchUpServiceSubscription.cs" />
+    <Compile Include="Subscribers\InitializeServices.cs" />
+    <Compile Include="Subscribers\LiveOnlyServiceSubscription.cs" />
+    <Compile Include="Subscribers\IInitializeServices.cs" />
+    <Compile Include="Subscribers\IManageEventNumbersForSubscriber.cs" />
+    <Compile Include="Subscribers\IServiceSubscription.cs" />
     <Compile Include="Timeouts\DefaultTimeOutManager.cs" />
     <Compile Include="Timeouts\IManageTimeOuts.cs" />
     <Compile Include="InstantiateAggregate.cs" />
@@ -107,6 +115,7 @@
       <Name>SuperGlue.Web.Configuration</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

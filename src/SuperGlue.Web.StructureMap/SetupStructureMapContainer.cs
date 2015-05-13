@@ -51,6 +51,13 @@ namespace SuperGlue.Web.StructureMap
 
                     z.ConnectImplementationsToTypesClosing(type);
                 })));
+                environment["superglue.Container.RegisterAll"] = (Action<Type>)(type => currentContainer.Configure(y => y.Scan(z =>
+                {
+                    foreach (var assembly in assemblies)
+                        z.Assembly(assembly);
+
+                    z.AddAllTypesOf(type);
+                })));
             }, "superglue.StructureMap.ContainerSetup");
         }
 
