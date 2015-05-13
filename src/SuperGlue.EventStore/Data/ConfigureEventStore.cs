@@ -4,7 +4,7 @@ using EventStore.ClientAPI;
 using SuperGlue.Web;
 using SuperGlue.Web.Configuration;
 
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.Data
 {
     public class ConfigureEventStore : ISetupConfigurations
     {

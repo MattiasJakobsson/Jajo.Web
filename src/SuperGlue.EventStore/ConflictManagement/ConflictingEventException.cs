@@ -1,6 +1,6 @@
 using System;
 
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.ConflictManagement
 {
     public class ConflictingEventException : Exception
     {

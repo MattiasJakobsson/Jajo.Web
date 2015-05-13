@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using EventStore.ClientAPI;
 
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.ConflictManagement
 {
     public interface ICheckConflicts
     {

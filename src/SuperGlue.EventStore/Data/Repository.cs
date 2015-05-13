@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.Exceptions;
+using SuperGlue.EventStore.ConflictManagement;
 using SuperGlue.EventStore.Timeouts;
 
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.Data
 {
     public class Repository : IRepository
     {
@@ -139,7 +140,7 @@ namespace SuperGlue.EventStore
 
             var newEvents = events.ToList();
 
-            SaveEventsToStream(stream, actionMetaData.ExpectedVersion.HasValue ? actionMetaData.ExpectedVersion.Value : ExpectedVersion.Any, newEvents, commitHeaders);
+            SaveEventsToStream(stream, actionMetaData.ExpectedVersion ?? ExpectedVersion.Any, newEvents, commitHeaders);
         }
 
         public void SaveToStream(string stream, IEnumerable<object> events, Guid commitId, string context, ActionMetaData actionMetaData)
@@ -155,7 +156,7 @@ namespace SuperGlue.EventStore
             var streamName = _handleStreamNames.GetStreamName(stream, context);
             var newEvents = events.ToList();
 
-            SaveEventsToStream(streamName, actionMetaData.ExpectedVersion.HasValue ? actionMetaData.ExpectedVersion.Value : ExpectedVersion.Any, newEvents, commitHeaders);
+            SaveEventsToStream(streamName, actionMetaData.ExpectedVersion ?? ExpectedVersion.Any, newEvents, commitHeaders);
         }
 
         public void SaveToNamedStream(string stream, IEnumerable<object> events, Guid commitId, string context, ActionMetaData actionMetaData)

@@ -6,6 +6,7 @@ nuget Microsoft.Owin.Host.SystemWeb
 nuget Microsoft.Owin.SelfHost
 nuget Newtonsoft.Json
 nuget Owin
+nuget RavenDB.Client
 nuget Spark
 nuget Superscribe
 nuget structuremap

@@ -1,0 +1,8 @@
+﻿type file
+id SuperGlue.EventStore.Timeouts.RavenDb
+version 1.0
+authors Mattias Jakobsson
+description
+        Authorization middleware
+files
+    bin/Release/SuperGlue.EventStore.Timeouts.RavenDb.dll ==> lib

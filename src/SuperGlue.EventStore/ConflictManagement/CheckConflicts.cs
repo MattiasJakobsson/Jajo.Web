@@ -3,7 +3,7 @@ using System.Linq;
 using EventStore.ClientAPI;
 using SuperGlue.Web;
 
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.ConflictManagement
 {
     public class CheckConflicts : ICheckConflicts
     {

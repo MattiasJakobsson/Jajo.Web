@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.Data
 {
     public interface IRepository
     {

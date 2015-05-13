@@ -1,4 +1,4 @@
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.ConflictManagement
 {
     public interface ICheckConflict<in TNewEvent, in TStoredEvent>
     {

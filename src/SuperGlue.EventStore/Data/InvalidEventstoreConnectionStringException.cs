@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.Data
 {
     public class InvalidEventstoreConnectionStringException : Exception
     {

@@ -7,7 +7,7 @@ using EventStore.ClientAPI;
 using EventStore.ClientAPI.Common.Log;
 using EventStore.ClientAPI.SystemData;
 
-namespace SuperGlue.EventStore
+namespace SuperGlue.EventStore.Data
 {
     public class EventStoreConnectionString
     {
@@ -105,12 +105,12 @@ namespace SuperGlue.EventStore
                     Password = options["Password"];
             }
 
-            public string Ip { get; private set; }
-            public int HttpPort { get; private set; }
-            public int TcpPort { get; private set; }
-            public string UserName { get; private set; }
-            public string Password { get; private set; }
-            public ConnectionApi Api { get; private set; }
+            private string Ip { get; set; }
+            private int HttpPort { get; set; }
+            private int TcpPort { get; set; }
+            private string UserName { get; set; }
+            private string Password { get; set; }
+            private ConnectionApi Api { get; set; }
 
             public IPEndPoint GetIpEndPoint()
             {
