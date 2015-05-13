@@ -30,6 +30,6 @@ namespace SuperGlue.Web.UnitOfWork
 
             foreach (var unitOfWork in unitOfWorks)
                 unitOfWork.Commit();
-        } 
+        }
     }
 }
