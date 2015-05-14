@@ -6,32 +6,31 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
+using SuperGlue.Configuration;
 using SuperGlue.EventStore.Messages;
 
 namespace SuperGlue.EventStore.Subscribers
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class InitializeSubscribers : IInitializeSubscribers
+    public class InitializeSubscribers : IStartApplication
     {
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly IWriteToErrorStream _writeToErrorStream;
         private readonly IEventStoreConnection _eventStoreConnection;
         private readonly IFindPartitionKey _findPartitionKey;
-        private readonly IDictionary<string, object> _environment;
         private static bool running;
         private readonly IDictionary<string, IServiceSubscription> _serviceSubscriptions = new Dictionary<string, IServiceSubscription>();
 
         private readonly int _dispatchWaitSeconds;
         private readonly int _numberOfEventsPerBatch;
 
-        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection, IFindPartitionKey findPartitionKey, IDictionary<string, object> environment)
+        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection, IFindPartitionKey findPartitionKey)
         {
             _eventSerialization = eventSerialization;
             _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
             _findPartitionKey = findPartitionKey;
-            _environment = environment;
 
             _dispatchWaitSeconds = 1;
 
@@ -46,16 +45,23 @@ namespace SuperGlue.EventStore.Subscribers
                 _numberOfEventsPerBatch = numberOfEventsPerBatch;
         }
 
-        public void Initialize(AppFunc chain, string name)
+        public void Start(IDictionary<string, AppFunc> chains, IDictionary<string, object> environment)
         {
+            if (!chains.ContainsKey("chains.Subscribers"))
+                return;
+
+            var chain = chains["chains.Subscribers"];
+
             running = true;
+
             var streams = ConfigurationManager.AppSettings["EventStore.Streams"].Split(';').ToList();
+            var name = ConfigurationManager.AppSettings["Service.Name"];
 
             foreach (var stream in streams)
-                SubscribeService(chain, name, stream);
+                SubscribeService(chain, name, stream, environment);
         }
 
-        public void Stop()
+        public void ShutDown()
         {
             running = false;
 
@@ -70,7 +76,7 @@ namespace SuperGlue.EventStore.Subscribers
             _writeToErrorStream.Write(new ServiceEventProcessingFailed(service, stream, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
         }
 
-        private void SubscribeService(AppFunc chain, string name, string stream)
+        private void SubscribeService(AppFunc chain, string name, string stream, IDictionary<string, object> environment)
         {
             var liveOnlySubscriptions = ConfigurationManager.AppSettings["Service.Subscription.LiveOnly"] == "true";
             if (!running)
@@ -80,7 +86,7 @@ namespace SuperGlue.EventStore.Subscribers
             {
                 try
                 {
-                    SubscribeService(chain, name, stream, liveOnlySubscriptions);
+                    SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
                     //TODO:Log
 
                     return;
@@ -96,7 +102,7 @@ namespace SuperGlue.EventStore.Subscribers
             }
         }
 
-        private void SubscribeService(AppFunc chain, string name, string stream, bool liveOnlySubscriptions)
+        private void SubscribeService(AppFunc chain, string name, string stream, bool liveOnlySubscriptions, IDictionary<string, object> environment)
         {
             var subscriptionKey = string.Format("{0}-{1}", name, stream);
 
@@ -111,42 +117,42 @@ namespace SuperGlue.EventStore.Subscribers
                 var messageSubscription = Observable
                             .FromEvent<DeSerializationResult>(x => messageProcessor.MessageArrived += x, x => messageProcessor.MessageArrived -= x)
                             .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
-                            .Subscribe(x => PushEventsToService(chain, name, stream, x, !liveOnlySubscriptions));
+                            .Subscribe(x => PushEventsToService(chain, name, stream, x, !liveOnlySubscriptions, environment));
 
                 if (liveOnlySubscriptions)
                 {
                     var eventstoreSubscription = _eventStoreConnection.SubscribeToStreamAsync(stream, true,
                         (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
-                        (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, true, reason, exception)).Result;
+                        (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, true, reason, exception, environment)).Result;
 
                     _serviceSubscriptions[subscriptionKey] = new LiveOnlyServiceSubscription(messageSubscription, eventstoreSubscription);
                 }
                 else
                 {
-                    var manageStreamEventNumbers = _environment.Resolve<IManageEventNumbersForSubscriber>();
+                    var manageStreamEventNumbers = environment.Resolve<IManageEventNumbersForSubscriber>();
 
                     var lastEvent = manageStreamEventNumbers.GetLastEvent(name, stream);
 
                     var eventstoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(stream, lastEvent, true,
                         (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
                         subscriptionDropped:
-                            (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, false, reason, exception));
+                            (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, false, reason, exception, environment));
 
                     _serviceSubscriptions[subscriptionKey] = new CatchUpServiceSubscription(messageSubscription, eventstoreSubscription);
                 }
         }
 
-        private void SubscriptionDropped(AppFunc chain, string name, string stream, bool liveOnlySubscriptions, SubscriptionDropReason reason, Exception exception)
+        private void SubscriptionDropped(AppFunc chain, string name, string stream, bool liveOnlySubscriptions, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)
         {
             if (!running)
                 return;
 
             //TODO:Log
 
-            SubscribeService(chain, name, stream, liveOnlySubscriptions);
+            SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
         }
 
-        private void PushEventsToService(AppFunc chain, string name, string stream, IEnumerable<DeSerializationResult> events, bool catchup)
+        private void PushEventsToService(AppFunc chain, string name, string stream, IEnumerable<DeSerializationResult> events, bool catchup, IDictionary<string, object> environment)
         {
             var eventsList = events.ToList();
 
@@ -162,7 +168,7 @@ namespace SuperGlue.EventStore.Subscribers
             {
                 try
                 {
-                    PushEvents(chain, name, stream, groupedEvent.Select(x => x), groupedEvent.Key, catchup);
+                    PushEvents(chain, name, stream, groupedEvent.Select(x => x), groupedEvent.Key, catchup, environment);
                 }
                 catch (Exception ex)
                 {
@@ -171,20 +177,20 @@ namespace SuperGlue.EventStore.Subscribers
             }
         }
 
-        private void PushEvents(AppFunc chain, string service, string stream, IEnumerable<DeSerializationResult> events, string partitionKey, bool catchup)
+        private void PushEvents(AppFunc chain, string service, string stream, IEnumerable<DeSerializationResult> events, string partitionKey, bool catchup, IDictionary<string, object> environment)
         {
-            var environment = new Dictionary<string, object>();
-            foreach (var item in _environment)
-                environment[item.Key] = item.Value;
+            var requestEnvironment = new Dictionary<string, object>();
+            foreach (var item in environment)
+                requestEnvironment[item.Key] = item.Value;
 
-            environment["superglue.EventStore.Service"] = service;
-            environment["superglue.EventStore.Stream"] = stream;
-            environment["superglue.EventStore.Events"] = events;
-            environment["superglue.EventStore.PartitionKey"] = partitionKey;
-            environment["superglue.EventStore.IsCatchUp"] = catchup;
-            environment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnServiceError(service, stream, evnt.Data, evnt.Metadata, exception));
+            requestEnvironment["superglue.EventStore.Service"] = service;
+            requestEnvironment["superglue.EventStore.Stream"] = stream;
+            requestEnvironment["superglue.EventStore.Events"] = events;
+            requestEnvironment["superglue.EventStore.PartitionKey"] = partitionKey;
+            requestEnvironment["superglue.EventStore.IsCatchUp"] = catchup;
+            requestEnvironment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnServiceError(service, stream, evnt.Data, evnt.Metadata, exception));
 
-            chain(environment);
+            chain(requestEnvironment);
         }
     }
 }

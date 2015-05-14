@@ -6,20 +6,20 @@ using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
+using SuperGlue.Configuration;
 using SuperGlue.EventStore.Messages;
 
 namespace SuperGlue.EventStore.Projections
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
-    public class InitializeProjections : IInitializeProjections
+    public class InitializeProjections : IStartApplication
     {
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly IEnumerable<IEventStoreProjection> _projections;
         private readonly IEventStoreConnection _eventStoreConnection;
         private readonly IWriteToErrorStream _writeToErrorStream;
         private readonly IFindPartitionKey _findPartitionKey;
-        private readonly IDictionary<string, object> _environment;
         private static bool running;
         private readonly IDictionary<string, ProjectionSubscription> _projectionSubscriptions = new Dictionary<string, ProjectionSubscription>();
 
@@ -27,14 +27,13 @@ namespace SuperGlue.EventStore.Projections
         private readonly int _numberOfEventsPerBatch;
 
         public InitializeProjections(IHandleEventSerialization eventSerialization, IEnumerable<IEventStoreProjection> projections, IWriteToErrorStream writeToErrorStream,
-            IEventStoreConnection eventStoreConnection, IFindPartitionKey findPartitionKey, IDictionary<string, object> environment)
+            IEventStoreConnection eventStoreConnection, IFindPartitionKey findPartitionKey)
         {
             _eventSerialization = eventSerialization;
             _projections = projections;
             _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
             _findPartitionKey = findPartitionKey;
-            _environment = environment;
 
             _dispatchWaitSeconds = 1;
 
@@ -49,15 +48,20 @@ namespace SuperGlue.EventStore.Projections
                 _numberOfEventsPerBatch = numberOfEventsPerBatch;
         }
 
-        public void Initialize(AppFunc chain)
+        public void Start(IDictionary<string, AppFunc> chains, IDictionary<string, object> environment)
         {
+            if(!chains.ContainsKey("chains.Projections"))
+                return;
+
+            var chain = chains["chains.Projections"];
+
             running = true;
 
             foreach (var projection in _projections)
-                SubscribeProjection(projection, chain);
+                SubscribeProjection(projection, chain, environment);
         }
 
-        public void Stop()
+        public void ShutDown()
         {
             running = false;
 
@@ -72,7 +76,7 @@ namespace SuperGlue.EventStore.Projections
             _writeToErrorStream.Write(new ProjectionFailed(projection.ProjectionName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
         }
 
-        private void SubscribeProjection(IEventStoreProjection currentEventStoreProjection, AppFunc chain)
+        private void SubscribeProjection(IEventStoreProjection currentEventStoreProjection, AppFunc chain, IDictionary<string, object> environment)
         {
             if (!running)
                 return;
@@ -84,17 +88,17 @@ namespace SuperGlue.EventStore.Projections
 
                 try
                 {
-                    var eventNumberManager = _environment.Resolve<IManageEventNumbersForProjections>();
+                    var eventNumberManager = environment.Resolve<IManageEventNumbersForProjections>();
 
                     var messageProcessor = new MessageProcessor();
                     var messageSubscription = Observable
                         .FromEvent<DeSerializationResult>(x => messageProcessor.MessageArrived += x, x => messageProcessor.MessageArrived -= x)
                         .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
-                        .Subscribe(async x => await PushEventsToProjections(chain, currentEventStoreProjection, x));
+                        .Subscribe(async x => await PushEventsToProjections(chain, currentEventStoreProjection, x, environment));
 
                     var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentEventStoreProjection.ProjectionName, eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName), true,
                         (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
-                        subscriptionDropped: (subscription, reason, exception) => SubscriptionDropped(chain, currentEventStoreProjection, reason, exception));
+                        subscriptionDropped: (subscription, reason, exception) => SubscriptionDropped(chain, currentEventStoreProjection, reason, exception, environment));
 
                     _projectionSubscriptions[currentEventStoreProjection.ProjectionName] = new ProjectionSubscription(messageSubscription, eventStoreSubscription);
 
@@ -112,17 +116,17 @@ namespace SuperGlue.EventStore.Projections
             }
         }
 
-        private void SubscriptionDropped(AppFunc chain, IEventStoreProjection projection, SubscriptionDropReason reason, Exception exception)
+        private void SubscriptionDropped(AppFunc chain, IEventStoreProjection projection, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)
         {
             if (!running)
                 return;
 
             //TODO:Log
 
-            SubscribeProjection(projection, chain);
+            SubscribeProjection(projection, chain, environment);
         }
 
-        private async Task PushEventsToProjections(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events)
+        private async Task PushEventsToProjections(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, IDictionary<string, object> environment)
         {
             var eventsList = events.ToList();
 
@@ -138,7 +142,7 @@ namespace SuperGlue.EventStore.Projections
             {
                 try
                 {
-                    await PushEvents(chain, projection, groupedEvent.Select(x => x), groupedEvent.Key);
+                    await PushEvents(chain, projection, groupedEvent.Select(x => x), groupedEvent.Key, environment);
                 }
                 catch (Exception ex)
                 {
@@ -147,18 +151,18 @@ namespace SuperGlue.EventStore.Projections
             }
         }
 
-        private async Task PushEvents(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, string partitionKey)
+        private async Task PushEvents(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, string partitionKey, IDictionary<string, object> environment)
         {
-            var environment = new Dictionary<string, object>();
-            foreach (var item in _environment)
-                environment[item.Key] = item.Value;
+            var requestEnvironment = new Dictionary<string, object>();
+            foreach (var item in environment)
+                requestEnvironment[item.Key] = item.Value;
 
-            environment["superglue.EventStore.Projection"] = projection;
-            environment["superglue.EventStore.Events"] = events;
-            environment["superglue.EventStore.PartitionKey"] = partitionKey;
-            environment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnProjectionError(projection, evnt.Data, evnt.Metadata, exception));
+            requestEnvironment["superglue.EventStore.Projection"] = projection;
+            requestEnvironment["superglue.EventStore.Events"] = events;
+            requestEnvironment["superglue.EventStore.PartitionKey"] = partitionKey;
+            requestEnvironment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnProjectionError(projection, evnt.Data, evnt.Metadata, exception));
 
-            await chain(environment);
+            await chain(requestEnvironment);
         }
     }
 }

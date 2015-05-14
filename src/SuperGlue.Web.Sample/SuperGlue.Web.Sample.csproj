@@ -59,9 +59,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="paket.references" />
     <None Include="Test.spark">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -1,0 +1,8 @@
+﻿type file
+id SuperGlue.Hosting.Katana
+version 1.0
+authors Mattias Jakobsson
+description
+        SuperGlue katana host
+files
+    bin/Release/SuperGlue.Hosting.Katana.dll ==> lib
