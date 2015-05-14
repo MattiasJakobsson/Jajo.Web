@@ -68,9 +68,9 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
                 .Where(x => x.Key.GetParameters().Length == 1)
                 .ToDictionary(x => x.Key.GetParameters()[0].ParameterType, x => x.Key);
 
-            environmentSettings["superglue.RoutedEndpoints.Inputs"] = inputToEndpoint;
+            environmentSettings[RouteExtensions.RouteConstants.EndpointInputs] = inputToEndpoint;
 
-            environmentSettings["superglue.RoutedEnpoints.ParametersFromInput"] = (Func<object, IDictionary<string, object>>) (x =>
+            environmentSettings[RouteExtensions.RouteConstants.EndpointParametersFromInput] = (Func<object, IDictionary<string, object>>) (x =>
                 {
                     if(!inputToEndpoint.ContainsKey(x.GetType()))
                         return new Dictionary<string, object>();
@@ -87,7 +87,7 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
                         .ToDictionary(y => y.Name, y => y.GetValue(x));
                 });
 
-            environmentSettings["superglue.ReverseRoute"] = (Func<object, IDictionary<string, object>, string>) ((endpoint, parameters) =>
+            environmentSettings[RouteExtensions.RouteConstants.ReverseRoute] = (Func<object, IDictionary<string, object>, string>)((endpoint, parameters) =>
             {
                 var method = endpoint as MethodInfo;
 

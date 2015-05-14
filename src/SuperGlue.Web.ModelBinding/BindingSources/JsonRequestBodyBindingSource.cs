@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace SuperGlue.Web.ModelBinding
+namespace SuperGlue.Web.ModelBinding.BindingSources
 {
     public class JsonRequestBodyBindingSource : IBindingSource
     {

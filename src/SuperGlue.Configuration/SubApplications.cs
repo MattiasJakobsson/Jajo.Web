@@ -45,7 +45,7 @@ namespace SuperGlue.Configuration
                 }
             }
 
-            settings["superglue.SubApplications"] = result;
+            settings[SubApplicationsEnvironmentExtensions.SubApplicationConstants.SubApplications] = result;
 
             return result;
         }

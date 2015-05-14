@@ -34,7 +34,7 @@ namespace SuperGlue.Web.Sample.AspNet
         {
             await environment.GetResponse().Write("Testing if statement");
 
-            environment["superglue.Output"] = "Testing if statement";
+            environment.SetOutput("Testing if statement");
 
             await _next(environment);
         }
@@ -58,7 +58,7 @@ namespace SuperGlue.Web.Sample.AspNet
 
             await environment.GetResponse().Write(exception.Message);
 
-            environment["superglue.Output"] = exception.Message;
+            environment.SetOutput(exception.Message);
 
             await _next(environment);
         }
@@ -80,7 +80,7 @@ namespace SuperGlue.Web.Sample.AspNet
         {
             await environment.GetResponse().Write("Not found!");
 
-            environment["superglue.Output"] = "Not found!";
+            environment.SetOutput("Not found!");
 
             await _next(environment);
         }
@@ -108,7 +108,7 @@ namespace SuperGlue.Web.Sample.AspNet
 
             await environment.GetResponse().Write(result.ToString());
 
-            environment["superglue.Output"] = result.ToString();
+            environment.SetOutput(result.ToString());
 
             await _next(environment);
         }
@@ -130,7 +130,7 @@ namespace SuperGlue.Web.Sample.AspNet
         {
             await environment.GetResponse().Write("Unauthorized");
 
-            environment["superglue.Output"] = "Unauthorized";
+            environment.SetOutput("Unauthorized");
 
             await _next(environment);
         }

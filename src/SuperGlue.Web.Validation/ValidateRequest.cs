@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Web.Validation
@@ -24,10 +23,13 @@ namespace SuperGlue.Web.Validation
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var validationResults = _options.Validators.Select(x => x.Validate(environment)).ToList();
-
             var errors = new List<ValidationResult.ValidationError>();
-            errors.AddRange(validationResults.SelectMany(x => x.Errors));
+
+            foreach (var validator in _options.Validators)
+            {
+                var result = await validator.Validate(environment);
+                errors.AddRange(result.Errors);
+            }
 
             var validationResult = new ValidationResult(errors);
 

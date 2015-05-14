@@ -48,6 +48,12 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\RouteExtensions.cs">
+      <Link>RouteExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
+      <Link>WebEnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="Partials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartPartials.cs" />

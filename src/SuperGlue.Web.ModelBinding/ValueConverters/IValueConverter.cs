@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SuperGlue.Web.ModelBinding
+namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public interface IValueConverter
     {

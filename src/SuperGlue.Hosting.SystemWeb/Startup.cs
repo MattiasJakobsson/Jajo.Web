@@ -13,7 +13,7 @@ namespace SuperGlue.Hosting.SystemWeb
         {
             var settings = new Dictionary<string, object>
             {
-                {"superglue.Hosting.AppBuilder", app}
+                {SystemWebEnvironmentConstants.AppBuilder, app}
             };
 
             var bootstrapper = SuperGlueBootstrapper.Find();

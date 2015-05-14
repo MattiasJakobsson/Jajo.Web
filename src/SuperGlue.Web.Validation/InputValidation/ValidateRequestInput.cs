@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.Validation.InputValidation
 {
     public class ValidateRequestInput : IValidateRequest
     {
-        public ValidationResult Validate(IDictionary<string, object> environment)
+        public async Task<ValidationResult> Validate(IDictionary<string, object> environment)
         {
             var methodEndpoint = environment.GetRouteInformation().RoutedTo as MethodInfo;
 
@@ -18,7 +19,7 @@ namespace SuperGlue.Web.Validation.InputValidation
             if (inputType == null)
                 return new ValidationResult(new List<ValidationResult.ValidationError>());
 
-            var input = environment.Bind(inputType);
+            var input = await environment.Bind(inputType);
 
             if (input == null)
                 return new ValidationResult(new List<ValidationResult.ValidationError>());

@@ -43,18 +43,18 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\BindExtensions.cs">
+      <Link>BindExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\OutputExtensions.cs">
-      <Link>OutputExtensions.cs</Link>
     </Compile>
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>
     <Compile Include="AggregatedTemplateSource.cs" />
     <Compile Include="BaseTemplateSource.cs" />
-    <Compile Include="JajoPartialProvider.cs" />
+    <Compile Include="SuperGluePartialProvider.cs" />
     <Compile Include="ContentType.cs" />
     <Compile Include="JajoViewFolder.cs" />
     <Compile Include="CompositeAction.cs" />

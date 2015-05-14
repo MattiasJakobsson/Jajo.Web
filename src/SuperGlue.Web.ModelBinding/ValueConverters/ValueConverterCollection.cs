@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SuperGlue.Web.ModelBinding
+namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public class ValueConverterCollection : IValueConverterCollection
     {

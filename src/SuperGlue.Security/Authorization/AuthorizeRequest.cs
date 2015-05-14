@@ -32,7 +32,7 @@ namespace SuperGlue.Security.Authorization
             if (isAuthorized)
                 await _next(environment);
             else
-                environment["superglue.AuthorizationFailed"] = true;
+                environment.FailAuthorization();
         }
     }
 

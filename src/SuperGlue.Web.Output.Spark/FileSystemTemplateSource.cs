@@ -38,7 +38,6 @@ namespace SuperGlue.Web.Output.Spark
             Func<TextReader> getContentReader = () => new StreamReader(fileFound.Path);
 
             var fullDirectory = fileFound.Directory + "\\";
-            //var applicationPath = fullDirectory.Replace(fileFound.Root, string.Empty).Substring(1);
 
             return new Template(fileFound.GetFileName(),
                 fullDirectory,

@@ -15,7 +15,7 @@ namespace SuperGlue.Hosting.SystemWeb
 
             var webChain = chains["chains.Web"];
 
-            var appBuilder = environment.Get<IAppBuilder>("superglue.Hosting.AppBuilder");
+            var appBuilder = environment.Get<IAppBuilder>(SystemWebEnvironmentConstants.AppBuilder);
 
             appBuilder.Use<RunAppFunc>(new RunAppFuncOptions(webChain));
         }

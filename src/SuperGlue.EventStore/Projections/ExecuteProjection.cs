@@ -20,9 +20,9 @@ namespace SuperGlue.EventStore.Projections
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var projection = environment.Get<IEventStoreProjection>("superglue.EventStore.Projection");
-            var events = environment.Get<IEnumerable<DeSerializationResult>>("superglue.EventStore.Events");
-            var onError = environment.Get<Action<Exception, DeSerializationResult>>("superglue.EventStore.OnException");
+            var projection = environment.GetEventStoreRequest().Projection;
+            var events = environment.GetEventStoreRequest().Events;
+            var onError = environment.GetEventStoreRequest().OnException;
 
             foreach (var evnt in events)
             {

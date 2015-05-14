@@ -20,9 +20,9 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var processManager = environment.Get<IManageProcess>("superglue.EventStore.ProcessManager");
-            var events = environment.Get<IEnumerable<DeSerializationResult>>("superglue.EventStore.Events");
-            var onError = environment.Get<Action<Exception, DeSerializationResult>>("superglue.EventStore.OnException");
+            var processManager = environment.GetEventStoreRequest().ProcessManager;
+            var events = environment.GetEventStoreRequest().Events;
+            var onError = environment.GetEventStoreRequest().OnException;
 
             processManager.Start();
 

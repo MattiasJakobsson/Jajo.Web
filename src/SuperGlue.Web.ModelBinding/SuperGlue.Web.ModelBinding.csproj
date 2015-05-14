@@ -42,6 +42,9 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\BindExtensions.cs">
+      <Link>BindExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\Cache.cs">
       <Link>Cache.cs</Link>
     </Compile>
@@ -58,31 +61,31 @@
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
     <Compile Include="BindingContext.cs" />
-    <Compile Include="BindingSourceCollection.cs" />
+    <Compile Include="BindingSources\BindingSourceCollection.cs" />
     <Compile Include="CollectionPropertyBinder.cs" />
-    <Compile Include="ComplexTypePropertyBinder.cs" />
+    <Compile Include="PropertyBinders\ComplexTypePropertyBinder.cs" />
     <Compile Include="ConfigureModelBinders.cs" />
-    <Compile Include="CookieBindingSource.cs" />
+    <Compile Include="BindingSources\CookieBindingSource.cs" />
     <Compile Include="DefaultModelBinder.cs" />
-    <Compile Include="FormDataBindingSource.cs" />
+    <Compile Include="BindingSources\FormDataBindingSource.cs" />
     <Compile Include="IBindingContext.cs" />
-    <Compile Include="IBindingSource.cs" />
-    <Compile Include="IBindingSourceCollection.cs" />
+    <Compile Include="BindingSources\IBindingSource.cs" />
+    <Compile Include="BindingSources\IBindingSourceCollection.cs" />
     <Compile Include="IModelBinder.cs" />
     <Compile Include="IModelBinderCollection.cs" />
-    <Compile Include="IPropertyBinder.cs" />
-    <Compile Include="IPropertyBinderCollection.cs" />
-    <Compile Include="IValueConverter.cs" />
-    <Compile Include="IValueConverterCollection.cs" />
-    <Compile Include="JsonRequestBodyBindingSource.cs" />
+    <Compile Include="PropertyBinders\IPropertyBinder.cs" />
+    <Compile Include="PropertyBinders\IPropertyBinderCollection.cs" />
+    <Compile Include="ValueConverters\IValueConverter.cs" />
+    <Compile Include="ValueConverters\IValueConverterCollection.cs" />
+    <Compile Include="BindingSources\JsonRequestBodyBindingSource.cs" />
     <Compile Include="ModelBinderCollection.cs" />
     <Compile Include="BindModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyBinderCollection.cs" />
-    <Compile Include="QueryStringBindingSource.cs" />
-    <Compile Include="RouteParametersBindingSource.cs" />
-    <Compile Include="SimpleTypePropertyBinder.cs" />
-    <Compile Include="ValueConverterCollection.cs" />
+    <Compile Include="PropertyBinders\PropertyBinderCollection.cs" />
+    <Compile Include="BindingSources\QueryStringBindingSource.cs" />
+    <Compile Include="BindingSources\RouteParametersBindingSource.cs" />
+    <Compile Include="PropertyBinders\SimpleTypePropertyBinder.cs" />
+    <Compile Include="ValueConverters\ValueConverterCollection.cs" />
     <Compile Include="ValueConverters\BoolValueConverter.cs" />
     <Compile Include="ValueConverters\ByteValueConverter.cs" />
     <Compile Include="ValueConverters\CharValueConverter.cs" />

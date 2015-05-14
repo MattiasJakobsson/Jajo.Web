@@ -52,6 +52,7 @@
     <Compile Include="ActionMetaData.cs" />
     <Compile Include="AggregateVersionException.cs" />
     <Compile Include="BaseAggregate.cs" />
+    <Compile Include="EventStoreEnvironmentExtensions.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="IWriteToErrorStream.cs" />
     <Compile Include="ConflictManagement\CheckConflicts.cs" />

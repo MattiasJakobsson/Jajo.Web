@@ -63,7 +63,7 @@ namespace SuperGlue.Configuration
 
         protected virtual void RunConfigurations(IEnumerable<Assembly> assemblies, IDictionary<string, object> environment)
         {
-            environment["superglue.Assemblies"] = assemblies;
+            environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.Assemblies] = assemblies;
 
             var configurations = assemblies
                 .SelectMany(x => x.GetTypes())

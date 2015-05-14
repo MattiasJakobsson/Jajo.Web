@@ -23,24 +23,14 @@ namespace SuperGlue.Web.Routing.Superscribe
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var path = environment["owin.RequestPath"].ToString();
-            var method = environment["owin.RequestMethod"].ToString();
+            var path = environment.GetRequest().Path;
+            var method = environment.GetRequest().Method;
 
             var routeData = new RouteData { Environment = environment };
             var walker = _options.RouteEngine.Walker();
             var data = walker.WalkRoute(path, method, routeData);
 
-            environment["route.RoutedTo"] = data.Response;
-            environment["route.Parameters"] = data.Parameters;
-
-            if (_options.ApplicationSettings.ContainsKey("superglue.ReverseRoute"))
-                environment["superglue.ReverseRoute"] = _options.ApplicationSettings["superglue.ReverseRoute"];
-
-            if (_options.ApplicationSettings.ContainsKey("superglue.RoutedEndpoints.Inputs"))
-                environment["superglue.RoutedEndpoints.Inputs"] = _options.ApplicationSettings["superglue.RoutedEndpoints.Inputs"];
-
-            if (_options.ApplicationSettings.ContainsKey("superglue.RoutedEnpoints.ParametersFromInput"))
-                environment["superglue.RoutedEnpoints.ParametersFromInput"] = _options.ApplicationSettings["superglue.RoutedEnpoints.ParametersFromInput"];
+            environment.SetRouteDestination(data.Response, (IDictionary<string, object>)data.Parameters);
 
             await _next(environment);
         }
@@ -48,13 +38,11 @@ namespace SuperGlue.Web.Routing.Superscribe
 
     public class RouteUsingSuperscribeOptions
     {
-        public RouteUsingSuperscribeOptions(IRouteEngine routeEngine, IDictionary<string, object> applicationSettings)
+        public RouteUsingSuperscribeOptions(IRouteEngine routeEngine)
         {
             RouteEngine = routeEngine;
-            ApplicationSettings = applicationSettings;
         }
 
         public IRouteEngine RouteEngine { get; private set; }
-        public IDictionary<string, object> ApplicationSettings { get; private set; }
     }
 }

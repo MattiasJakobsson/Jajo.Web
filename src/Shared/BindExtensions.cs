@@ -6,6 +6,12 @@ namespace SuperGlue
 {
     internal static class BindExtensions
     {
+        public static class BindConstants
+        {
+            public const string ModelBinder = "superglue.ModelBinder";
+            public const string Output = "superglue.Output";
+        }
+
         public static async Task<T> Bind<T>(this IDictionary<string, object> environment)
         {
             return (T) (await environment.Bind(typeof (T)));
@@ -13,7 +19,7 @@ namespace SuperGlue
 
         public static async Task<object> Bind(this IDictionary<string, object> environment, Type type)
         {
-            var modelBinder = environment.Get<Func<Type, Task<object>>>("superglue.ModelBinder");
+            var modelBinder = environment.Get<Func<Type, Task<object>>>(BindConstants.ModelBinder);
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
             return requestTypedParameters.ContainsKey(type) ? requestTypedParameters[type] : await modelBinder(type);
@@ -29,6 +35,23 @@ namespace SuperGlue
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
             requestTypedParameters[dataType] = data;
+        }
+
+        public static void SetOutput<T>(this IDictionary<string, object> environment, T data)
+        {
+            environment.Set(data);
+            environment[BindConstants.Output] = data;
+        }
+
+        public static void SetOutput(this IDictionary<string, object> environment, object data)
+        {
+            environment.Set(data.GetType(), data);
+            environment[BindConstants.Output] = data;
+        }
+
+        public static object GetOutput(this IDictionary<string, object> environment)
+        {
+            return environment.Get<object>(BindConstants.Output);
         }
 
         private static IDictionary<Type, object> GetRequestTypedParameters(IDictionary<string, object> environment)

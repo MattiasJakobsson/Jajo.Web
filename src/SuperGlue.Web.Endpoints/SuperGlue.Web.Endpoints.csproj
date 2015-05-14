@@ -48,9 +48,6 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\OutputExtensions.cs">
-      <Link>OutputExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
@@ -63,6 +60,7 @@
     <Compile Include="ConfigureEndpoints.cs" />
     <Compile Include="EndpointExtensions.cs" />
     <Compile Include="ExecuteActionEndpoint.cs" />
+    <Compile Include="ExecuteFuncEndpoint.cs" />
     <Compile Include="ExecuteSpecificEndpoint.cs" />
     <Compile Include="ExecuteMethodInfoEndpoint.cs" />
     <Compile Include="ExecuteOneModelInOneModelOutEndpoint.cs" />

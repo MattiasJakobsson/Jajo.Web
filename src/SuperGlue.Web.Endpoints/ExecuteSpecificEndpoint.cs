@@ -33,13 +33,14 @@ namespace SuperGlue.Web.Endpoints
 
                 if (executor != null)
                 {
+                    //TODO:Use compiled lambdas for performance
                     await (Task)executor
                         .GetType()
                         .GetMethod("Execute", new[] { routedTo.GetType(), typeof(IDictionary<string, object>) })
                         .Invoke(executor, new[] { routedTo, environment });
 
                     if (environment.GetOutput() == null)
-                        environment["superglue.Output"] = "";
+                        environment.SetOutput("");
                 }
             }
 

@@ -37,7 +37,7 @@ namespace SuperGlue.Web.Sample
             await environment.GetResponse().Write(exception.Message);
             await environment.GetResponse().Write(exception.StackTrace);
 
-            environment["superglue.Output"] = exception.Message;
+            environment.SetOutput(exception.Message);
 
             await _next(environment);
         }
@@ -59,7 +59,7 @@ namespace SuperGlue.Web.Sample
         {
             await environment.GetResponse().Write("Not found!");
 
-            environment["superglue.Output"] = "Not found!";
+            environment.SetOutput("Not found!");
 
             await _next(environment);
         }
@@ -87,7 +87,7 @@ namespace SuperGlue.Web.Sample
 
             await environment.GetResponse().Write(result.ToString());
 
-            environment["superglue.Output"] = result.ToString();
+            environment.SetOutput(result.ToString());
 
             await _next(environment);
         }
@@ -109,7 +109,7 @@ namespace SuperGlue.Web.Sample
         {
             await environment.GetResponse().Write("Unauthorized");
 
-            environment["superglue.Output"] = "Unauthorized";
+            environment.SetOutput("Unauthorized");
 
             await _next(environment);
         }

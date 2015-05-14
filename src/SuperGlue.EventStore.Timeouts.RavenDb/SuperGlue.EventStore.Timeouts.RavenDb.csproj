@@ -46,6 +46,7 @@
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
     <Compile Include="ConfigureRavenTimeoutManager.cs" />
+    <Compile Include="RavenTimeoutManagerEnvironmentConstants.cs" />
     <Compile Include="StoreTimeOutsInRavenDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RavenTimeOutData.cs" />

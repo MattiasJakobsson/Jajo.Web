@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace SuperGlue.Web.ModelBinding
+namespace SuperGlue.Web.ModelBinding.PropertyBinders
 {
     public class PropertyBinderCollection : IPropertyBinderCollection
     {

@@ -1,7 +1,9 @@
 using System.Reflection;
 using System.Threading.Tasks;
+using SuperGlue.Web.ModelBinding.BindingSources;
+using SuperGlue.Web.ModelBinding.ValueConverters;
 
-namespace SuperGlue.Web.ModelBinding
+namespace SuperGlue.Web.ModelBinding.PropertyBinders
 {
     public class SimpleTypePropertyBinder : IPropertyBinder
     {

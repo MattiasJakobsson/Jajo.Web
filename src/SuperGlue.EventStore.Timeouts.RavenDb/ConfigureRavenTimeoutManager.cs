@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Raven.Client;
 using Raven.Client.Document;
 using SuperGlue.Configuration;
 
@@ -11,26 +10,23 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
         {
             yield return new ConfigurationSetupResult("superglue.TimeoutManager.Configure", environment =>
             {
-                var timeOutManagerName = environment.Get<string>("timeoutmanager.Name");
-                var connectionStringName = environment.Get<string>("ravendb.ConnectionStringName") ?? "RavenDb";
-                var databaseName = environment.Get<string>("ravendb.TimeoutManager.Database");
-
-                var defaultDocumentStore = environment.Get<IDocumentStore>("superglue.RavenDb.DocumentStore");
-
-                if (!string.IsNullOrEmpty(databaseName))
-                    defaultDocumentStore.DatabaseCommands.GlobalAdmin.EnsureDatabaseExists(databaseName);
+                var timeOutManagerName = environment.Get<string>(RavenTimeoutManagerEnvironmentConstants.TimeoutManagerName);
+                var connectionStringName = environment.Get<string>(RavenTimeoutManagerEnvironmentConstants.ConnectionStringName) ?? "RavenDb";
+                var databaseName = environment.Get<string>(RavenTimeoutManagerEnvironmentConstants.TimeoutDatabaseName);
 
                 var documentStore = new DocumentStore
                 {
-                    ConnectionStringName = connectionStringName,
-                    DefaultDatabase = string.IsNullOrEmpty(databaseName) ? ((DocumentStore)defaultDocumentStore).DefaultDatabase : databaseName
+                    ConnectionStringName = connectionStringName
                 };
+
+                if (!string.IsNullOrEmpty(databaseName))
+                    documentStore.DefaultDatabase = databaseName;
 
                 documentStore.Initialize();
 
                 new RavenTimeOutDataIndex().Execute(documentStore);
 
-                TimeOutManager.Configure(() => new StoreTimeOutsInRavenDb(defaultDocumentStore, timeOutManagerName, databaseName));
+                TimeOutManager.Configure(() => new StoreTimeOutsInRavenDb(documentStore, timeOutManagerName, databaseName));
             }, "superglue.RavenDb.Configure");
         }
 

@@ -21,9 +21,9 @@ namespace SuperGlue.EventStore.Subscribers
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var events = environment.Get<IEnumerable<DeSerializationResult>>("superglue.EventStore.Events").ToList();
-            var subscriber = environment.Get<string>("superglue.EventStore.Subscriber");
-            var stream = environment.Get<string>("superglue.EventStore.Stream");
+            var events = environment.GetEventStoreRequest().Events.ToList();
+            var subscriber = environment.GetEventStoreRequest().Service;
+            var stream = environment.GetEventStoreRequest().Stream;
             var manageStreamEventNumbers = environment.Resolve<IManageEventNumbersForSubscriber>();
 
             if (events.Any())

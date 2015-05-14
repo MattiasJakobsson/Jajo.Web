@@ -158,10 +158,12 @@ namespace SuperGlue.EventStore.ProcessManagers
             foreach (var item in environment)
                 requestEnvironment[item.Key] = item.Value;
 
-            requestEnvironment["superglue.EventStore.ProcessManager"] = processManager;
-            requestEnvironment["superglue.EventStore.Events"] = events;
-            requestEnvironment["superglue.EventStore.PartitionKey"] = partitionKey;
-            requestEnvironment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnProcessManagerError(processManager, evnt.Data, evnt.Metadata, exception));
+            var request = requestEnvironment.GetEventStoreRequest();
+
+            request.ProcessManager = processManager;
+            request.Events = events;
+            request.PartitionKey = partitionKey;
+            request .OnException = (exception, evnt) => OnProcessManagerError(processManager, evnt.Data, evnt.Metadata, exception);
 
             chain(requestEnvironment);
         }

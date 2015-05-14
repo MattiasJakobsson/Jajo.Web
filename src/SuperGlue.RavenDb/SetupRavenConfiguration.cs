@@ -12,8 +12,10 @@ namespace SuperGlue.RavenDb
         {
             yield return new ConfigurationSetupResult("superglue.RavenDb.Configure", environment =>
             {
-                var connectionStringName = environment.Get<string>("ravendb.ConnectionStringName") ?? "RavenDb";
+                var connectionStringName = environment.Get<string>(RavenEnvironmentConstants.ConnectionStringName) ?? "RavenDb";
                 var documentStore = CreateDocumentStore(connectionStringName);
+
+                environment[RavenEnvironmentConstants.DocumentStore] = documentStore;
 
                 environment.RegisterSingleton(typeof(IDocumentStore), documentStore);
                 environment.RegisterTransient(typeof(IRavenSearch), typeof(DefaultRavenSearch));

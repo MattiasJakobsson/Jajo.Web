@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace SuperGlue.Web.ModelBinding
+namespace SuperGlue.Web.ModelBinding.PropertyBinders
 {
     public class ComplexTypePropertyBinder : IPropertyBinder
     {

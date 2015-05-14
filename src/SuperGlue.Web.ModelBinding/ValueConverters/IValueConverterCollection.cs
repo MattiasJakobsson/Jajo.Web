@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SuperGlue.Web.ModelBinding
+namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public interface IValueConverterCollection : IEnumerable<IValueConverter>
     {

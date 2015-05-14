@@ -16,6 +16,9 @@ namespace SuperGlue.Web.Output
             if (next == null)
                 throw new ArgumentNullException("next");
 
+            if (handleOutputRendering == null)
+                throw new ArgumentNullException("handleOutputRendering");
+
             _next = next;
             _handleOutputRendering = handleOutputRendering;
         }

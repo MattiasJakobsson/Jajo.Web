@@ -63,7 +63,7 @@ namespace SuperGlue.Web.Sample
                             .Use<RollbackUnitOfWork>()
                             .Use<HandledExceptionMiddleware>()
                             .Build())
-                        .AddCase(y => y.Get<bool>("superglue.AuthorizationFailed"), app
+                        .AddCase(y => y.HasAuthorizationFailed(), app
                             .New()
                             .Use<SetStatusCode>(401)
                             .Use<HandleUnauthorizedMiddleware>()
@@ -77,7 +77,7 @@ namespace SuperGlue.Web.Sample
                             .Use<SetStatusCode>(404)
                             .Use<HandleNotFoundMiddleware>()
                             .Build()))
-                    .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define, settings))
+                    .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define))
                     .Use<NestedStructureMapContainer>(container)
                     .Use<HandleExceptions>()
                     .Use<BindModels>(container.GetInstance<IModelBinderCollection>())

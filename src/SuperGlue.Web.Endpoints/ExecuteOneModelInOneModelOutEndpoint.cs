@@ -22,8 +22,7 @@ namespace SuperGlue.Web.Endpoints
             else
                 result = (TOutput)endpointMethod.Invoke(_endpoint, new object[] { await environment.Bind<TInput>() });
 
-            environment.Set(result);
-            environment["superglue.Output"] = result;
+            environment.SetOutput(result);
         }
     }
 }

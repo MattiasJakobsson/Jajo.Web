@@ -25,9 +25,10 @@ namespace SuperGlue.Web.PartialRequests
             foreach (var item in environment)
                 partialEnvironment[item.Key] = item.Value;
 
-            partialEnvironment["route.RoutedTo"] = partial;
+            //TODO:Find parameters and set
+            partialEnvironment.SetRouteDestination(partial);
             var responseBody = new MemoryStream();
-            partialEnvironment["owin.ResponseBody"] = responseBody;
+            partialEnvironment[WebEnvironmentExtensions.OwinConstants.ResponseBody] = responseBody;
 
             if(input != null)
                 partialEnvironment.Set(input.GetType(), input);

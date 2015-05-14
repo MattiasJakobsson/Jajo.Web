@@ -157,10 +157,12 @@ namespace SuperGlue.EventStore.Projections
             foreach (var item in environment)
                 requestEnvironment[item.Key] = item.Value;
 
-            requestEnvironment["superglue.EventStore.Projection"] = projection;
-            requestEnvironment["superglue.EventStore.Events"] = events;
-            requestEnvironment["superglue.EventStore.PartitionKey"] = partitionKey;
-            requestEnvironment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnProjectionError(projection, evnt.Data, evnt.Metadata, exception));
+            var request = requestEnvironment.GetEventStoreRequest();
+
+            request.Projection = projection;
+            request.Events = events;
+            request.PartitionKey = partitionKey;
+            request.OnException = (exception, evnt) => OnProjectionError(projection, evnt.Data, evnt.Metadata, exception);
 
             await chain(requestEnvironment);
         }

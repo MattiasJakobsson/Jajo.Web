@@ -51,6 +51,7 @@
     <Compile Include="DefaultRavenSessions.cs" />
     <Compile Include="IRavenSessions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RavenEnvironmentConstants.cs" />
     <Compile Include="Search\DefaultRavenSearch.cs" />
     <Compile Include="Search\IParseSearchString.cs" />
     <Compile Include="Search\DefaultSearchStringParser.cs" />

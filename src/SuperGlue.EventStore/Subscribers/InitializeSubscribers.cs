@@ -183,12 +183,14 @@ namespace SuperGlue.EventStore.Subscribers
             foreach (var item in environment)
                 requestEnvironment[item.Key] = item.Value;
 
-            requestEnvironment["superglue.EventStore.Service"] = service;
-            requestEnvironment["superglue.EventStore.Stream"] = stream;
-            requestEnvironment["superglue.EventStore.Events"] = events;
-            requestEnvironment["superglue.EventStore.PartitionKey"] = partitionKey;
-            requestEnvironment["superglue.EventStore.IsCatchUp"] = catchup;
-            requestEnvironment["superglue.EventStore.OnException"] = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnServiceError(service, stream, evnt.Data, evnt.Metadata, exception));
+            var request = requestEnvironment.GetEventStoreRequest();
+
+            request.Service = service;
+            request.Stream = stream;
+            request.Events = events;
+            request.PartitionKey = partitionKey;
+            request.IsCatchUp = catchup;
+            request.OnException = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnServiceError(service, stream, evnt.Data, evnt.Metadata, exception));
 
             chain(requestEnvironment);
         }

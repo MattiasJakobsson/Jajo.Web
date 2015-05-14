@@ -21,8 +21,8 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var processManager = environment.Get<IManageProcess>("superglue.EventStore.ProcessManager");
-            var events = environment.Get<IEnumerable<DeSerializationResult>>("superglue.EventStore.Events").ToList();
+            var processManager = environment.GetEventStoreRequest().ProcessManager;
+            var events = environment.GetEventStoreRequest().Events.ToList();
             var eventNumbersForProjections = environment.Resolve<IManageProcessManagerStreamEventNumbers>();
 
             if (events.Any())

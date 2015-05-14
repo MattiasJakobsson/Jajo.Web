@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SuperGlue.Web.ModelBinding
+namespace SuperGlue.Web.ModelBinding.BindingSources
 {
     public interface IBindingSourceCollection : IEnumerable<IBindingSource>
     {
