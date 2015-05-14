@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SuperGlue.Web
+namespace SuperGlue
 {
     internal static class ResolveExtensions
     {

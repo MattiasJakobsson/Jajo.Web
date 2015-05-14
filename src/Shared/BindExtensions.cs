@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SuperGlue.Web
+namespace SuperGlue
 {
     internal static class BindExtensions
     {

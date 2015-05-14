@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 
-namespace SuperGlue.Web
+namespace SuperGlue
 {
     internal static class RouteExtensions
     {

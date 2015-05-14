@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SuperGlue.Web.Configuration;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.Endpoints
 {

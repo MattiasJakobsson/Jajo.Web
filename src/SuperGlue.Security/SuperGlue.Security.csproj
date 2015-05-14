@@ -50,6 +50,8 @@
     <Compile Include="Authentication\IAuthenticationService.cs" />
     <Compile Include="Authentication\IAuthenticationStrategy.cs" />
     <Compile Include="Authentication\IAuthenticationTokenSource.cs" />
+    <Compile Include="Authorization\AuthorizeRequest.cs" />
+    <Compile Include="Authorization\IAuthorizeRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SuperGlue.Web;
-using SuperGlue.Web.Configuration;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.Projections
 {

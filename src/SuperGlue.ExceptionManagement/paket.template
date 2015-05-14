@@ -1,0 +1,8 @@
+﻿type file
+id SuperGlue.ExceptionManagement
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.ExceptionManagement.dll ==> lib

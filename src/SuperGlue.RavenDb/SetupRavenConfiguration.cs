@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using Raven.Client;
 using Raven.Client.Document;
+using SuperGlue.Configuration;
 using SuperGlue.RavenDb.Search;
-using SuperGlue.Web;
-using SuperGlue.Web.Configuration;
 
 namespace SuperGlue.RavenDb
 {

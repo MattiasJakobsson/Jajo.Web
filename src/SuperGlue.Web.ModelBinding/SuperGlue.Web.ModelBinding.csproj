@@ -48,6 +48,9 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\RouteExtensions.cs">
+      <Link>RouteExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
@@ -74,6 +77,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyBinderCollection.cs" />
     <Compile Include="QueryStringBindingSource.cs" />
+    <Compile Include="RouteParametersBindingSource.cs" />
     <Compile Include="SimpleTypePropertyBinder.cs" />
     <Compile Include="ValueConverterCollection.cs" />
     <Compile Include="ValueConverters\BoolValueConverter.cs" />
@@ -96,9 +100,9 @@
     <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SuperGlue.Web.Configuration\SuperGlue.Web.Configuration.csproj">
+    <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
-      <Name>SuperGlue.Web.Configuration</Name>
+      <Name>SuperGlue.Configuration</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

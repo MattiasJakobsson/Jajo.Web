@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Raven.Client.Linq;
-using SuperGlue.Web;
 
 namespace SuperGlue.RavenDb.Search
 {

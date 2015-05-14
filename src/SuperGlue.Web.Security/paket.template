@@ -1,8 +1,0 @@
-﻿type file
-id SuperGlue.Web.Security
-version 1.0
-authors Mattias Jakobsson
-description
-        Authorization middleware
-files
-    bin/Release/SuperGlue.Web.Security.dll ==> lib

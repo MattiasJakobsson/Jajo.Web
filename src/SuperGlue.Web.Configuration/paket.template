@@ -1,8 +1,0 @@
-﻿type file
-id SuperGlue.Web.Configuration
-version 1.0
-authors Mattias Jakobsson
-description
-        Authorization middleware
-files
-    bin/Release/SuperGlue.Web.Configuration.dll ==> lib

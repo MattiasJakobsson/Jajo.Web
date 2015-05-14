@@ -1,8 +1,0 @@
-﻿type file
-id SuperGlue.Web.RequestBranching
-version 1.0
-authors Mattias Jakobsson
-description
-        Middleware
-files
-    bin/Release/SuperGlue.Web.RequestBranching.dll ==> lib

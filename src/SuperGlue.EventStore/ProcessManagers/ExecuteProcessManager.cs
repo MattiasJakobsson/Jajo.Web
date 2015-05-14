@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SuperGlue.Web;
 
 namespace SuperGlue.EventStore.ProcessManagers
 {

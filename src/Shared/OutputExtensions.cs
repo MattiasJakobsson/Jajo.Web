@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SuperGlue.Web
+namespace SuperGlue
 {
     internal static class OutputExtensions
     {

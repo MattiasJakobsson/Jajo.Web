@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Raven.Client;
 using Raven.Client.Document;
-using SuperGlue.Web;
-using SuperGlue.Web.Configuration;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.Timeouts.RavenDb
 {

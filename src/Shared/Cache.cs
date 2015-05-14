@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SuperGlue.Web
+namespace SuperGlue
 {
     [Serializable]
     public class Cache<TKey, TValue> : IEnumerable<TValue>

@@ -1,0 +1,8 @@
+﻿type file
+id SuperGlue.UnitOfWork
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.UnitOfWork.dll ==> lib

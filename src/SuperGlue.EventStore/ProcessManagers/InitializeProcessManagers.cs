@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.EventStore.Messages;
-using SuperGlue.Web;
 
 namespace SuperGlue.EventStore.ProcessManagers
 {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using EventStore.ClientAPI;
-using SuperGlue.Web;
 
 namespace SuperGlue.EventStore.ConflictManagement
 {

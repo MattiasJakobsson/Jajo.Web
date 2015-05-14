@@ -1,5 +1,5 @@
 using System;
-using SuperGlue.Web.UnitOfWork;
+using SuperGlue.UnitOfWork;
 
 namespace SuperGlue.RavenDb.Search
 {

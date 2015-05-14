@@ -1,8 +1,0 @@
-﻿type file
-id SuperGlue.Web.UnitOfWork
-version 1.0
-authors Mattias Jakobsson
-description
-        Middleware
-files
-    bin/Release/SuperGlue.Web.UnitOfWork.dll ==> lib
