@@ -55,6 +55,7 @@
     <Compile Include="IHandleOutputRendering.cs" />
     <Compile Include="IRenderOutput.cs" />
     <Compile Include="OutputRendererBuilder.cs" />
+    <Compile Include="OutputRenderingResult.cs" />
     <Compile Include="RenderOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderOutputAsJson.cs" />

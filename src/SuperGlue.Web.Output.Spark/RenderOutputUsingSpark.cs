@@ -26,7 +26,7 @@ namespace SuperGlue.Web.Output.Spark
                 _grammar = new UseMasterGrammar(engine.Settings.Prefix);
         }
 
-        public async Task<Stream> Render(IDictionary<string, object> environment)
+        public async Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {
             var output = environment.GetOutput();
 
@@ -37,7 +37,8 @@ namespace SuperGlue.Web.Output.Spark
 
             var matchingTemplates = templates.Where(x => x.ModelType == output.GetType()).ToList();
 
-            if (matchingTemplates.Count < 1) return new MemoryStream();
+            if (matchingTemplates.Count < 1) 
+                return new OutputRenderingResult(new MemoryStream(), ContentType.Html);
 
             if (matchingTemplates.Count > 1)
                 throw new Exception(
@@ -54,7 +55,7 @@ namespace SuperGlue.Web.Output.Spark
             var view = sparkViewEntry.CreateInstance() as SuperGlueSparkView;
 
             if (view == null)
-                return new MemoryStream();
+                return new OutputRenderingResult(new MemoryStream(), ContentType.Html);
 
             return await Task.Factory.StartNew(() =>
             {
@@ -66,7 +67,7 @@ namespace SuperGlue.Web.Output.Spark
                 writer.Flush();
                 outputStream.Position = 0;
 
-                return outputStream;
+                return new OutputRenderingResult(outputStream, ContentType.Html);
             });
         }
 

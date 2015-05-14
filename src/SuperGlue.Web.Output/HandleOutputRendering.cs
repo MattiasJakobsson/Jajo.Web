@@ -21,7 +21,13 @@ namespace SuperGlue.Web.Output
             if (renderer == null)
                 return;
 
-            await environment.GetResponse().Write(await renderer.Item2.Render(environment));
+            var result = await renderer.Item2.Render(environment);
+
+            var response = environment.GetResponse();
+
+            response.Headers.ContentType = result.ContentType;
+
+            await response.Write(result.Body);
         }
     }
 }

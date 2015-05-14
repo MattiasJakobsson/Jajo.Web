@@ -8,7 +8,7 @@ namespace SuperGlue.Web.Output
 {
     public class RenderOutputAsJson : IRenderOutput
     {
-        public Task<Stream> Render(IDictionary<string, object> environment)
+        public Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {
             return Task.Factory.StartNew(() =>
             {
@@ -23,7 +23,7 @@ namespace SuperGlue.Web.Output
 
                 stream.Position = 0;
 
-                return stream;
+                return new OutputRenderingResult(stream, "application/json");
             });
         }
     }

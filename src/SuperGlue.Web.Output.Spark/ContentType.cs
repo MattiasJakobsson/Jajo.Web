@@ -20,5 +20,10 @@ namespace SuperGlue.Web.Output.Spark
         {
             return _mimeType;
         }
+
+        public static implicit operator string(ContentType contentType)
+        {
+            return contentType.ToString();
+        }
     }
 }
