@@ -45,7 +45,9 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
-    <Compile Include="RunAppFunc.cs" />
+    <Compile Include="..\Shared\RunAppFunc.cs">
+      <Link>RunAppFunc.cs</Link>
+    </Compile>
     <Compile Include="StartSystemWebHost.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -17,7 +17,7 @@ namespace SuperGlue.Hosting.SystemWeb
 
             var appBuilder = environment.Get<IAppBuilder>(SystemWebEnvironmentConstants.AppBuilder);
 
-            appBuilder.Use<RunAppFunc>(new RunAppFuncOptions(webChain));
+            appBuilder.Use<RunAppFunc>(new RunAppFuncOptions(webChain, environment));
         }
 
         public void ShutDown()

@@ -20,7 +20,7 @@ namespace SuperGlue.Hosting.Katana
 
             var webChain = chains["chains.Web"];
 
-            _webApp = WebApp.Start(url, x => x.Use<RunAppFunc>(new RunAppFuncOptions(webChain)));
+            _webApp = WebApp.Start(url, x => x.Use<RunAppFunc>(new RunAppFuncOptions(webChain, environment)));
         }
 
         public void ShutDown()

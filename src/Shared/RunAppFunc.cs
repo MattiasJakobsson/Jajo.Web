@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace SuperGlue.Hosting.Katana
+namespace SuperGlue.Hosting
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
@@ -25,6 +26,9 @@ namespace SuperGlue.Hosting.Katana
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
+            foreach (var item in _options.ApplicationEnvironment.Where(item => !environment.ContainsKey(item.Key)))
+                environment[item.Key] = item.Value;
+
             await _options.Func(environment);
 
             await _next(environment);
@@ -33,11 +37,13 @@ namespace SuperGlue.Hosting.Katana
 
     public class RunAppFuncOptions
     {
-        public RunAppFuncOptions(AppFunc func)
+        public RunAppFuncOptions(AppFunc func, IDictionary<string, object> applicationEnvironment)
         {
             Func = func;
+            ApplicationEnvironment = applicationEnvironment;
         }
 
-        public AppFunc Func { get; private set; } 
+        public AppFunc Func { get; private set; }
+        public IDictionary<string, object> ApplicationEnvironment { get; private set; }
     }
 }
