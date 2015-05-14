@@ -42,6 +42,12 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\BindExtensions.cs">
+      <Link>BindExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\EnvironmentExtensions.cs">
+      <Link>EnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="Partials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

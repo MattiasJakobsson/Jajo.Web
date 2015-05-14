@@ -29,7 +29,7 @@ namespace SuperGlue.Web.Sample.SubApplication
 
         public string Partial(IDictionary<string, object> environment)
         {
-            using (var streamReader = new StreamReader(Partials.ExecutePartial(environment, typeof(SubAppPartialEndpoint).GetMethod("Query")).Result))
+            using (var streamReader = new StreamReader(Partials.ExecutePartial(environment, typeof(SubAppPartialEndpoint).GetMethod("Query"), Input).Result))
             {
                 return streamReader.ReadToEnd();
             }

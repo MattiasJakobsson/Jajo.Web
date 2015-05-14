@@ -21,9 +21,14 @@ namespace SuperGlue
 
         public static void Set<T>(this IDictionary<string, object> environment, T data)
         {
+            environment.Set(typeof (T), data);
+        }
+
+        public static void Set(this IDictionary<string, object> environment, Type dataType, object data)
+        {
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
-            requestTypedParameters[typeof(T)] = data;
+            requestTypedParameters[dataType] = data;
         }
 
         private static IDictionary<Type, object> GetRequestTypedParameters(IDictionary<string, object> environment)

@@ -16,7 +16,7 @@ namespace SuperGlue.Web.PartialRequests
             partialChain = chain;
         }
 
-        public static async Task<Stream> ExecutePartial(IDictionary<string, object> environment, object partial)
+        public static async Task<Stream> ExecutePartial(IDictionary<string, object> environment, object partial, object input = null)
         {
             if(partialChain == null)
                 throw new InvalidOperationException("You can't use partials when it's not initialized");
@@ -28,6 +28,9 @@ namespace SuperGlue.Web.PartialRequests
             partialEnvironment["route.RoutedTo"] = partial;
             var responseBody = new MemoryStream();
             partialEnvironment["owin.ResponseBody"] = responseBody;
+
+            if(input != null)
+                partialEnvironment.Set(input.GetType(), input);
 
             await partialChain(partialEnvironment);
 
