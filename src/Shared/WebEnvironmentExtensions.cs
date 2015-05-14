@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Web
@@ -109,12 +110,29 @@ namespace SuperGlue.Web
             public string PathBase { get { return _environment.Get<string>(OwinConstants.RequestPathBase); } }
             public string Path { get { return _environment.Get<string>(OwinConstants.RequestPath); } }
             public string QueryString { get { return _environment.Get<string>(OwinConstants.RequestQueryString); } }
+            public ReadableStringCollection Query{get { return new ReadableStringCollection(GetQuery()); }}
             public Uri Uri { get { return new Uri(Scheme + Uri.SchemeDelimiter + Host + PathBase + Path + QueryString); } }
             public string Protocol { get { return _environment.Get<string>(OwinConstants.RequestProtocol); } }
             public RequestHeaders Headers { get { return new RequestHeaders(new ReadOnlyDictionary<string, string[]>(_environment.Get<IDictionary<string, string[]>>(OwinConstants.RequestHeaders))); } }
             public RequestCookieCollection Cookies { get { return new RequestCookieCollection(GetCookies()); } }
             public Stream Body { get { return _environment.Get<Stream>(OwinConstants.RequestBody); } }
             public string LocalIpAddress { get { return _environment.Get<string>(OwinConstants.CommonKeys.LocalIpAddress); } }
+
+            public async Task<ReadableStringCollection> ReadForm()
+            {
+                var form = _environment.Get<ReadableStringCollection>("SuperGlue.Owin.Form#collection");
+                if (form != null) 
+                    return form;
+                
+                string text;
+                using (var reader = new StreamReader(Body, Encoding.UTF8, true, 4 * 1024, true))
+                    text = await reader.ReadToEndAsync();
+
+                form = GetForm(text);
+                Set("SuperGlue.Owin.Form#collection", form);
+
+                return form;
+            }
 
             public int? LocalPort
             {
@@ -203,6 +221,61 @@ namespace SuperGlue.Web
                 }
             }
 
+            private void Set<T>(string key, T value)
+            {
+                _environment[key] = value;
+            }
+
+            private static readonly Action<string, string, object> AppendItemCallback = (name, value, state) =>
+            {
+                var dictionary = (IDictionary<string, List<String>>)state;
+
+                List<string> existing;
+                if (!dictionary.TryGetValue(name, out existing))
+                    dictionary.Add(name, new List<string>(1) { value });
+                else
+                    existing.Add(value);
+            };
+
+            private static ReadableStringCollection GetForm(string text)
+            {
+                var form = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+                var accumulator = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+
+                ParseDelimited(text, new[] { '&' }, AppendItemCallback, accumulator);
+
+                foreach (var kv in accumulator)
+                    form.Add(kv.Key, kv.Value.ToArray());
+
+                return new ReadableStringCollection(form);
+            }
+
+            private static readonly char[] AmpersandAndSemicolon = { '&', ';' };
+
+            private IDictionary<string, string[]> GetQuery()
+            {
+                var query = _environment.Get<IDictionary<string, string[]>>("SuperGlue.Owin.Query#dictionary");
+                if (query == null)
+                {
+                    query = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
+                    Set("SuperGlue.Owin.Query#dictionary", query);
+                }
+
+                var text = QueryString;
+                if (_environment.Get<string>("SuperGlue.Owin.Query#text") == text) 
+                    return query;
+
+                query.Clear();
+                var accumulator = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+                ParseDelimited(text, AmpersandAndSemicolon, AppendItemCallback, accumulator);
+                foreach (var kv in accumulator)
+                    query.Add(kv.Key, kv.Value.ToArray());
+
+                Set("SuperGlue.Owin.Query#text", text);
+
+                return query;
+            }
+
             public class RequestHeaders
             {
                 public RequestHeaders(IReadOnlyDictionary<string, string[]> rawHeaders)
@@ -261,6 +334,58 @@ namespace SuperGlue.Web
                 IEnumerator IEnumerable.GetEnumerator()
                 {
                     return GetEnumerator();
+                }
+            }
+
+            public class ReadableStringCollection : IEnumerable<KeyValuePair<string, string[]>>
+            {
+                public ReadableStringCollection(IDictionary<string, string[]> store)
+                {
+                    if (store == null)
+                        throw new ArgumentNullException("store");
+
+                    Store = store;
+                }
+
+                private IDictionary<string, string[]> Store { get; set; }
+
+                public string this[string key]
+                {
+                    get { return Get(key); }
+                }
+
+                public string Get(string key)
+                {
+                    return GetJoinedValue(key);
+                }
+
+                public IList<string> GetValues(string key)
+                {
+                    string[] values;
+                    Store.TryGetValue(key, out values);
+                    return values;
+                }
+
+                public IEnumerator<KeyValuePair<string, string[]>> GetEnumerator()
+                {
+                    return Store.GetEnumerator();
+                }
+
+                IEnumerator IEnumerable.GetEnumerator()
+                {
+                    return GetEnumerator();
+                }
+
+                private string GetJoinedValue(string key)
+                {
+                    var values = GetUnmodifiedValues(key);
+                    return values == null ? null : string.Join(",", values);
+                }
+
+                private string[] GetUnmodifiedValues(string key)
+                {
+                    string[] values;
+                    return Store.TryGetValue(key, out values) ? values : null;
                 }
             }
         }

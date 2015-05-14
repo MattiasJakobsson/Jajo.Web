@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.ModelBinding
 {
     public interface IModelBinderCollection : IEnumerable<IModelBinder>
     {
-        object Bind(Type type, IBindingContext bindingContext);
-        bool Bind(Type type, IBindingContext bindingContext, object instance);
+        Task<object> Bind(Type type, IBindingContext bindingContext);
+        Task<bool> Bind(Type type, IBindingContext bindingContext, object instance);
     }
 }

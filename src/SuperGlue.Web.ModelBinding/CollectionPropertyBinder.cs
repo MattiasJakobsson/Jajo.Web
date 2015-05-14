@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.ModelBinding
 {
@@ -20,7 +21,7 @@ namespace SuperGlue.Web.ModelBinding
             return typeof (IEnumerable).IsAssignableFrom(propertyInfo.PropertyType);
         }
 
-        public bool Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
+        public Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
         {
             var type = propertyInfo.PropertyType;
             var itemType = type.GetGenericArguments()[0];
@@ -60,7 +61,7 @@ namespace SuperGlue.Web.ModelBinding
 
             propertyInfo.SetValue(instance, collection, null);
 
-            return ((IEnumerable) collection).OfType<object>().Any();
+            return Task.Factory.StartNew(() => ((IEnumerable)collection).OfType<object>().Any());
         }
     }
 }

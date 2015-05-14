@@ -16,9 +16,9 @@ namespace SuperGlue.Web.Endpoints
         public async Task Execute(MethodInfo endpointMethod, IDictionary<string, object> environment)
         {
             if (endpointMethod.IsAsyncMethod())
-                await (Task)endpointMethod.Invoke(_endpoint, new object[] { environment.Bind<TInput>() });
+                await (Task)endpointMethod.Invoke(_endpoint, new object[] { await environment.Bind<TInput>() });
             else
-                endpointMethod.Invoke(_endpoint, new object[] { environment.Bind<TInput>() });
+                endpointMethod.Invoke(_endpoint, new object[] { await environment.Bind<TInput>() });
         }
     }
 }

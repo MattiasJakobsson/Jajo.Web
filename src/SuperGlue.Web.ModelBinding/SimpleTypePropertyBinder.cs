@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.ModelBinding
 {
@@ -18,13 +19,12 @@ namespace SuperGlue.Web.ModelBinding
             return _valueConverterCollection.CanConvert(propertyInfo.PropertyType);
         }
 
-        public bool Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
+        public async Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
         {
-            if (!_bindingSourceCollection.ContainsKey(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment))
+            if (!await _bindingSourceCollection.ContainsKey(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment))
                 return false;
 
-            propertyInfo.SetValue(instance, _valueConverterCollection.Convert(propertyInfo.PropertyType,
-                                                                             _bindingSourceCollection.Get(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment)), new object[0]);
+            propertyInfo.SetValue(instance, _valueConverterCollection.Convert(propertyInfo.PropertyType, _bindingSourceCollection.Get(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment)), new object[0]);
 
             return true;
         }

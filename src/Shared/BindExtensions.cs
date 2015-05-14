@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web
 {
     internal static class BindExtensions
     {
-        public static T Bind<T>(this IDictionary<string, object> environment)
+        public static async Task<T> Bind<T>(this IDictionary<string, object> environment)
         {
-            return (T) environment.Bind(typeof (T));
+            return (T) (await environment.Bind(typeof (T)));
         }
 
-        public static object Bind(this IDictionary<string, object> environment, Type type)
+        public static async Task<object> Bind(this IDictionary<string, object> environment, Type type)
         {
-            var modelBinder = environment.Get<Func<Type, object>>("superglue.ModelBinder");
+            var modelBinder = environment.Get<Func<Type, Task<object>>>("superglue.ModelBinder");
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
-            return requestTypedParameters.ContainsKey(type) ? requestTypedParameters[type] : modelBinder(type);
+            return requestTypedParameters.ContainsKey(type) ? requestTypedParameters[type] : await modelBinder(type);
         }
 
         public static void Set<T>(this IDictionary<string, object> environment, T data)

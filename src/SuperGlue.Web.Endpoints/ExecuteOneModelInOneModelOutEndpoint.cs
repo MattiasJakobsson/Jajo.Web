@@ -18,9 +18,9 @@ namespace SuperGlue.Web.Endpoints
             TOutput result;
 
             if (endpointMethod.IsAsyncMethod())
-                result = await (Task<TOutput>)endpointMethod.Invoke(_endpoint, new object[] { environment.Bind<TInput>() });
+                result = await (Task<TOutput>)endpointMethod.Invoke(_endpoint, new object[] { await environment.Bind<TInput>() });
             else
-                result = (TOutput)endpointMethod.Invoke(_endpoint, new object[] { environment.Bind<TInput>() });
+                result = (TOutput)endpointMethod.Invoke(_endpoint, new object[] { await environment.Bind<TInput>() });
 
             environment.Set(result);
             environment["superglue.Output"] = result;

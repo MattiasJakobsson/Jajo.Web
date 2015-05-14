@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.ModelBinding
 {
     public interface IBindingSource
     {
-        IDictionary<string, object> GetValues(IDictionary<string, object> envinronment);
+        Task<IDictionary<string, object>> GetValues(IDictionary<string, object> envinronment);
     }
 }

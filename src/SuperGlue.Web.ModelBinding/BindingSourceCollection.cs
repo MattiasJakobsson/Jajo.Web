@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.ModelBinding
 {
@@ -23,25 +24,34 @@ namespace SuperGlue.Web.ModelBinding
             return GetEnumerator();
         }
 
-        public bool ContainsKey(string key, IDictionary<string, object> environment)
+        public async Task<bool> ContainsKey(string key, IDictionary<string, object> environment)
         {
-            return GetSourcesContainingKey(key.ToLower(), environment).Any();
+            return (await GetSourcesContainingKey(key.ToLower(), environment)).Any();
         }
 
-        public object Get(string key, IDictionary<string, object> environment)
+        public async Task<object> Get(string key, IDictionary<string, object> environment)
         {
-            var matchingSources = GetSourcesContainingKey(key.ToLower(), environment).ToList();
+            var matchingSources = (await GetSourcesContainingKey(key.ToLower(), environment)).ToList();
 
-            if (!matchingSources.Any()) return null;
+            if (!matchingSources.Any()) 
+                return null;
 
             var bindingSource = matchingSources.First();
 
-            return bindingSource.GetValues(environment)[key.ToLower()];
+            return (await bindingSource.GetValues(environment))[key.ToLower()];
         }
 
-        private IEnumerable<IBindingSource> GetSourcesContainingKey(string key, IDictionary<string, object> environment)
+        private async Task<IEnumerable<IBindingSource>> GetSourcesContainingKey(string key, IDictionary<string, object> environment)
         {
-            return _bindingSources.Where(x => x.GetValues(environment).ContainsKey(key.ToLower()));
+            var results = new List<IBindingSource>();
+
+            foreach (var bindingSource in _bindingSources)
+            {
+                if ((await bindingSource.GetValues(environment)).ContainsKey(key.ToLower()))
+                    results.Add(bindingSource);
+            }
+
+            return results;
         }
     }
 }

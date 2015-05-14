@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.ModelBinding
 {
@@ -24,18 +25,18 @@ namespace SuperGlue.Web.ModelBinding
             return GetEnumerator();
         }
 
-        public object Bind(Type type, IBindingContext bindingContext)
+        public Task<object> Bind(Type type, IBindingContext bindingContext)
         {
             var binder = GetMatchingBinders(type).FirstOrDefault();
 
             return binder == null ? null : binder.Bind(type, bindingContext);
         }
 
-        public bool Bind(Type type, IBindingContext bindingContext, object instance)
+        public async Task<bool> Bind(Type type, IBindingContext bindingContext, object instance)
         {
             var binder = GetMatchingBinders(type).FirstOrDefault();
 
-            return binder != null && binder.Bind(type, bindingContext, instance);
+            return binder != null && await binder.Bind(type, bindingContext, instance);
         }
 
         private IEnumerable<IModelBinder> GetMatchingBinders(Type type)
