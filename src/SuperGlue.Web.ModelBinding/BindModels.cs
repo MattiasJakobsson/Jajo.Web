@@ -22,7 +22,7 @@ namespace SuperGlue.Web.ModelBinding
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            environment["superglue.ModelBinder"] = (Func<Type, object>)(x => _modelBinderCollection.Bind(x, new BindingContext(_modelBinderCollection)));
+            environment["superglue.ModelBinder"] = (Func<Type, object>)(x => _modelBinderCollection.Bind(x, new BindingContext(_modelBinderCollection, environment)));
 
             await _next(environment);
         }

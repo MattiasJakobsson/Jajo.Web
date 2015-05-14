@@ -4,7 +4,6 @@ namespace SuperGlue.Web.ModelBinding
 {
     public interface IBindingSource
     {
-        IDictionary<string, object> GetValues();
-        IEnumerable<string> GetKeys();
+        IDictionary<string, object> GetValues(IDictionary<string, object> envinronment);
     }
 }

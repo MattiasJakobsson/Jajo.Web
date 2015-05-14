@@ -44,6 +44,7 @@ namespace SuperGlue.Web.StructureMap
 
                 environment["superglue.Container.RegisterTransient"] = (Action<Type, Type>)((serviceType, implimentationType) => currentContainer.Configure(y => y.For(serviceType).Use(implimentationType)));
                 environment["superglue.Container.RegisterSingleton"] = (Action<Type, object>)((type, instance) => currentContainer.Configure(y => y.For(type).Singleton().Use(instance)));
+                environment["superglue.Container.RegisterSingletonType"] = (Action<Type, Type>)((type, implimentationType) => currentContainer.Configure(y => y.For(type).Singleton().Use(implimentationType)));
                 environment["superglue.Container.RegisterAllClosing"] = (Action<Type>)(type => currentContainer.Configure(y => y.Scan(z =>
                 {
                     foreach (var assembly in assemblies)

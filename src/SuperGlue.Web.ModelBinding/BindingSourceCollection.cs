@@ -23,34 +23,25 @@ namespace SuperGlue.Web.ModelBinding
             return GetEnumerator();
         }
 
-        public bool ContainsKey(string key)
+        public bool ContainsKey(string key, IDictionary<string, object> environment)
         {
-            return GetSourcesContainingKey(key.ToLower()).Any();
+            return GetSourcesContainingKey(key.ToLower(), environment).Any();
         }
 
-        public object Get(string key)
+        public object Get(string key, IDictionary<string, object> environment)
         {
-            var matchingSources = GetSourcesContainingKey(key.ToLower()).ToList();
+            var matchingSources = GetSourcesContainingKey(key.ToLower(), environment).ToList();
 
             if (!matchingSources.Any()) return null;
 
             var bindingSource = matchingSources.First();
 
-            return bindingSource.GetValues()[key.ToLower()];
+            return bindingSource.GetValues(environment)[key.ToLower()];
         }
 
-        public IEnumerable<string> GetKeys()
+        private IEnumerable<IBindingSource> GetSourcesContainingKey(string key, IDictionary<string, object> environment)
         {
-            var keys = new List<string>();
-            foreach (var bindingSource in _bindingSources)
-                keys.AddRange(bindingSource.GetKeys());
-
-            return keys;
-        }
-
-        private IEnumerable<IBindingSource> GetSourcesContainingKey(string key)
-        {
-            return _bindingSources.Where(x => x.GetValues().ContainsKey(key.ToLower()));
+            return _bindingSources.Where(x => x.GetValues(environment).ContainsKey(key.ToLower()));
         }
     }
 }

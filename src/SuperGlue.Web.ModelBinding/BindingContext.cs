@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace SuperGlue.Web.ModelBinding
 {
@@ -7,15 +8,16 @@ namespace SuperGlue.Web.ModelBinding
         private string _currentPrefix;
         private readonly IModelBinderCollection _modelBinderCollection;
 
-        public BindingContext(IModelBinderCollection modelBinderCollection)
-            : this(modelBinderCollection, string.Empty)
+        public BindingContext(IModelBinderCollection modelBinderCollection, IDictionary<string, object> environment)
+            : this(modelBinderCollection, environment, "")
         {
             
         }
 
-        public BindingContext(IModelBinderCollection modelBinderCollection, string prefix)
+        public BindingContext(IModelBinderCollection modelBinderCollection, IDictionary<string, object> environment, string prefix)
         {
             _currentPrefix = prefix;
+            Environment = environment;
             _modelBinderCollection = modelBinderCollection;
         }
 
@@ -52,6 +54,8 @@ namespace SuperGlue.Web.ModelBinding
 
             return new Disposable(oldPrefix, x => _currentPrefix = x);
         }
+
+        public IDictionary<string, object> Environment { get; private set; }
 
         private class Disposable : IDisposable
         {

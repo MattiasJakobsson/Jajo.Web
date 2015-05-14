@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SuperGlue.Web.ModelBinding
 {
@@ -10,5 +11,7 @@ namespace SuperGlue.Web.ModelBinding
         string GetKey(string name);
         string GetPrefix();
         IDisposable OpenChildContext(string prefix);
+
+        IDictionary<string, object> Environment { get; }
     }
 }

@@ -52,8 +52,8 @@
     <Compile Include="BindingSourceCollection.cs" />
     <Compile Include="CollectionPropertyBinder.cs" />
     <Compile Include="ComplexTypePropertyBinder.cs" />
+    <Compile Include="ConfigureModelBinders.cs" />
     <Compile Include="DefaultModelBinder.cs" />
-    <Compile Include="DefaultRequestBinder.cs" />
     <Compile Include="IBindingContext.cs" />
     <Compile Include="IBindingSource.cs" />
     <Compile Include="IBindingSourceCollection.cs" />
@@ -61,7 +61,6 @@
     <Compile Include="IModelBinderCollection.cs" />
     <Compile Include="IPropertyBinder.cs" />
     <Compile Include="IPropertyBinderCollection.cs" />
-    <Compile Include="IRequestBinder.cs" />
     <Compile Include="IValueConverter.cs" />
     <Compile Include="IValueConverterCollection.cs" />
     <Compile Include="ModelBinderCollection.cs" />
@@ -88,6 +87,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SuperGlue.Web.Configuration\SuperGlue.Web.Configuration.csproj">
+      <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
+      <Name>SuperGlue.Web.Configuration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
