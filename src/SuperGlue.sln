@@ -47,6 +47,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.EventStore.Timeou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.RavenDb", "SuperGlue.RavenDb\SuperGlue.RavenDb.csproj", "{D1EE2D50-4338-4024-BC5D-9FCF24C2AA90}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{4E85E12B-19A3-44D0-BE93-733C95AA7012}"
+	ProjectSection(SolutionItems) = preProject
+		Shared\BindExtensions.cs = Shared\BindExtensions.cs
+		Shared\Cache.cs = Shared\Cache.cs
+		Shared\EnvironmentExtensions.cs = Shared\EnvironmentExtensions.cs
+		Shared\ExceptionExtensions.cs = Shared\ExceptionExtensions.cs
+		Shared\OutputExtensions.cs = Shared\OutputExtensions.cs
+		Shared\ResolveExtensions.cs = Shared\ResolveExtensions.cs
+		Shared\RouteExtensions.cs = Shared\RouteExtensions.cs
+		Shared\WebEnvironmentExtensions.cs = Shared\WebEnvironmentExtensions.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

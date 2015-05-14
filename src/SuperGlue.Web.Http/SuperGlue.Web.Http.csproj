@@ -45,6 +45,9 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
+      <Link>WebEnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RedirectToCorrectUrl.cs" />
     <Compile Include="SetStatusCode.cs" />

@@ -57,6 +57,9 @@
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
+      <Link>WebEnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="ConfigureEndpoints.cs" />
     <Compile Include="EndpointExtensions.cs" />
     <Compile Include="ExecuteActionEndpoint.cs" />

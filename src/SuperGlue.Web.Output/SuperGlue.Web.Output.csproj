@@ -48,6 +48,9 @@
     <Compile Include="..\Shared\OutputExtensions.cs">
       <Link>OutputExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
+      <Link>WebEnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="HandleOutputRendering.cs" />
     <Compile Include="IHandleOutputRendering.cs" />
     <Compile Include="IRenderOutput.cs" />

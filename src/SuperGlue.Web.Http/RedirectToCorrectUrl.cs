@@ -23,15 +23,15 @@ namespace SuperGlue.Web.Http
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var original = environment.GetUri().ToString();
+            var original = environment.GetRequest().Uri.ToString();
             var currentUri = original;
 
             currentUri = _options.CorrectionFunctions.Aggregate(currentUri, (current, correctionFunction) => correctionFunction(current, environment));
 
             if (currentUri != original)
             {
-                environment["owin.ResponseStatusCode"] = 301;
-                environment.GetResponseHeaders()["Location"] = new[] { currentUri };
+                environment.GetResponse().StatusCode = 301;
+                environment.GetResponse().Headers.Location = currentUri;
                 return;
             }
 

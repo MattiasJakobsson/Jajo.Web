@@ -38,7 +38,7 @@ namespace SuperGlue.Web.Diagnostics
             if (routedTo != null)
                 _options.ManageDiagnosticsInformation.RouteExecuted(routedTo, stopwatch.Elapsed);
         
-            _options.ManageDiagnosticsInformation.UrlVisited(environment.GetUri(), stopwatch.Elapsed);
+            _options.ManageDiagnosticsInformation.UrlVisited(environment.GetRequest().Uri, stopwatch.Elapsed);
         }
     }
 

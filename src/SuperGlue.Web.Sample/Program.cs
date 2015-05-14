@@ -60,8 +60,6 @@ namespace SuperGlue.Web.Sample
                     assemblies.Add(assembly);
             }
 
-            var modelBindingCollection = new ModelBinderCollection(new List<IModelBinder>());
-
             var settings = Configurations.Configure(assemblies);
 
             var define = ConventionalRoutingConfiguration.New()
@@ -72,7 +70,7 @@ namespace SuperGlue.Web.Sample
             var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner(), subApplications.Select(x => x.Path)));
 
             var rendererHandler = OutputRendererBuilder.New()
-                .When(x => x.GetHeaders().Accept.Contains("text/html")).UseRenderer(RenderOutputUsingSpark.Configure(templateSource, settings))
+                .When(x => x.GetRequest().Headers.Accept.Contains("text/html")).UseRenderer(RenderOutputUsingSpark.Configure(templateSource, settings))
                 .When(x => true).UseRenderer(new RenderOutputAsJson())
                 .Build();
 
@@ -90,7 +88,7 @@ namespace SuperGlue.Web.Sample
             var diagnosticsManager = container.GetInstance<IManageDiagnosticsInformation>();
 
             app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager))
-                .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment.GetUri().ToString(), (int)time.TotalMilliseconds)))
+                .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment.GetRequest().Uri.ToString(), (int)time.TotalMilliseconds)))
                 .Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions((url, environment) => url.ToLower()))
                 .Use<BranchRequest>(new BranchRequestConfiguration()
                     .AddCase(y => y.GetException() != null, (AppFunc)app
@@ -116,7 +114,7 @@ namespace SuperGlue.Web.Sample
                 .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define, settings))
                 .Use<NestedStructureMapContainer>(container)
                 .Use<HandleExceptions>()
-                .Use<BindModels>(modelBindingCollection)
+                .Use<BindModels>(container.GetInstance<IModelBinderCollection>())
                 .Use<HandleUnitOfWork>()
                 .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                 .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))
@@ -149,8 +147,8 @@ namespace SuperGlue.Web.Sample
         {
             var exception = environment.Get<Exception>("superglue.Exception");
 
-            await environment.WriteToOutput(exception.Message);
-            await environment.WriteToOutput(exception.StackTrace);
+            await environment.GetResponse().Write(exception.Message);
+            await environment.GetResponse().Write(exception.StackTrace);
 
             environment["superglue.Output"] = exception.Message;
 
@@ -172,7 +170,7 @@ namespace SuperGlue.Web.Sample
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await environment.WriteToOutput("Not found!");
+            await environment.GetResponse().Write("Not found!");
 
             environment["superglue.Output"] = "Not found!";
 
@@ -200,7 +198,7 @@ namespace SuperGlue.Web.Sample
             foreach (var error in validationResult.Errors)
                 result.AppendFormat("Error {0}: {1}<br/>", error.Key, error.Message);
 
-            await environment.WriteToOutput(result.ToString());
+            await environment.GetResponse().Write(result.ToString());
 
             environment["superglue.Output"] = result.ToString();
 
@@ -222,7 +220,7 @@ namespace SuperGlue.Web.Sample
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await environment.WriteToOutput("Unauthorized");
+            await environment.GetResponse().Write("Unauthorized");
 
             environment["superglue.Output"] = "Unauthorized";
 

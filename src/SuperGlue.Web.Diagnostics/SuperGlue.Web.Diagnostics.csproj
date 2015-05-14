@@ -48,6 +48,9 @@
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
+      <Link>WebEnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="ConcurrentLruLSet.cs" />
     <Compile Include="ConfigureDiagnostics.cs" />
     <Compile Include="Diagnose.cs" />
