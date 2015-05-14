@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.Projections
@@ -8,7 +7,7 @@ namespace SuperGlue.EventStore.Projections
     {
         public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            yield return new ConfigurationSetupResult("superglue.ContainerSetup", environment => environment.Get<Action<Type>>("superglue.Container.RegisterAll")(typeof(IEventStoreProjection)));
+            yield return new ConfigurationSetupResult("superglue.EventStore.Projections.Configured", environment => environment.RegisterAll(typeof(IEventStoreProjection)), "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

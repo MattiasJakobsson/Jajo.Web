@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using StructureMap;
 using SuperGlue.Configuration;
 
@@ -12,53 +10,10 @@ namespace SuperGlue.StructureMap
         {
             var container = new Container();
 
-            yield return new ConfigurationSetupResult("superglue.StructureMap.ContainerSetup", x => x["superglue.StructureMap.Container"] = container);
+            yield return new ConfigurationSetupResult("superglue.StructureMap.ContainerSetup", x => x[StructureMapEnvironmentExtensions.StructureMapConstants.Container] = container);
             yield return new ConfigurationSetupResult("superglue.ContainerSetup", environment =>
             {
-                var currentContainer = environment.GetContainer();
-                var assemblies = environment.GetAssemblies();
-
-                environment["superglue.ResolveInstance"] = (Func<Type, object>)(x =>
-                {
-                    try
-                    {
-                        return currentContainer.GetInstance(x);
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
-                });
-
-                environment["superglue.ResolveAllInstances"] = (Func<Type, IEnumerable<object>>)(x =>
-                {
-                    try
-                    {
-                        return currentContainer.GetAllInstances(x).OfType<object>();
-                    }
-                    catch (Exception)
-                    {
-                        return Enumerable.Empty<object>();
-                    }
-                });
-
-                environment["superglue.Container.RegisterTransient"] = (Action<Type, Type>)((serviceType, implimentationType) => currentContainer.Configure(y => y.For(serviceType).Use(implimentationType)));
-                environment["superglue.Container.RegisterSingleton"] = (Action<Type, object>)((type, instance) => currentContainer.Configure(y => y.For(type).Singleton().Use(instance)));
-                environment["superglue.Container.RegisterSingletonType"] = (Action<Type, Type>)((type, implimentationType) => currentContainer.Configure(y => y.For(type).Singleton().Use(implimentationType)));
-                environment["superglue.Container.RegisterAllClosing"] = (Action<Type>)(type => currentContainer.Configure(y => y.Scan(z =>
-                {
-                    foreach (var assembly in assemblies)
-                        z.Assembly(assembly);
-
-                    z.ConnectImplementationsToTypesClosing(type);
-                })));
-                environment["superglue.Container.RegisterAll"] = (Action<Type>)(type => currentContainer.Configure(y => y.Scan(z =>
-                {
-                    foreach (var assembly in assemblies)
-                        z.Assembly(assembly);
-
-                    z.AddAllTypesOf(type);
-                })));
+                environment.SetupContainerInEnvironment(container);
             }, "superglue.StructureMap.ContainerSetup");
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.Diagnostics
@@ -8,9 +7,7 @@ namespace SuperGlue.Web.Diagnostics
     {
         public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            yield return new ConfigurationSetupResult("superglue.Diagnostics.Configured", 
-                environment => environment.Get<Action<Type, object>>("superglue.Container.RegisterSingleton")(typeof(IManageDiagnosticsInformation), new ManageDiagnosticsInformationInMemory()),
-                "superglue.ContainerSetup");
+            yield return new ConfigurationSetupResult("superglue.Diagnostics.Configured", environment => environment.RegisterSingleton(typeof(IManageDiagnosticsInformation), new ManageDiagnosticsInformationInMemory()), "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

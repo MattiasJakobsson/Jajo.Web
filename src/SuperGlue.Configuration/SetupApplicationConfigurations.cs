@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SuperGlue.Configuration
 {
@@ -7,12 +6,7 @@ namespace SuperGlue.Configuration
     {
         public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            yield return new ConfigurationSetupResult("superglue.Configuration.ApplicationsConfigured", environment =>
-            {
-                var registerAll = environment.Get<Action<Type>>("superglue.Container.RegisterAll");
-
-                registerAll(typeof (IStartApplication));
-            }, "superglue.ContainerSetup");
+            yield return new ConfigurationSetupResult("superglue.Configuration.ApplicationsConfigured", environment => environment.RegisterAll(typeof (IStartApplication)), "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

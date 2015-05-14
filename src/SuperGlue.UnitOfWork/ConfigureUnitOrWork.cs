@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using SuperGlue.Configuration;
 
@@ -8,7 +7,7 @@ namespace SuperGlue.UnitOfWork
     {
         public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            yield return new ConfigurationSetupResult("superglue.UnitOfWork.Configure", environment => environment.Get<Action<Type>>("superglue.Container.RegisterAll")(typeof(ISuperGlueUnitOfWork)), "superglue.ContainerSetup");
+            yield return new ConfigurationSetupResult("superglue.UnitOfWork.Configure", environment => environment.RegisterAll(typeof(ISuperGlueUnitOfWork)), "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

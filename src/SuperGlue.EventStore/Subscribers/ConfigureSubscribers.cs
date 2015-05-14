@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.Subscribers
@@ -8,7 +7,7 @@ namespace SuperGlue.EventStore.Subscribers
     {
         public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            yield return new ConfigurationSetupResult("superglue.ContainerSetup", environment => environment.Get<Action<Type>>("superglue.Container.RegisterAllClosing")(typeof(ISubscribeTo<>)));
+            yield return new ConfigurationSetupResult("superglue.ContainerSetup", environment => environment.RegisterAllClosing(typeof(ISubscribeTo<>)));
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

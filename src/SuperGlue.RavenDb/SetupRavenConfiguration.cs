@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Raven.Client;
 using Raven.Client.Document;
 using SuperGlue.Configuration;
@@ -13,21 +12,17 @@ namespace SuperGlue.RavenDb
         {
             yield return new ConfigurationSetupResult("superglue.RavenDb.Configure", environment =>
             {
-                var registerTransient = environment.Get<Action<Type, Type>>("superglue.Container.RegisterTransient");
-                var registerSingletone = environment.Get<Action<Type, object>>("superglue.Container.RegisterSingleton");
-                var registerAllClosing = environment.Get<Action<Type>>("superglue.Container.RegisterAllClosing");
-
                 var connectionStringName = environment.Get<string>("ravendb.ConnectionStringName") ?? "RavenDb";
                 var documentStore = CreateDocumentStore(connectionStringName);
 
-                registerSingletone(typeof(IDocumentStore), documentStore);
-                registerTransient(typeof(IRavenSearch), typeof(DefaultRavenSearch));
+                environment.RegisterSingleton(typeof(IDocumentStore), documentStore);
+                environment.RegisterTransient(typeof(IRavenSearch), typeof(DefaultRavenSearch));
 
-                registerAllClosing(typeof(IRavenSearchPart<>));
-                registerAllClosing(typeof(IRavenSpecialCommandSearch<>));
-                registerAllClosing(typeof(IHandleLeftoverSearchPart<>));
-                registerAllClosing(typeof(IRavenFreeTextSearch<>));
-            });
+                environment.RegisterAllClosing(typeof(IRavenSearchPart<>));
+                environment.RegisterAllClosing(typeof(IRavenSpecialCommandSearch<>));
+                environment.RegisterAllClosing(typeof(IHandleLeftoverSearchPart<>));
+                environment.RegisterAllClosing(typeof(IRavenFreeTextSearch<>));
+            }, "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

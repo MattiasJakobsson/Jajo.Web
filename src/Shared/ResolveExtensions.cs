@@ -6,6 +6,17 @@ namespace SuperGlue
 {
     internal static class ResolveExtensions
     {
+        public static class ContainerConstants
+        {
+            public const string ResolveInstance = "superglue.ResolveInstance";
+            public const string ResolveAllInstances = "superglue.ResolveAllInstances";
+            public const string RegisterTransient = "superglue.Container.RegisterTransient";
+            public const string RegisterSingleton = "superglue.Container.RegisterSingleton";
+            public const string RegisterSingletonType = "superglue.Container.RegisterSingletonType";
+            public const string RegisterAllClosing = "superglue.Container.RegisterAllClosing";
+            public const string RegisterAll = "superglue.Container.RegisterAll";
+        }
+
         public static TService Resolve<TService>(this IDictionary<string, object> environment)
         {
             return (TService)Resolve(environment, typeof(TService));
@@ -13,7 +24,7 @@ namespace SuperGlue
 
         public static object Resolve(this IDictionary<string, object> environment, Type serviceType)
         {
-            return environment.Get<Func<Type, object>>("superglue.ResolveInstance")(serviceType);
+            return environment.Get<Func<Type, object>>(ContainerConstants.ResolveInstance)(serviceType);
         }
 
         public static IEnumerable<TService> ResolveAll<TService>(this IDictionary<string, object> environment)
@@ -23,7 +34,32 @@ namespace SuperGlue
 
         public static IEnumerable<object> ResolveAll(this IDictionary<string, object> environment, Type serviceType)
         {
-            return environment.Get<Func<Type, IEnumerable<object>>>("superglue.ResolveAllInstances")(serviceType);
+            return environment.Get<Func<Type, IEnumerable<object>>>(ContainerConstants.ResolveAllInstances)(serviceType);
+        }
+
+        public static void RegisterTransient(this IDictionary<string, object> environment, Type serviceType, Type implimentationType)
+        {
+            environment.Get<Action<Type, Type>>(ContainerConstants.RegisterTransient)(serviceType, implimentationType);
+        }
+
+        public static void RegisterSingleton(this IDictionary<string, object> environment, Type serviceType, object instance)
+        {
+            environment.Get<Action<Type, object>>(ContainerConstants.RegisterSingleton)(serviceType, instance);
+        }
+
+        public static void RegisterSingletonType(this IDictionary<string, object> environment, Type serviceType, Type implimentationType)
+        {
+            environment.Get<Action<Type, Type>>(ContainerConstants.RegisterSingletonType)(serviceType, implimentationType);
+        }
+
+        public static void RegisterAllClosing(this IDictionary<string, object> environment, Type openServiceType)
+        {
+            environment.Get<Action<Type>>(ContainerConstants.RegisterAllClosing)(openServiceType);
+        }
+
+        public static void RegisterAll(this IDictionary<string, object> environment, Type serviceType)
+        {
+            environment.Get<Action<Type>>(ContainerConstants.RegisterAll)(serviceType);
         }
     }
 }

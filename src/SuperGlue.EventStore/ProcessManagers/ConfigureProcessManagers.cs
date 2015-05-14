@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.ProcessManagers
@@ -8,7 +7,7 @@ namespace SuperGlue.EventStore.ProcessManagers
     {
         public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            yield return new ConfigurationSetupResult("superglue.ContainerSetup", environment => environment.Get<Action<Type>>("superglue.Container.RegisterAll")(typeof(IManageProcess)));
+            yield return new ConfigurationSetupResult("superglue.EventStore.ProcessManagers.Configured", environment => environment.RegisterAll(typeof(IManageProcess)), "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

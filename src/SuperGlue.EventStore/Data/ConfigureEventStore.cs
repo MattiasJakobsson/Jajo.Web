@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
 
@@ -23,10 +22,8 @@ namespace SuperGlue.EventStore.Data
 
                 connection.ConnectAsync();
 
-                var registerSingleton = environment.Get<Action<Type, object>>("superglue.Container.RegisterSingleton");
-                
-                registerSingleton(typeof(IEventStoreConnection), connection);
-                registerSingleton(typeof (EventStoreConnectionString), connectionString);
+                environment.RegisterSingleton(typeof(IEventStoreConnection), connection);
+                environment.RegisterSingleton(typeof(EventStoreConnectionString), connectionString);
             }, "superglue.ContainerSetup");
         }
 

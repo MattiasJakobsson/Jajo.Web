@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using StructureMap;
 
@@ -29,31 +28,7 @@ namespace SuperGlue.StructureMap
         {
             using (var container = _container.GetNestedContainer())
             {
-                var currentContainer = container;
-
-                environment["superglue.ResolveInstance"] = (Func<Type, object>) (x =>
-                {
-                    try
-                    {
-                        return currentContainer.GetInstance(x);
-                    }
-                    catch (Exception)
-                    {
-                        return null;
-                    }
-                });
-
-                environment["superglue.ResolveAllInstances"] = (Func<Type, IEnumerable<object>>)(x =>
-                {
-                    try
-                    {
-                        return currentContainer.GetAllInstances(x).OfType<object>();
-                    }
-                    catch (Exception)
-                    {
-                        return Enumerable.Empty<object>();
-                    }
-                });
+                environment.SetupContainerInEnvironment(container);
 
                 await _next(environment);
             }

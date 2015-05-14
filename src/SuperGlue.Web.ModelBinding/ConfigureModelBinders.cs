@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using SuperGlue.Configuration;
 
@@ -10,18 +9,15 @@ namespace SuperGlue.Web.ModelBinding
         {
             yield return new ConfigurationSetupResult("superglue.ModelBinding.Configured", environment =>
             {
-                var registerAll = environment.Get<Action<Type>>("superglue.Container.RegisterAll");
-                var registerSingleton = environment.Get<Action<Type, Type>>("superglue.Container.RegisterSingletonType");
+                environment.RegisterAll(typeof(IBindingSource));
+                environment.RegisterAll(typeof(IPropertyBinder));
+                environment.RegisterAll(typeof(IModelBinder));
+                environment.RegisterAll(typeof(IValueConverter));
 
-                registerAll(typeof(IBindingSource));
-                registerAll(typeof(IPropertyBinder));
-                registerAll(typeof(IModelBinder));
-                registerAll(typeof(IValueConverter));
-
-                registerSingleton(typeof(IModelBinderCollection), typeof(ModelBinderCollection));
-                registerSingleton(typeof(IPropertyBinderCollection), typeof(PropertyBinderCollection));
-                registerSingleton(typeof(IValueConverterCollection), typeof(ValueConverterCollection));
-                registerSingleton(typeof(IBindingSourceCollection), typeof(BindingSourceCollection));
+                environment.RegisterSingleton(typeof(IModelBinderCollection), typeof(ModelBinderCollection));
+                environment.RegisterSingleton(typeof(IPropertyBinderCollection), typeof(PropertyBinderCollection));
+                environment.RegisterSingleton(typeof(IValueConverterCollection), typeof(ValueConverterCollection));
+                environment.RegisterSingleton(typeof(IBindingSourceCollection), typeof(BindingSourceCollection));
             }, "superglue.ContainerSetup");
         }
 
