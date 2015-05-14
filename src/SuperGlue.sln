@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Configuration", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Hosting.Katana", "SuperGlue.Hosting.Katana\SuperGlue.Hosting.Katana.csproj", "{D8A867D8-46EC-4334-936B-F09B8E930511}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Hosting.Topshelf", "SuperGlue.Hosting.Topshelf\SuperGlue.Hosting.Topshelf.csproj", "{FBF69D60-F8A1-40BE-90FF-FE82D33AEC7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +155,10 @@ Global
 		{D8A867D8-46EC-4334-936B-F09B8E930511}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8A867D8-46EC-4334-936B-F09B8E930511}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8A867D8-46EC-4334-936B-F09B8E930511}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBF69D60-F8A1-40BE-90FF-FE82D33AEC7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBF69D60-F8A1-40BE-90FF-FE82D33AEC7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBF69D60-F8A1-40BE-90FF-FE82D33AEC7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBF69D60-F8A1-40BE-90FF-FE82D33AEC7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

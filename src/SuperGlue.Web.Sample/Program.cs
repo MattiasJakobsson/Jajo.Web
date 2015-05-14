@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
-using SuperGlue.Configuration;
 using SuperGlue.Security.Authentication;
 using SuperGlue.Security.Authorization;
 using SuperGlue.Web.Validation;
@@ -11,27 +9,6 @@ using SuperGlue.Web.Validation;
 namespace SuperGlue.Web.Sample
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
-
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-
-            var bootstrapper = SuperGlueBootstrapper.Find();
-
-            bootstrapper.StartApplications();
-
-            stopwatch.Stop();
-
-            Console.WriteLine("Startup time: {0}ms", stopwatch.ElapsedMilliseconds);
-
-            Console.ReadLine();
-
-            bootstrapper.ShutDown();
-        }
-    }
 
     public class TestAuthorizer : IAuthorizeRequest
     {

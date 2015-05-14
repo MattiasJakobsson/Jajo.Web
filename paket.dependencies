@@ -10,4 +10,5 @@ nuget RavenDB.Client
 nuget Rx-Main
 nuget Spark
 nuget Superscribe
+nuget Topshelf
 nuget structuremap

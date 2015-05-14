@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -55,7 +56,7 @@ namespace SuperGlue.Configuration
 
         protected void AddChain(string name, Action<IBuildAppFunction> configure)
         {
-            IBuildAppFunction appFuncBuilder = null;
+            var appFuncBuilder = new BuildAppFunction();
 
             configure(appFuncBuilder);
 
@@ -100,6 +101,8 @@ namespace SuperGlue.Configuration
 
         public static SuperGlueBootstrapper Find()
         {
+            LoadAssemblies();
+
             var bootstrapper = AppDomain
                 .CurrentDomain
                 .GetAssemblies()
@@ -113,6 +116,16 @@ namespace SuperGlue.Configuration
                 throw new Exception("No bootstrapper");
 
             return bootstrapper;
+        }
+
+        private static void LoadAssemblies()
+        {
+            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            var loadedPaths = loadedAssemblies.Select(a => a.Location).ToArray();
+
+            var referencedPaths = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
+            var toLoad = referencedPaths.Where(r => !loadedPaths.Contains(r, StringComparer.InvariantCultureIgnoreCase)).ToList();
+            toLoad.ForEach(path => loadedAssemblies.Add(AppDomain.CurrentDomain.Load(AssemblyName.GetAssemblyName(path))));
         }
     }
 }

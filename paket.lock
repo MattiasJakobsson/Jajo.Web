@@ -50,3 +50,4 @@ NUGET
     System.Collections.Immutable (1.1.33-beta)
     System.Reflection.Metadata (1.0.18-beta)
       System.Collections.Immutable (>= 1.1.33-beta)
+    Topshelf (3.1.4)

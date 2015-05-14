@@ -16,7 +16,7 @@ namespace SuperGlue.Hosting.Katana
             if(!chains.ContainsKey("chains.Web"))
                 return;
 
-            var url = environment.Get<string>("superglue.Web.Urls") ?? "http://localhost:4400";
+            var url = environment.Get("superglue.Web.Urls", "http://localhost:8020");
 
             var webChain = chains["chains.Web"];
 

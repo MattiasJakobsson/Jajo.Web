@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{68AB3839-D86E-42C3-A565-FEB39106C981}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SuperGlue.Web.Sample</RootNamespace>
     <AssemblyName>SuperGlue.Web.Sample</AssemblyName>
@@ -31,6 +31,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -72,6 +75,14 @@
     <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
       <Name>SuperGlue.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Hosting.Katana\SuperGlue.Hosting.Katana.csproj">
+      <Project>{d8a867d8-46ec-4334-936b-f09b8e930511}</Project>
+      <Name>SuperGlue.Hosting.Katana</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Hosting.Topshelf\SuperGlue.Hosting.Topshelf.csproj">
+      <Project>{fbf69d60-f8a1-40be-90ff-fe82d33aec7a}</Project>
+      <Name>SuperGlue.Hosting.Topshelf</Name>
     </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Security\SuperGlue.Security.csproj">
       <Project>{a9e022f8-1aa3-4afc-8ec2-1d4a8d2e9f7a}</Project>

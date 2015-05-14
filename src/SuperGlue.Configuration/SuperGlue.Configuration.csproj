@@ -48,6 +48,7 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
+    <Compile Include="BuildAppFunction.cs" />
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
     <Compile Include="ConfigurationSetupResult.cs" />
     <Compile Include="IBuildAppFunction.cs" />

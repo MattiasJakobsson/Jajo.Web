@@ -1,0 +1,8 @@
+﻿type file
+id SuperGlue.Hosting.Topshelf
+version 1.0
+authors Mattias Jakobsson
+description
+        SuperGlue topshelf host
+files
+    bin/Release/SuperGlue.Hosting.Topshelf.dll ==> lib
