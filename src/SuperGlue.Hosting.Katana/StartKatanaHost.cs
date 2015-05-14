@@ -7,20 +7,19 @@ using SuperGlue.Configuration;
 
 namespace SuperGlue.Hosting.Katana
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     public class StartKatanaHost : IStartApplication
     {
         private IDisposable _webApp;
 
-        public void Start(IDictionary<string, Func<IDictionary<string, object>, Task>> chains, IDictionary<string, object> environment)
-        {
-            if(!chains.ContainsKey("chains.Web"))
-                return;
+        public string Chain { get { return "chains.Web"; } }
 
+        public void Start(AppFunc chain, IDictionary<string, object> environment)
+        {
             var url = environment.Get("superglue.Web.Urls", "http://localhost:8020");
 
-            var webChain = chains["chains.Web"];
-
-            _webApp = WebApp.Start(url, x => x.Use<RunAppFunc>(new RunAppFuncOptions(webChain, environment)));
+            _webApp = WebApp.Start(url, x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain, environment)));
         }
 
         public void ShutDown()

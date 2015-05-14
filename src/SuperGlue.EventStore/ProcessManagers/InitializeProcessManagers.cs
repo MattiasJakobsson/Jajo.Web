@@ -48,13 +48,10 @@ namespace SuperGlue.EventStore.ProcessManagers
                 _numberOfEventsPerBatch = numberOfEventsPerBatch;
         }
 
-        public void Start(IDictionary<string, AppFunc> chains, IDictionary<string, object> environment)
+        public string Chain { get { return "chains.ProcessManagers"; } }
+
+        public void Start(AppFunc chain, IDictionary<string, object> environment)
         {
-            if(!chains.ContainsKey("chains.ProcessManagers"))
-                return;
-
-            var chain = chains["chains.ProcessManagers"];
-
             running = true;
 
             foreach (var processManager in _processManagers)

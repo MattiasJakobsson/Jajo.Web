@@ -5,15 +5,14 @@ using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.PartialRequests
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     public class StartPartials : IStartApplication
     {
-        public void Start(IDictionary<string, Func<IDictionary<string, object>, Task>> chains, IDictionary<string, object> environment)
+        public string Chain { get { return "chains.Partials"; } }
+
+        public void Start(AppFunc chain, IDictionary<string, object> environment)
         {
-            if(!chains.ContainsKey("chains.Partials"))
-                return;
-
-            var chain = chains["chains.Partials"];
-
             Partials.Initialize(chain);
         }
 

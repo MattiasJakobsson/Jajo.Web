@@ -8,7 +8,8 @@ namespace SuperGlue.Configuration
 
     public interface IStartApplication
     {
-        void Start(IDictionary<string, AppFunc> chains, IDictionary<string, object> environment);
+        string Chain { get; }
+        void Start(AppFunc chains, IDictionary<string, object> environment);
         void ShutDown();
     }
 }

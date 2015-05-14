@@ -48,13 +48,10 @@ namespace SuperGlue.EventStore.Projections
                 _numberOfEventsPerBatch = numberOfEventsPerBatch;
         }
 
-        public void Start(IDictionary<string, AppFunc> chains, IDictionary<string, object> environment)
+        public string Chain { get { return "chains.Projections"; } }
+
+        public void Start(AppFunc chain, IDictionary<string, object> environment)
         {
-            if(!chains.ContainsKey("chains.Projections"))
-                return;
-
-            var chain = chains["chains.Projections"];
-
             running = true;
 
             foreach (var projection in _projections)

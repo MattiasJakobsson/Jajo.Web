@@ -45,13 +45,10 @@ namespace SuperGlue.EventStore.Subscribers
                 _numberOfEventsPerBatch = numberOfEventsPerBatch;
         }
 
-        public void Start(IDictionary<string, AppFunc> chains, IDictionary<string, object> environment)
+        public string Chain { get { return "chains.Subscribers"; } }
+
+        public void Start(AppFunc chain, IDictionary<string, object> environment)
         {
-            if (!chains.ContainsKey("chains.Subscribers"))
-                return;
-
-            var chain = chains["chains.Subscribers"];
-
             running = true;
 
             var streams = ConfigurationManager.AppSettings["EventStore.Streams"].Split(';').ToList();

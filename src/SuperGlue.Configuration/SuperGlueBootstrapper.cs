@@ -16,8 +16,10 @@ namespace SuperGlue.Configuration
         private readonly IDictionary<string, AppFunc> _chains = new ConcurrentDictionary<string, AppFunc>();
         private IEnumerable<IStartApplication> _appStarters;
 
-        public virtual void StartApplications(IDictionary<string, object> settings)
+        public virtual void StartApplications(IDictionary<string, object> settings, ApplicationStartersOverrides overrides = null)
         {
+            overrides = overrides ?? ApplicationStartersOverrides.Empty();
+
             var subApplications = SubApplications.Init(settings).ToList();
 
             var assemblies = new List<Assembly>();
@@ -38,8 +40,15 @@ namespace SuperGlue.Configuration
 
             settings["superglue.ApplicationStarters"] = _appStarters;
 
-            foreach (var applicationStarter in _appStarters)
-                applicationStarter.Start(_chains, settings);
+            foreach (var item in _appStarters.GroupBy(x => x.Chain))
+            {
+                if (!_chains.ContainsKey(item.Key))
+                    continue;
+
+                var chain = _chains[item.Key];
+
+                item.OrderBy(x => overrides.GetSortOrder(x)).First().Start(chain, settings);
+            }
         }
 
         public virtual void ShutDown()
@@ -100,12 +109,12 @@ namespace SuperGlue.Configuration
                 .CurrentDomain
                 .GetAssemblies()
                 .SelectMany(x => x.GetTypes())
-                .Where(x => typeof (SuperGlueBootstrapper).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                .Where(x => typeof(SuperGlueBootstrapper).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
                 .Select(Activator.CreateInstance)
                 .OfType<SuperGlueBootstrapper>()
                 .FirstOrDefault();
 
-            if(bootstrapper == null)
+            if (bootstrapper == null)
                 throw new Exception("No bootstrapper");
 
             return bootstrapper;
