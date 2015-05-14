@@ -57,7 +57,11 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="subapps.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Test.spark" />
+    <Content Include="paket.references" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -94,6 +98,10 @@
     <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
       <Name>SuperGlue.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Hosting.SystemWeb\SuperGlue.Hosting.SystemWeb.csproj">
+      <Project>{1df1cfdf-4e47-46bd-8b71-9438831002df}</Project>
+      <Name>SuperGlue.Hosting.SystemWeb</Name>
     </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Security\SuperGlue.Security.csproj">
       <Project>{a9e022f8-1aa3-4afc-8ec2-1d4a8d2e9f7a}</Project>

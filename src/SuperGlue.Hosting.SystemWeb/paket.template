@@ -1,0 +1,8 @@
+﻿type file
+id SuperGlue.Hosting.SystemWeb
+version 1.0
+authors Mattias Jakobsson
+description
+        SuperGlue System.Web host
+files
+    bin/Release/SuperGlue.Hosting.SystemWeb.dll ==> lib

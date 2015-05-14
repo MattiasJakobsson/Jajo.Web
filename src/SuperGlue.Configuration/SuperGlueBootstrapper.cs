@@ -16,9 +16,9 @@ namespace SuperGlue.Configuration
         private readonly IDictionary<string, AppFunc> _chains = new ConcurrentDictionary<string, AppFunc>();
         private IEnumerable<IStartApplication> _appStarters;
 
-        public virtual void StartApplications()
+        public virtual void StartApplications(IDictionary<string, object> settings)
         {
-            var subApplications = SubApplications.Init().ToList();
+            var subApplications = SubApplications.Init(settings).ToList();
 
             var assemblies = new List<Assembly>();
 
@@ -30,9 +30,7 @@ namespace SuperGlue.Configuration
                     assemblies.Add(assembly);
             }
 
-            var settings = RunConfigurations(assemblies);
-
-            settings["superglue.SubApplications"] = subApplications;
+            RunConfigurations(assemblies, settings);
 
             Configure(settings);
 
@@ -63,12 +61,9 @@ namespace SuperGlue.Configuration
             _chains[name] = appFuncBuilder.Build();
         }
 
-        protected virtual IDictionary<string, object> RunConfigurations(IEnumerable<Assembly> assemblies)
+        protected virtual void RunConfigurations(IEnumerable<Assembly> assemblies, IDictionary<string, object> environment)
         {
-            var environment = new Dictionary<string, object>
-            {
-                {"superglue.Assemblies", assemblies}
-            };
+            environment["superglue.Assemblies"] = assemblies;
 
             var configurations = assemblies
                 .SelectMany(x => x.GetTypes())
@@ -79,8 +74,6 @@ namespace SuperGlue.Configuration
                 .ToList();
 
             ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(configurations), "superglue.ApplicationSetupStarted", environment);
-
-            return environment;
         }
 
         protected virtual void ExecuteConfigurationsDependingOn(IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn, IDictionary<string, object> environment)

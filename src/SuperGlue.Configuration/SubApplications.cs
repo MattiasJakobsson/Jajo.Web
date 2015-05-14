@@ -11,7 +11,7 @@ namespace SuperGlue.Configuration
         private static readonly List<string> SubApplicationPaths = new List<string>();
         private static readonly ICollection<InitializedSubApplication> InitializedApplications = new List<InitializedSubApplication>();
 
-        public static IEnumerable<InitializedSubApplication> Init()
+        public static IEnumerable<InitializedSubApplication> Init(IDictionary<string, object> settings)
         {
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
 
@@ -24,6 +24,8 @@ namespace SuperGlue.Configuration
 
             SubApplicationPaths.AddRange(links);
             SubApplicationPaths.AddRange(applications.Where(x => !links.Any(y => y.Contains(new DirectoryInfo(x).Name))));
+
+            var result = new List<InitializedSubApplication>();
 
             foreach (var subApplicationPath in SubApplicationPaths)
             {
@@ -39,9 +41,13 @@ namespace SuperGlue.Configuration
                     var application = new InitializedSubApplication(subApplicationPath, assembly.FullName, assembly);
                     InitializedApplications.Add(application);
 
-                    yield return application;
+                    result.Add(application);
                 }
             }
+
+            settings["superglue.SubApplications"] = result;
+
+            return result;
         }
 
         private static Assembly CurrentDomainAssemblyResolve(object sender, ResolveEventArgs args)

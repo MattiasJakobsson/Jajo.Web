@@ -1,4 +1,5 @@
-﻿using SuperGlue.Configuration;
+﻿using System.Collections.Generic;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.Hosting.Topshelf
 {
@@ -10,7 +11,7 @@ namespace SuperGlue.Hosting.Topshelf
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            _bootstrapper.StartApplications();
+            _bootstrapper.StartApplications(new Dictionary<string, object>());
         }
 
         public void Stop()

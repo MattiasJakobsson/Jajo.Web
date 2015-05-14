@@ -2,25 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Owin;
-using Owin;
 using SuperGlue.Security.Authentication;
 using SuperGlue.Security.Authorization;
-using SuperGlue.Web.Sample.AspNet;
 using SuperGlue.Web.Validation;
 
-[assembly: OwinStartup(typeof(Startup))]
 namespace SuperGlue.Web.Sample.AspNet
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
-
-    public class Startup
-    {
-        public void Configuration(IAppBuilder app)
-        {
-            
-        }
-    }
 
     public class TestAuthorizer : IAuthorizeRequest
     {
