@@ -82,6 +82,10 @@
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
       <Name>SuperGlue.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Diagnostics\SuperGlue.Diagnostics.csproj">
+      <Project>{4bd82df3-3b6b-4e1e-b5ad-1340d20cea11}</Project>
+      <Name>SuperGlue.Diagnostics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Hosting.Katana\SuperGlue.Hosting.Katana.csproj">
       <Project>{d8a867d8-46ec-4334-936b-f09b8e930511}</Project>
       <Name>SuperGlue.Hosting.Katana</Name>

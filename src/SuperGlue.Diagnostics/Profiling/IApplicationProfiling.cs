@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SuperGlue.Web.Diagnostics.Profiling
+namespace SuperGlue.Diagnostics.Profiling
 {
     public interface IApplicationProfiling
     {

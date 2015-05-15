@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SuperGlue.Web.Diagnostics.Profiling
+namespace SuperGlue.Diagnostics.Profiling
 {
     public class DefaultProfilingData : IProfilingData
     {

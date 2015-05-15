@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SuperGlue.Configuration;
 
-namespace SuperGlue.Web.Diagnostics
+namespace SuperGlue.Diagnostics
 {
     public class ConfigureDiagnostics : ISetupConfigurations
     {

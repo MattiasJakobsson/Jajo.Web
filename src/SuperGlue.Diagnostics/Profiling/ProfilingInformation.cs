@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SuperGlue.Web.Diagnostics.Profiling
+namespace SuperGlue.Diagnostics.Profiling
 {
     public class ProfilingInformation
     {

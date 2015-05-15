@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace SuperGlue.Web.Diagnostics
+namespace SuperGlue.Diagnostics
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
 
@@ -33,22 +33,24 @@ namespace SuperGlue.Web.Diagnostics
 
             stopwatch.Stop();
 
-            var routedTo = environment.GetRouteInformation().RoutedTo;
+            var key = _options.GetKey(environment);
 
-            if (routedTo != null)
-                _options.ManageDiagnosticsInformation.RouteExecuted(routedTo, stopwatch.Elapsed);
-        
-            _options.ManageDiagnosticsInformation.UrlVisited(environment.GetRequest().Uri, stopwatch.Elapsed);
+            if (!string.IsNullOrEmpty(key))
+                _options.ManageDiagnosticsInformation.AddMessurement(_options.MessurementKey, key, stopwatch.Elapsed);
         }
     }
 
     public class DiagnoseOptions
     {
-        public DiagnoseOptions(IManageDiagnosticsInformation manageDiagnosticsInformation)
+        public DiagnoseOptions(IManageDiagnosticsInformation manageDiagnosticsInformation, string messurementKey, Func<IDictionary<string, object>, string> getKey)
         {
             ManageDiagnosticsInformation = manageDiagnosticsInformation;
+            MessurementKey = messurementKey;
+            GetKey = getKey;
         }
 
         public IManageDiagnosticsInformation ManageDiagnosticsInformation { get; private set; }
+        public string MessurementKey { get; private set; }
+        public Func<IDictionary<string, object>, string> GetKey { get; private set; }
     }
 }

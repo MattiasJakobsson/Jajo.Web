@@ -5,7 +5,6 @@ authors Mattias Jakobsson
 description
         Authorization middleware
 files
-    bin/Release/SuperGlue.Web.Diagnostics.dll ==> lib
-	bin/Release/*.spark ==> lib
+	bin/Release/**/*.* ==> content/SubApplications/SuperGlue.Web.Diagnostics
 dependencies
-	SuperGlue.Configuration
+	SuperGlue.Diagnostics

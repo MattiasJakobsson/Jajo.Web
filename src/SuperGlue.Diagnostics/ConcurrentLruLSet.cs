@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace SuperGlue.Web.Diagnostics
+namespace SuperGlue.Diagnostics
 {
     internal class ConcurrentLruLSet<T> : IEnumerable<T>
     {

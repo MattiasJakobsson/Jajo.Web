@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SuperGlue.Diagnostics;
 
 namespace SuperGlue.Web.Diagnostics
 {
@@ -14,12 +15,7 @@ namespace SuperGlue.Web.Diagnostics
 
         public IndexQueryResult Query(IndexQueryInput input)
         {
-            var averageTimes = new Dictionary<string, IDictionary<string, TimeSpan>>();
-
-            averageTimes["Routes"] = _manageDiagnosticsInformation.GetRoutesWithAverageExecutionTime();
-            averageTimes["Urls"] = _manageDiagnosticsInformation.GetUrlsWithAverageExecutionTime();
-
-            return new IndexQueryResult(averageTimes);
+            return new IndexQueryResult(_manageDiagnosticsInformation.GetAllMessurements());
         }
     }
 
@@ -30,11 +26,11 @@ namespace SuperGlue.Web.Diagnostics
 
     public class IndexQueryResult
     {
-        public IndexQueryResult(IDictionary<string, IDictionary<string, TimeSpan>> averageTimes)
+        public IndexQueryResult(IReadOnlyDictionary<string, IReadOnlyDictionary<string, TimeSpan>> averageTimes)
         {
             AverageTimes = averageTimes;
         }
 
-        public IDictionary<string, IDictionary<string, TimeSpan>> AverageTimes { get; private set; }
+        public IReadOnlyDictionary<string, IReadOnlyDictionary<string, TimeSpan>> AverageTimes { get; private set; }
     }
 }

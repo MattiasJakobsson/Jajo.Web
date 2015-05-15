@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SuperGlue.Web.Diagnostics.Profiling
+namespace SuperGlue.Diagnostics.Profiling
 {
     public interface IProfilingData
     {

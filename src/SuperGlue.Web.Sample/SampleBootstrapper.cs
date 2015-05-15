@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SuperGlue.Configuration;
+using SuperGlue.Diagnostics;
 using SuperGlue.ExceptionManagement;
 using SuperGlue.RequestBranching;
 using SuperGlue.Security.Authorization;
@@ -52,7 +53,7 @@ namespace SuperGlue.Web.Sample
                 var container = settings.GetContainer();
                 var diagnosticsManager = container.GetInstance<IManageDiagnosticsInformation>();
 
-                app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager))
+                app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager, "Urls", x => x.GetRequest().Uri.ToString()))
                     .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment.GetRequest().Uri.ToString(), (int)time.TotalMilliseconds)))
                     .Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions((url, environment) => url.ToLower()))
                     .Use<BranchRequest>(new BranchRequestConfiguration()
