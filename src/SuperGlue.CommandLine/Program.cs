@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Fclp;
 
@@ -34,7 +35,16 @@ namespace SuperGlue
 
         private static RunCommand BuildRunCommand(FluentCommandLineParser parser, string[] args)
         {
-            return new RunCommand();
+            var command = new RunCommand();
+
+            parser
+                .Setup<string>('p', "path")
+                .Callback(x => command.AppPath = Path.IsPathRooted(x) ? x : Path.Combine(Environment.CurrentDirectory, x))
+                .SetDefault("");
+
+            parser.Parse(args);
+
+            return command;
         }
 
         private static AddProjectFromTemplateCommand BuildAddProjectFromTemplateCommand(FluentCommandLineParser parser, string[] args)

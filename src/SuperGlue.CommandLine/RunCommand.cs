@@ -11,18 +11,20 @@ namespace SuperGlue
 {
     public class RunCommand : ICommand
     {
+        public string AppPath { get; set; }
+
         public void Execute()
         {
             var privateBinPath = new StringBuilder();
-            privateBinPath.Append(Environment.CurrentDirectory);
+            privateBinPath.Append(AppPath);
 
-            if (Directory.Exists(Path.Combine(Environment.CurrentDirectory, "bin")))
-                privateBinPath.AppendFormat(";{0}", Path.Combine(Environment.CurrentDirectory, "bin"));
+            if (Directory.Exists(Path.Combine(AppPath, "bin")))
+                privateBinPath.AppendFormat(";{0}", Path.Combine(AppPath, "bin"));
 
             var applicationDomain = AppDomain.CreateDomain("SuperGlue", null, new AppDomainSetup
             {
                 PrivateBinPath = privateBinPath.ToString(),
-                ApplicationBase = Environment.CurrentDirectory,
+                ApplicationBase = AppPath,
                 ConfigurationFile = AppDomain.CurrentDomain.SetupInformation.ConfigurationFile,
                 LoaderOptimization = LoaderOptimization.MultiDomainHost
             });
