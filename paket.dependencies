@@ -2,6 +2,7 @@ source https://nuget.org/api/v2
 
 nuget EventStore.Client
 nuget FluentCommandLineParser
+nuget FubuCsProjFile
 nuget Microsoft.CodeAnalysis.CSharp
 nuget Microsoft.Owin.Host.SystemWeb
 nuget Microsoft.Owin.SelfHost

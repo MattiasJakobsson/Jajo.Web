@@ -9,7 +9,8 @@ namespace SuperGlue
     {
         private static readonly IDictionary<string, Func<FluentCommandLineParser, string[], ICommand>> CommandBuilders = new Dictionary<string, Func<FluentCommandLineParser, string[], ICommand>>
         {
-            {"run", BuildRunCommand}
+            {"run", BuildRunCommand},
+            {"add", BuildAddProjectFromTemplateCommand}
         };
 
         static void Main(string[] args)
@@ -34,6 +35,30 @@ namespace SuperGlue
         private static RunCommand BuildRunCommand(FluentCommandLineParser parser, string[] args)
         {
             return new RunCommand();
+        }
+
+        private static AddProjectFromTemplateCommand BuildAddProjectFromTemplateCommand(FluentCommandLineParser parser, string[] args)
+        {
+            var command = new AddProjectFromTemplateCommand();
+
+            parser
+                .Setup<string>('n', "name")
+                .Callback(x => command.Name = x)
+                .Required();
+
+            parser
+                .Setup<string>('t', "template")
+                .Callback(x => command.Template = x)
+                .Required();
+
+            parser
+                .Setup<string>('s', "solution")
+                .Callback(x => command.Solution = x)
+                .Required();
+
+            parser.Parse(args);
+
+            return command;
         }
     }
 }
