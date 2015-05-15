@@ -6,3 +6,5 @@ description
         Authorization middleware
 files
     bin/Release/SuperGlue.Configuration.dll ==> lib
+dependencies
+	Newtonsoft.Json

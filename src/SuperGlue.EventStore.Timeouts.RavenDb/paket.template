@@ -6,3 +6,7 @@ description
         Authorization middleware
 files
     bin/Release/SuperGlue.EventStore.Timeouts.RavenDb.dll ==> lib
+dependencies
+	RavenDB.Client
+	SuperGlue.Configuration
+	SuperGlue.EventStore

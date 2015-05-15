@@ -6,3 +6,6 @@ description
         SuperGlue topshelf host
 files
     bin/Release/SuperGlue.Hosting.Topshelf.dll ==> lib
+dependencies
+	Topshelf
+	SuperGlue.Configuration

@@ -6,3 +6,6 @@ description
         SuperGlue katana host
 files
     bin/Release/SuperGlue.Hosting.Katana.dll ==> lib
+dependencies
+	Microsoft.Owin.SelfHost >= 3.0.1
+	SuperGlue.Configuration

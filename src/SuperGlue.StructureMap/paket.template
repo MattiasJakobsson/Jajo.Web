@@ -6,3 +6,6 @@ description
         Middleware
 files
     bin/Release/SuperGlue.StructureMap.dll ==> lib
+dependencies
+	structuremap
+	SuperGlue.Configuration

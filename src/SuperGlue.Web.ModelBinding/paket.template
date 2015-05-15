@@ -6,3 +6,6 @@ description
         Middleware
 files
     bin/Release/SuperGlue.Web.ModelBinding.dll ==> lib
+dependencies
+	Newtonsoft.Json
+	SuperGlue.Configuration

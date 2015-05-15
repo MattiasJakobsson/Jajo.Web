@@ -67,6 +67,7 @@
     <Compile Include="SuperGlueBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

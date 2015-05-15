@@ -7,3 +7,5 @@ description
 files
     bin/Release/SuperGlue.Web.Diagnostics.dll ==> lib
 	bin/Release/*.spark ==> lib
+dependencies
+	SuperGlue.Configuration

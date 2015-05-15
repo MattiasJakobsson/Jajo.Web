@@ -6,3 +6,5 @@ description
         Middleware
 files
     bin/Release/SuperGlue.Web.Output.dll ==> lib
+dependencies
+	Newtonsoft.Json

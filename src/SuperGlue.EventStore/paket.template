@@ -6,3 +6,8 @@ description
         Authorization middleware
 files
     bin/Release/SuperGlue.EventStore.dll ==> lib
+dependencies
+	EventStore.Client
+	Newtonsoft.Json
+	Rx-Main
+	SuperGlue.Configuration

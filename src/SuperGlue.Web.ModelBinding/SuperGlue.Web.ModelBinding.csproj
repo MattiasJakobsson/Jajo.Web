@@ -103,6 +103,7 @@
     <Compile Include="ValueConverters\UShortValueConverter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>

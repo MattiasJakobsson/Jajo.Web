@@ -6,3 +6,7 @@ description
         Authorization middleware
 files
     bin/Release/SuperGlue.RavenDb.dll ==> lib
+dependencies
+	RavenDb.Client
+	SuperGlue.Configuration
+	SuperGlue.UnitOfWork

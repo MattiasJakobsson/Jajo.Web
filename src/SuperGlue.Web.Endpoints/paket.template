@@ -6,3 +6,5 @@ description
         Endpoints middleware
 files
     bin/Release/SuperGlue.Web.Endpoints.dll ==> lib
+dependencies
+	SuperGlue.Configuration

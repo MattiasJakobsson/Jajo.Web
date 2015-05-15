@@ -6,3 +6,6 @@ description
         SuperGlue System.Web host
 files
     bin/Release/SuperGlue.Hosting.SystemWeb.dll ==> lib
+dependencies
+	Microsoft.Owin.Host.SystemWeb >= 3.0.1
+	SuperGlue.Configuration

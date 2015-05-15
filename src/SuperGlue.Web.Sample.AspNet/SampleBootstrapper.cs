@@ -71,15 +71,15 @@ namespace SuperGlue.Web.Sample.AspNet
                             .New()
                             .Use<HandleValidationErrorMiddleware>()
                             .Build())
-                        .AddCase(y => y.GetOutput() == null, app
+                        .AddCase(y => y.GetRouteInformation().RoutedTo == null, app
                             .New()
                             .Use<SetStatusCode>(404)
                             .Use<HandleNotFoundMiddleware>()
                             .Build()))
-                    .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define))
-                    .Use<NestedStructureMapContainer>(container)
                     .Use<HandleExceptions>()
+                    .Use<NestedStructureMapContainer>(container)
                     .Use<BindModels>(container.GetInstance<IModelBinderCollection>())
+                    .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define))
                     .Use<HandleUnitOfWork>()
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))

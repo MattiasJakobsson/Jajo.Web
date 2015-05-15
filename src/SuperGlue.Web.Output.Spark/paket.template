@@ -6,3 +6,6 @@ description
         Middleware
 files
     bin/Release/SuperGlue.Web.Output.Spark.dll ==> lib
+dependencies
+	Spark
+	SuperGlue.Web.Output
