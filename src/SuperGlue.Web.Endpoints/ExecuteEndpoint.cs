@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Web.Endpoints
@@ -9,6 +11,7 @@ namespace SuperGlue.Web.Endpoints
     public class ExecuteEndpoint
     {
         private readonly AppFunc _next;
+        private readonly Cache<Type, Func<object, object, IDictionary<string, object>, Task>> _endpointExecutionMethods = new Cache<Type, Func<object, object, IDictionary<string, object>, Task>>();
 
         public ExecuteEndpoint(AppFunc next)
         {
@@ -28,18 +31,39 @@ namespace SuperGlue.Web.Endpoints
 
                 if (executor != null)
                 {
-                    //TODO:Use compiled lambdas for performance
-                    await (Task)executor
-                        .GetType()
-                        .GetMethod("Execute", new[] { routeInformation.RoutedTo.GetType(), typeof(IDictionary<string, object>) })
-                        .Invoke(executor, new[] { routeInformation.RoutedTo, environment });
+                    var executionMethod = _endpointExecutionMethods.Get(routeInformation.RoutedTo.GetType(), key => CompileExecutionFunctionFor(executor.GetType(), routeInformation.RoutedTo.GetType()));
 
-                    if(environment.GetOutput() == null)
-                        environment.SetOutput("");
+                    await executionMethod(executor, routeInformation.RoutedTo, environment);
                 }
             }
 
             await _next(environment);
+        }
+
+        protected Func<object, object, IDictionary<string, object>, Task> CompileExecutionFunctionFor(Type executorType, Type routedToType)
+        {
+            return (Func<object, object, IDictionary<string, object>, Task>)GetType()
+                .GetMethod("CompileExecutionFunctionForGeneric", BindingFlags.NonPublic | BindingFlags.Instance)
+                .MakeGenericMethod(executorType, routedToType)
+                .Invoke(this, new object[0]);
+        }
+
+        protected Func<object, object, IDictionary<string, object>, Task> CompileExecutionFunctionForGeneric<TExecutor, TRoutedTo>()
+        {
+            var executorType = typeof(TExecutor);
+            var routedToType = typeof(TRoutedTo);
+
+            var method = executorType.GetMethod("Execute", new[] { routedToType, typeof(IDictionary<string, object>) });
+
+            var executorParameter = Expression.Parameter(executorType);
+            var endpointParameter = Expression.Parameter(routedToType);
+            var environmentParameter = Expression.Parameter(typeof(IDictionary<string, object>));
+
+            var execute = Expression
+                .Lambda<Func<TExecutor, TRoutedTo, IDictionary<string, object>, Task>>(Expression.Call(executorParameter, method, endpointParameter, environmentParameter), executorParameter, endpointParameter, environmentParameter)
+                .Compile();
+
+            return ((executor, routedTo, environment) => execute((TExecutor)executor, (TRoutedTo)routedTo, environment));
         }
     }
 }

@@ -130,10 +130,16 @@ namespace SuperGlue.Configuration
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
             var loadedPaths = loadedAssemblies.Where(x => !x.IsDynamic).Select(a => a.Location).ToArray();
 
-            var referencedPaths = AppDomain
-                .CurrentDomain
-                .RelativeSearchPath
-                .Split(';')
+
+
+            var paths = new List<string>
+            {
+                AppDomain.CurrentDomain.BaseDirectory
+            };
+
+            paths.AddRange((AppDomain.CurrentDomain.RelativeSearchPath ?? "").Split(';').Where(x => !string.IsNullOrEmpty(x)));
+
+            var referencedPaths = paths
                 .SelectMany(x => Directory.GetFiles(x, "*.dll"))
                 .ToList();
 

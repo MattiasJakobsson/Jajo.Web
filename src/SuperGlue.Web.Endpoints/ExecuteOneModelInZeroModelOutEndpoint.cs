@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -8,6 +10,20 @@ namespace SuperGlue.Web.Endpoints
     {
         private readonly TEndpoint _endpoint;
 
+        private static readonly Cache<MethodInfo, Func<TEndpoint, TInput, Task>> ExecutionMethodsCache = new Cache<MethodInfo, Func<TEndpoint, TInput, Task>>(
+            x =>
+            {
+                var endpointParameter = Expression.Parameter(typeof(TEndpoint));
+                var inputParameter = Expression.Parameter(typeof(TInput));
+
+                if (x.IsAsyncMethod())
+                    return Expression.Lambda<Func<TEndpoint, TInput, Task>>(Expression.Call(endpointParameter, x, inputParameter), endpointParameter, inputParameter).Compile();
+
+                var lambda = Expression.Lambda<Action<TEndpoint, TInput>>(Expression.Call(endpointParameter, x, inputParameter), endpointParameter, inputParameter).Compile();
+
+                return ((endpoint, input) => Task.Factory.StartNew(() => lambda(endpoint, input)));
+            });
+
         public ExecuteOneModelInZeroModelOutEndpoint(TEndpoint endpoint)
         {
             _endpoint = endpoint;
@@ -15,10 +31,7 @@ namespace SuperGlue.Web.Endpoints
 
         public async Task Execute(MethodInfo endpointMethod, IDictionary<string, object> environment)
         {
-            if (endpointMethod.IsAsyncMethod())
-                await (Task)endpointMethod.Invoke(_endpoint, new object[] { await environment.Bind<TInput>() });
-            else
-                endpointMethod.Invoke(_endpoint, new object[] { await environment.Bind<TInput>() });
+            await ExecutionMethodsCache[endpointMethod](_endpoint, await environment.Bind<TInput>());
         }
     }
 }

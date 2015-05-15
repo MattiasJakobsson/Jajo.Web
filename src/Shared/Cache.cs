@@ -98,6 +98,12 @@ namespace SuperGlue
             }
         }
 
+        public TValue Get(TKey key, Func<TKey, TValue> onMissing)
+        {
+            Fill(key, onMissing);
+            return _values[key];
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return ((IEnumerable<TValue>)this).GetEnumerator();

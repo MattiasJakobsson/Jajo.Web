@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -8,6 +10,19 @@ namespace SuperGlue.Web.Endpoints
     {
         private readonly TEndpoint _endpoint;
 
+        private static readonly Cache<MethodInfo, Func<TEndpoint, Task>> ExecutionMethodsCache = new Cache<MethodInfo, Func<TEndpoint, Task>>(
+            x =>
+            {
+                var endpointParameter = Expression.Parameter(typeof(TEndpoint));
+
+                if (x.IsAsyncMethod())
+                    return Expression.Lambda<Func<TEndpoint, Task>>(Expression.Call(endpointParameter, x), endpointParameter).Compile();
+
+                var lambda = Expression.Lambda<Action<TEndpoint>>(Expression.Call(endpointParameter, x), endpointParameter).Compile();
+
+                return (endpoint => Task.Factory.StartNew(() => lambda(endpoint)));
+            });
+
         public ExecuteZeroModelInZeroModelOutEndpoint(TEndpoint endpoint)
         {
             _endpoint = endpoint;
@@ -15,10 +30,7 @@ namespace SuperGlue.Web.Endpoints
 
         public async Task Execute(MethodInfo endpointMethod, IDictionary<string, object> environment)
         {
-            if (endpointMethod.IsAsyncMethod())
-                await (Task)endpointMethod.Invoke(_endpoint, new object[0]);
-            else
-                endpointMethod.Invoke(_endpoint, new object[0]);
+            await ExecutionMethodsCache[endpointMethod](_endpoint);
         }
     }
 }
