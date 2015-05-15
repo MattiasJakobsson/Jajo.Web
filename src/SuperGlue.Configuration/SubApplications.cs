@@ -6,47 +6,6 @@ using System.Reflection;
 
 namespace SuperGlue.Configuration
 {
-    public class SubAppsConfiguration
-    {
-        public SubAppsConfiguration()
-        {
-            SubApplications = new List<SubApplication>();
-        }
-
-        public IEnumerable<SubApplication> SubApplications { get; set; }
-    }
-
-    public class SubApplication
-    {
-        public string Name { get; set; }
-        public string RelativePath { get; set; }
-        public string AbsolutePath { get; set; }
-
-        public string GetAbsolutePath(string basePath)
-        {
-            if (!string.IsNullOrEmpty(AbsolutePath))
-                return AbsolutePath;
-
-            var relativePath = RelativePath;
-            var baseDirectory = new DirectoryInfo(basePath);
-
-            while (relativePath.StartsWith("..\\"))
-            {
-                if(baseDirectory == null)
-                    throw new Exception("Invalid path");
-
-                baseDirectory = baseDirectory.Parent;
-
-                relativePath = relativePath.Substring(3);
-            }
-
-            if (baseDirectory == null)
-                throw new Exception("Invalid path");
-
-            return Path.Combine(baseDirectory.FullName, relativePath);
-        }
-    }
-
     public static class SubApplications
     {
         private static readonly ICollection<InitializedSubApplication> InitializedApplications = new List<InitializedSubApplication>();
@@ -56,6 +15,8 @@ namespace SuperGlue.Configuration
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
 
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            if (!basePath.EndsWith("\\"))
+                basePath = string.Format("{0}\\", basePath);
 
             var subAppPathsConfigurations = ConfigurationFile.Read<SubAppsConfiguration>(string.Format("{0}.subapplications", basePath));
 
@@ -119,7 +80,8 @@ namespace SuperGlue.Configuration
 
             return (from f in pluginsFolders.SelectMany(x => x.GetFiles("*.dll", SearchOption.AllDirectories))
                     let assemblyName = AssemblyName.GetAssemblyName(f.FullName)
-                    where (assemblyName.FullName == args.Name || assemblyName.FullName.Split(',')[0] == args.Name) && InitializedApplications.Any(x => x.Assembly.FullName == args.Name || x.Assembly.FullName.Split(',')[0] == args.Name.Split(',')[0])
+                    where (assemblyName.FullName == args.Name || assemblyName.FullName.Split(',')[0] == args.Name) 
+                        && InitializedApplications.Any(x => x.Assembly.FullName == args.Name || x.Assembly.FullName.Split(',')[0] == args.Name.Split(',')[0])
                     select Assembly.LoadFile(f.FullName)).FirstOrDefault();
         }
 

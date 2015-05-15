@@ -26,6 +26,7 @@ _ReSharper.*/
 [Dd]ata/eventstore-net/[Dd]ata
 [Dd]ata/eventstore-net/[Dd]ata-logs
 [Dd]ata/[Nn]eo4j/data
+src/SuperGlue.Web.Sample.AspNet/[Rr]untime
 fubu-content
 bottles.cmd
 *.stresult

@@ -69,6 +69,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{55D1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Hosting", "Hosting", "{AA4EDE08-2CF6-4C63-ADBD-C075282D60D3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.CommandLine", "SuperGlue.CommandLine\SuperGlue.CommandLine.csproj", "{271A8D2C-4681-4589-9C0E-3E65CDB652A1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -171,6 +173,10 @@ Global
 		{1DF1CFDF-4E47-46BD-8B71-9438831002DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DF1CFDF-4E47-46BD-8B71-9438831002DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DF1CFDF-4E47-46BD-8B71-9438831002DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{271A8D2C-4681-4589-9C0E-3E65CDB652A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{271A8D2C-4681-4589-9C0E-3E65CDB652A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{271A8D2C-4681-4589-9C0E-3E65CDB652A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{271A8D2C-4681-4589-9C0E-3E65CDB652A1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
