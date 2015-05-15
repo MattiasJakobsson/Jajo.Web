@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -18,6 +19,14 @@ namespace SuperGlue.Configuration
         {
             try
             {
+                var fileName = Path.GetFileName(assemblyPath);
+
+                if (string.IsNullOrEmpty(fileName))
+                    return null;
+
+                if (AppDomain.CurrentDomain.SetupInformation.PrivateBinPath.Split(';').Any(x => File.Exists(Path.Combine(x, fileName))))
+                    return null;
+
                 LoadedAssemblies.Add(assemblyPath);
                 return Assembly.LoadFile(assemblyPath);
             }
