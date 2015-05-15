@@ -60,7 +60,7 @@
     <Compile Include="Search\IRavenFreeTextSearch.cs" />
     <Compile Include="Search\IHandleLeftoverSearchPart.cs" />
     <Compile Include="Search\IRavenSpecialCommandSearch.cs" />
-    <Compile Include="Search\RavenUnitOfWork.cs" />
+    <Compile Include="RavenUnitOfWork.cs" />
     <Compile Include="Search\SearchParsingResult.cs" />
     <Compile Include="Search\SearchPart.cs" />
     <Compile Include="SetupRavenConfiguration.cs" />

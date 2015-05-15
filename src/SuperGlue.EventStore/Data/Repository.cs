@@ -18,7 +18,7 @@ namespace SuperGlue.EventStore.Data
         private readonly IHandleStreamNames _handleStreamNames;
         private readonly IEnumerable<IManageChanges> _manageChanges;
         private readonly IManageTimeOuts _timeoutManager;
-        private readonly ConcurrentDictionary<string, IAggregate> _loadedAggregates = new ConcurrentDictionary<string, IAggregate>();
+        private readonly ConcurrentDictionary<string, LoadedAggregate> _loadedAggregates = new ConcurrentDictionary<string, LoadedAggregate>();
 
         private const string AggregateClrTypeHeader = "AggregateClrTypeName";
         private const string CommitIdHeader = "CommitId";
@@ -41,10 +41,10 @@ namespace SuperGlue.EventStore.Data
 
         public T Load<T>(string id, ActionMetaData actionMetaData) where T : IAggregate, new()
         {
-            IAggregate aggregate;
+            LoadedAggregate aggregate;
 
             if (_loadedAggregates.TryGetValue(id, out aggregate))
-                return (T)aggregate;
+                return (T)aggregate.Aggregate;
 
             return LoadVersion<T>(id, int.MaxValue, actionMetaData);
         }
@@ -81,7 +81,13 @@ namespace SuperGlue.EventStore.Data
             _timeoutManager.RequestTimeOut(stream, commitId, evnt, at, commitHeaders);
         }
 
-        public void Save(IAggregate aggregate, Guid commitId, ActionMetaData actionMetaData)
+        public void SaveChanges()
+        {
+            foreach (var aggregate in _loadedAggregates)
+                Save(aggregate.Value.Aggregate, Guid.NewGuid(), aggregate.Value.MetaData);
+        }
+
+        private void Save(IAggregate aggregate, Guid commitId, ActionMetaData actionMetaData)
         {
             var commitHeaders = new Dictionary<string, object>();
 
@@ -245,7 +251,7 @@ namespace SuperGlue.EventStore.Data
         {
             aggregate.AggregateAttached += x => OnAggregateLoaded(x, actionMetaData);
 
-            _loadedAggregates[aggregate.Id] = aggregate;
+            _loadedAggregates[aggregate.Id] = new LoadedAggregate(aggregate, actionMetaData);
 
             var handler = AggregateLoaded;
             if (handler != null) handler(aggregate, actionMetaData);
@@ -261,6 +267,18 @@ namespace SuperGlue.EventStore.Data
         private object DeserializeEvent(ResolvedEvent evnt)
         {
             return _eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data).Data;
+        }
+
+        private class LoadedAggregate
+        {
+            public LoadedAggregate(IAggregate aggregate, ActionMetaData metaData)
+            {
+                Aggregate = aggregate;
+                MetaData = metaData;
+            }
+
+            public IAggregate Aggregate { get; private set; }
+            public ActionMetaData MetaData { get; private set; }
         }
     }
 }

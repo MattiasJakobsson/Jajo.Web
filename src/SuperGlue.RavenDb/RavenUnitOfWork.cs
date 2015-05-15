@@ -1,7 +1,7 @@
 using System;
 using SuperGlue.UnitOfWork;
 
-namespace SuperGlue.RavenDb.Search
+namespace SuperGlue.RavenDb
 {
     public class RavenUnitOfWork : ISuperGlueUnitOfWork
     {
