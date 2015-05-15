@@ -113,7 +113,7 @@ namespace SuperGlue.Web
             public ReadableStringCollection Query{get { return new ReadableStringCollection(GetQuery()); }}
             public Uri Uri { get { return new Uri(Scheme + Uri.SchemeDelimiter + Host + PathBase + Path + QueryString); } }
             public string Protocol { get { return _environment.Get<string>(OwinConstants.RequestProtocol); } }
-            public RequestHeaders Headers { get { return new RequestHeaders(new ReadOnlyDictionary<string, string[]>(_environment.Get<IDictionary<string, string[]>>(OwinConstants.RequestHeaders))); } }
+            public RequestHeaders Headers { get { return new RequestHeaders(new ReadOnlyDictionary<string, string[]>(_environment.Get<IDictionary<string, string[]>>(OwinConstants.RequestHeaders, new Dictionary<string, string[]>()))); } }
             public RequestCookieCollection Cookies { get { return new RequestCookieCollection(GetCookies()); } }
             public Stream Body { get { return _environment.Get<Stream>(OwinConstants.RequestBody); } }
             public string LocalIpAddress { get { return _environment.Get<string>(OwinConstants.CommonKeys.LocalIpAddress); } }
@@ -417,7 +417,7 @@ namespace SuperGlue.Web
                 set { Set(OwinConstants.ResponseProtocol, value); }
             }
 
-            public ResponseHeaders Headers { get { return new ResponseHeaders(_environment.Get<IDictionary<string, string[]>>(OwinConstants.ResponseHeaders)); } }
+            public ResponseHeaders Headers { get { return new ResponseHeaders(_environment.Get<IDictionary<string, string[]>>(OwinConstants.ResponseHeaders, new Dictionary<string, string[]>())); } }
             public ResponseCookieCollection Cookies { get { return new ResponseCookieCollection(Headers); } }
             public Stream Body { get { return _environment.Get<Stream>(OwinConstants.ResponseBody); } }
 

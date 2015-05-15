@@ -63,11 +63,16 @@ namespace SuperGlue.Configuration
 
         protected void AddChain(string name, Action<IBuildAppFunction> configure)
         {
-            var appFuncBuilder = new BuildAppFunction();
+            var appFuncBuilder = GetAppFunctionBuilder(name);
 
             configure(appFuncBuilder);
 
             _chains[name] = appFuncBuilder.Build();
+        }
+
+        protected virtual IBuildAppFunction GetAppFunctionBuilder(string chain)
+        {
+            return new BuildAppFunction();
         }
 
         protected virtual void RunConfigurations(IEnumerable<Assembly> assemblies, IDictionary<string, object> environment)
@@ -123,7 +128,7 @@ namespace SuperGlue.Configuration
         private static void LoadAssemblies()
         {
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
-            var loadedPaths = loadedAssemblies.Select(a => a.Location).ToArray();
+            var loadedPaths = loadedAssemblies.Where(x => !x.IsDynamic).Select(a => a.Location).ToArray();
 
             var referencedPaths = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll");
             var toLoad = referencedPaths.Where(r => !loadedPaths.Contains(r, StringComparer.InvariantCultureIgnoreCase)).ToList();

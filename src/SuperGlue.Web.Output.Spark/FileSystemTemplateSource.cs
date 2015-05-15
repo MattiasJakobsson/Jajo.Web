@@ -10,23 +10,20 @@ namespace SuperGlue.Web.Output.Spark
     {
         private readonly IEnumerable<Assembly> _assemblies;
         private readonly FileScanner _fileScanner;
-        private readonly IEnumerable<string> _extraPaths;
 
-        public FileSystemTemplateSource(IEnumerable<Assembly> assemblies, FileScanner fileScanner, IEnumerable<string> extraPaths)
+        public FileSystemTemplateSource(IEnumerable<Assembly> assemblies, FileScanner fileScanner)
         {
             _assemblies = assemblies;
             _fileScanner = fileScanner;
-            _extraPaths = extraPaths;
         }
 
         public override IEnumerable<Template> FindTemplates()
         {
             var templates = new List<Template>();
 
-            var paths = _extraPaths.Select(Path.GetFullPath).ToList();
-            paths.Add(AppDomain.CurrentDomain.SetupInformation.ApplicationBase);
-            
-            var request = BuildRequest(templates, _assemblies, paths.ToArray());
+            var paths = new[] { AppDomain.CurrentDomain.BaseDirectory };
+
+            var request = BuildRequest(templates, _assemblies, paths);
 
             _fileScanner.Scan(request);
 

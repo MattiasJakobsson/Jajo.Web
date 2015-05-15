@@ -65,6 +65,9 @@
     <Compile Include="SampleBootstrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".subapplications">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="App.config" />
     <None Include="paket.references" />
     <None Include="Test.spark">
@@ -140,11 +143,6 @@
       <Project>{f466c803-e04e-493d-91d6-25001dc5a281}</Project>
       <Name>SuperGlue.Web.Validation</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="subapps.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

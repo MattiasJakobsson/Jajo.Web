@@ -44,7 +44,7 @@ namespace SuperGlue.Web.Output.Spark
                 throw new Exception(
                     string.Format(
                         "More then one template was found for endpoint.\nThe following templates were found: {0}",
-                        string.Join(", ", templates.Select(x => x.Name))));
+                        string.Join(", ", matchingTemplates.Select(x => x.Name))));
 
             var template = matchingTemplates.Single();
 

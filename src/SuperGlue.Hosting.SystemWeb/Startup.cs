@@ -9,8 +9,13 @@ namespace SuperGlue.Hosting.SystemWeb
 {
     public class Startup
     {
+        private static bool isConfigured;
+
         public void Configuration(IAppBuilder app)
         {
+            if(isConfigured)
+                return;
+
             var settings = new Dictionary<string, object>
             {
                 {SystemWebEnvironmentConstants.AppBuilder, app}
@@ -19,6 +24,8 @@ namespace SuperGlue.Hosting.SystemWeb
             var bootstrapper = SuperGlueBootstrapper.Find();
 
             bootstrapper.StartApplications(settings);
+
+            isConfigured = true;
         }
     }
 }

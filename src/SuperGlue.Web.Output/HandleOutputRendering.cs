@@ -23,6 +23,9 @@ namespace SuperGlue.Web.Output
 
             var result = await renderer.Item2.Render(environment);
 
+            if (result == null)
+                return;
+
             var response = environment.GetResponse();
 
             response.Headers.ContentType = result.ContentType;

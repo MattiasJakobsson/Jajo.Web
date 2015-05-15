@@ -25,14 +25,13 @@ namespace SuperGlue.Web.Sample
         protected override void Configure(IDictionary<string, object> settings)
         {
             var assemblies = settings.GetAssemblies().ToList();
-            var subApplications = settings.GetSubApplications();
 
             var define = ConventionalRoutingConfiguration.New()
                 .UseEndpointFilterer(new QueryAndCommandEndpointFilter())
                 .UseRoutePolicy(new DefaultRoutePolicy())
                 .Configure(assemblies, settings);
 
-            var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner(), subApplications.Select(x => x.Path)));
+            var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner()));
 
             var rendererHandler = OutputRendererBuilder.New()
                 .When(x => x.GetRequest().Headers.Accept.Contains("text/html")).UseRenderer(RenderOutputUsingSpark.Configure(templateSource, settings))

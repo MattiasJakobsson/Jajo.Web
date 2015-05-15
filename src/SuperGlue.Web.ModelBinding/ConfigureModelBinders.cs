@@ -17,10 +17,10 @@ namespace SuperGlue.Web.ModelBinding
                 environment.RegisterAll(typeof(IModelBinder));
                 environment.RegisterAll(typeof(IValueConverter));
 
-                environment.RegisterSingleton(typeof(IModelBinderCollection), typeof(ModelBinderCollection));
-                environment.RegisterSingleton(typeof(IPropertyBinderCollection), typeof(PropertyBinderCollection));
-                environment.RegisterSingleton(typeof(IValueConverterCollection), typeof(ValueConverterCollection));
-                environment.RegisterSingleton(typeof(IBindingSourceCollection), typeof(BindingSourceCollection));
+                environment.RegisterSingletonType(typeof(IModelBinderCollection), typeof(ModelBinderCollection));
+                environment.RegisterSingletonType(typeof(IPropertyBinderCollection), typeof(PropertyBinderCollection));
+                environment.RegisterSingletonType(typeof(IValueConverterCollection), typeof(ValueConverterCollection));
+                environment.RegisterSingletonType(typeof(IBindingSourceCollection), typeof(BindingSourceCollection));
             }, "superglue.ContainerSetup");
         }
 
