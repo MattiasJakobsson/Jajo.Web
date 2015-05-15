@@ -13,6 +13,7 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
     {
         private readonly ICollection<IFilterEndpoints> _filterEndpoints = new Collection<IFilterEndpoints>();
         private readonly ICollection<IRoutePolicy> _policies = new Collection<IRoutePolicy>();
+        private readonly ICollection<ICheckIfRouteExists> _routeCheckers = new Collection<ICheckIfRouteExists>();
 
         private ConventionalRoutingConfiguration()
         {
@@ -36,6 +37,12 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
             return this;
         }
 
+        public ConventionalRoutingConfiguration CheckIfRouteExistsUsing(ICheckIfRouteExists checkIfRouteExists)
+        {
+            _routeCheckers.Add(checkIfRouteExists);
+            return this;
+        }
+
         public IRouteEngine Configure(IEnumerable<Assembly> assemblies, IDictionary<string, object> environmentSettings)
         {
             var possibleEndpoints = AppDomainAssemblyTypeScanner.GetMethodsInAssemblies(assemblies);
@@ -54,7 +61,7 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
                 if (matchingPolicy == null)
                     continue;
 
-                var routeBuilder = new RouteBuilder();
+                var routeBuilder = new RouteBuilder(_routeCheckers);
 
                 matchingPolicy.Build(endpoint, routeBuilder);
 

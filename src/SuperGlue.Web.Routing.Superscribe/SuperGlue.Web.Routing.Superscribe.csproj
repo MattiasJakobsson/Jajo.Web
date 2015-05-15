@@ -58,6 +58,7 @@
     <Compile Include="Conventional\ConventionalRoutingConfiguration.cs" />
     <Compile Include="Conventional\DefaultRoutePolicy.cs" />
     <Compile Include="Conventional\Guid.cs" />
+    <Compile Include="Conventional\ICheckIfRouteExists.cs" />
     <Compile Include="Conventional\IFilterEndpoints.cs" />
     <Compile Include="Conventional\IRouteBuilder.cs" />
     <Compile Include="Conventional\IRoutePolicy.cs" />

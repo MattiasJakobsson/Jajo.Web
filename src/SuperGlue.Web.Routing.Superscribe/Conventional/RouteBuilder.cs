@@ -26,6 +26,13 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
 
         private GraphNode _node;
 
+        private readonly IEnumerable<ICheckIfRouteExists> _checkIfRouteExists;
+
+        public RouteBuilder(IEnumerable<ICheckIfRouteExists> checkIfRouteExists)
+        {
+            _checkIfRouteExists = checkIfRouteExists;
+        }
+
         public void RestrictMethods(params string[] methods)
         {
             _selectedMethods = methods;
@@ -48,7 +55,10 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
 
         public GraphNode Build(GraphNode baseNode, MethodInfo routeTo)
         {
-            var finalFunctions = _selectedMethods.Select(x => new FinalFunction(x, y => routeTo)).ToList();
+            var finalFunctions = _selectedMethods.Select(x => new FinalFunction(x, y =>
+            {
+                return _checkIfRouteExists.All(z => z.Exists(routeTo, y.Environment)) ? routeTo : null;
+            })).ToList();
 
             if (_node == null)
             {
