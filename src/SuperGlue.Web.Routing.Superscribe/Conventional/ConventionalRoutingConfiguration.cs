@@ -75,6 +75,15 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
                 .Where(x => x.Key.GetParameters().Length == 1)
                 .ToDictionary(x => x.Key.GetParameters()[0].ParameterType, x => x.Key);
 
+            environmentSettings[RouteExtensions.RouteConstants.CreateRoute] = (Action<string, object, string[]>) ((pattern, routeTo, methods) =>
+            {
+                var route = define.Route(pattern);
+
+                //TODO:Use existence checks
+                foreach (var method in methods)
+                    route.FinalFunctions.Add(new FinalFunction(method, x => routeTo));
+            });
+
             environmentSettings[RouteExtensions.RouteConstants.EndpointInputs] = inputToEndpoint;
 
             environmentSettings[RouteExtensions.RouteConstants.EndpointParametersFromInput] = (Func<object, IDictionary<string, object>>) (x =>

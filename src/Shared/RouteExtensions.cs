@@ -14,6 +14,7 @@ namespace SuperGlue
             public const string ReverseRoute = "superglue.ReverseRoute";
             public const string EndpointInputs = "superglue.RoutedEndpoints.Inputs";
             public const string EndpointParametersFromInput = "superglue.RoutedEnpoints.ParametersFromInput";
+            public const string CreateRoute = "superglue.CreateRoute";
         }
 
         public static RoutingData GetRouteInformation(this IDictionary<string, object> environment)
@@ -42,6 +43,11 @@ namespace SuperGlue
         {
             environment[RouteConstants.RoutedTo] = destination;
             environment[RouteConstants.Parameters] = parameters ?? new Dictionary<string, object>();
+        }
+
+        public static void CreateRoute(this IDictionary<string, object> environment, string pattern, object routeTo, params string[] methods)
+        {
+            environment.Get<Action<string, object, string[]>>(RouteConstants.CreateRoute)(pattern, routeTo, methods);
         }
 
         public class RoutingData
