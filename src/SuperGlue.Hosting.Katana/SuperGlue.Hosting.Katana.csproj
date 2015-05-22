@@ -49,7 +49,7 @@
       <Link>RunAppFunc.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteHost.cs" />
+    <Compile Include="RemoteKatanaHost.cs" />
     <Compile Include="StartKatanaHost.cs" />
   </ItemGroup>
   <ItemGroup>

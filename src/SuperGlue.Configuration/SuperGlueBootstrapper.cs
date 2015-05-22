@@ -16,7 +16,7 @@ namespace SuperGlue.Configuration
         private readonly IDictionary<string, AppFunc> _chains = new ConcurrentDictionary<string, AppFunc>();
         private IEnumerable<IStartApplication> _appStarters;
 
-        public virtual void StartApplications(IDictionary<string, object> settings, ApplicationStartersOverrides overrides = null)
+        public virtual IEnumerable<string> StartApplications(IDictionary<string, object> settings, ApplicationStartersOverrides overrides = null)
         {
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
 
@@ -49,6 +49,8 @@ namespace SuperGlue.Configuration
 
                 item.OrderBy(x => overrides.GetSortOrder(x)).First().Start(chain, settings);
             }
+
+            return subApplications.Select(x => x.Path).ToList();
         }
 
         public virtual void ShutDown()

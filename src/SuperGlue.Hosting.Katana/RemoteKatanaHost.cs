@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.Hosting.Katana
 {
-    public class RemoteHost : MarshalByRefObject
+    public class RemoteKatanaHost : MarshalByRefObject
     {
         private SuperGlueBootstrapper _bootstrapper;
 
-        public void Start()
+        public IEnumerable<string> Start()
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            _bootstrapper.StartApplications(new Dictionary<string, object>(), ApplicationStartersOverrides.Prefer<StartKatanaHost>());
+            return _bootstrapper.StartApplications(new Dictionary<string, object>(), ApplicationStartersOverrides.Prefer<StartKatanaHost>()).ToList();
         }
 
         public void Stop()

@@ -15,25 +15,24 @@ namespace SuperGlue.Configuration
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
         }
 
-        public Assembly LoadAssembly(string assemblyPath)
+        public void MakeSureAssemblyIsLoaded(string assemblyPath)
         {
             try
             {
                 var fileName = Path.GetFileName(assemblyPath);
 
                 if (string.IsNullOrEmpty(fileName))
-                    return null;
+                    return;
 
                 if (AppDomain.CurrentDomain.SetupInformation.PrivateBinPath.Split(';').Any(x => File.Exists(Path.Combine(x, fileName))))
-                    return null;
+                    return;
 
                 LoadedAssemblies.Add(assemblyPath);
-                return Assembly.LoadFile(assemblyPath);
+                Assembly.LoadFile(assemblyPath);
             }
             catch (Exception)
             {
-                return null;
-                // throw new InvalidOperationException(ex);
+                
             }
         }
 

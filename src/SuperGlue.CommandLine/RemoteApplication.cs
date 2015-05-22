@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Microsoft.Owin.Diagnostics;
 using Microsoft.Owin.Host.HttpListener;
@@ -12,8 +13,14 @@ namespace SuperGlue
     public class RemoteApplication
     {
         private readonly string _path;
+        private readonly IFileListener _fileListener;
         private AppDomain _appDomain;
-        private RemoteHost _host;
+        private RemoteKatanaHost _katanaHost;
+
+        public RemoteApplication()
+        {
+            _fileListener = new FileListener();
+        }
 
         public RemoteApplication(string path)
         {
@@ -36,21 +43,34 @@ namespace SuperGlue
                 LoaderOptimization = LoaderOptimization.MultiDomainHost
             });
 
-            var proxy = (AssemblyProxy)_appDomain.CreateInstanceAndUnwrap(typeof(AssemblyProxy).Assembly.FullName, typeof(AssemblyProxy).FullName);
+            Console.WriteLine("Starting application");
 
-            proxy.LoadAssembly(typeof(RemoteHost).Assembly.Location);
-            proxy.LoadAssembly(typeof(ErrorPageOptions).Assembly.Location);
-            proxy.LoadAssembly(typeof(OwinHttpListener).Assembly.Location);
-            proxy.LoadAssembly(typeof(WebApp).Assembly.Location);
+            var assemblyProxy = (AssemblyProxy)_appDomain.CreateInstanceAndUnwrap(typeof(AssemblyProxy).Assembly.FullName, typeof(AssemblyProxy).FullName);
 
-            _host = (RemoteHost)_appDomain.CreateInstanceAndUnwrap(typeof(RemoteHost).Assembly.FullName, typeof(RemoteHost).FullName);
+            assemblyProxy.MakeSureAssemblyIsLoaded(typeof(RemoteKatanaHost).Assembly.Location);
+            assemblyProxy.MakeSureAssemblyIsLoaded(typeof(ErrorPageOptions).Assembly.Location);
+            assemblyProxy.MakeSureAssemblyIsLoaded(typeof(OwinHttpListener).Assembly.Location);
+            assemblyProxy.MakeSureAssemblyIsLoaded(typeof(WebApp).Assembly.Location);
 
-            _host.Start();
+            _katanaHost = (RemoteKatanaHost)_appDomain.CreateInstanceAndUnwrap(typeof(RemoteKatanaHost).Assembly.FullName, typeof(RemoteKatanaHost).FullName);
+
+            var directories = _katanaHost.Start().ToList();
+
+            foreach (var directory in directories)
+                Console.WriteLine("Loaded subapplication from path: {0}", directory);
+
+            var paths = directories.ToList();
+            paths.AddRange(privateBinPath.ToString().Split(';').Where(x => !string.IsNullOrEmpty(x)));
+
+            foreach (var path in paths)
+                _fileListener.StartListening(path, "*.dll", x => Recycle());
         }
 
         public void Stop()
         {
-            _host.Stop();
+            _fileListener.StopListeners();
+
+            _katanaHost.Stop();
 
             AppDomain.Unload(_appDomain);
         }

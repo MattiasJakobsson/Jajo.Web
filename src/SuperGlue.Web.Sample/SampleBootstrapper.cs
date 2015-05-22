@@ -41,7 +41,7 @@ namespace SuperGlue.Web.Sample
 
             AddChain("chains.Partials", app =>
             {
-                app.Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed partial in {0}ms.", (int)time.TotalMilliseconds)))
+                app
                     .Use<HandleExceptions>()
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ExecuteEndpoint>()
@@ -54,7 +54,6 @@ namespace SuperGlue.Web.Sample
                 var diagnosticsManager = container.GetInstance<IManageDiagnosticsInformation>();
 
                 app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager, "Urls", x => x.GetRequest().Uri.ToString()))
-                    .Use<MeasureInner>(new MeasureInnerOptions((time, environment) => Console.WriteLine("Executed url: {0} in {1}ms.", environment.GetRequest().Uri.ToString(), (int)time.TotalMilliseconds)))
                     .Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions((url, environment) => url.ToLower()))
                     .Use<BranchRequest>(new BranchRequestConfiguration()
                         .AddCase(y => y.GetException() != null, app
