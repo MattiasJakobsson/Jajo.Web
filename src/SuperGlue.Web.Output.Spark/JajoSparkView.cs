@@ -4,7 +4,7 @@ using Spark;
 
 namespace SuperGlue.Web.Output.Spark
 {
-    public abstract class SuperGlueSparkView : SparkViewBase
+    public abstract class SuperGlueSparkView : SparkViewBase, ISuperGlueView
     {
         public void Render(ViewContext viewContext, TextWriter writer)
         {
@@ -27,7 +27,7 @@ namespace SuperGlue.Web.Output.Spark
         }
     }
 
-    public abstract class SuperGlueSparkView<TModel> : SuperGlueSparkView where TModel : class
+    public abstract class SuperGlueSparkView<TModel> : SuperGlueSparkView, ISuperGlueView<TModel> where TModel : class
     {
         public TModel Model { get; private set; }
 
@@ -36,5 +36,4 @@ namespace SuperGlue.Web.Output.Spark
             Model = model as TModel;
         }
     }
-
 }

@@ -54,6 +54,7 @@
     <Compile Include="HandleOutputRendering.cs" />
     <Compile Include="IHandleOutputRendering.cs" />
     <Compile Include="IRenderOutput.cs" />
+    <Compile Include="ISuperGlueView.cs" />
     <Compile Include="OutputRendererBuilder.cs" />
     <Compile Include="OutputRenderingResult.cs" />
     <Compile Include="RenderOutput.cs" />
