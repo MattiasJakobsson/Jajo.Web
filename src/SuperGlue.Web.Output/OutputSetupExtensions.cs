@@ -6,9 +6,9 @@ namespace SuperGlue.Web.Output
 {
     public static class OutputSetupExtensions
     {
-        public static OutputConfiguration ConfigureOutput(this SuperGlueBootstrapper bootstrapper, IDictionary<string, object> environment)
+        public static OutputConfiguration ConfigureOutput(this SuperGlueBootstrapper bootstrapper)
         {
-            return new OutputConfiguration(environment);
+            return new OutputConfiguration(bootstrapper.Environment);
         }
 
         public class OutputConfiguration

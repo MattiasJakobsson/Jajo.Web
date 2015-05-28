@@ -16,11 +16,15 @@ namespace SuperGlue.Configuration
         private readonly IDictionary<string, AppFunc> _chains = new ConcurrentDictionary<string, AppFunc>();
         private IEnumerable<IStartApplication> _appStarters;
 
+        public IDictionary<string, object> Environment { get; private set; }
+
         public virtual IEnumerable<string> StartApplications(IDictionary<string, object> settings, ApplicationStartersOverrides overrides = null)
         {
+            Environment = settings;
+
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
 
-            var subApplications = SubApplications.Init(settings).ToList();
+            var subApplications = SubApplications.Init(Environment).ToList();
 
             var assemblies = new List<Assembly>();
 
@@ -32,13 +36,13 @@ namespace SuperGlue.Configuration
                     assemblies.Add(assembly);
             }
 
-            RunConfigurations(assemblies, settings);
+            RunConfigurations(assemblies);
 
-            Configure(settings);
+            Configure();
 
-            _appStarters = settings.ResolveAll<IStartApplication>();
+            _appStarters = Environment.ResolveAll<IStartApplication>();
 
-            settings["superglue.ApplicationStarters"] = _appStarters;
+            Environment["superglue.ApplicationStarters"] = _appStarters;
 
             foreach (var item in _appStarters.GroupBy(x => x.Chain))
             {
@@ -52,7 +56,7 @@ namespace SuperGlue.Configuration
                 chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(item.Key));
 
                 if (chain != null)
-                    starter.Start(chain, settings);
+                    starter.Start(chain, Environment);
             }
 
             return subApplications.Select(x => x.Path).ToList();
@@ -66,7 +70,7 @@ namespace SuperGlue.Configuration
                 startApplication.ShutDown();
         }
 
-        protected abstract void Configure(IDictionary<string, object> environment);
+        protected abstract void Configure();
 
         protected void AddChain(string name, Action<IBuildAppFunction> configure)
         {
@@ -82,9 +86,9 @@ namespace SuperGlue.Configuration
             return new BuildAppFunction();
         }
 
-        protected virtual void RunConfigurations(IEnumerable<Assembly> assemblies, IDictionary<string, object> environment)
+        protected virtual void RunConfigurations(IEnumerable<Assembly> assemblies)
         {
-            environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.Assemblies] = assemblies;
+            Environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.Assemblies] = assemblies;
 
             var configurations = assemblies
                 .SelectMany(x => x.GetTypes())
@@ -94,10 +98,10 @@ namespace SuperGlue.Configuration
                 .SelectMany(x => x.Setup())
                 .ToList();
 
-            ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(configurations), "superglue.ApplicationSetupStarted", environment);
+            ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(configurations), "superglue.ApplicationSetupStarted");
         }
 
-        protected virtual void ExecuteConfigurationsDependingOn(IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn, IDictionary<string, object> environment)
+        protected virtual void ExecuteConfigurationsDependingOn(IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn)
         {
             var configurationsToExecute = configurations.Where(x => x.DependsOn == dependsOn).ToList();
 
@@ -105,12 +109,12 @@ namespace SuperGlue.Configuration
 
             foreach (var configuration in configurationsToExecute)
             {
-                configuration.Action(environment);
+                configuration.Action(Environment);
                 results.Add(configuration.ConfigurationName);
             }
 
             foreach (var item in results.Distinct())
-                ExecuteConfigurationsDependingOn(configurations, item, environment);
+                ExecuteConfigurationsDependingOn(configurations, item);
         }
 
         public static SuperGlueBootstrapper Find()
