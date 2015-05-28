@@ -36,7 +36,7 @@ namespace SuperGlue.Web.Validation
             if (validationResult.IsValid)
                 await _next(environment);
             else
-                environment["superglue.ValidationResult"] = validationResult;
+                environment[ValidationEnvironmentExtensions.ValidationConstants.ValidationResult] = validationResult;
         }
     }
 

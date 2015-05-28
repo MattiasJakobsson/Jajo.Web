@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Superscribe.Models;
+using Superscribe.Utils;
 using String = Superscribe.Models.String;
 
 namespace SuperGlue.Web.Routing.Superscribe.Conventional
@@ -27,10 +27,12 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
         private GraphNode _node;
 
         private readonly IEnumerable<ICheckIfRouteExists> _checkIfRouteExists;
+        private readonly IStringRouteParser _stringRouteParser;
 
-        public RouteBuilder(IEnumerable<ICheckIfRouteExists> checkIfRouteExists)
+        public RouteBuilder(IEnumerable<ICheckIfRouteExists> checkIfRouteExists, IStringRouteParser stringRouteParser)
         {
             _checkIfRouteExists = checkIfRouteExists;
+            _stringRouteParser = stringRouteParser;
         }
 
         public void RestrictMethods(params string[] methods)
@@ -53,7 +55,14 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
             _node = _node == null ? parameterNode : _node.Slash(parameterNode);
         }
 
-        public GraphNode Build(GraphNode baseNode, MethodInfo routeTo)
+        public void AppendPattern(string pattern)
+        {
+            var patternNode = _stringRouteParser.MapToGraph(pattern);
+
+            _node = _node == null ? patternNode : _node.Slash(patternNode);
+        }
+
+        public GraphNode Build(GraphNode baseNode, object routeTo)
         {
             var finalFunctions = _selectedMethods.Select(x => new FinalFunction(x, y =>
             {

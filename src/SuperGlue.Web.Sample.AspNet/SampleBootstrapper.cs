@@ -65,7 +65,7 @@ namespace SuperGlue.Web.Sample.AspNet
                             .Use<SetStatusCode>(401)
                             .Use<HandleUnauthorizedMiddleware>()
                             .Build())
-                        .AddCase(y => !(y.Get<ValidationResult>("superglue.ValidationResult") ?? new ValidationResult(new List<ValidationResult.ValidationError>())).IsValid, app
+                        .AddCase(y => !y.GetValidationResult().IsValid, app
                             .New()
                             .Use<HandleValidationErrorMiddleware>()
                             .Build())

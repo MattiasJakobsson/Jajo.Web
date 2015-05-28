@@ -61,6 +61,7 @@
     <Compile Include="InputValidation\ValidateRequestInput.cs" />
     <Compile Include="IValidateRequest.cs" />
     <Compile Include="ValidateRequest.cs" />
+    <Compile Include="ValidationEnvironmentExtensions.cs" />
     <Compile Include="ValidationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

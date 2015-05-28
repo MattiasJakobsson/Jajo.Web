@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using Superscribe.Engine;
 using Superscribe.Models;
+using Superscribe.Utils;
 
 namespace SuperGlue.Web.Routing.Superscribe.Conventional
 {
@@ -13,7 +14,7 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
     {
         private readonly ICollection<IFilterEndpoints> _filterEndpoints = new Collection<IFilterEndpoints>();
         private readonly ICollection<IRoutePolicy> _policies = new Collection<IRoutePolicy>();
-        private readonly ICollection<ICheckIfRouteExists> _routeCheckers = new Collection<ICheckIfRouteExists>();
+        protected readonly ICollection<ICheckIfRouteExists> RouteCheckers = new Collection<ICheckIfRouteExists>();
 
         private ConventionalRoutingConfiguration()
         {
@@ -39,7 +40,7 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
 
         public ConventionalRoutingConfiguration CheckIfRouteExistsUsing(ICheckIfRouteExists checkIfRouteExists)
         {
-            _routeCheckers.Add(checkIfRouteExists);
+            RouteCheckers.Add(checkIfRouteExists);
             return this;
         }
 
@@ -61,7 +62,7 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
                 if (matchingPolicy == null)
                     continue;
 
-                var routeBuilder = new RouteBuilder(_routeCheckers);
+                var routeBuilder = CreateRouteBuilder();
 
                 matchingPolicy.Build(endpoint, routeBuilder);
 
@@ -77,11 +78,12 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
 
             environmentSettings[RouteExtensions.RouteConstants.CreateRoute] = (Action<string, object, string[]>) ((pattern, routeTo, methods) =>
             {
-                var route = define.Route(pattern);
+                var routeBuilder = CreateRouteBuilder();
 
-                //TODO:Use existence checks
-                foreach (var method in methods)
-                    route.FinalFunctions.Add(new FinalFunction(method, x => routeTo));
+                routeBuilder.RestrictMethods(methods);
+                routeBuilder.AppendPattern(pattern);
+
+                routeBuilder.Build(define.Base, routeTo);
             });
 
             environmentSettings[RouteExtensions.RouteConstants.EndpointInputs] = inputToEndpoint;
@@ -140,6 +142,12 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
             });
 
             return define;
+        }
+
+        protected virtual IRouteBuilder CreateRouteBuilder()
+        {
+            //HACK:Hard coded route parser
+            return new RouteBuilder(RouteCheckers, new StringRouteParser());
         }
     }
 }
