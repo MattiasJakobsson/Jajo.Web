@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using SuperGlue.Configuration;
 using SuperGlue.Diagnostics;
 using SuperGlue.ExceptionManagement;
@@ -23,16 +22,11 @@ namespace SuperGlue.Web.Sample
     {
         protected override void Configure(IDictionary<string, object> settings)
         {
-            var assemblies = settings.GetAssemblies().ToList();
-
             this.UseRoutePolicy(new MethodEndpointRoutePolicy(new DefaultEndpointBuilder()), settings);
 
-            var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner()));
-
-            var rendererHandler = OutputRendererBuilder.New()
-                .When(x => x.GetRequest().Headers.Accept.Contains("text/html")).UseRenderer(RenderOutputUsingSpark.Configure(templateSource, settings))
-                .When(x => true).UseRenderer(new RenderOutputAsJson())
-                .Build();
+            this.ConfigureOutput(settings)
+                .When(x => x.GetRequest().Headers.Accept.Contains("text/html")).UseSpark()
+                .When(x => true).UseRenderer(new RenderOutputAsJson());
 
             AddChain("chains.Partials", app =>
             {
@@ -40,7 +34,7 @@ namespace SuperGlue.Web.Sample
                     .Use<HandleExceptions>()
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ExecuteEndpoint>()
-                    .Use<RenderOutput>(rendererHandler);
+                    .Use<RenderOutput>();
             });
 
             AddChain("chains.Web", app =>
@@ -79,7 +73,7 @@ namespace SuperGlue.Web.Sample
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))
                     .Use<ExecuteEndpoint>()
-                    .Use<RenderOutput>(rendererHandler);
+                    .Use<RenderOutput>();
             });
         }
     }

@@ -51,12 +51,11 @@
     <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
-    <Compile Include="HandleOutputRendering.cs" />
-    <Compile Include="IHandleOutputRendering.cs" />
     <Compile Include="IRenderOutput.cs" />
     <Compile Include="ISuperGlueView.cs" />
-    <Compile Include="OutputRendererBuilder.cs" />
+    <Compile Include="OutputEnvironmentExtensions.cs" />
     <Compile Include="OutputRenderingResult.cs" />
+    <Compile Include="OutputSetupExtensions.cs" />
     <Compile Include="RenderOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderOutputAsJson.cs" />
@@ -65,6 +64,12 @@
   <ItemGroup>
     <None Include="paket.references" />
     <None Include="paket.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
+      <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
+      <Name>SuperGlue.Configuration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

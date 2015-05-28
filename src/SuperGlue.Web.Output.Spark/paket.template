@@ -9,3 +9,4 @@ files
 dependencies
 	Spark
 	SuperGlue.Web.Output
+	SuperGlue.Configuration

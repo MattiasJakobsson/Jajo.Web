@@ -9,23 +9,18 @@ namespace SuperGlue.Web.Output
     public class RenderOutput
     {
         private readonly AppFunc _next;
-        private readonly IHandleOutputRendering _handleOutputRendering;
 
-        public RenderOutput(AppFunc next, IHandleOutputRendering handleOutputRendering)
+        public RenderOutput(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
-            if (handleOutputRendering == null)
-                throw new ArgumentNullException("handleOutputRendering");
-
             _next = next;
-            _handleOutputRendering = handleOutputRendering;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await _handleOutputRendering.Render(environment);
+            await environment.Render();
 
             await _next(environment);
         }

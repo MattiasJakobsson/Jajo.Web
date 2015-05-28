@@ -16,7 +16,7 @@ namespace SuperGlue.Web.Output.Spark
         private readonly IDictionary<string, object> _applicationSettings;
         private readonly UseMasterGrammar _grammar;
 
-        protected RenderOutputUsingSpark(ISparkViewEngine engine, IEnumerable<Template> availableTemplates, IDictionary<string, object> applicationSettings)
+        public RenderOutputUsingSpark(ISparkViewEngine engine, IEnumerable<Template> availableTemplates, IDictionary<string, object> applicationSettings)
         {
             _engine = engine;
             _availableTemplates = availableTemplates;
@@ -69,22 +69,6 @@ namespace SuperGlue.Web.Output.Spark
 
                 return new OutputRenderingResult(outputStream, ContentType.Html);
             });
-        }
-
-        public static RenderOutputUsingSpark Configure(ITemplateSource templateSource, IDictionary<string, object> environmentSettings)
-        {
-            var templates = templateSource.FindTemplates().ToList();
-
-            var sparkViewEngine = new SparkViewEngine(new SparkSettings())
-            {
-                DefaultPageBaseType = typeof(SuperGlueSparkView).FullName,
-                ViewFolder = new SuperGlueViewFolder(templates),
-                PartialProvider = new SuperGluePartialProvider()
-            };
-
-            environmentSettings["superglue.Spark.ViewEngine"] = sparkViewEngine;
-
-            return new RenderOutputUsingSpark(sparkViewEngine, templates, environmentSettings);
         }
 
         private SparkViewDescriptor BuildDescriptor(Template template, bool searchForMaster, ICollection<string> searchedLocations)
