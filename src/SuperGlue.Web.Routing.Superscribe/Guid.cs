@@ -1,6 +1,6 @@
 using Superscribe.Models;
 
-namespace SuperGlue.Web.Routing.Superscribe.Conventional
+namespace SuperGlue.Web.Routing.Superscribe
 {
     public class Guid : ParamNode<System.Guid>
     {

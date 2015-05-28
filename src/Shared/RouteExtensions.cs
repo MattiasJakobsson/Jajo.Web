@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 
 namespace SuperGlue
 {
@@ -12,9 +11,7 @@ namespace SuperGlue
             public const string Parameters = "route.Parameters";
             public const string RoutedTo = "route.RoutedTo";
             public const string ReverseRoute = "superglue.ReverseRoute";
-            public const string EndpointInputs = "superglue.RoutedEndpoints.Inputs";
-            public const string EndpointParametersFromInput = "superglue.RoutedEnpoints.ParametersFromInput";
-            public const string CreateRoute = "superglue.CreateRoute";
+            public const string CreateRouteFunc = "superglue.CreateRouteFunc";
         }
 
         public static RoutingData GetRouteInformation(this IDictionary<string, object> environment)
@@ -24,19 +21,9 @@ namespace SuperGlue
 
         public static string RouteTo(this IDictionary<string, object> environment, object input)
         {
-            var reverseRoute = environment.Get<Func<object, IDictionary<string, object>, string>>(RouteConstants.ReverseRoute);
+            var reverseRoute = environment.Get<Func<object, string>>(RouteConstants.ReverseRoute);
 
-            if (reverseRoute == null)
-                return "";
-
-            var inputToRoute = environment.Get<IDictionary<Type, MethodInfo>>(RouteConstants.EndpointInputs);
-
-            if (inputToRoute == null || !inputToRoute.ContainsKey(input.GetType()))
-                return "";
-
-            var inputParameters = environment.Get<Func<object, IDictionary<string, object>>>(RouteConstants.EndpointParametersFromInput)(input);
-
-            return reverseRoute(inputToRoute[input.GetType()], inputParameters);
+            return reverseRoute == null ? "" : reverseRoute(input);
         }
 
         public static void SetRouteDestination(this IDictionary<string, object> environment, object destination, IDictionary<string, object> parameters = null)
@@ -47,7 +34,7 @@ namespace SuperGlue
 
         public static void CreateRoute(this IDictionary<string, object> environment, string pattern, object routeTo, params string[] methods)
         {
-            environment.Get<Action<string, object, string[]>>(RouteConstants.CreateRoute)(pattern, routeTo, methods);
+            environment.Get<Action<string, object, string[]>>(RouteConstants.CreateRouteFunc)(pattern, routeTo, methods);
         }
 
         public class RoutingData

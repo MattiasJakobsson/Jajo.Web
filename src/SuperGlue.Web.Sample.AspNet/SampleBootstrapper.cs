@@ -13,7 +13,7 @@ using SuperGlue.Web.ModelBinding;
 using SuperGlue.Web.Output;
 using SuperGlue.Web.Output.Spark;
 using SuperGlue.Web.Routing.Superscribe;
-using SuperGlue.Web.Routing.Superscribe.Conventional;
+using SuperGlue.Web.Routing.Superscribe.Policies.MethodEndpoint;
 using SuperGlue.Web.Validation;
 using SuperGlue.Web.Validation.InputValidation;
 
@@ -25,10 +25,7 @@ namespace SuperGlue.Web.Sample.AspNet
         {
             var assemblies = settings.GetAssemblies().ToList();
 
-            var define = ConventionalRoutingConfiguration.New()
-                .UseEndpointFilterer(new QueryAndCommandEndpointFilter())
-                .UseRoutePolicy(new DefaultRoutePolicy())
-                .Configure(assemblies, settings);
+            this.UseRoutePolicy(new MethodEndpointRoutePolicy(new DefaultEndpointBuilder()), settings);
 
             var templateSource = new AggregatedTemplateSource(new EmbeddedTemplateSource(assemblies), new FileSystemTemplateSource(assemblies, new FileScanner()));
 
@@ -77,7 +74,7 @@ namespace SuperGlue.Web.Sample.AspNet
                     .Use<HandleExceptions>()
                     .Use<NestedStructureMapContainer>(container)
                     .Use<BindModels>(container.GetInstance<IModelBinderCollection>())
-                    .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(define))
+                    .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(settings.GetRouteEngine()))
                     .Use<HandleUnitOfWork>()
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))

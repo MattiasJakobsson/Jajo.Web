@@ -8,3 +8,4 @@ files
     bin/Release/SuperGlue.Web.Routing.Superscribe.dll ==> lib
 dependencies
 	Superscribe
+	SuperGlue.Configuration

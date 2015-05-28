@@ -5,7 +5,7 @@ using Superscribe.Models;
 using Superscribe.Utils;
 using String = Superscribe.Models.String;
 
-namespace SuperGlue.Web.Routing.Superscribe.Conventional
+namespace SuperGlue.Web.Routing.Superscribe
 {
     public class RouteBuilder : IRouteBuilder
     {
@@ -62,7 +62,7 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
             _node = _node == null ? patternNode : _node.Slash(patternNode);
         }
 
-        public GraphNode Build(GraphNode baseNode, object routeTo)
+        public GraphNode Build(GraphNode baseNode, object routeTo, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, IDictionary<string, object> environment)
         {
             var finalFunctions = _selectedMethods.Select(x => new FinalFunction(x, y =>
             {
@@ -78,6 +78,8 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
             _node.FinalFunctions.AddRange(finalFunctions);
 
             baseNode.Zip(_node.Base());
+
+            environment.AddRouteToEndpoint(routeTo, routedInputs, _node);
 
             return _node;
         }

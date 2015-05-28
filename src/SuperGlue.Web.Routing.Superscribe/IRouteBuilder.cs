@@ -1,7 +1,8 @@
-using System.Reflection;
+using System;
+using System.Collections.Generic;
 using Superscribe.Models;
 
-namespace SuperGlue.Web.Routing.Superscribe.Conventional
+namespace SuperGlue.Web.Routing.Superscribe
 {
     public interface IRouteBuilder
     {
@@ -10,6 +11,6 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
         void AppendParameter(RouteParameter parameter);
         void AppendPattern(string pattern);
 
-        GraphNode Build(GraphNode baseNode, object routeTo);
+        GraphNode Build(GraphNode baseNode, object routeTo, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, IDictionary<string, object> environment);
     }
 }

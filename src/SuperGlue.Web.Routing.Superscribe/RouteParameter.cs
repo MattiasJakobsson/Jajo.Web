@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace SuperGlue.Web.Routing.Superscribe.Conventional
+namespace SuperGlue.Web.Routing.Superscribe
 {
     public class RouteParameter
     {
@@ -14,7 +14,7 @@ namespace SuperGlue.Web.Routing.Superscribe.Conventional
             Type = type;
         }
 
-        public static RouteParameter FromProperty(PropertyInfo property )
+        public static RouteParameter FromProperty(PropertyInfo property)
         {
             return new RouteParameter(property.Name, property.PropertyType, property.GetValue);
         }
