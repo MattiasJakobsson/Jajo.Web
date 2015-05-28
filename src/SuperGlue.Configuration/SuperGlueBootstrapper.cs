@@ -42,12 +42,17 @@ namespace SuperGlue.Configuration
 
             foreach (var item in _appStarters.GroupBy(x => x.Chain))
             {
-                if (!_chains.ContainsKey(item.Key))
-                    continue;
+                var starter = item.OrderBy(x => overrides.GetSortOrder(x)).First();
 
-                var chain = _chains[item.Key];
+                AppFunc chain = null;
 
-                item.OrderBy(x => overrides.GetSortOrder(x)).First().Start(chain, settings);
+                if (_chains.ContainsKey(item.Key))
+                    chain = _chains[item.Key];
+
+                chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(item.Key));
+
+                if (chain != null)
+                    starter.Start(chain, settings);
             }
 
             return subApplications.Select(x => x.Path).ToList();

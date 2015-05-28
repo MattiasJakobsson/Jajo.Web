@@ -20,5 +20,10 @@ namespace SuperGlue.Web.PartialRequests
         {
             
         }
+
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        {
+            return null;
+        }
     }
 }

@@ -68,6 +68,11 @@ namespace SuperGlue.EventStore.Subscribers
             _serviceSubscriptions.Clear();
         }
 
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        {
+            return buildApp.Use<ExecuteSubscribers>().Build();
+        }
+
         protected virtual void OnServiceError(string service, string stream, object message, IDictionary<string, object> metaData, Exception exception)
         {
             _writeToErrorStream.Write(new ServiceEventProcessingFailed(service, stream, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);

@@ -68,6 +68,11 @@ namespace SuperGlue.EventStore.ProcessManagers
             _processManagerSubscriptions.Clear();
         }
 
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        {
+            return buildApp.Use<ExecuteProcessManager>().Build();
+        }
+
         protected virtual void OnProcessManagerError(IManageProcess processManager, object message, IDictionary<string, object> metaData, Exception exception)
         {
             _writeToErrorStream.Write(new ProcessManagerFailed(processManager.ProcessName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);

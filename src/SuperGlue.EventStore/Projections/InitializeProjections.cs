@@ -68,6 +68,11 @@ namespace SuperGlue.EventStore.Projections
             _projectionSubscriptions.Clear();
         }
 
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        {
+            return buildApp.Use<ExecuteProjection>().Build();
+        }
+
         protected virtual void OnProjectionError(IEventStoreProjection projection, object message, IDictionary<string, object> metaData, Exception exception)
         {
             _writeToErrorStream.Write(new ProjectionFailed(projection.ProjectionName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);

@@ -23,5 +23,10 @@ namespace SuperGlue.Hosting.SystemWeb
         {
             
         }
+
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        {
+            return null;
+        }
     }
 }

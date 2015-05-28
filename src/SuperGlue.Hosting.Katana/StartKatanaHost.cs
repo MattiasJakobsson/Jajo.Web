@@ -27,5 +27,10 @@ namespace SuperGlue.Hosting.Katana
             if(_webApp != null)
                 _webApp.Dispose();
         }
+
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        {
+            return null;
+        }
     }
 }
