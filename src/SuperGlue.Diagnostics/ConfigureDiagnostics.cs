@@ -7,7 +7,10 @@ namespace SuperGlue.Diagnostics
     {
         public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            yield return new ConfigurationSetupResult("superglue.Diagnostics.Configured", environment => environment.RegisterSingleton(typeof(IManageDiagnosticsInformation), new ManageDiagnosticsInformationInMemory()), "superglue.ContainerSetup");
+            yield return new ConfigurationSetupResult("superglue.Diagnostics.Configured", environment =>
+            {
+                environment.RegisterSingleton(typeof(IManageDiagnosticsInformation), new ManageDiagnosticsInformationInMemory());
+            }, "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)
