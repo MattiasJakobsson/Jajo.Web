@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.Web.Output.Html
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Web.Output.Html.dll ==> lib
+dependencies
+	HtmlTags
+	SuperGlue.Web.Output

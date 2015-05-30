@@ -30,7 +30,6 @@ namespace SuperGlue.Web.Sample.AspNet
             AddChain("chains.Partials", app =>
             {
                 app
-                    .Use<HandleExceptions>()
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ExecuteEndpoint>()
                     .Use<RenderOutput>();
