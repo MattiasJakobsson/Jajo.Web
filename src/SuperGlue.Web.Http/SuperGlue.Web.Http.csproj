@@ -49,7 +49,7 @@
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RedirectToCorrectUrl.cs" />
+    <Compile Include="RedirectTo.cs" />
     <Compile Include="SetStatusCode.cs" />
   </ItemGroup>
   <ItemGroup>

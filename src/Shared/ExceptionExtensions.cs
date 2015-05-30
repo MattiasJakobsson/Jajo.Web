@@ -5,9 +5,14 @@ namespace SuperGlue
 {
     internal static class ExceptionExtensions
     {
-        public static Exception GetException(this IDictionary<string, object> environment)
+        internal class ExceptionConstants
         {
-            return environment.Get<Exception>("superglue.Exception");
+            public const string Exception = "superglue.Exception";
+        }
+
+        internal static Exception GetException(this IDictionary<string, object> environment)
+        {
+            return environment.Get<Exception>(ExceptionConstants.Exception);
         }
     }
 }

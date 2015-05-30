@@ -26,7 +26,7 @@ namespace SuperGlue.ExceptionManagement
             }
             catch (Exception ex)
             {
-                environment["superglue.Exception"] = ex;
+                environment[ExceptionExtensions.ExceptionConstants.Exception] = ex;
             }
         }
     }

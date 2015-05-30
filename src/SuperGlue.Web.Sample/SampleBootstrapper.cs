@@ -38,11 +38,9 @@ namespace SuperGlue.Web.Sample
 
             AddChain("chains.Web", app =>
             {
-                var container = Environment.GetContainer();
-                var diagnosticsManager = container.GetInstance<IManageDiagnosticsInformation>();
-
-                app.Use<Diagnose>(new DiagnoseOptions(diagnosticsManager, "Urls", x => x.GetRequest().Uri.ToString()))
-                    .Use<RedirectToCorrectUrl>(new RedirectToCorrectUrlOptions((url, environment) => url.ToLower()))
+                app.Use<Diagnose>(new DiagnoseOptions("Urls", x => x.GetRequest().Uri.ToString()))
+                    .If(x => x.GetRequest().Uri.ToString() != x.GetRequest().Uri.ToString().ToLower(), 
+                        x => x.Use<RedirectTo>(new RedirectToOptions(y => y.GetRequest().Uri.ToString().ToLower())))
                     .Use<BranchRequest>(new BranchRequestConfiguration()
                         .AddCase(y => y.GetException() != null, app
                             .New()
@@ -65,9 +63,9 @@ namespace SuperGlue.Web.Sample
                             .Use<HandleNotFoundMiddleware>()
                             .Build()))
                     .Use<HandleExceptions>()
-                    .Use<NestedStructureMapContainer>(container)
-                    .Use<BindModels>(container.GetInstance<IModelBinderCollection>())
-                    .Use<RouteUsingSuperscribe>(new RouteUsingSuperscribeOptions(Environment.GetRouteEngine()))
+                    .Use<NestedStructureMapContainer>()
+                    .Use<BindModels>()
+                    .Use<RouteUsingSuperscribe>()
                     .Use<HandleUnitOfWork>()
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))

@@ -36,20 +36,21 @@ namespace SuperGlue.Diagnostics
             var key = _options.GetKey(environment);
 
             if (!string.IsNullOrEmpty(key))
-                _options.ManageDiagnosticsInformation.AddMessurement(_options.MessurementKey, key, stopwatch.Elapsed);
+            {
+                var diagnosticsInformationManager = environment.Resolve<IManageDiagnosticsInformation>();
+                diagnosticsInformationManager.AddMessurement(_options.MessurementKey, key, stopwatch.Elapsed);
+            }
         }
     }
 
     public class DiagnoseOptions
     {
-        public DiagnoseOptions(IManageDiagnosticsInformation manageDiagnosticsInformation, string messurementKey, Func<IDictionary<string, object>, string> getKey)
+        public DiagnoseOptions(string messurementKey, Func<IDictionary<string, object>, string> getKey)
         {
-            ManageDiagnosticsInformation = manageDiagnosticsInformation;
             MessurementKey = messurementKey;
             GetKey = getKey;
         }
 
-        public IManageDiagnosticsInformation ManageDiagnosticsInformation { get; private set; }
         public string MessurementKey { get; private set; }
         public Func<IDictionary<string, object>, string> GetKey { get; private set; }
     }

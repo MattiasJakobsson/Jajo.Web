@@ -9,20 +9,20 @@ namespace SuperGlue.Web.ModelBinding
     public class BindModels
     {
         private readonly AppFunc _next;
-        private readonly IModelBinderCollection _modelBinderCollection;
 
-        public BindModels(AppFunc next, IModelBinderCollection modelBinderCollection)
+        public BindModels(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
             _next = next;
-            _modelBinderCollection = modelBinderCollection;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            environment[BindExtensions.BindConstants.ModelBinder] = (Func<Type, Task<object>>)(x => _modelBinderCollection.Bind(x, new BindingContext(_modelBinderCollection, environment)));
+            var modelBinderCollection = environment.Resolve<IModelBinderCollection>();
+
+            environment[BindExtensions.BindConstants.ModelBinder] = (Func<Type, Task<object>>)(x => modelBinderCollection.Bind(x, new BindingContext(modelBinderCollection, environment)));
 
             await _next(environment);
         }

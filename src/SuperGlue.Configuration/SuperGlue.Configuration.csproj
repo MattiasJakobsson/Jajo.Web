@@ -51,10 +51,13 @@
     <Compile Include="ApplicationStartersOverrides.cs" />
     <Compile Include="BuildAppFunction.cs" />
     <Compile Include="AssemblyProxy.cs" />
+    <Compile Include="BuildAppFunctionExtensions.cs" />
     <Compile Include="ConfigurationFile.cs" />
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
     <Compile Include="ConfigurationSetupResult.cs" />
+    <Compile Include="Continue.cs" />
     <Compile Include="IBuildAppFunction.cs" />
+    <Compile Include="If.cs" />
     <Compile Include="InitializedSubApplication.cs" />
     <Compile Include="ISetupConfigurations.cs" />
     <Compile Include="IStartApplication.cs" />

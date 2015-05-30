@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using StructureMap;
 
 namespace SuperGlue.StructureMap
 {
@@ -10,23 +9,20 @@ namespace SuperGlue.StructureMap
     public class NestedStructureMapContainer
     {
         private readonly AppFunc _next;
-        private readonly IContainer _container;
 
-        public NestedStructureMapContainer(AppFunc next, IContainer container)
+        public NestedStructureMapContainer(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
-            if (container == null)
-                throw new ArgumentNullException("container");
-
             _next = next;
-            _container = container;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            using (var container = _container.GetNestedContainer())
+            var parentContainer = environment.GetContainer();
+
+            using (var container = parentContainer.GetNestedContainer())
             {
                 environment.SetupContainerInEnvironment(container);
 
