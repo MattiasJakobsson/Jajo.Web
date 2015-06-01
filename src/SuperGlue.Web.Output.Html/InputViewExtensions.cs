@@ -5,7 +5,7 @@ using HtmlTags.Conventions.Elements;
 
 namespace SuperGlue.Web.Output.Html
 {
-    public static class ViewExtensions
+    public static class InputViewExtensions
     {
         public static IElementGenerator<T> Tags<T>(this ISuperGlueView<T> view) where T : class
         {
