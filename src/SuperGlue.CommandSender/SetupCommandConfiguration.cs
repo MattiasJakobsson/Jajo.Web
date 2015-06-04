@@ -18,5 +18,10 @@ namespace SuperGlue.CommandSender
         {
 
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

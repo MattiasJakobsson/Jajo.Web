@@ -14,5 +14,10 @@ namespace SuperGlue.UnitOfWork
         {
 
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

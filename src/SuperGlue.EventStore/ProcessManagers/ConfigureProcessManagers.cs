@@ -14,5 +14,10 @@ namespace SuperGlue.EventStore.ProcessManagers
         {
             
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

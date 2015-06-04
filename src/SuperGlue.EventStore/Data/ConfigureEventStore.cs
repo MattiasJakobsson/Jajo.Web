@@ -31,5 +31,10 @@ namespace SuperGlue.EventStore.Data
         {
 
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

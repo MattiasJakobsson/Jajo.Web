@@ -79,5 +79,13 @@ namespace SuperGlue.Web.Routing.Superscribe
         {
             
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            var policies = configuration.WithSettings<SuperscribeRouteSettings>().GetPolicies();
+
+            foreach (var policy in policies)
+                policy.BuildRoutes(configuration.Environment);
+        }
     }
 }

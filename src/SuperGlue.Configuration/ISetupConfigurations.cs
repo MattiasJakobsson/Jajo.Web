@@ -6,5 +6,6 @@ namespace SuperGlue.Configuration
     {
         IEnumerable<ConfigurationSetupResult> Setup();
         void Shutdown(IDictionary<string, object> applicationData);
+        void Configure(SettingsConfiguration configuration);
     }
 }

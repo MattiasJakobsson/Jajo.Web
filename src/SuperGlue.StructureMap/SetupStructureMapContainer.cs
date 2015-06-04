@@ -21,5 +21,10 @@ namespace SuperGlue.StructureMap
         {
             applicationData.GetContainer().Dispose();
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

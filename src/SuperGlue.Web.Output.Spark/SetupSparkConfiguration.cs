@@ -27,10 +27,17 @@ namespace SuperGlue.Web.Output.Spark
                 };
 
                 environment[SparkEnvironmentExtensions.SparkConstants.ViewEngine] = sparkViewEngine;
+
+                environment.AlterSettings<OutputSettings>(x => x.When(y => y.GetRequest().Headers.Accept.Contains("text/html")).UseRenderer(new RenderOutputUsingSpark(sparkViewEngine, templates)));
             });
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)
+        {
+            
+        }
+
+        public void Configure(SettingsConfiguration configuration)
         {
             
         }

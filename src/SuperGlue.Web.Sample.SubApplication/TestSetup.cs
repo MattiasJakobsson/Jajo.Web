@@ -15,5 +15,10 @@ namespace SuperGlue.Web.Sample.SubApplication
         {
             Console.WriteLine("Test from subapp. Shutting down!");
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

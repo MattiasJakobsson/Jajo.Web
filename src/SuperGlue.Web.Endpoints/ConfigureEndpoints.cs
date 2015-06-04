@@ -14,5 +14,10 @@ namespace SuperGlue.Web.Endpoints
         {
             
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

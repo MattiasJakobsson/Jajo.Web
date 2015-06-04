@@ -52,11 +52,13 @@
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
+      <Link>WebEnvironmentExtensions.cs</Link>
+    </Compile>
     <Compile Include="AggregatedTemplateSource.cs" />
     <Compile Include="BaseTemplateSource.cs" />
     <Compile Include="SetupSparkConfiguration.cs" />
     <Compile Include="SparkEnvironmentExtensions.cs" />
-    <Compile Include="SparkSetupExtensions.cs" />
     <Compile Include="SuperGluePartialProvider.cs" />
     <Compile Include="ContentType.cs" />
     <Compile Include="JajoViewFolder.cs" />

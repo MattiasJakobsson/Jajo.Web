@@ -14,5 +14,10 @@ namespace SuperGlue.EventStore.Subscribers
         {
             
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

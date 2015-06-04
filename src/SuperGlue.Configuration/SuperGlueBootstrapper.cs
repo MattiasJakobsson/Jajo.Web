@@ -14,17 +14,20 @@ namespace SuperGlue.Configuration
     public abstract class SuperGlueBootstrapper
     {
         private readonly IDictionary<string, AppFunc> _chains = new ConcurrentDictionary<string, AppFunc>();
+        private readonly IDictionary<Type, object> _settings = new ConcurrentDictionary<Type, object>();
         private IEnumerable<IStartApplication> _appStarters;
-
-        public IDictionary<string, object> Environment { get; private set; }
+        private IReadOnlyCollection<ISetupConfigurations> _setups;
+        private IDictionary<string, object> _environment;
 
         public virtual IEnumerable<string> StartApplications(IDictionary<string, object> settings, ApplicationStartersOverrides overrides = null)
         {
-            Environment = settings;
+            _environment = settings;
+
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.AlterConfigSettings] = (Action<Type, Action<object>>)((settingsType, alter) => alter(GetSettings(settingsType)));
 
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
 
-            var subApplications = SubApplications.Init(Environment).ToList();
+            var subApplications = SubApplications.Init(settings).ToList();
 
             var assemblies = new List<Assembly>();
 
@@ -36,13 +39,16 @@ namespace SuperGlue.Configuration
                     assemblies.Add(assembly);
             }
 
-            RunConfigurations(assemblies);
+            _setups = RunConfigurations(assemblies);
 
             Configure();
 
-            _appStarters = Environment.ResolveAll<IStartApplication>();
+            foreach (var setup in _setups)
+                setup.Configure(new SettingsConfiguration(GetSettings, settings));
 
-            Environment["superglue.ApplicationStarters"] = _appStarters;
+            _appStarters = settings.ResolveAll<IStartApplication>();
+
+            settings["superglue.ApplicationStarters"] = _appStarters;
 
             foreach (var item in _appStarters.GroupBy(x => x.Chain))
             {
@@ -56,7 +62,7 @@ namespace SuperGlue.Configuration
                 chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(item.Key));
 
                 if (chain != null)
-                    starter.Start(chain, Environment);
+                    starter.Start(chain, settings);
             }
 
             return subApplications.Select(x => x.Path).ToList();
@@ -72,6 +78,18 @@ namespace SuperGlue.Configuration
 
         protected abstract void Configure();
 
+        protected virtual object GetSettings(Type settingsType)
+        {
+            if (_settings.ContainsKey(settingsType))
+                return _settings[settingsType];
+
+            var settings = _environment.Resolve(settingsType);
+
+            _settings[settingsType] = settings;
+
+            return settings;
+        }
+
         protected void AddChain(string name, Action<IBuildAppFunction> configure)
         {
             var appFuncBuilder = GetAppFunctionBuilder(name);
@@ -81,24 +99,30 @@ namespace SuperGlue.Configuration
             _chains[name] = appFuncBuilder.Build();
         }
 
+        protected void AlterSettings<TSettings>(Action<TSettings> action)
+        {
+            _environment.AlterSettings(action);
+        }
+
         protected virtual IBuildAppFunction GetAppFunctionBuilder(string chain)
         {
             return new BuildAppFunction();
         }
 
-        protected virtual void RunConfigurations(IEnumerable<Assembly> assemblies)
+        protected virtual IReadOnlyCollection<ISetupConfigurations> RunConfigurations(IEnumerable<Assembly> assemblies)
         {
-            Environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.Assemblies] = assemblies;
+            _environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.Assemblies] = assemblies;
 
-            var configurations = assemblies
+            var setups = assemblies
                 .SelectMany(x => x.GetTypes())
-                .Where(x => typeof(ISetupConfigurations).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                .Where(x => typeof (ISetupConfigurations).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
                 .Select(Activator.CreateInstance)
                 .OfType<ISetupConfigurations>()
-                .SelectMany(x => x.Setup())
                 .ToList();
 
-            ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(configurations), "superglue.ApplicationSetupStarted");
+            ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(setups.SelectMany(x => x.Setup()).ToList()), "superglue.ApplicationSetupStarted");
+
+            return setups;
         }
 
         protected virtual void ExecuteConfigurationsDependingOn(IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn)
@@ -109,7 +133,7 @@ namespace SuperGlue.Configuration
 
             foreach (var configuration in configurationsToExecute)
             {
-                configuration.Action(Environment);
+                configuration.Action(_environment);
                 results.Add(configuration.ConfigurationName);
             }
 

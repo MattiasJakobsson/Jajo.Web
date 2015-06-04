@@ -14,5 +14,10 @@ namespace SuperGlue.EventStore.Projections
         {
             
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

@@ -13,14 +13,12 @@ namespace SuperGlue.Web.Output.Spark
     {
         private readonly ISparkViewEngine _engine;
         private readonly IEnumerable<Template> _availableTemplates;
-        private readonly IDictionary<string, object> _applicationSettings;
         private readonly UseMasterGrammar _grammar;
 
-        public RenderOutputUsingSpark(ISparkViewEngine engine, IEnumerable<Template> availableTemplates, IDictionary<string, object> applicationSettings)
+        public RenderOutputUsingSpark(ISparkViewEngine engine, IEnumerable<Template> availableTemplates)
         {
             _engine = engine;
             _availableTemplates = availableTemplates;
-            _applicationSettings = applicationSettings;
 
             if (engine != null)
                 _grammar = new UseMasterGrammar(engine.Settings.Prefix);
@@ -62,7 +60,7 @@ namespace SuperGlue.Web.Output.Spark
                 var outputStream = new MemoryStream();
                 var writer = new StreamWriter(outputStream);
 
-                view.Render(new ViewContext(output, environment, _applicationSettings), writer);
+                view.Render(new ViewContext(output, environment), writer);
 
                 writer.Flush();
                 outputStream.Position = 0;

@@ -13,5 +13,10 @@ namespace SuperGlue.Configuration
         {
             
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

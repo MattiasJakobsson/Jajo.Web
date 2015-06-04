@@ -17,5 +17,10 @@ namespace SuperGlue.Diagnostics
         {
             
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

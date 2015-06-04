@@ -28,5 +28,10 @@ namespace SuperGlue.Web.ModelBinding
         {
 
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }

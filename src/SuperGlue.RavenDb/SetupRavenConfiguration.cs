@@ -32,6 +32,11 @@ namespace SuperGlue.RavenDb
 
         }
 
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
+
         private static IDocumentStore CreateDocumentStore(string connectionStringName)
         {
             var documentStore = new DocumentStore

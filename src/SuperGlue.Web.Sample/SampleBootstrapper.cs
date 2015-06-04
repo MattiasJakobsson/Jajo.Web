@@ -9,7 +9,6 @@ using SuperGlue.Web.Endpoints;
 using SuperGlue.Web.Http;
 using SuperGlue.Web.ModelBinding;
 using SuperGlue.Web.Output;
-using SuperGlue.Web.Output.Spark;
 using SuperGlue.Web.Routing.Superscribe;
 using SuperGlue.Web.Routing.Superscribe.Policies.MethodEndpoint;
 using SuperGlue.Web.Validation;
@@ -21,11 +20,7 @@ namespace SuperGlue.Web.Sample
     {
         protected override void Configure()
         {
-            this.UseRoutePolicy(new MethodEndpointRoutePolicy(new DefaultEndpointBuilder()));
-
-            this.ConfigureOutput()
-                .When(x => x.GetRequest().Headers.Accept.Contains("text/html")).UseSpark()
-                .When(x => true).UseRenderer(new RenderOutputAsJson());
+            AlterSettings<SuperscribeRouteSettings>(x => x.UsePolicy(new MethodEndpointRoutePolicy(new DefaultEndpointBuilder())));
 
             AddChain("chains.Partials", app =>
             {

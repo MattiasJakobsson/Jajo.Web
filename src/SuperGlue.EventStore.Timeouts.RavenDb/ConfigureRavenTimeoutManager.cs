@@ -34,5 +34,10 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
         {
             
         }
+
+        public void Configure(SettingsConfiguration configuration)
+        {
+            
+        }
     }
 }
