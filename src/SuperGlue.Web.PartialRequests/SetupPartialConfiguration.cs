@@ -24,7 +24,7 @@ namespace SuperGlue.Web.PartialRequests
                         return endpointClass != null && endpointClass.Name.Contains("Partial");
                     });
                 });
-            });
+            }, "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

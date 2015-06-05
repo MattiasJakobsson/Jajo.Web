@@ -12,7 +12,7 @@ namespace SuperGlue.Web.Output
                 environment.AlterSettings<OutputSettings>(x => x
                     .When(y => y.GetRequest().Headers.Accept.Contains("application/json")).UseRenderer(new RenderOutputAsJson())
                     .When(y => y.GetRequest().Headers.Accept.Contains("application/xml")).UseRenderer(new RenderOutputAsXml()));
-            });
+            }, "superglue.ContainerSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)

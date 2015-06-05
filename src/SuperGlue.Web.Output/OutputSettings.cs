@@ -19,7 +19,7 @@ namespace SuperGlue.Web.Output
         {
             return _renderers.Where(x => x.Item1(environment))
                 .Select(x => x.Item2)
-                .FirstOrDefault();
+                .LastOrDefault();
         }
     }
 }
