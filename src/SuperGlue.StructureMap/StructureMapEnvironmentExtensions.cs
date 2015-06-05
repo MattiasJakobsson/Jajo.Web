@@ -22,6 +22,8 @@ namespace SuperGlue.StructureMap
         {
             var assemblies = environment.GetAssemblies();
 
+            currentContainer.Configure(x => x.For<IDictionary<string, object>>().Use(environment));
+
             environment[ResolveExtensions.ContainerConstants.ResolveInstance] = (Func<Type, object>)(x =>
             {
                 try

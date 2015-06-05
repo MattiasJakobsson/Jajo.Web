@@ -22,6 +22,7 @@ namespace SuperGlue.Web.Sample.AspNet
             AddChain("chains.Partials", app =>
             {
                 app
+                    .Use<RouteUsingSuperscribe>()
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ExecuteEndpoint>()
                     .Use<RenderOutput>();

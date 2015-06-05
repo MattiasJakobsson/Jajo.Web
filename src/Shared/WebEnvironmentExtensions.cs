@@ -40,7 +40,7 @@ namespace SuperGlue.Web
             public const string ResponseStatusCode = "owin.ResponseStatusCode";
             public const string ResponseReasonPhrase = "owin.ResponseReasonPhrase";
             public const string ResponseProtocol = "owin.ResponseProtocol";
-            public const string ResponseHeaders = "owin.ResponseHeade";
+            public const string ResponseHeaders = "owin.ResponseHeaders";
             public const string ResponseBody = "owin.ResponseBody";
 
             internal static class CommonKeys

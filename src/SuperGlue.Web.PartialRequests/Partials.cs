@@ -16,24 +16,16 @@ namespace SuperGlue.Web.PartialRequests
             partialChain = chain;
         }
 
-        public static async Task<Stream> ExecutePartial(IDictionary<string, object> environment, object partial, object input = null)
+        public static async Task<Stream> ExecutePartial(IDictionary<string, object> environment, object partial)
         {
             if(partialChain == null)
                 throw new InvalidOperationException("You can't use partials when it's not initialized");
 
-            var partialEnvironment = new Dictionary<string, object>();
-            foreach (var item in environment)
-                partialEnvironment[item.Key] = item.Value;
-
-            //TODO:Find parameters and set
-            partialEnvironment.SetRouteDestination(partial);
-            var responseBody = new MemoryStream();
-            partialEnvironment[WebEnvironmentExtensions.OwinConstants.ResponseBody] = responseBody;
-
-            if(input != null)
-                partialEnvironment.Set(input.GetType(), input);
+            var partialEnvironment = environment.CreatePartialRequest(partial);
 
             await partialChain(partialEnvironment);
+
+            var responseBody = partialEnvironment.GetResponse().Body;
 
             responseBody.Position = 0;
             return responseBody;

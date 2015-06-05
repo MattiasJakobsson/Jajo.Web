@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using SuperGlue.Web.PartialRequests;
-
-namespace SuperGlue.Web.Sample.SubApplication
+﻿namespace SuperGlue.Web.Sample.SubApplication
 {
     public class SubAppEndpoint
     {
@@ -26,13 +22,5 @@ namespace SuperGlue.Web.Sample.SubApplication
 
         public string Message { get; private set; }
         public SubAppPartialEndpointQueryInput Input { get; private set; }
-
-        public string Partial(IDictionary<string, object> environment)
-        {
-            using (var streamReader = new StreamReader(Partials.ExecutePartial(environment, typeof(SubAppPartialEndpoint).GetMethod("Query"), Input).Result))
-            {
-                return streamReader.ReadToEnd();
-            }
-        }
     }
 }

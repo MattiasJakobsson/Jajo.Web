@@ -1,4 +1,5 @@
 ﻿<viewdata model="SuperGlue.Web.Sample.SubApplication.SubAppEndpointQueryResult" />
+<use namespace="SuperGlue.Web.PartialRequests"/
 
 <html>
 <head>
@@ -6,7 +7,7 @@
 </head>
 <body>
     <h1>${Model.Message}</h1>
-    ${Model.Partial(Environment)}
+    ${this.Partial(Model.Input)}
     ${this.RouteTo(Model.Input)}
     <h1>${Model.Message}</h1>
 </body>
