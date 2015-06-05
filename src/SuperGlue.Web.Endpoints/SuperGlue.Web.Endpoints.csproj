@@ -61,6 +61,7 @@
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
     <Compile Include="ConfigureEndpoints.cs" />
+    <Compile Include="DefaultEndpointExecutor.cs" />
     <Compile Include="EndpointExtensions.cs" />
     <Compile Include="ExecuteActionEndpoint.cs" />
     <Compile Include="ExecuteFuncEndpoint.cs" />
@@ -69,6 +70,7 @@
     <Compile Include="ExecuteOneModelInZeroModelOutEndpoint.cs" />
     <Compile Include="ExecuteZeroModelInOneModelOutEndpoint.cs" />
     <Compile Include="ExecuteZeroModelInZeroModelOutEndpoint.cs" />
+    <Compile Include="IExecuteAnyEndpoint.cs" />
     <Compile Include="IExecuteEndpoint.cs" />
     <Compile Include="IExecuteTypeOfEndpoint.cs" />
     <Compile Include="ExecuteEndpoint.cs" />

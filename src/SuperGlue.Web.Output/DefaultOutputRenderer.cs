@@ -5,7 +5,7 @@ namespace SuperGlue.Web.Output
 {
     public class DefaultOutputRenderer : IRenderToOutput
     {
-        public async Task Render(IDictionary<string, object> environment)
+        public virtual async Task Render(IDictionary<string, object> environment)
         {
             var renderers = environment.Get(OutputEnvironmentExtensions.OutputConstants.Renderers, new OutputSettings());
 
