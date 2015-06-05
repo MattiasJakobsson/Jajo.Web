@@ -48,11 +48,16 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\ResolveExtensions.cs">
+      <Link>ResolveExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
     <Compile Include="ConfigureOutput.cs" />
+    <Compile Include="DefaultOutputRenderer.cs" />
     <Compile Include="IRenderOutput.cs" />
+    <Compile Include="IRenderToOutput.cs" />
     <Compile Include="ISuperGlueView.cs" />
     <Compile Include="OutputEnvironmentExtensions.cs" />
     <Compile Include="OutputRenderingResult.cs" />

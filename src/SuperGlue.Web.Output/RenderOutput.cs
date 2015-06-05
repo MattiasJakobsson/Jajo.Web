@@ -20,7 +20,7 @@ namespace SuperGlue.Web.Output
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await environment.Render();
+            await environment.Resolve<IRenderToOutput>().Render(environment);
 
             await _next(environment);
         }
