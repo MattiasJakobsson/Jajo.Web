@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
 
 namespace SuperGlue.Configuration
 {
     public interface IWrapMiddleware<TMiddleware>
     {
-        Task Before();
-        Task After();
+        IDisposable Begin();
     }
 }

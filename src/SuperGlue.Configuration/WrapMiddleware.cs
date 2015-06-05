@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Configuration
@@ -22,13 +23,12 @@ namespace SuperGlue.Configuration
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            foreach (var wrapper in _options.Wrappers)
-                await wrapper.Before();
+            var wrappers = _options.Wrappers.Select(x => x.Begin()).ToList();
 
             await _next(environment);
 
-            foreach (var wrapper in _options.Wrappers)
-                await wrapper.After();
+            foreach (var wrapper in wrappers)
+                wrapper.Dispose();
         }
     }
 
