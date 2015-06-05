@@ -23,7 +23,7 @@ namespace SuperGlue.Configuration
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var wrappers = _options.Wrappers.Select(x => x.Begin()).ToList();
+            var wrappers = _options.Wrappers.Select(x => x.Begin(environment)).ToList();
 
             await _next(environment);
 
