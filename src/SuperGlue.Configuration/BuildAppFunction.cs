@@ -11,9 +11,20 @@ namespace SuperGlue.Configuration
     public class BuildAppFunction : IBuildAppFunction
     {
         private readonly ICollection<MiddlewareWithArgs> _middleware = new List<MiddlewareWithArgs>();
+        private readonly IDictionary<string, object> _environment;
+
+        public BuildAppFunction(IDictionary<string, object> environment)
+        {
+            _environment = environment;
+        }
 
         public IBuildAppFunction Use<TMiddleware>(params object[] args)
         {
+            var wrappers = _environment.ResolveAll<IWrapMiddleware<TMiddleware>>().ToList();
+
+            if (wrappers.Any())
+                _middleware.Add(new MiddlewareWithArgs(typeof(WrapMiddleware<TMiddleware>), new object[] { new WrapMiddlewareOptions<TMiddleware>(wrappers) }));
+
             _middleware.Add(new MiddlewareWithArgs(typeof(TMiddleware), args));
 
             return this;
@@ -45,7 +56,7 @@ namespace SuperGlue.Configuration
 
                 var method = instance.GetType().GetMethod("Invoke", new[] { typeof(IDictionary<string, object>) });
 
-                var parameter = Expression.Parameter(typeof (IDictionary<string, object>));
+                var parameter = Expression.Parameter(typeof(IDictionary<string, object>));
 
                 lastFunc = Expression.Lambda<AppFunc>(Expression.Call(Expression.Constant(instance), method, parameter), parameter).Compile();
             }
@@ -55,7 +66,7 @@ namespace SuperGlue.Configuration
 
         public IBuildAppFunction New()
         {
-            return new BuildAppFunction();
+            return new BuildAppFunction(_environment);
         }
 
         public class MiddlewareWithArgs

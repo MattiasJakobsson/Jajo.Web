@@ -106,7 +106,7 @@ namespace SuperGlue.Configuration
 
         protected virtual IBuildAppFunction GetAppFunctionBuilder(string chain)
         {
-            return new BuildAppFunction();
+            return new BuildAppFunction(_environment);
         }
 
         protected virtual IReadOnlyCollection<ISetupConfigurations> RunConfigurations(IEnumerable<Assembly> assemblies)
