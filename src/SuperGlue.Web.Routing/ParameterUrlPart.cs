@@ -1,4 +1,4 @@
-namespace SuperGlue.Web.Routing.Superscribe.Policies.MethodEndpoint
+namespace SuperGlue.Web.Routing
 {
     public class ParameterUrlPart : IUrlPart
     {

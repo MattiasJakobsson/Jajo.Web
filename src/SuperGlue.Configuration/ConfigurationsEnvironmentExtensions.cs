@@ -14,7 +14,15 @@ namespace SuperGlue.Configuration
 
         public static IEnumerable<Assembly> GetAssemblies(this IDictionary<string, object> environment)
         {
-            return environment.Get<IEnumerable<Assembly>>(ConfigurationConstants.Assemblies);
+            return environment.Get<ICollection<Assembly>>(ConfigurationConstants.Assemblies);
+        }
+
+        public static void AddAssembly(this IDictionary<string, object> environment, Assembly assembly)
+        {
+            var assemblies = environment.Get<ICollection<Assembly>>(ConfigurationConstants.Assemblies);
+
+            if(!assemblies.Contains(assembly))
+                assemblies.Add(assembly);
         }
 
         public static void AlterSettings<TSettings>(this IDictionary<string, object> environment, Action<TSettings> alterer)

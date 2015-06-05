@@ -12,18 +12,12 @@ namespace SuperGlue.Web.Routing.Superscribe
         public static class SuperscribeConstants
         {
             public const string Engine = "superglue.Superscribe.Engine";
-            public const string CreateRouteBuilderFunc = "superglue.Superscribe.CreateRouteBuilderFunc";
             public const string EndpointToRouteList = "superglue.Superscribe.EndpointToRouteList";
         }
 
         public static IRouteEngine GetRouteEngine(this IDictionary<string, object> environment)
         {
             return environment.Get<IRouteEngine>(SuperscribeConstants.Engine);
-        }
-
-        public static IRouteBuilder CreateRouteBuilder(this IDictionary<string, object> environment)
-        {
-            return environment.Get<Func<IRouteBuilder>>(SuperscribeConstants.CreateRouteBuilderFunc, () => null)();
         }
 
         public static EndpointRoute GetRouteForEndpoint(this IDictionary<string, object> environment, object endpoint)

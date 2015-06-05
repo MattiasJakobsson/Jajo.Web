@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SuperGlue.Web.Routing.Superscribe
+namespace SuperGlue.Web.Routing
 {
     public interface ICheckIfRouteExists
     {

@@ -7,7 +7,7 @@ using String = Superscribe.Models.String;
 
 namespace SuperGlue.Web.Routing.Superscribe
 {
-    public class RouteBuilder : IRouteBuilder
+    public class SuperscribeRouteBuilder : IRouteBuilder
     {
         private static readonly IDictionary<Type, Func<string, ParamNode>> ParamNodeFactories = new Dictionary<Type, Func<string, ParamNode>>
         {
@@ -29,7 +29,7 @@ namespace SuperGlue.Web.Routing.Superscribe
         private readonly IEnumerable<ICheckIfRouteExists> _checkIfRouteExists;
         private readonly IStringRouteParser _stringRouteParser;
 
-        public RouteBuilder(IEnumerable<ICheckIfRouteExists> checkIfRouteExists, IStringRouteParser stringRouteParser)
+        public SuperscribeRouteBuilder(IEnumerable<ICheckIfRouteExists> checkIfRouteExists, IStringRouteParser stringRouteParser)
         {
             _checkIfRouteExists = checkIfRouteExists;
             _stringRouteParser = stringRouteParser;
@@ -62,8 +62,10 @@ namespace SuperGlue.Web.Routing.Superscribe
             _node = _node == null ? patternNode : _node.Slash(patternNode);
         }
 
-        public GraphNode Build(GraphNode baseNode, object routeTo, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, IDictionary<string, object> environment)
+        public void Build(object routeTo, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, IDictionary<string, object> environment)
         {
+            var baseNode = environment.GetRouteEngine().Base;
+
             var finalFunctions = _selectedMethods.Select(x => new FinalFunction(x, y =>
             {
                 return _checkIfRouteExists.All(z => z.Exists(routeTo, y.Environment)) ? routeTo : null;
@@ -72,7 +74,7 @@ namespace SuperGlue.Web.Routing.Superscribe
             if (_node == null)
             {
                 baseNode.FinalFunctions.AddRange(finalFunctions);
-                return baseNode;
+                return;
             }
 
             _node.FinalFunctions.AddRange(finalFunctions);
@@ -80,8 +82,6 @@ namespace SuperGlue.Web.Routing.Superscribe
             baseNode.Zip(_node.Base());
 
             environment.AddRouteToEndpoint(routeTo, routedInputs, _node);
-
-            return _node;
         }
 
         private static ParamNode CreateIntNode(string name)

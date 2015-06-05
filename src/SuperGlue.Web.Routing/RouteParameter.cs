@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace SuperGlue.Web.Routing.Superscribe
+namespace SuperGlue.Web.Routing
 {
     public class RouteParameter
     {

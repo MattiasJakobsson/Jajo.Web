@@ -1,15 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using SuperGlue.Web.Routing.Superscribe.Policies;
 
-namespace SuperGlue.Web.Routing.Superscribe
+namespace SuperGlue.Web.Routing
 {
-    public class SuperscribeRouteSettings
+    public class RouteSettings
     {
         private readonly ICollection<IRoutePolicy> _policies = new List<IRoutePolicy>();
 
-        public SuperscribeRouteSettings UsePolicy(IRoutePolicy policy)
+        public RouteSettings UsePolicy(IRoutePolicy policy)
         {
             _policies.Add(policy);
 

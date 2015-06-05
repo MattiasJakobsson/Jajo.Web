@@ -23,22 +23,9 @@ namespace SuperGlue.Web.Routing.Superscribe
                     StringRouteParser = stringRouteParser
                 });
 
-                environment.RegisterAll(typeof(ICheckIfRouteExists));
-
                 environment[SuperscribeEnvironmentExtensions.SuperscribeConstants.Engine] = define;
 
-                environment[SuperscribeEnvironmentExtensions.SuperscribeConstants.CreateRouteBuilderFunc] = (Func<IRouteBuilder>)(() => new RouteBuilder(environment.ResolveAll<ICheckIfRouteExists>(), stringRouteParser));
-
-                environment[RouteExtensions.RouteConstants.CreateRouteFunc] = (Action<string, object, string[]>)((pattern, routeTo, methods) =>
-                {
-                    var routeBuilder = environment.CreateRouteBuilder();
-
-                    routeBuilder.RestrictMethods(methods);
-                    routeBuilder.AppendPattern(pattern);
-
-                    //TODO:Handle parameters
-                    routeBuilder.Build(define.Base, routeTo, new Dictionary<Type, Func<object, IDictionary<string, object>>>(), environment);
-                });
+                environment[RoutingEnvironmentExtensions.RouteConstants.CreateRouteBuilderFunc] = (Func<IRouteBuilder>)(() => new SuperscribeRouteBuilder(environment.ResolveAll<ICheckIfRouteExists>(), stringRouteParser));
 
                 environment[RouteExtensions.RouteConstants.ReverseRoute] = (Func<object, string>)(endpoint =>
                 {
@@ -72,7 +59,7 @@ namespace SuperGlue.Web.Routing.Superscribe
 
                     return patternBuilder.ToString();
                 });
-            }, "superglue.ContainerSetup");
+            }, "superglue.RoutingSetup");
         }
 
         public void Shutdown(IDictionary<string, object> applicationData)
@@ -82,10 +69,7 @@ namespace SuperGlue.Web.Routing.Superscribe
 
         public void Configure(SettingsConfiguration configuration)
         {
-            var policies = configuration.WithSettings<SuperscribeRouteSettings>().GetPolicies();
-
-            foreach (var policy in policies)
-                policy.BuildRoutes(configuration.Environment);
+            
         }
     }
 }

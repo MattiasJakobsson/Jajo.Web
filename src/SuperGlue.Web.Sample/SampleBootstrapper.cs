@@ -10,7 +10,6 @@ using SuperGlue.Web.Http;
 using SuperGlue.Web.ModelBinding;
 using SuperGlue.Web.Output;
 using SuperGlue.Web.Routing.Superscribe;
-using SuperGlue.Web.Routing.Superscribe.Policies.MethodEndpoint;
 using SuperGlue.Web.Validation;
 using SuperGlue.Web.Validation.InputValidation;
 
@@ -20,8 +19,6 @@ namespace SuperGlue.Web.Sample
     {
         protected override void Configure()
         {
-            AlterSettings<SuperscribeRouteSettings>(x => x.UsePolicy(new MethodEndpointRoutePolicy(new DefaultEndpointBuilder())));
-
             AddChain("chains.Partials", app =>
             {
                 app

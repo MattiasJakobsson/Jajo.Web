@@ -4,15 +4,26 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
-namespace SuperGlue.Web.Routing.Superscribe.Policies.MethodEndpoint
+namespace SuperGlue.Web.Routing
 {
-    public class DefaultEndpointBuilder : IBuildEndpoints
+    public class QueryCommandMethodRoutePolicy : IRoutePolicy
     {
-        public EndpointInformation Build(MethodInfo method)
-        {
-            if (!IsValidEndpoint(method))
-                return null;
+        private readonly IEnumerable<Assembly> _assemblies;
 
+        public QueryCommandMethodRoutePolicy(IEnumerable<Assembly> assemblies)
+        {
+            _assemblies = assemblies;
+        }
+
+        public IEnumerable<EndpointInformation> Build()
+        {
+            var possibleEndpoints = _assemblies.SelectMany(x => x.GetTypes()).SelectMany(x => x.GetMethods()).Where(IsValidEndpoint).ToList();
+
+            return possibleEndpoints.Select(Build);
+        }
+
+        private EndpointInformation Build(MethodInfo method)
+        {
             var httpMethods = new string[0];
 
             var methodNameMethod = GetMethodNameMethods();

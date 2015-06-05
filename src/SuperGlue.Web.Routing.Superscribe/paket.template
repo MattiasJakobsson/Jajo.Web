@@ -9,3 +9,4 @@ files
 dependencies
 	Superscribe
 	SuperGlue.Configuration
+	SuperGlue.Web.Routing
