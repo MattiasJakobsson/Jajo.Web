@@ -8,4 +8,5 @@ files
     bin/Release/SuperGlue.Web.PartialRequests.dll ==> lib
 dependencies
 	SuperGlue.Configuration
-	SuperGlue.Output
+	SuperGlue.Web.Output
+	SuperGlue.Web.Routing

@@ -54,10 +54,13 @@
     <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
+    <Compile Include="MakeSureWeDontExecutePartialsFromRegularRequest.cs" />
     <Compile Include="PartialEnvironmentExtensions.cs" />
     <Compile Include="Partials.cs" />
+    <Compile Include="PartialSettings.cs" />
     <Compile Include="PartialViewExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetupPartialConfiguration.cs" />
     <Compile Include="StartPartials.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +74,10 @@
     <ProjectReference Include="..\SuperGlue.Web.Output\SuperGlue.Web.Output.csproj">
       <Project>{03129102-f787-4f77-81cd-e78682edf293}</Project>
       <Name>SuperGlue.Web.Output</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Web.Routing\SuperGlue.Web.Routing.csproj">
+      <Project>{03fe4f2a-fb85-4e97-a826-6c7ac0da4378}</Project>
+      <Name>SuperGlue.Web.Routing</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

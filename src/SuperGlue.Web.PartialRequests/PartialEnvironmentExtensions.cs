@@ -9,6 +9,7 @@ namespace SuperGlue.Web.PartialRequests
         public static class PartialConstants
         {
             public const string IsPartialRequest = "superglue.IsPartialRequest";
+            public const string PartialSettings = "superglue.PartialSettings";
         }
 
         public static IDictionary<string, object> CreatePartialRequest(this IDictionary<string, object> environment, object partial)
@@ -35,6 +36,11 @@ namespace SuperGlue.Web.PartialRequests
         public static bool IsPartial(this IDictionary<string, object> environment)
         {
             return environment.Get<bool>(PartialConstants.IsPartialRequest);
+        }
+
+        public static bool IsPartialEndpoint(this IDictionary<string, object> environment, object endpoint)
+        {
+            return environment.Get(PartialConstants.PartialSettings, new PartialSettings()).IsPartialEndpoint(endpoint);
         }
     }
 }
