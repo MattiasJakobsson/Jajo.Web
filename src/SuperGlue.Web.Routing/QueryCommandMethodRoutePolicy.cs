@@ -61,10 +61,11 @@ namespace SuperGlue.Web.Routing
 
                 parts.AddRange(availableParameters.Select(parameter => new ParameterUrlPart(parameter)));
 
+                var allAvailableParameters = GetAvailableRouteParameters(input.ParameterType, GetAllAvailableParameters()).ToList();
+                allAvailableParameters.AddRange(GetAvailableQueryStringParameters(input.ParameterType));
+
                 routedParameters[input.GetType()] = (x =>
                 {
-                    var allAvailableParameters = GetAvailableRouteParameters(x.GetType(), GetAllAvailableParameters());
-
                     return allAvailableParameters.ToDictionary(y => y.Name, y => y.GetValue(x));
                 });
             }
@@ -80,6 +81,12 @@ namespace SuperGlue.Web.Routing
         protected virtual IEnumerable<RouteParameter> GetAvailableRouteParameters(Type input, IEnumerable<string> availableParameterNames)
         {
             return input.GetProperties().Where(x => availableParameterNames.Any(y => y.Equals(x.Name, StringComparison.OrdinalIgnoreCase))).Select(RouteParameter.FromProperty).ToList();
+        }
+
+        protected virtual IEnumerable<RouteParameter> GetAvailableQueryStringParameters(Type input)
+        {
+            var availableUrlParameterNames = GetAllAvailableParameters();
+            return input.GetProperties().Where(x => !availableUrlParameterNames.Any(y => y.Equals(x.Name, StringComparison.OrdinalIgnoreCase))).Select(RouteParameter.FromProperty).ToList();
         }
 
         protected virtual IReadOnlyDictionary<string, string[]> GetMethodNameMethods()
