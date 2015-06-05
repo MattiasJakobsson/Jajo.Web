@@ -10,13 +10,16 @@ namespace SuperGlue
         {
             public const string Parameters = "route.Parameters";
             public const string RoutedTo = "route.RoutedTo";
+            public const string InputTypes = "route.InputTypes";
             public const string ReverseRoute = "superglue.ReverseRoute";
             public const string CreateRouteFunc = "superglue.CreateRouteFunc";
         }
 
         public static RoutingData GetRouteInformation(this IDictionary<string, object> environment)
         {
-            return new RoutingData(new ReadOnlyDictionary<string, object>(environment.Get<IDictionary<string, object>>(RouteConstants.Parameters)), environment.Get<object>(RouteConstants.RoutedTo));
+            return new RoutingData(new ReadOnlyDictionary<string, object>(environment.Get<IDictionary<string, object>>(RouteConstants.Parameters)), 
+                environment.Get<object>(RouteConstants.RoutedTo),
+                environment.Get<IEnumerable<Type>>(RouteConstants.InputTypes));
         }
 
         public static string RouteTo(this IDictionary<string, object> environment, object input)
@@ -26,9 +29,10 @@ namespace SuperGlue
             return reverseRoute == null ? "" : reverseRoute(input);
         }
 
-        public static void SetRouteDestination(this IDictionary<string, object> environment, object destination, IDictionary<string, object> parameters = null)
+        public static void SetRouteDestination(this IDictionary<string, object> environment, object destination, IEnumerable<Type> inputTypes, IDictionary<string, object> parameters = null)
         {
             environment[RouteConstants.RoutedTo] = destination;
+            environment[RouteConstants.InputTypes] = inputTypes;
             environment[RouteConstants.Parameters] = parameters ?? new Dictionary<string, object>();
         }
 
@@ -39,14 +43,16 @@ namespace SuperGlue
 
         public class RoutingData
         {
-            public RoutingData(IReadOnlyDictionary<string, object> parameters, object routedTo)
+            public RoutingData(IReadOnlyDictionary<string, object> parameters, object routedTo, IEnumerable<Type> inputTypes)
             {
                 Parameters = parameters;
                 RoutedTo = routedTo;
+                InputTypes = inputTypes;
             }
 
             public IReadOnlyDictionary<string, object> Parameters { get; private set; }
             public object RoutedTo { get; private set; }
+            public IEnumerable<Type> InputTypes { get; private set; }
         }
     }
 }

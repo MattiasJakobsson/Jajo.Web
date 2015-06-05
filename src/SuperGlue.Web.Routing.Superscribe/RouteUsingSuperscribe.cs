@@ -30,7 +30,9 @@ namespace SuperGlue.Web.Routing.Superscribe
             var walker = routeEngine.Walker();
             var data = walker.WalkRoute(path, method, routeData);
 
-            environment.SetRouteDestination(data.Response, (IDictionary<string, object>)data.Parameters);
+            var endpoint = environment.GetRouteForEndpoint(data.Response);
+
+            environment.SetRouteDestination(data.Response, endpoint.InputTypes, (IDictionary<string, object>)data.Parameters);
 
             await _next(environment);
         }

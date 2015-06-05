@@ -22,8 +22,10 @@ namespace SuperGlue.Web.Endpoints
         {
             var routeInformation = environment.GetRouteInformation();
 
+            var endpointExecutor = environment.Resolve<IExecuteAnyEndpoint>();
+
             if (routeInformation.RoutedTo != null)
-                await environment.Resolve<IExecuteAnyEndpoint>().Execute(environment, routeInformation.RoutedTo);
+                await endpointExecutor.Execute(environment, routeInformation.RoutedTo);
 
             await _next(environment);
         }

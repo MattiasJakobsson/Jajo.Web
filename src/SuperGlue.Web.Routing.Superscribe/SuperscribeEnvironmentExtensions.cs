@@ -32,12 +32,12 @@ namespace SuperGlue.Web.Routing.Superscribe
             {
                 var node = endpointRoutes[endpoint].Item1.FirstOrDefault();
 
-                return node != null ? new EndpointRoute(node) : null;
+                return node != null ? new EndpointRoute(node, endpointRoutes[endpoint].Item2.Select(x => x.Key).ToList()) : null;
             }
 
             return endpointRoutes
                 .Where(x => x.Value.Item2.ContainsKey(endpoint.GetType()) && x.Value.Item1.Any())
-                .Select(x => new EndpointRoute(x.Value.Item1.First(), x.Value.Item2[endpoint.GetType()](endpoint)))
+                .Select(x => new EndpointRoute(x.Value.Item1.First(), new List<Type> { endpoint.GetType() }, x.Value.Item2[endpoint.GetType()](endpoint)))
                 .FirstOrDefault();
         }
 
@@ -51,7 +51,7 @@ namespace SuperGlue.Web.Routing.Superscribe
                 environment[SuperscribeConstants.EndpointToRouteList] = endpointRoutes;
             }
 
-            if(!endpointRoutes.ContainsKey(endpoint))
+            if (!endpointRoutes.ContainsKey(endpoint))
                 endpointRoutes[endpoint] = new Tuple<ICollection<GraphNode>, IDictionary<Type, Func<object, IDictionary<string, object>>>>(new List<GraphNode>(), new Dictionary<Type, Func<object, IDictionary<string, object>>>());
 
             endpointRoutes[endpoint].Item1.Add(route);
@@ -62,13 +62,15 @@ namespace SuperGlue.Web.Routing.Superscribe
 
         public class EndpointRoute
         {
-            public EndpointRoute(GraphNode node, IDictionary<string, object> parameters = null)
+            public EndpointRoute(GraphNode node, IEnumerable<Type> inputTypes, IDictionary<string, object> parameters = null)
             {
                 Node = node;
+                InputTypes = inputTypes;
                 Parameters = parameters ?? new Dictionary<string, object>();
             }
 
             public GraphNode Node { get; private set; }
+            public IEnumerable<Type> InputTypes { get; private set; }
             public IDictionary<string, object> Parameters { get; private set; }
         }
     }

@@ -16,10 +16,20 @@ namespace SuperGlue.Web.Endpoints
 
             if (executor != null)
             {
-                var executionMethod = EndpointExecutionMethods.Get(endpoint.GetType(), key => CompileExecutionFunctionFor(executor.GetType(), endpoint.GetType()));
+                var executionMethod = FindExecutionMethod(executor, endpoint);
 
-                await executionMethod(executor, endpoint, environment);
+                await ExecuteMethod(executionMethod, executor, endpoint, environment);
             }
+        }
+
+        protected virtual Func<object, object, IDictionary<string, object>, Task> FindExecutionMethod(object executor, object endpoint)
+        {
+            return EndpointExecutionMethods.Get(endpoint.GetType(), key => CompileExecutionFunctionFor(executor.GetType(), endpoint.GetType()));
+        }
+
+        protected virtual Task ExecuteMethod(Func<object, object, IDictionary<string, object>, Task> method, object executor, object endpoint, IDictionary<string, object> environment)
+        {
+            return method(executor, endpoint, environment);
         }
 
         protected virtual Func<object, object, IDictionary<string, object>, Task> CompileExecutionFunctionFor(Type executorType, Type routedToType)
