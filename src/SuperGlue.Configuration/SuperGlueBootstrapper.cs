@@ -120,12 +120,36 @@ namespace SuperGlue.Configuration
                 .OfType<ISetupConfigurations>()
                 .ToList();
 
-            ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(setups.SelectMany(x => x.Setup()).ToList()), "superglue.ApplicationSetupStarted");
+            var configurations = setups.SelectMany(x => x.Setup()).ToList();
+
+            var executed = ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(configurations), "superglue.ApplicationSetupStarted").ToList();
+
+            while (true)
+            {
+                var missing = configurations.Where(x => !executed.Contains(x.ConfigurationName)).ToList();
+
+                if(!missing.Any())
+                    break;
+
+                var dependencyToExecute = missing.OrderBy(x => missing.Count(y => y.ConfigurationName == x.DependsOn)).Select(x => x.DependsOn).FirstOrDefault();
+
+                var missingExecuted = ExecuteConfigurationsDependingOn(missing, dependencyToExecute).ToList();
+
+                if (!missingExecuted.Any())
+                {
+                    foreach (var configuration in missing)
+                        configuration.Action(_environment);
+
+                    break;
+                }
+
+                executed.AddRange(missingExecuted);
+            }
 
             return setups;
         }
 
-        protected virtual void ExecuteConfigurationsDependingOn(IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn)
+        protected virtual IEnumerable<string> ExecuteConfigurationsDependingOn(IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn)
         {
             var configurationsToExecute = configurations.Where(x => x.DependsOn == dependsOn).ToList();
 
@@ -137,8 +161,12 @@ namespace SuperGlue.Configuration
                 results.Add(configuration.ConfigurationName);
             }
 
+            var executed = results.ToList();
+
             foreach (var item in results.Distinct())
-                ExecuteConfigurationsDependingOn(configurations, item);
+                executed.AddRange(ExecuteConfigurationsDependingOn(configurations, item));
+
+            return executed;
         }
 
         public static SuperGlueBootstrapper Find()
