@@ -9,9 +9,11 @@ namespace SuperGlue.Web.Output
         {
             yield return new ConfigurationSetupResult("superglue.OutputSetup", environment =>
             {
+                //TODO:Manage order somehow
                 environment.AlterSettings<OutputSettings>(x => x
                     .When(y => y.GetRequest().Headers.Accept.Contains("application/json")).UseRenderer(new RenderOutputAsJson())
-                    .When(y => y.GetRequest().Headers.Accept.Contains("application/xml")).UseRenderer(new RenderOutputAsXml()));
+                    .When(y => y.GetRequest().Headers.Accept.Contains("application/xml")).UseRenderer(new RenderOutputAsXml())
+                    .When(y => (y.GetOutput() as IRedirectable) != null).UseRenderer(new RenderRedirectOutput()));
 
                 environment.RegisterTransient(typeof(IRenderToOutput), typeof(DefaultOutputRenderer));
             }, "superglue.ContainerSetup");

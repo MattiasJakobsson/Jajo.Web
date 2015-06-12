@@ -56,6 +56,7 @@
     </Compile>
     <Compile Include="ConfigureOutput.cs" />
     <Compile Include="DefaultOutputRenderer.cs" />
+    <Compile Include="IRedirectable.cs" />
     <Compile Include="IRenderOutput.cs" />
     <Compile Include="IRenderToOutput.cs" />
     <Compile Include="ISuperGlueView.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderOutputAsJson.cs" />
     <Compile Include="RenderOutputAsXml.cs" />
+    <Compile Include="RenderRedirectOutput.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />
