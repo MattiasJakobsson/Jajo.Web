@@ -27,6 +27,8 @@ namespace SuperGlue.Web.Routing.Superscribe
 
                 environment[RoutingEnvironmentExtensions.RouteConstants.CreateRouteBuilderFunc] = (Func<IRouteBuilder>)(() => new SuperscribeRouteBuilder(environment.ResolveAll<ICheckIfRouteExists>(), stringRouteParser));
 
+                environment[RouteExtensions.RouteConstants.EndpointFromInput] = (Func<object, object>) (environment.GetEndpointFor);
+
                 environment[RouteExtensions.RouteConstants.ReverseRoute] = (Func<object, string>)(endpoint =>
                 {
                     var endpointRoute = environment.GetRouteForEndpoint(endpoint);

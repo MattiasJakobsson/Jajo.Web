@@ -13,6 +13,7 @@ namespace SuperGlue
             public const string InputTypes = "route.InputTypes";
             public const string ReverseRoute = "superglue.ReverseRoute";
             public const string CreateRouteFunc = "superglue.CreateRouteFunc";
+            public const string EndpointFromInput = "superglue.EndpointFromInput";
         }
 
         public static RoutingData GetRouteInformation(this IDictionary<string, object> environment)
@@ -27,6 +28,11 @@ namespace SuperGlue
             var reverseRoute = environment.Get<Func<object, string>>(RouteConstants.ReverseRoute);
 
             return reverseRoute == null ? "" : reverseRoute(input);
+        }
+
+        public static object GetEndpointForInput(this IDictionary<string, object> environment, object input)
+        {
+            return environment.Get<Func<object, object>>(RouteConstants.EndpointFromInput, x => null)(input);
         }
 
         public static void SetRouteDestination(this IDictionary<string, object> environment, object destination, IEnumerable<Type> inputTypes, IDictionary<string, object> parameters = null)

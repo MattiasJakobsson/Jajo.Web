@@ -7,7 +7,7 @@ namespace SuperGlue.Web.Endpoints
     {
         public IEnumerable<ConfigurationSetupResult> Setup()
         {
-            yield return new ConfigurationSetupResult("superglue.UnitOfWork.Configure", environment =>
+            yield return new ConfigurationSetupResult("superglue.EndpointsSetup", environment =>
             {
                 environment.RegisterAllClosing(typeof(IExecuteTypeOfEndpoint<>));
 

@@ -41,6 +41,17 @@ namespace SuperGlue.Web.Routing.Superscribe
                 .FirstOrDefault();
         }
 
+        public static object GetEndpointFor(this IDictionary<string, object> environment, object input)
+        {
+            var endpointRoutes = environment.Get<IDictionary<object, Tuple<ICollection<GraphNode>, IDictionary<Type, Func<object, IDictionary<string, object>>>>>>(SuperscribeConstants.EndpointToRouteList,
+                new Dictionary<object, Tuple<ICollection<GraphNode>, IDictionary<Type, Func<object, IDictionary<string, object>>>>>());
+
+            return endpointRoutes
+                .Where(x => x.Value.Item2.ContainsKey(input.GetType()))
+                .Select(x => x.Key)
+                .FirstOrDefault();
+        }
+
         internal static void AddRouteToEndpoint(this IDictionary<string, object> environment, object endpoint, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, GraphNode route)
         {
             var endpointRoutes = environment.Get<IDictionary<object, Tuple<ICollection<GraphNode>, IDictionary<Type, Func<object, IDictionary<string, object>>>>>>(SuperscribeConstants.EndpointToRouteList);
