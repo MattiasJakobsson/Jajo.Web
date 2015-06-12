@@ -52,6 +52,7 @@ namespace SuperGlue.StructureMap
             environment[ResolveExtensions.ContainerConstants.RegisterTransientFromFunc] = (Action<Type, Func<IDictionary<string, object>, object>>)((serviceType, getService) => currentContainer.Configure(x => x.For(serviceType).Use(y => getService(y.GetInstance<IDictionary<string, object>>()))));
             environment[ResolveExtensions.ContainerConstants.RegisterSingleton] = (Action<Type, object>)((type, instance) => currentContainer.Configure(y => y.For(type).Singleton().Use(instance)));
             environment[ResolveExtensions.ContainerConstants.RegisterSingletonType] = (Action<Type, Type>)((type, implimentationType) => currentContainer.Configure(y => y.For(type).Singleton().Use(implimentationType)));
+            environment[ResolveExtensions.ContainerConstants.RegisterSingletonFromFunc] = (Action<Type, Func<IDictionary<string, object>, object>>)((serviceType, getService) => currentContainer.Configure(x => x.For(serviceType).Singleton().Use(y => getService(y.GetInstance<IDictionary<string, object>>()))));
             environment[ResolveExtensions.ContainerConstants.RegisterAllClosing] = (Action<Type>)(type => currentContainer.Configure(y => y.Scan(z =>
             {
                 foreach (var assembly in assemblies)

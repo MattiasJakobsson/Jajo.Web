@@ -16,6 +16,7 @@ namespace SuperGlue
             public const string RegisterAllClosing = "superglue.Container.RegisterAllClosing";
             public const string RegisterAll = "superglue.Container.RegisterAll";
             public const string RegisterTransientFromFunc = "superglue.Container.RegisterTransientFromFunc";
+            public const string RegisterSingletonFromFunc = "superglue.Container.RegisterSingletonFromFunc";
         }
 
         public static TService Resolve<TService>(this IDictionary<string, object> environment)
@@ -51,6 +52,11 @@ namespace SuperGlue
         public static void RegisterSingleton(this IDictionary<string, object> environment, Type serviceType, object instance)
         {
             environment.Get<Action<Type, object>>(ContainerConstants.RegisterSingleton)(serviceType, instance);
+        }
+
+        public static void RegisterSingleton(this IDictionary<string, object> environment, Type serviceType, Func<IDictionary<string, object>, object> getService)
+        {
+            environment.Get<Action<Type, Func<IDictionary<string, object>, object>>>(ContainerConstants.RegisterSingletonFromFunc)(serviceType, getService);
         }
 
         public static void RegisterSingletonType(this IDictionary<string, object> environment, Type serviceType, Type implimentationType)

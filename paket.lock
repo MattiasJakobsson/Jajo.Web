@@ -7,6 +7,11 @@ NUGET
     FubuCsProjFile (1.8.0.151)
       FubuCore (>= 1.0)
     HtmlTags (3.0.0.186)
+    Microsoft.Bcl (1.1.10) - framework: >= net40 < net45
+      Microsoft.Bcl.Build (>= 1.0.14)
+    Microsoft.Bcl.Async (1.0.168) - framework: >= net40 < net45
+      Microsoft.Bcl (>= 1.1.8)
+    Microsoft.Bcl.Build (1.0.21)
     Microsoft.CodeAnalysis.Analyzers (1.0.0-rc2)
     Microsoft.CodeAnalysis.Common (1.0.0-rc2)
       Microsoft.CodeAnalysis.Analyzers (1.0.0-rc2)
@@ -50,6 +55,9 @@ NUGET
       Rx-Core (>= 2.2.5)
       Rx-Interfaces (>= 2.2.5)
     Spark (1.8.1.0)
+    StackExchange.Redis (1.0.450)
+      Microsoft.Bcl (>= 1.1.9) - framework: >= net40 < net45
+      Microsoft.Bcl.Async (>= 1.0.168) - framework: >= net40 < net45
     structuremap (3.1.5.154)
     Superscribe (0.4.4.16)
     System.Collections.Immutable (1.1.33-beta)

@@ -12,6 +12,7 @@ nuget Owin
 nuget RavenDB.Client
 nuget Rx-Main
 nuget Spark
+nuget StackExchange.Redis
 nuget Superscribe
 nuget Topshelf
 nuget structuremap

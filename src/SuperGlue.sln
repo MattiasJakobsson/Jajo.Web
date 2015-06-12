@@ -92,6 +92,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Routing", "Su
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Caching", "SuperGlue.Caching\SuperGlue.Caching.csproj", "{A6EE6294-1E05-4781-9CBF-9FAB1B5FD4DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Caching.Redis", "SuperGlue.Caching.Redis\SuperGlue.Caching.Redis.csproj", "{B69E0E76-33E9-4B16-977D-76DC6B617C49}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -218,6 +220,10 @@ Global
 		{A6EE6294-1E05-4781-9CBF-9FAB1B5FD4DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6EE6294-1E05-4781-9CBF-9FAB1B5FD4DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6EE6294-1E05-4781-9CBF-9FAB1B5FD4DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B69E0E76-33E9-4B16-977D-76DC6B617C49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B69E0E76-33E9-4B16-977D-76DC6B617C49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B69E0E76-33E9-4B16-977D-76DC6B617C49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B69E0E76-33E9-4B16-977D-76DC6B617C49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

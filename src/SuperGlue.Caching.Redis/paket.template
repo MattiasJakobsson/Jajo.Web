@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.Caching.Redis
+version 1.0
+authors Mattias Jakobsson
+description
+	Redis Caching middleware
+files
+    bin/Release/SuperGlue.Caching.Redis.dll ==> lib
+dependencies
+	SuperGlue.Caching
+	SuperGlue.Configuration
