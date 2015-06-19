@@ -42,6 +42,11 @@ namespace SuperGlue
                 .Callback(x => command.AppPath = Path.IsPathRooted(x) ? x : Path.Combine(Environment.CurrentDirectory, x))
                 .SetDefault("");
 
+            parser
+                .Setup<string>('e', "environment")
+                .Callback(x => command.Environment = x)
+                .SetDefault("test");
+
             parser.Parse(args);
 
             return command;

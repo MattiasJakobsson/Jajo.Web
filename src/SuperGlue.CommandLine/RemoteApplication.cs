@@ -13,18 +13,16 @@ namespace SuperGlue
     public class RemoteApplication
     {
         private readonly string _path;
+        private readonly string _environment;
         private readonly IFileListener _fileListener;
         private AppDomain _appDomain;
         private RemoteKatanaHost _katanaHost;
 
-        public RemoteApplication()
-        {
-            _fileListener = new FileListener();
-        }
-
-        public RemoteApplication(string path)
+        public RemoteApplication(string path, string environment)
         {
             _path = path;
+            _environment = environment;
+            _fileListener = new FileListener();
         }
 
         public void Start()
@@ -54,7 +52,7 @@ namespace SuperGlue
 
             _katanaHost = (RemoteKatanaHost)_appDomain.CreateInstanceAndUnwrap(typeof(RemoteKatanaHost).Assembly.FullName, typeof(RemoteKatanaHost).FullName);
 
-            var directories = _katanaHost.Start().ToList();
+            var directories = _katanaHost.Start(_environment).ToList();
 
             foreach (var directory in directories)
                 Console.WriteLine("Loaded subapplication from path: {0}", directory);

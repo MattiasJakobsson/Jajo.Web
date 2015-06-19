@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web;
 using Microsoft.Owin;
 using Owin;
 using SuperGlue.Configuration;
@@ -23,7 +24,7 @@ namespace SuperGlue.Hosting.SystemWeb
 
             var bootstrapper = SuperGlueBootstrapper.Find();
 
-            bootstrapper.StartApplications(settings);
+            bootstrapper.StartApplications(settings, HttpContext.Current.IsDebuggingEnabled ? "test" : "production");
 
             isConfigured = true;
         }

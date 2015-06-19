@@ -7,11 +7,11 @@ namespace SuperGlue.Hosting.Topshelf
     {
         private SuperGlueBootstrapper _bootstrapper;
 
-        public void Start()
+        public void Start(string environment)
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            _bootstrapper.StartApplications(new Dictionary<string, object>());
+            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment);
         }
 
         public void Stop()

@@ -19,9 +19,15 @@ namespace SuperGlue.Configuration
         private IReadOnlyCollection<ISetupConfigurations> _setups;
         private IDictionary<string, object> _environment;
 
-        public virtual IEnumerable<string> StartApplications(IDictionary<string, object> settings, ApplicationStartersOverrides overrides = null)
+        public virtual IEnumerable<string> StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
         {
             _environment = settings;
+
+            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            if (!basePath.EndsWith("\\"))
+                basePath = string.Format("{0}\\", basePath);
+
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ResolvePathFunc] = (Func<string, string>)(x => x.Replace("~", basePath));
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.AlterConfigSettings] = (Action<Type, Action<object>>)((settingsType, alter) => alter(GetSettings(settingsType)));
 
@@ -39,7 +45,7 @@ namespace SuperGlue.Configuration
                     assemblies.Add(assembly);
             }
 
-            _setups = RunConfigurations(assemblies);
+            _setups = RunConfigurations(assemblies, environment);
 
             Configure();
 
@@ -109,7 +115,7 @@ namespace SuperGlue.Configuration
             return new BuildAppFunction(_environment);
         }
 
-        protected virtual IReadOnlyCollection<ISetupConfigurations> RunConfigurations(IEnumerable<Assembly> assemblies)
+        protected virtual IReadOnlyCollection<ISetupConfigurations> RunConfigurations(IEnumerable<Assembly> assemblies, string environment)
         {
             _environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.Assemblies] = assemblies;
 
@@ -120,7 +126,7 @@ namespace SuperGlue.Configuration
                 .OfType<ISetupConfigurations>()
                 .ToList();
 
-            var configurations = setups.SelectMany(x => x.Setup()).ToList();
+            var configurations = setups.SelectMany(x => x.Setup()).Where(x => string.IsNullOrEmpty(x.Environment) || x.Environment.Equals(environment, StringComparison.OrdinalIgnoreCase)).ToList();
 
             var executed = ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(configurations), "superglue.ApplicationSetupStarted").ToList();
 
@@ -192,8 +198,6 @@ namespace SuperGlue.Configuration
         {
             var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
             var loadedPaths = loadedAssemblies.Where(x => !x.IsDynamic).Select(a => a.Location).ToArray();
-
-
 
             var paths = new List<string>
             {

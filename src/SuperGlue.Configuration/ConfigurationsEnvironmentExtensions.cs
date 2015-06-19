@@ -10,6 +10,7 @@ namespace SuperGlue.Configuration
         {
             public const string Assemblies = "superglue.Assemblies";
             public const string AlterConfigSettings = "superglue.Configuration.AlterSettings";
+            public const string ResolvePathFunc = "superglue.Configuration.ResolvePath";
         }
 
         public static IEnumerable<Assembly> GetAssemblies(this IDictionary<string, object> environment)
@@ -30,6 +31,11 @@ namespace SuperGlue.Configuration
             var alter = environment.Get<Action<Type, Action<object>>>(ConfigurationConstants.AlterConfigSettings);
 
             alter(typeof(TSettings), x => alterer((TSettings)x));
+        }
+
+        public static string ResolvePath(this IDictionary<string, object> environment, string relativePath)
+        {
+            return environment.Get<Func<string, string>>(ConfigurationConstants.ResolvePathFunc)(relativePath);
         }
     }
 }

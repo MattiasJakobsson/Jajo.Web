@@ -5,10 +5,11 @@ namespace SuperGlue
     public class RunCommand : ICommand
     {
         public string AppPath { get; set; }
+        public string Environment { get; set; }
 
         public void Execute()
         {
-            var application = new RemoteApplication(AppPath);
+            var application = new RemoteApplication(AppPath, Environment);
 
             application.Start();
 

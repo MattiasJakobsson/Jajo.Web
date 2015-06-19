@@ -9,11 +9,11 @@ namespace SuperGlue.Hosting.Katana
     {
         private SuperGlueBootstrapper _bootstrapper;
 
-        public IEnumerable<string> Start()
+        public IEnumerable<string> Start(string environment)
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            return _bootstrapper.StartApplications(new Dictionary<string, object>(), ApplicationStartersOverrides.Prefer<StartKatanaHost>()).ToList();
+            return _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, ApplicationStartersOverrides.Prefer<StartKatanaHost>()).ToList();
         }
 
         public void Stop()
