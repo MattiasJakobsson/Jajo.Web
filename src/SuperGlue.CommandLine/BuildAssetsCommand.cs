@@ -30,7 +30,7 @@ namespace SuperGlue
                 priority++;
             }
 
-            Assets.CollectAllAssetsTo(settings).Wait();
+            Assets.CollectAllAssets(settings).Wait();
         }
     }
 }

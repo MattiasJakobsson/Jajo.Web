@@ -7,7 +7,7 @@ namespace SuperGlue.Web.Assets
 {
     public static class Assets
     {
-        public static async Task CollectAllAssetsTo(AssetSettings settings)
+        public static async Task CollectAllAssets(AssetSettings settings)
         {
             var assets = new List<Asset>();
 

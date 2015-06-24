@@ -39,7 +39,7 @@ namespace SuperGlue.Web.Assets
 
         public async Task Configure(SettingsConfiguration configuration)
         {
-            await Assets.CollectAllAssetsTo(configuration.WithSettings<AssetSettings>());
+            await Assets.CollectAllAssets(configuration.WithSettings<AssetSettings>());
         }
     }
 }
