@@ -45,6 +45,9 @@
     <Compile Include="..\Shared\BindExtensions.cs">
       <Link>BindExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\Cache.cs">
+      <Link>Cache.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
@@ -60,6 +63,7 @@
     <Compile Include="IRenderOutput.cs" />
     <Compile Include="IRenderToOutput.cs" />
     <Compile Include="ISuperGlueView.cs" />
+    <Compile Include="MimeType.cs" />
     <Compile Include="OutputEnvironmentExtensions.cs" />
     <Compile Include="OutputRenderingResult.cs" />
     <Compile Include="OutputSettingsExtensions.cs" />

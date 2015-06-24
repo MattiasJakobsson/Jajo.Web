@@ -11,6 +11,7 @@ namespace SuperGlue
 
         public void Execute()
         {
+            //HACK:Hard coded path to assets
             var settings = new AssetSettings()
                 .SetSetupEnabled(true)
                 .UseDestination(Destination)

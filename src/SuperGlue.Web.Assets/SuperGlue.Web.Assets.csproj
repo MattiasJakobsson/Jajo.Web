@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +45,9 @@
   <ItemGroup>
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\Cache.cs">
+      <Link>Cache.cs</Link>
     </Compile>
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
@@ -55,10 +59,17 @@
       <Link>RouteExtensions.cs</Link>
     </Compile>
     <Compile Include="Asset.cs" />
+    <Compile Include="AssetPlanKey.cs" />
     <Compile Include="Assets.cs" />
     <Compile Include="AssetsEnvironmentExtensions.cs" />
     <Compile Include="AssetSettings.cs" />
     <Compile Include="AssetsViewExtensions.cs" />
+    <Compile Include="DefaultAssetRequirements.cs" />
+    <Compile Include="DefaultAssetTagWriter.cs" />
+    <Compile Include="GenericEnumerableExtensions.cs" />
+    <Compile Include="IAssetRequirements.cs" />
+    <Compile Include="IAssetTagWriter.cs" />
+    <Compile Include="ImageTag.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupAssetsConfiguration.cs" />
   </ItemGroup>
@@ -83,4 +94,15 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
+      <ItemGroup>
+        <Reference Include="HtmlTags">
+          <HintPath>..\..\packages\HtmlTags\lib\4.0\HtmlTags.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
 </Project>
