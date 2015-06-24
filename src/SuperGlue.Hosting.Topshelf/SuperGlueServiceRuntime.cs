@@ -11,13 +11,13 @@ namespace SuperGlue.Hosting.Topshelf
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment);
+            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment).Wait();
         }
 
         public void Stop()
         {
             if(_bootstrapper != null)
-                _bootstrapper.ShutDown();
+                _bootstrapper.ShutDown().Wait();
         }
     }
 }

@@ -19,7 +19,7 @@ namespace SuperGlue.Configuration
         private IReadOnlyCollection<ISetupConfigurations> _setups;
         private IDictionary<string, object> _environment;
 
-        public virtual IEnumerable<string> StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
+        public virtual async Task<IEnumerable<string>> StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
         {
             _environment = settings;
 
@@ -47,10 +47,10 @@ namespace SuperGlue.Configuration
 
             _setups = RunConfigurations(assemblies, environment);
 
-            Configure();
+            Configure(environment);
 
             foreach (var setup in _setups)
-                setup.Configure(new SettingsConfiguration(GetSettings, settings));
+                await setup.Configure(new SettingsConfiguration(GetSettings, settings, environment));
 
             _appStarters = settings.ResolveAll<IStartApplication>();
 
@@ -65,24 +65,29 @@ namespace SuperGlue.Configuration
                 if (_chains.ContainsKey(item.Key))
                     chain = _chains[item.Key];
 
-                chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(item.Key));
+                chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(item.Key), environment);
 
                 if (chain != null)
-                    starter.Start(chain, settings);
+                    await starter.Start(chain, settings, environment);
             }
 
             return subApplications.Select(x => x.Path).ToList();
         }
 
-        public virtual void ShutDown()
+        public virtual async Task ShutDown()
         {
             var appStarters = _appStarters ?? new List<IStartApplication>();
 
             foreach (var startApplication in appStarters)
-                startApplication.ShutDown();
+                await startApplication.ShutDown();
+
+            var setups = _setups ?? new List<ISetupConfigurations>();
+
+            foreach (var setup in setups)
+                await setup.Shutdown(_environment);
         }
 
-        protected abstract void Configure();
+        protected abstract void Configure(string environment);
 
         protected virtual object GetSettings(Type settingsType)
         {
@@ -126,7 +131,7 @@ namespace SuperGlue.Configuration
                 .OfType<ISetupConfigurations>()
                 .ToList();
 
-            var configurations = setups.SelectMany(x => x.Setup()).Where(x => string.IsNullOrEmpty(x.Environment) || x.Environment.Equals(environment, StringComparison.OrdinalIgnoreCase)).ToList();
+            var configurations = setups.SelectMany(x => x.Setup(environment)).Where(x => string.IsNullOrEmpty(x.Environment) || x.Environment.Equals(environment, StringComparison.OrdinalIgnoreCase)).ToList();
 
             var executed = ExecuteConfigurationsDependingOn(new ReadOnlyCollection<ConfigurationSetupResult>(configurations), "superglue.ApplicationSetupStarted").ToList();
 

@@ -50,25 +50,31 @@ namespace SuperGlue.EventStore.Projections
 
         public string Chain { get { return "chains.Projections"; } }
 
-        public void Start(AppFunc chain, IDictionary<string, object> environment)
+        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            running = true;
+            return Task.Factory.StartNew(() =>
+            {
+                running = true;
 
-            foreach (var projection in _projections)
-                SubscribeProjection(projection, chain, environment);
+                foreach (var projection in _projections)
+                    SubscribeProjection(projection, chain, settings);
+            });
         }
 
-        public void ShutDown()
+        public Task ShutDown()
         {
-            running = false;
+            return Task.Factory.StartNew(() =>
+            {
+                running = false;
 
-            foreach (var subscription in _projectionSubscriptions)
-                subscription.Value.Close();
+                foreach (var subscription in _projectionSubscriptions)
+                    subscription.Value.Close();
 
-            _projectionSubscriptions.Clear();
+                _projectionSubscriptions.Clear();
+            });
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
             return buildApp.Use<ExecuteProjection>().Build();
         }

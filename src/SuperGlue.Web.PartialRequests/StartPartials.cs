@@ -11,17 +11,17 @@ namespace SuperGlue.Web.PartialRequests
     {
         public string Chain { get { return "chains.Partials"; } }
 
-        public void Start(AppFunc chain, IDictionary<string, object> environment)
+        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            Partials.Initialize(chain);
+            return Task.Factory.StartNew(() => Partials.Initialize(chain));
         }
 
-        public void ShutDown()
+        public Task ShutDown()
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
             return null;
         }

@@ -50,25 +50,31 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public string Chain { get { return "chains.ProcessManagers"; } }
 
-        public void Start(AppFunc chain, IDictionary<string, object> environment)
+        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            running = true;
+            return Task.Factory.StartNew(() =>
+            {
+                running = true;
 
-            foreach (var processManager in _processManagers)
-                SubscribeProcessManager(chain, processManager, environment);
+                foreach (var processManager in _processManagers)
+                    SubscribeProcessManager(chain, processManager, settings);
+            });
         }
 
-        public void ShutDown()
+        public Task ShutDown()
         {
-            running = false;
+            return Task.Factory.StartNew(() =>
+            {
+                running = false;
 
-            foreach (var subscription in _processManagerSubscriptions)
-                subscription.Value.Close();
+                foreach (var subscription in _processManagerSubscriptions)
+                    subscription.Value.Close();
 
-            _processManagerSubscriptions.Clear();
+                _processManagerSubscriptions.Clear();
+            });
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
             return buildApp.Use<ExecuteProcessManager>().Build();
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 using StackExchange.Redis;
 using SuperGlue.Configuration;
 
@@ -7,7 +8,7 @@ namespace SuperGlue.Caching.Redis
 {
     public class SetupRedisConfiguration : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.Cache.RedisSetup", environment =>
             {
@@ -18,14 +19,14 @@ namespace SuperGlue.Caching.Redis
             }, "superglue.CacheSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

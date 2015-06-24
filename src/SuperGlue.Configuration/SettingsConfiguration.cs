@@ -7,13 +7,15 @@ namespace SuperGlue.Configuration
     {
         private readonly Func<Type, object> _getSettings;
 
-        public SettingsConfiguration(Func<Type, object> getSettings, IDictionary<string, object> environment)
+        public SettingsConfiguration(Func<Type, object> getSettings, IDictionary<string, object> settings, string environment)
         {
             _getSettings = getSettings;
+            Settings = settings;
             Environment = environment;
         }
 
-        public IDictionary<string, object> Environment { get; private set; }
+        public IDictionary<string, object> Settings { get; private set; }
+        public string Environment { get; private set; }
 
         public TSettings WithSettings<TSettings>()
         {

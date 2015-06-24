@@ -1,23 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.ProcessManagers
 {
     public class ConfigureProcessManagers : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.EventStore.ProcessManagers.Configured", environment => environment.RegisterAll(typeof(IManageProcess)), "superglue.ContainerSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

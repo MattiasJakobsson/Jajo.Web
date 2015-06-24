@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using StructureMap;
 using SuperGlue.Configuration;
 
@@ -6,7 +7,7 @@ namespace SuperGlue.StructureMap
 {
     public class SetupStructureMapContainer : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             var container = new Container();
 
@@ -17,14 +18,17 @@ namespace SuperGlue.StructureMap
             }, "superglue.StructureMap.ContainerSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            applicationData.GetContainer().Dispose();
+            return Task.Factory.StartNew(() =>
+            {
+                applicationData.GetContainer().Dispose();
+            });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

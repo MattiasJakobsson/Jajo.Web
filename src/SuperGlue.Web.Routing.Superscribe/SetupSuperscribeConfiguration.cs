@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using Superscribe;
 using Superscribe.Engine;
@@ -12,7 +13,7 @@ namespace SuperGlue.Web.Routing.Superscribe
 {
     public class SetupSuperscribeConfiguration : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.SuperscribeSetup", environment =>
             {
@@ -79,14 +80,14 @@ namespace SuperGlue.Web.Routing.Superscribe
             }, "superglue.RoutingSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

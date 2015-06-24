@@ -12,19 +12,22 @@ namespace SuperGlue.Hosting.SystemWeb
     {
         public string Chain { get { return "chains.Web"; } }
 
-        public void Start(AppFunc chain, IDictionary<string, object> environment)
+        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            var appBuilder = environment.Get<IAppBuilder>(SystemWebEnvironmentConstants.AppBuilder);
+            return Task.Factory.StartNew(() =>
+            {
+                var appBuilder = settings.Get<IAppBuilder>(SystemWebEnvironmentConstants.AppBuilder);
 
-            appBuilder.Use<RunAppFunc>(new RunAppFuncOptions(chain, environment));
+                appBuilder.Use<RunAppFunc>(new RunAppFuncOptions(chain, settings));
+            });
         }
 
-        public void ShutDown()
+        public Task ShutDown()
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
             return null;
         }

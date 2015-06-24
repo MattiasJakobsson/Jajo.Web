@@ -47,28 +47,34 @@ namespace SuperGlue.EventStore.Subscribers
 
         public string Chain { get { return "chains.Subscribers"; } }
 
-        public void Start(AppFunc chain, IDictionary<string, object> environment)
+        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            running = true;
+            return Task.Factory.StartNew(() =>
+            {
+                running = true;
 
-            var streams = ConfigurationManager.AppSettings["EventStore.Streams"].Split(';').ToList();
-            var name = ConfigurationManager.AppSettings["Service.Name"];
+                var streams = ConfigurationManager.AppSettings["EventStore.Streams"].Split(';').ToList();
+                var name = ConfigurationManager.AppSettings["Service.Name"];
 
-            foreach (var stream in streams)
-                SubscribeService(chain, name, stream, environment);
+                foreach (var stream in streams)
+                    SubscribeService(chain, name, stream, settings);
+            });
         }
 
-        public void ShutDown()
+        public Task ShutDown()
         {
-            running = false;
+            return Task.Factory.StartNew(() =>
+            {
+                running = false;
 
-            foreach (var subscription in _serviceSubscriptions)
-                subscription.Value.Close();
+                foreach (var subscription in _serviceSubscriptions)
+                    subscription.Value.Close();
 
-            _serviceSubscriptions.Clear();
+                _serviceSubscriptions.Clear();
+            });
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
             return buildApp.Use<ExecuteSubscribers>().Build();
         }

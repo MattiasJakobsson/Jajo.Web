@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Raven.Client;
 using Raven.Client.Document;
 using SuperGlue.Configuration;
@@ -8,7 +9,7 @@ namespace SuperGlue.RavenDb
 {
     public class SetupRavenConfiguration : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.RavenDb.Configure", environment =>
             {
@@ -27,14 +28,14 @@ namespace SuperGlue.RavenDb
             }, "superglue.ContainerSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
         private static IDocumentStore CreateDocumentStore(string connectionStringName)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Spark;
 using SuperGlue.Configuration;
 
@@ -7,7 +8,7 @@ namespace SuperGlue.Web.Output.Spark
 {
     public class SetupSparkConfiguration : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.SparkSetup", environment =>
             {
@@ -32,14 +33,14 @@ namespace SuperGlue.Web.Output.Spark
             }, "superglue.OutputSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

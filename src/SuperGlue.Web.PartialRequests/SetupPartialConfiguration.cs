@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.PartialRequests
 {
     public class SetupPartialConfiguration : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.PartialsSetup", environment =>
             {
@@ -27,14 +28,17 @@ namespace SuperGlue.Web.PartialRequests
             }, "superglue.ContainerSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            configuration.Environment[PartialEnvironmentExtensions.PartialConstants.PartialSettings] = configuration.WithSettings<PartialSettings>();
+            return Task.Factory.StartNew(() =>
+            {
+                configuration.Settings[PartialEnvironmentExtensions.PartialConstants.PartialSettings] = configuration.WithSettings<PartialSettings>();
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using SuperGlue.Web.ModelBinding.BindingSources;
 using SuperGlue.Web.ModelBinding.PropertyBinders;
@@ -8,7 +9,7 @@ namespace SuperGlue.Web.ModelBinding
 {
     public class ConfigureModelBinders : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.ModelBinding.Configured", environment =>
             {
@@ -24,14 +25,14 @@ namespace SuperGlue.Web.ModelBinding
             }, "superglue.ContainerSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

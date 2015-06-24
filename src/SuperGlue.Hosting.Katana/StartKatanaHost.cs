@@ -15,20 +15,26 @@ namespace SuperGlue.Hosting.Katana
 
         public string Chain { get { return "chains.Web"; } }
 
-        public void Start(AppFunc chain, IDictionary<string, object> environment)
+        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            var url = environment.Get("superglue.Web.Urls", "http://localhost:8020");
+            return Task.Factory.StartNew(() =>
+            {
+                var url = settings.Get("superglue.Web.Urls", "http://localhost:8020");
 
-            _webApp = WebApp.Start(new StartOptions(url), x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain, environment)));
+                _webApp = WebApp.Start(new StartOptions(url), x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain, settings)));
+            });
         }
 
-        public void ShutDown()
+        public Task ShutDown()
         {
-            if(_webApp != null)
-                _webApp.Dispose();
+            return Task.Factory.StartNew(() =>
+            {
+                if (_webApp != null)
+                    _webApp.Dispose();
+            });
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
             return null;
         }

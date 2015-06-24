@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.Output
 {
     public class ConfigureOutput : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.OutputSetup", environment =>
             {
@@ -19,14 +20,17 @@ namespace SuperGlue.Web.Output
             }, "superglue.ContainerSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            configuration.Environment[OutputEnvironmentExtensions.OutputConstants.Renderers] = configuration.WithSettings<OutputSettings>();
+            return Task.Factory.StartNew(() =>
+            {
+                configuration.Settings[OutputEnvironmentExtensions.OutputConstants.Renderers] = configuration.WithSettings<OutputSettings>();
+            });
         }
     }
 }

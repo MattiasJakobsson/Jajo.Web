@@ -17,7 +17,7 @@ namespace SuperGlue.Web.Sample
 {
     public class SampleBootstrapper : SuperGlueBootstrapper
     {
-        protected override void Configure()
+        protected override void Configure(string environment)
         {
             AddChain("chains.Partials", app =>
             {

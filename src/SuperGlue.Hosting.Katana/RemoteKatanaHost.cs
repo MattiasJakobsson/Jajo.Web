@@ -13,13 +13,13 @@ namespace SuperGlue.Hosting.Katana
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            return _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, ApplicationStartersOverrides.Prefer<StartKatanaHost>()).ToList();
+            return _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, ApplicationStartersOverrides.Prefer<StartKatanaHost>()).Result.ToList();
         }
 
         public void Stop()
         {
             if (_bootstrapper != null)
-                _bootstrapper.ShutDown();
+                _bootstrapper.ShutDown().Wait();
         }
 
         public override object InitializeLifetimeService()

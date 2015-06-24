@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.Routing
 {
     public class SetupRoutingConfiguration : ISetupConfigurations
     {
-        public IEnumerable<ConfigurationSetupResult> Setup()
+        public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.RoutingSetup", environment =>
             {
@@ -27,41 +28,44 @@ namespace SuperGlue.Web.Routing
             }, "superglue.ContainerSetup");
         }
 
-        public void Shutdown(IDictionary<string, object> applicationData)
+        public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Configure(SettingsConfiguration configuration)
+        public Task Configure(SettingsConfiguration configuration)
         {
-            var policies = configuration.WithSettings<RouteSettings>().GetPolicies();
-
-            if(!policies.Any())
-                policies = new ReadOnlyCollection<IRoutePolicy>(new List<IRoutePolicy>
-                {
-                    new QueryCommandMethodRoutePolicy(configuration.Environment.GetAssemblies())
-                });
-
-            foreach (var policy in policies)
+            return Task.Factory.StartNew(() =>
             {
-                var endpoints = policy.Build();
+                var policies = configuration.WithSettings<RouteSettings>().GetPolicies();
 
-                foreach (var endpoint in endpoints)
+                if (!policies.Any())
+                    policies = new ReadOnlyCollection<IRoutePolicy>(new List<IRoutePolicy>
+                    {
+                        new QueryCommandMethodRoutePolicy(configuration.Settings.GetAssemblies())
+                    });
+
+                foreach (var policy in policies)
                 {
-                    var routeBuilder = configuration.Environment.CreateRouteBuilder();
+                    var endpoints = policy.Build();
 
-                    if (routeBuilder == null)
-                        continue;
+                    foreach (var endpoint in endpoints)
+                    {
+                        var routeBuilder = configuration.Settings.CreateRouteBuilder();
 
-                    if (endpoint.HttpMethods.Any())
-                        routeBuilder.RestrictMethods(endpoint.HttpMethods);
+                        if (routeBuilder == null)
+                            continue;
 
-                    foreach (var urlPart in endpoint.UrlParts)
-                        urlPart.AddToBuilder(routeBuilder);
+                        if (endpoint.HttpMethods.Any())
+                            routeBuilder.RestrictMethods(endpoint.HttpMethods);
 
-                    routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Environment);
+                        foreach (var urlPart in endpoint.UrlParts)
+                            urlPart.AddToBuilder(routeBuilder);
+
+                        routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings);
+                    }
                 }
-            }
+            });
         }
     }
 }
