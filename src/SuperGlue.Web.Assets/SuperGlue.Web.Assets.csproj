@@ -55,13 +55,9 @@
       <Link>RouteExtensions.cs</Link>
     </Compile>
     <Compile Include="Asset.cs" />
+    <Compile Include="Assets.cs" />
     <Compile Include="AssetsEnvironmentExtensions.cs" />
     <Compile Include="AssetSettings.cs" />
-    <Compile Include="ILocateAssets.cs" />
-    <Compile Include="IMoveAssetsToCorrectLocation.cs" />
-    <Compile Include="LocateAssetsInMainApplication.cs" />
-    <Compile Include="LocateAssetsInSubApplications.cs" />
-    <Compile Include="DefaultAssetsMover.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupAssetsConfiguration.cs" />
   </ItemGroup>

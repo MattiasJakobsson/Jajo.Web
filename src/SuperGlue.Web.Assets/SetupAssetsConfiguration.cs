@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
@@ -10,10 +11,24 @@ namespace SuperGlue.Web.Assets
         {
             yield return new ConfigurationSetupResult("superglue.AssetsSetup", environment =>
             {
-                environment.RegisterAll(typeof(ILocateAssets));
-                environment.RegisterTransient(typeof(IMoveAssetsToCorrectLocation), typeof(DefaultAssetsMover));
+                environment.AlterSettings<AssetSettings>(x => x
+                    .SetSetupEnabled(applicationEnvironment == "test")
+                    .UseDestination(environment.ResolvePath("~/_assets"))
+                    .AddSource(environment.ResolvePath("~/assets"), 1));
 
-                environment.AlterSettings<AssetSettings>(x => x.AssetsSetupEnabled = applicationEnvironment == "test");
+                var subApplications = environment.Get<IEnumerable<InitializedSubApplication>>(SubApplicationsEnvironmentExtensions.SubApplicationConstants.SubApplications);
+
+                var priority = 2;
+                foreach (var subApplication in subApplications)
+                {
+                    var application = subApplication;
+                    var currentPriority = priority;
+
+                    environment.AlterSettings<AssetSettings>(x => x.AddSource(Path.Combine(application.Path, "/assets"), currentPriority));
+
+                    priority++;
+                }
+
             }, "superglue.ContainerSetup");
         }
 
@@ -24,19 +39,7 @@ namespace SuperGlue.Web.Assets
 
         public async Task Configure(SettingsConfiguration configuration)
         {
-            if (configuration.WithSettings<AssetSettings>().AssetsSetupEnabled)
-            {
-                var assetLocators = configuration.Settings.ResolveAll<ILocateAssets>();
-
-                var assets = new List<Asset>();
-
-                foreach (var assetLocator in assetLocators)
-                    assets.AddRange(await assetLocator.FindAssets(configuration.Settings));
-
-                var assetMover = configuration.Settings.Resolve<IMoveAssetsToCorrectLocation>();
-
-                await assetMover.Move(assets, configuration.Settings);
-            }
+            await Assets.CollectAllAssetsTo(configuration.WithSettings<AssetSettings>());
         }
     }
 }
