@@ -11,7 +11,8 @@ namespace SuperGlue
         private static readonly IDictionary<string, Func<FluentCommandLineParser, string[], ICommand>> CommandBuilders = new Dictionary<string, Func<FluentCommandLineParser, string[], ICommand>>
         {
             {"run", BuildRunCommand},
-            {"add", BuildAddProjectFromTemplateCommand}
+            {"add", BuildAddProjectFromTemplateCommand},
+            {"buildassets", BuildBuildAssetsCommand}
         };
 
         static void Main(string[] args)
@@ -70,6 +71,25 @@ namespace SuperGlue
                 .Setup<string>('s', "solution")
                 .Callback(x => command.Solution = x)
                 .Required();
+
+            parser.Parse(args);
+
+            return command;
+        }
+
+        private static BuildAssetsCommand BuildBuildAssetsCommand(FluentCommandLineParser parser, string[] args)
+        {
+            var command = new BuildAssetsCommand();
+
+            parser
+                .Setup<string>('p', "path")
+                .Callback(x => command.AppPath = Path.IsPathRooted(x) ? x : Path.Combine(Environment.CurrentDirectory, x))
+                .SetDefault("");
+
+            parser
+                .Setup<string>('d', "destination")
+                .Callback(x => command.Destination = Path.IsPathRooted(x) ? x : Path.Combine(Environment.CurrentDirectory, x))
+                .SetDefault("/_assets");
 
             parser.Parse(args);
 

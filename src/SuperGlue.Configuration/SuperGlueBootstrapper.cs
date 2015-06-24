@@ -33,7 +33,9 @@ namespace SuperGlue.Configuration
 
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
 
-            var subApplications = SubApplications.Init(settings).ToList();
+            var subApplications = SubApplications.Init(basePath).ToList();
+
+            settings[SubApplicationsEnvironmentExtensions.SubApplicationConstants.SubApplications] = subApplications;
 
             var assemblies = new List<Assembly>();
 

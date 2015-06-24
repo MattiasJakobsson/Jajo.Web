@@ -10,11 +10,10 @@ namespace SuperGlue.Configuration
     {
         private static readonly ICollection<InitializedSubApplication> InitializedApplications = new List<InitializedSubApplication>();
 
-        public static IEnumerable<InitializedSubApplication> Init(IDictionary<string, object> settings)
+        public static IEnumerable<InitializedSubApplication> Init(string basePath)
         {
             AppDomain.CurrentDomain.AssemblyResolve += CurrentDomainAssemblyResolve;
 
-            var basePath = AppDomain.CurrentDomain.BaseDirectory;
             if (!basePath.EndsWith("\\"))
                 basePath = string.Format("{0}\\", basePath);
 
@@ -68,8 +67,6 @@ namespace SuperGlue.Configuration
                     result.Add(application);
                 }
             }
-
-            settings[SubApplicationsEnvironmentExtensions.SubApplicationConstants.SubApplications] = result;
 
             return result;
         }

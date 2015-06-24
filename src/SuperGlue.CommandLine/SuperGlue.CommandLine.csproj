@@ -46,6 +46,7 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AddProjectFromTemplateCommand.cs" />
+    <Compile Include="BuildAssetsCommand.cs" />
     <Compile Include="FileListener.cs" />
     <Compile Include="IFileListener.cs" />
     <Compile Include="ICommand.cs" />
@@ -66,6 +67,10 @@
     <ProjectReference Include="..\SuperGlue.Hosting.Katana\SuperGlue.Hosting.Katana.csproj">
       <Project>{d8a867d8-46ec-4334-936b-f09b8e930511}</Project>
       <Name>SuperGlue.Hosting.Katana</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Web.Assets\SuperGlue.Web.Assets.csproj">
+      <Project>{4b2412a7-2105-44dc-a47e-896110fff87e}</Project>
+      <Name>SuperGlue.Web.Assets</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
