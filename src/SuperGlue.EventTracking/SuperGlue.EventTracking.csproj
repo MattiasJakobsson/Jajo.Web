@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D1EE2D50-4338-4024-BC5D-9FCF24C2AA90}</ProjectGuid>
+    <ProjectGuid>{DDC9A27C-73AB-48FD-91F0-46BC689BEF6F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SuperGlue.RavenDb</RootNamespace>
-    <AssemblyName>SuperGlue.RavenDb</AssemblyName>
+    <RootNamespace>SuperGlue.EventTracking</RootNamespace>
+    <AssemblyName>SuperGlue.EventTracking</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,40 +48,21 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
-    <Compile Include="TrackingSession.cs" />
-    <Compile Include="DefaultRavenSessions.cs" />
-    <Compile Include="IRavenSessions.cs" />
+    <Compile Include="CanApplyEvents.cs" />
+    <Compile Include="DefaultEventEntitiesTracker.cs" />
+    <Compile Include="ICanApplyEvents.cs" />
+    <Compile Include="ITrackEntitiesWithEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RavenEnvironmentConstants.cs" />
-    <Compile Include="Search\DefaultRavenSearch.cs" />
-    <Compile Include="Search\IParseSearchString.cs" />
-    <Compile Include="Search\DefaultSearchStringParser.cs" />
-    <Compile Include="Search\IRavenSearchPart.cs" />
-    <Compile Include="Search\IRavenSearch.cs" />
-    <Compile Include="Search\IRavenFreeTextSearch.cs" />
-    <Compile Include="Search\IHandleLeftoverSearchPart.cs" />
-    <Compile Include="Search\IRavenSpecialCommandSearch.cs" />
-    <Compile Include="RavenUnitOfWork.cs" />
-    <Compile Include="Search\SearchParsingResult.cs" />
-    <Compile Include="Search\SearchPart.cs" />
-    <Compile Include="SetupRavenConfiguration.cs" />
+    <Compile Include="SetupEventTrackingConfiguration.cs" />
+    <Compile Include="TrackedEntity.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
       <Name>SuperGlue.Configuration</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SuperGlue.EventTracking\SuperGlue.EventTracking.csproj">
-      <Project>{ddc9a27c-73ab-48fd-91f0-46bc689bef6f}</Project>
-      <Name>SuperGlue.EventTracking</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SuperGlue.UnitOfWork\SuperGlue.UnitOfWork.csproj">
-      <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
-      <Name>SuperGlue.UnitOfWork</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -92,20 +73,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Choose>
-    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
-      <ItemGroup>
-        <Reference Include="Raven.Abstractions">
-          <HintPath>..\..\packages\RavenDB.Client\lib\net45\Raven.Abstractions.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-        <Reference Include="Raven.Client.Lightweight">
-          <HintPath>..\..\packages\RavenDB.Client\lib\net45\Raven.Client.Lightweight.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
 </Project>

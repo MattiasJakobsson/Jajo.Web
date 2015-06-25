@@ -10,3 +10,4 @@ dependencies
 	RavenDb.Client
 	SuperGlue.Configuration
 	SuperGlue.UnitOfWork
+	SuperGlue.EventTracking

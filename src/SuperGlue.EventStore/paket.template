@@ -12,3 +12,4 @@ dependencies
 	Rx-Main
 	SuperGlue.Configuration
 	SuperGlue.UnitOfWork
+	SuperGlue.EventTracking

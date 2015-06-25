@@ -132,6 +132,10 @@
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
       <Name>SuperGlue.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.EventTracking\SuperGlue.EventTracking.csproj">
+      <Project>{ddc9a27c-73ab-48fd-91f0-46bc689bef6f}</Project>
+      <Name>SuperGlue.EventTracking</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.UnitOfWork\SuperGlue.UnitOfWork.csproj">
       <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
       <Name>SuperGlue.UnitOfWork</Name>

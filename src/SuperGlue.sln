@@ -100,6 +100,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.FeatureToggler", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.FileUpload", "SuperGlue.Web.FileUpload\SuperGlue.Web.FileUpload.csproj", "{4C6A4C58-891B-41FD-B40B-3950B935EA71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.EventTracking", "SuperGlue.EventTracking\SuperGlue.EventTracking.csproj", "{DDC9A27C-73AB-48FD-91F0-46BC689BEF6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -242,6 +244,10 @@ Global
 		{4C6A4C58-891B-41FD-B40B-3950B935EA71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C6A4C58-891B-41FD-B40B-3950B935EA71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C6A4C58-891B-41FD-B40B-3950B935EA71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDC9A27C-73AB-48FD-91F0-46BC689BEF6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDC9A27C-73AB-48FD-91F0-46BC689BEF6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDC9A27C-73AB-48FD-91F0-46BC689BEF6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDC9A27C-73AB-48FD-91F0-46BC689BEF6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
