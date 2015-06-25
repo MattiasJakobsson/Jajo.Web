@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.Projections
 {
@@ -24,7 +25,7 @@ namespace SuperGlue.EventStore.Projections
             OnStarted();
         }
 
-        public void Apply(object evnt, int version, IDictionary<string, object> metaData)
+        public async Task Apply(object evnt, int version, IDictionary<string, object> metaData)
         {
             foreach (var type in GetTypesFrom(evnt))
             {
@@ -40,7 +41,7 @@ namespace SuperGlue.EventStore.Projections
 
                 if (!_instances.ContainsKey(id))
                 {
-                    var projectionInstance = Load(id);
+                    var projectionInstance = await Load(id);
 
                     _instances[id] = projectionInstance;
                 }
@@ -51,13 +52,13 @@ namespace SuperGlue.EventStore.Projections
             }
         }
 
-        public void Commit()
+        public async Task Commit()
         {
             foreach (var instance in _instances)
-                Commit(instance.Value);
+                await Commit(instance.Value);
 
             foreach (var instance in _markedForDeletion)
-                Delete(instance);
+                await Delete(instance);
 
             _instances.Clear();
             _markedForDeletion.Clear();
@@ -67,9 +68,9 @@ namespace SuperGlue.EventStore.Projections
             OnCommitted();
         }
 
-        protected abstract void Commit(TState instance);
-        protected abstract void Delete(TState instance);
-        protected abstract TState Load(string id);
+        protected abstract Task Commit(TState instance);
+        protected abstract Task Delete(TState instance);
+        protected abstract Task<TState> Load(string id);
         protected abstract IApplyStateChangesTo<TState> GetStateApplyer();
 
         protected virtual void OnStarted() { }

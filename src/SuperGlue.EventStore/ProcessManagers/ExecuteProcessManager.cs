@@ -35,7 +35,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                 {
                     try
                     {
-                        processManager.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
+                        await processManager.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
                         lastException = null;
                         break;
                     }
@@ -50,7 +50,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                     onError(lastException, evnt);
             }
 
-            processManager.Commit();
+            await processManager.Commit();
 
             await _next(environment);
         }

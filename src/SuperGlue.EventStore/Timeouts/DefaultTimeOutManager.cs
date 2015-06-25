@@ -22,14 +22,14 @@ namespace SuperGlue.EventStore.Timeouts
             _secondsToSleepBetweenPolls = 1;
         }
 
-        public void RequestTimeOut(string writeTo, Guid id, object message, DateTime time, IDictionary<string, object> metaData)
+        public async Task RequestTimeOut(string writeTo, Guid id, object message, DateTime time, IDictionary<string, object> metaData)
         {
             var timeOutManager = TimeOutManager.GetCurrent();
 
             if (timeOutManager == null)
                 throw new InvalidOperationException("There is no timeout manager");
 
-            timeOutManager.Add(new TimeoutData(writeTo, id, message, time, metaData));
+            await timeOutManager.Add(new TimeoutData(writeTo, id, message, time, metaData));
         }
 
         public void Start()
@@ -78,14 +78,13 @@ namespace SuperGlue.EventStore.Timeouts
                 if (timeOutManager == null)
                     return;
 
-                DateTime nextExpiredTimeout;
-                timeOutManager.GetNextChunk(startSlice, x =>
+                var nextExpiredTimeout = timeOutManager.GetNextChunk(startSlice, x =>
                 {
                     if (startSlice < x.Item2)
                         startSlice = x.Item2;
 
                     _eventStoreConnection.AppendToStreamAsync(x.Item1.WriteTo, ExpectedVersion.Any, ToEventData(x.Item1.Id, x.Item1.Message, x.Item1.MetaData));
-                }, out nextExpiredTimeout);
+                }).Result;
 
                 _nextRetrieval = nextExpiredTimeout;
 

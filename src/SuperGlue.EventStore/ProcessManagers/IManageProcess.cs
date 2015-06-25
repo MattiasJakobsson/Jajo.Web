@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.ProcessManagers
 {
@@ -8,7 +9,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         IEnumerable<string> GetStreamsToProcess();
         void Start();
-        void Apply(object evnt, int version, IDictionary<string, object> metaData);
-        void Commit();
+        Task Apply(object evnt, int version, IDictionary<string, object> metaData);
+        Task Commit();
     }
 }

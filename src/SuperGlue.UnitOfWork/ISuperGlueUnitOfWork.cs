@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace SuperGlue.UnitOfWork
 {
     public interface ISuperGlueUnitOfWork
     {
-        void Begin();
-        void Commit();
-        void Rollback(Exception exception = null);
+        Task Begin();
+        Task Commit();
+        Task Rollback(Exception exception = null);
     }
 }

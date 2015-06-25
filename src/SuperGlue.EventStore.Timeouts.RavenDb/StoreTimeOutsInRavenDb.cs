@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Raven.Abstractions.Data;
+using Raven.Abstractions.Extensions;
 using Raven.Client;
 using Raven.Client.Linq;
 
@@ -25,7 +27,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
             _cleanupGapFromTimeslice = TimeSpan.FromMinutes(1);
         }
 
-        public void GetNextChunk(DateTime startSlice, Action<Tuple<TimeoutData, DateTime>> timeoutFound, out DateTime nextTimeToRunQuery)
+        public async Task<DateTime> GetNextChunk(DateTime startSlice, Action<Tuple<TimeoutData, DateTime>> timeoutFound)
         {
             var now = DateTime.UtcNow;
 
@@ -41,15 +43,15 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                     results = new List<Tuple<TimeoutData, DateTime>>();
                 }
 
-                nextTimeToRunQuery = DateTime.UtcNow.AddMinutes(10);
+               var nextTimeToRunQuery = DateTime.UtcNow.AddMinutes(10);
 
                 var query = GetChunkQuery(session)
                     .Where(t => t.Time > startSlice);
 
-                QueryHeaderInformation qhi;
-                using (var enumerator = session.Advanced.Stream(query, out qhi))
+                var qhi = new Reference<QueryHeaderInformation>();
+                using (var enumerator = await session.Advanced.StreamAsync(query, qhi))
                 {
-                    while (enumerator.MoveNext())
+                    while (await enumerator.MoveNextAsync())
                     {
                         var dateTime = enumerator.Current.Document.Time;
                         nextTimeToRunQuery = dateTime;
@@ -60,7 +62,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                     }
                 }
 
-                if (qhi != null && qhi.IsStale && results.Count == 0)
+                if (qhi.Value != null && qhi.Value.IsStale && results.Count == 0)
                     nextTimeToRunQuery = now;
 
                 foreach (var result in results)
@@ -70,11 +72,13 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                     session.Delete(result);
                 }
 
-                session.SaveChanges();
+                await session.SaveChangesAsync();
+
+                return nextTimeToRunQuery;
             }
         }
 
-        private IRavenQueryable<RavenTimeOutData> GetChunkQuery(IDocumentSession session)
+        private IQueryable<RavenTimeOutData> GetChunkQuery(IAsyncDocumentSession session)
         {
             return session.Query<RavenTimeOutData, RavenTimeOutDataIndex>()
                 .OrderBy(t => t.Time)
@@ -84,7 +88,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                         t.OwningTimeOutManager == _timeoutManagerName);
         }
 
-        private IEnumerable<Tuple<TimeoutData, DateTime>> GetCleanupChunk(DateTime startSlice, IDocumentSession session)
+        private IEnumerable<Tuple<TimeoutData, DateTime>> GetCleanupChunk(DateTime startSlice, IAsyncDocumentSession session)
         {
             var chunk = GetChunkQuery(session)
                 .Where(t => t.Time <= startSlice.Subtract(_cleanupGapFromTimeslice))
@@ -97,20 +101,20 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
             return chunk;
         }
 
-        private IDocumentSession GetSession()
+        private IAsyncDocumentSession GetSession()
         {
             return string.IsNullOrEmpty(_timeoutDataBase)
-                ? _documentStore.OpenSession()
-                : _documentStore.OpenSession(_timeoutDataBase);
+                ? _documentStore.OpenAsyncSession()
+                : _documentStore.OpenAsyncSession(_timeoutDataBase);
         }
 
-        public void Add(TimeoutData timeout)
+        public async Task Add(TimeoutData timeout)
         {
             var session = GetSession();
 
             using (session)
             {
-                session.Store(new RavenTimeOutData
+                await session.StoreAsync(new RavenTimeOutData
                 {
                     Id = RavenTimeOutData.BuildId(timeout.Id),
                     CommitId = timeout.Id,
@@ -121,7 +125,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                     WriteTo = timeout.WriteTo
                 });
 
-                session.SaveChanges();
+                await session.SaveChangesAsync();
             }
         }
     }

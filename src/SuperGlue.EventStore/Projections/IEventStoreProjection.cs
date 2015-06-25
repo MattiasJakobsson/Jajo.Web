@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.Projections
 {
@@ -7,7 +8,7 @@ namespace SuperGlue.EventStore.Projections
         string ProjectionName { get; }
         IEnumerable<string> GetInterestingStreams();
         void Start();
-        void Apply(object evnt, int version, IDictionary<string, object> metaData);
-        void Commit();
+        Task Apply(object evnt, int version, IDictionary<string, object> metaData);
+        Task Commit();
     }
 }

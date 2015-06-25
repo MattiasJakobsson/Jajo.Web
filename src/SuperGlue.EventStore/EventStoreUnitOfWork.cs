@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using SuperGlue.EventStore.Data;
 using SuperGlue.EventTracking;
 using SuperGlue.UnitOfWork;
@@ -20,27 +21,28 @@ namespace SuperGlue.EventStore
             _environment = environment;
         }
 
-        public void Begin()
+        public Task Begin()
         {
-            
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Commit()
+        public async Task Commit()
         {
             while (_trackEntitiesWithEvents.Count > 0)
             {
                 var entity = _trackEntitiesWithEvents.Pop();
                 var changes = entity.Entity.GetAppliedEvents().ToList();
 
-                _repository.SaveToStream(string.Format("entity-{0}-{1}", entity.GetType().Name, entity.Entity.Id.Replace("/", "-")), changes, Guid.NewGuid(), entity.Entity.Context, new ActionMetaData(_environment, entity.AssociatedCommand, entity.CommandMetaData));
+                await _repository.SaveToStream(string.Format("entity-{0}-{1}", entity.GetType().Name, entity.Entity.Id.Replace("/", "-")), changes, Guid.NewGuid(), entity.Entity.Context, new ActionMetaData(_environment, entity.AssociatedCommand, entity.CommandMetaData));
             }
 
-            _repository.SaveChanges();
+            await _repository.SaveChanges();
         }
 
-        public void Rollback(Exception exception = null)
+        public Task Rollback(Exception exception = null)
         {
             //TODO:Implement
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

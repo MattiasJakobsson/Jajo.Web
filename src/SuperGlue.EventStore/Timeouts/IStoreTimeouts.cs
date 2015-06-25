@@ -1,10 +1,11 @@
 using System;
+using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.Timeouts
 {
     public interface IStoreTimeouts
     {
-        void GetNextChunk(DateTime startSlice, Action<Tuple<TimeoutData, DateTime>> timeoutFound, out DateTime nextTimeToRunQuery);
-        void Add(TimeoutData timeout);
+        Task<DateTime> GetNextChunk(DateTime startSlice, Action<Tuple<TimeoutData, DateTime>> timeoutFound);
+        Task Add(TimeoutData timeout);
     }
 }

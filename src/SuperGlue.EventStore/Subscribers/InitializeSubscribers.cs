@@ -125,7 +125,7 @@ namespace SuperGlue.EventStore.Subscribers
                 var messageSubscription = Observable
                             .FromEvent<DeSerializationResult>(x => messageProcessor.MessageArrived += x, x => messageProcessor.MessageArrived -= x)
                             .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
-                            .Subscribe(x => PushEventsToService(chain, name, stream, x, !liveOnlySubscriptions, environment));
+                            .Subscribe(async x => await PushEventsToService(chain, name, stream, x, !liveOnlySubscriptions, environment));
 
                 if (liveOnlySubscriptions)
                 {
@@ -160,7 +160,7 @@ namespace SuperGlue.EventStore.Subscribers
             SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
         }
 
-        private void PushEventsToService(AppFunc chain, string name, string stream, IEnumerable<DeSerializationResult> events, bool catchup, IDictionary<string, object> environment)
+        private async Task PushEventsToService(AppFunc chain, string name, string stream, IEnumerable<DeSerializationResult> events, bool catchup, IDictionary<string, object> environment)
         {
             var eventsList = events.ToList();
 
@@ -176,7 +176,7 @@ namespace SuperGlue.EventStore.Subscribers
             {
                 try
                 {
-                    PushEvents(chain, name, stream, groupedEvent.Select(x => x), groupedEvent.Key, catchup, environment);
+                    await PushEvents(chain, name, stream, groupedEvent.Select(x => x), groupedEvent.Key, catchup, environment);
                 }
                 catch (Exception ex)
                 {
@@ -185,7 +185,7 @@ namespace SuperGlue.EventStore.Subscribers
             }
         }
 
-        private void PushEvents(AppFunc chain, string service, string stream, IEnumerable<DeSerializationResult> events, string partitionKey, bool catchup, IDictionary<string, object> environment)
+        private async Task PushEvents(AppFunc chain, string service, string stream, IEnumerable<DeSerializationResult> events, string partitionKey, bool catchup, IDictionary<string, object> environment)
         {
             var requestEnvironment = new Dictionary<string, object>();
             foreach (var item in environment)
@@ -198,9 +198,9 @@ namespace SuperGlue.EventStore.Subscribers
             request.Events = events;
             request.PartitionKey = partitionKey;
             request.IsCatchUp = catchup;
-            request.OnException = (Action<Exception, DeSerializationResult>)((exception, evnt) => OnServiceError(service, stream, evnt.Data, evnt.Metadata, exception));
+            request.OnException = (exception, evnt) => OnServiceError(service, stream, evnt.Data, evnt.Metadata, exception);
 
-            chain(requestEnvironment);
+            await chain(requestEnvironment);
         }
     }
 }

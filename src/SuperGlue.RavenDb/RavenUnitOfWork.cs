@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using SuperGlue.UnitOfWork;
 
 namespace SuperGlue.RavenDb
@@ -12,19 +13,19 @@ namespace SuperGlue.RavenDb
             _ravenSessions = ravenSessions;
         }
 
-        public void Begin()
+        public Task Begin()
         {
-
+            return Task.Factory.StartNew(() => { });
         }
 
-        public void Commit()
+        public async Task Commit()
         {
-            _ravenSessions.SaveChanges();
+            await _ravenSessions.SaveChanges();
         }
 
-        public void Rollback(Exception exception)
+        public Task Rollback(Exception exception)
         {
-
+            return Task.Factory.StartNew(() => { });
         }
     }
 }

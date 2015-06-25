@@ -33,7 +33,7 @@ namespace SuperGlue.EventStore.Projections
                 {
                     try
                     {
-                        projection.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
+                        await projection.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
                         break;
                     }
                     catch (Exception exception)
@@ -46,6 +46,8 @@ namespace SuperGlue.EventStore.Projections
                 if (lastException != null)
                     onError(lastException, evnt);
             }
+
+            await projection.Commit();
 
             await _next(environment);
         }

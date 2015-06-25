@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.Subscribers
 {
     public interface ISubscribeTo<in TEvent>
     {
-        void Handle(TEvent evnt, IDictionary<string, object> metaData);
+        Task Handle(TEvent evnt, IDictionary<string, object> metaData);
     }
 }
