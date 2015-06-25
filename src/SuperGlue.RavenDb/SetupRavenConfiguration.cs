@@ -20,6 +20,7 @@ namespace SuperGlue.RavenDb
 
                 environment.RegisterSingleton(typeof(IDocumentStore), documentStore);
                 environment.RegisterTransient(typeof(IRavenSearch), typeof(DefaultRavenSearch));
+                environment.RegisterTransient(typeof(IRavenSessions), typeof(DefaultRavenSessions));
 
                 environment.RegisterAllClosing(typeof(IRavenSearchPart<>));
                 environment.RegisterAllClosing(typeof(IRavenSpecialCommandSearch<>));

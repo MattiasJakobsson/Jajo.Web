@@ -9,10 +9,17 @@ namespace SuperGlue.RavenDb
         private readonly ConcurrentDictionary<string, IDocumentSession> _openedSessions = new ConcurrentDictionary<string, IDocumentSession>();
 
         private readonly IDocumentStore _documentStore;
+        private readonly IDictionary<string, object> _environment;
 
-        public DefaultRavenSessions(IDocumentStore documentStore)
+        public DefaultRavenSessions(IDocumentStore documentStore, IDictionary<string, object> environment)
         {
             _documentStore = documentStore;
+            _environment = environment;
+        }
+
+        public IDictionary<string, object> Environment
+        {
+            get { return _environment; }
         }
 
         public virtual IDocumentSession GetFor(string database, object associatedCommand = null, IDictionary<string, object> commandMetaData = null)
