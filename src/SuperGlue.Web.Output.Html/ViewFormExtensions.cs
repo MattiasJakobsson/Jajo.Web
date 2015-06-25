@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using HtmlTags;
+using HtmlTags.Conventions;
 
 namespace SuperGlue.Web.Output.Html
 {
@@ -31,9 +32,16 @@ namespace SuperGlue.Web.Output.Html
             if (stringInput != null)
                 return FormFor(view, stringInput);
 
-            var url = view.Environment.RouteTo(input);
+            var request = ElementRequest.For(input, x => x);
+            request.Attach(x => view.Environment.Resolve(x));
 
-            return FormFor(view, url);
+            return view
+                .Environment
+                .GetHtmlConventionSettings()
+                .ConventionLibrary
+                .TagLibrary
+                .PlanFor(request, category: "Form")
+                .Build(request);
         }
 
         public static IHtmlString EndForm(this ISuperGlueView view)

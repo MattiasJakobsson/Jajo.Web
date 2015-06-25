@@ -27,6 +27,8 @@ namespace SuperGlue.Web.Output.Html
                     x.Displays.Always.BuildBy<SpanDisplayBuilder>();
 
                     x.Labels.Always.BuildBy<DefaultLabelBuilder>();
+
+                    x.Forms.Always.BuildBy<FormBuilder>();
                 });
             }, "superglue.ContainerSetup");
         }

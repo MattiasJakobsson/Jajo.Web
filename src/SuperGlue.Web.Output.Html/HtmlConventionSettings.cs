@@ -38,6 +38,11 @@ namespace SuperGlue.Web.Output.Html
             get { return _profileExpression.Editors; }
         }
 
+        public ElementCategoryExpression Forms
+        {
+            get { return new ElementCategoryExpression(_library.TagLibrary.Category("Form").Profile(TagConstants.Default)); }
+        }
+
         internal HtmlConventionLibrary ConventionLibrary { get { return _library; } }
 
         internal object ElementGeneratorFor(Type model)
