@@ -52,6 +52,7 @@
     <Compile Include="EnsureFeaturesAreEnabled.cs" />
     <Compile Include="FeatureEnvironmentExtensions.cs" />
     <Compile Include="FeatureSettings.cs" />
+    <Compile Include="IBelongToFeature.cs" />
     <Compile Include="ICheckIfFeatureIsEnabled.cs" />
     <Compile Include="IFeature.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

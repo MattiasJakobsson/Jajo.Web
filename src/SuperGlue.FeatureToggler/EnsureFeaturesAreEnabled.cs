@@ -28,7 +28,15 @@ namespace SuperGlue.FeatureToggler
         {
             var featuresChecker = environment.Resolve<ICheckIfFeatureIsEnabled>();
 
-            foreach (var feature in _settings.GetFeaturesFromRequest(environment).Where(x => x != null))
+            //TODO:Use static caching so we don't have to use reflection every time
+            var featureTypes = _settings
+                .GetInputsToCheck(environment)
+                .SelectMany(x => x.GetInterfaces())
+                .Where(x => x.GenericTypeArguments.Length == 1 && typeof(IFeature).IsAssignableFrom(x.GenericTypeArguments[0]) && typeof(IBelongToFeature<>).MakeGenericType(x.GenericTypeArguments[0]) == x)
+                .Select(x => x.GenericTypeArguments[0])
+                .ToList();
+
+            foreach (var feature in featureTypes)
             {
                 var currentFeatureType = feature;
 
@@ -50,11 +58,11 @@ namespace SuperGlue.FeatureToggler
 
     public class EnsureFeaturesAreEnabledSettings
     {
-        public EnsureFeaturesAreEnabledSettings(Func<IDictionary<string, object>, IEnumerable<Type>> getFeaturesFromRequest)
+        public EnsureFeaturesAreEnabledSettings(Func<IDictionary<string, object>, IEnumerable<Type>> getInputsToCheck)
         {
-            GetFeaturesFromRequest = getFeaturesFromRequest;
+            GetInputsToCheck = getInputsToCheck;
         }
 
-        public Func<IDictionary<string, object>, IEnumerable<Type>> GetFeaturesFromRequest { get; private set; }
+        public Func<IDictionary<string, object>, IEnumerable<Type>> GetInputsToCheck { get; private set; }
     }
 }
