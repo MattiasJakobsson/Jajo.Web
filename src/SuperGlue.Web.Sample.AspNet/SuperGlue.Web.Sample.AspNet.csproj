@@ -106,6 +106,10 @@
       <Project>{4bd82df3-3b6b-4e1e-b5ad-1340d20cea11}</Project>
       <Name>SuperGlue.Diagnostics</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.FeatureToggler\SuperGlue.FeatureToggler.csproj">
+      <Project>{fc6063a7-9ae8-4916-9c87-dbd0f926f34e}</Project>
+      <Name>SuperGlue.FeatureToggler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Hosting.SystemWeb\SuperGlue.Hosting.SystemWeb.csproj">
       <Project>{1df1cfdf-4e47-46bd-8b71-9438831002df}</Project>
       <Name>SuperGlue.Hosting.SystemWeb</Name>

@@ -1,6 +1,7 @@
 using SuperGlue.Configuration;
 using SuperGlue.Diagnostics;
 using SuperGlue.ExceptionManagement;
+using SuperGlue.FeatureToggler;
 using SuperGlue.RequestBranching;
 using SuperGlue.Security.Authorization;
 using SuperGlue.StructureMap;
@@ -23,6 +24,7 @@ namespace SuperGlue.Web.Sample
             {
                 app
                     .Use<RouteUsingSuperscribe>()
+                    .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(x => x.GetRouteInformation().InputTypes))
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ExecuteEndpoint>()
                     .Use<RenderOutput>();
@@ -32,8 +34,7 @@ namespace SuperGlue.Web.Sample
             {
                 app.Use<NestedStructureMapContainer>()
                     .Use<Diagnose>(new DiagnoseOptions("Urls", x => x.GetRequest().Uri.ToString()))
-                    .If(x => x.GetRequest().Uri.ToString() != x.GetRequest().Uri.ToString().ToLower(), 
-                        x => x.Use<RedirectTo>(new RedirectToOptions(y => y.GetRequest().Uri.ToString().ToLower())))
+                    .If(x => x.GetRequest().Uri.ToString() != x.GetRequest().Uri.ToString().ToLower(), x => x.Use<RedirectTo>(new RedirectToOptions(y => y.GetRequest().Uri.ToString().ToLower())))
                     .Use<BranchRequest>(new BranchRequestConfiguration()
                         .AddCase(y => y.GetException() != null, app
                             .New()
@@ -50,7 +51,7 @@ namespace SuperGlue.Web.Sample
                             .New()
                             .Use<HandleValidationErrorMiddleware>()
                             .Build())
-                        .AddCase(y => y.GetRouteInformation().RoutedTo == null, app
+                        .AddCase(y => y.GetRouteInformation().RoutedTo == null || y.HasFeatureValidationFailed(), app
                             .New()
                             .Use<SetStatusCode>(404)
                             .Use<HandleNotFoundMiddleware>()
@@ -59,6 +60,7 @@ namespace SuperGlue.Web.Sample
                     .Use<BindModels>()
                     .Use<RouteUsingSuperscribe>()
                     .Use<HandleUnitOfWork>()
+                    .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(x => x.GetRouteInformation().InputTypes))
                     .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
                     .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))
                     .Use<ExecuteEndpoint>()
