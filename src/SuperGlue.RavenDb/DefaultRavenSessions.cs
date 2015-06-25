@@ -1,12 +1,13 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Raven.Client;
 
 namespace SuperGlue.RavenDb
 {
     public class DefaultRavenSessions : IRavenSessions
     {
-        private readonly ConcurrentDictionary<string, IDocumentSession> _openedSessions = new ConcurrentDictionary<string, IDocumentSession>();
+        private readonly ConcurrentDictionary<string, IAsyncDocumentSession> _openedSessions = new ConcurrentDictionary<string, IAsyncDocumentSession>();
 
         private readonly IDocumentStore _documentStore;
         private readonly IDictionary<string, object> _environment;
@@ -22,23 +23,23 @@ namespace SuperGlue.RavenDb
             get { return _environment; }
         }
 
-        public virtual IDocumentSession GetFor(string database, object associatedCommand = null, IDictionary<string, object> commandMetaData = null)
+        public virtual IAsyncDocumentSession GetFor(string database, object associatedCommand = null, IDictionary<string, object> commandMetaData = null)
         {
-            IDocumentSession session;
+            IAsyncDocumentSession session;
 
             if (_openedSessions.TryGetValue(database, out session))
                 return session;
-
-            session = _documentStore.OpenSession(database);
+            
+            session = _documentStore.OpenAsyncSession(database);
             _openedSessions[database] = session;
 
             return session;
         }
 
-        public virtual void SaveChanges()
+        public virtual async Task SaveChanges()
         {
             foreach (var session in _openedSessions)
-                session.Value.SaveChanges();
+                await session.Value.SaveChangesAsync();
 
             _openedSessions.Clear();
         }
