@@ -1,8 +1,10 @@
-﻿namespace SuperGlue.EventStore.Projections
+﻿using System.Threading.Tasks;
+
+namespace SuperGlue.EventStore.Projections
 {
     public interface IManageEventNumbersForProjections
     {
-        int? GetLastEvent(string projection);
-        void UpdateLastEvent(string projection, int lastEvent);
+        Task<int?> GetLastEvent(string projection);
+        Task UpdateLastEvent(string projection, int lastEvent);
     }
 }

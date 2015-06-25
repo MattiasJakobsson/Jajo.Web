@@ -50,15 +50,12 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public string Chain { get { return "chains.ProcessManagers"; } }
 
-        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                running = true;
+            running = true;
 
-                foreach (var processManager in _processManagers)
-                    SubscribeProcessManager(chain, processManager, settings);
-            });
+            foreach (var processManager in _processManagers)
+                await SubscribeProcessManager(chain, processManager, settings);
         }
 
         public Task ShutDown()
@@ -84,7 +81,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             _writeToErrorStream.Write(new ProcessManagerFailed(processManager.ProcessName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
         }
 
-        private void SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)
+        private async Task SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)
         {
             if (!running)
                 return;
@@ -107,7 +104,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                             .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
                             .Subscribe(x => PushEventsToProcessManager(chain, currentProcessManager, x, environment));
 
-                        var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentProcessManager.ProcessName, eventNumberManager.GetLastEvent(currentProcessManager.ProcessName), true,
+                        var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentProcessManager.ProcessName, await eventNumberManager.GetLastEvent(currentProcessManager.ProcessName), true,
                             (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
                             subscriptionDropped: (subscription, reason, exception) => SubscriptionDropped(chain, currentProcessManager, reason, exception, environment));
 

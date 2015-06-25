@@ -29,7 +29,7 @@ namespace SuperGlue.EventStore.Projections
             {
                 var lastEvent = events.Select(x => x.OriginalEventNumber).OrderByDescending(x => x).First();
 
-                eventNumbersForProjections.UpdateLastEvent(projection.ProjectionName, lastEvent);
+                await eventNumbersForProjections.UpdateLastEvent(projection.ProjectionName, lastEvent);
             }
 
             await _next(environment);

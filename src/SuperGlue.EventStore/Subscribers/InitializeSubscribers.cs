@@ -47,18 +47,15 @@ namespace SuperGlue.EventStore.Subscribers
 
         public string Chain { get { return "chains.Subscribers"; } }
 
-        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                running = true;
+            running = true;
 
-                var streams = ConfigurationManager.AppSettings["EventStore.Streams"].Split(';').ToList();
-                var name = ConfigurationManager.AppSettings["Service.Name"];
+            var streams = ConfigurationManager.AppSettings["EventStore.Streams"].Split(';').ToList();
+            var name = ConfigurationManager.AppSettings["Service.Name"];
 
-                foreach (var stream in streams)
-                    SubscribeService(chain, name, stream, settings);
-            });
+            foreach (var stream in streams)
+                await SubscribeService(chain, name, stream, settings);
         }
 
         public Task ShutDown()
@@ -84,7 +81,7 @@ namespace SuperGlue.EventStore.Subscribers
             _writeToErrorStream.Write(new ServiceEventProcessingFailed(service, stream, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
         }
 
-        private void SubscribeService(AppFunc chain, string name, string stream, IDictionary<string, object> environment)
+        private async Task SubscribeService(AppFunc chain, string name, string stream, IDictionary<string, object> environment)
         {
             var liveOnlySubscriptions = ConfigurationManager.AppSettings["Service.Subscription.LiveOnly"] == "true";
             if (!running)
@@ -94,7 +91,7 @@ namespace SuperGlue.EventStore.Subscribers
             {
                 try
                 {
-                    SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
+                    await SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
                     //TODO:Log
 
                     return;
@@ -110,7 +107,7 @@ namespace SuperGlue.EventStore.Subscribers
             }
         }
 
-        private void SubscribeService(AppFunc chain, string name, string stream, bool liveOnlySubscriptions, IDictionary<string, object> environment)
+        private async Task SubscribeService(AppFunc chain, string name, string stream, bool liveOnlySubscriptions, IDictionary<string, object> environment)
         {
             var subscriptionKey = string.Format("{0}-{1}", name, stream);
 
@@ -120,34 +117,34 @@ namespace SuperGlue.EventStore.Subscribers
                 _serviceSubscriptions.Remove(subscriptionKey);
             }
 
-                var messageProcessor = new MessageProcessor();
+            var messageProcessor = new MessageProcessor();
 
-                var messageSubscription = Observable
-                            .FromEvent<DeSerializationResult>(x => messageProcessor.MessageArrived += x, x => messageProcessor.MessageArrived -= x)
-                            .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
-                            .Subscribe(async x => await PushEventsToService(chain, name, stream, x, !liveOnlySubscriptions, environment));
+            var messageSubscription = Observable
+                        .FromEvent<DeSerializationResult>(x => messageProcessor.MessageArrived += x, x => messageProcessor.MessageArrived -= x)
+                        .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
+                        .Subscribe(async x => await PushEventsToService(chain, name, stream, x, !liveOnlySubscriptions, environment));
 
-                if (liveOnlySubscriptions)
-                {
-                    var eventstoreSubscription = _eventStoreConnection.SubscribeToStreamAsync(stream, true,
-                        (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
-                        (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, true, reason, exception, environment)).Result;
+            if (liveOnlySubscriptions)
+            {
+                var eventstoreSubscription = _eventStoreConnection.SubscribeToStreamAsync(stream, true,
+                    (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
+                    (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, true, reason, exception, environment)).Result;
 
-                    _serviceSubscriptions[subscriptionKey] = new LiveOnlyServiceSubscription(messageSubscription, eventstoreSubscription);
-                }
-                else
-                {
-                    var manageStreamEventNumbers = environment.Resolve<IManageEventNumbersForSubscriber>();
+                _serviceSubscriptions[subscriptionKey] = new LiveOnlyServiceSubscription(messageSubscription, eventstoreSubscription);
+            }
+            else
+            {
+                var manageStreamEventNumbers = environment.Resolve<IManageEventNumbersForSubscriber>();
 
-                    var lastEvent = manageStreamEventNumbers.GetLastEvent(name, stream);
+                var lastEvent = await manageStreamEventNumbers.GetLastEvent(name, stream);
 
-                    var eventstoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(stream, lastEvent, true,
-                        (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
-                        subscriptionDropped:
-                            (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, false, reason, exception, environment));
+                var eventstoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(stream, lastEvent, true,
+                    (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
+                    subscriptionDropped:
+                        (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, false, reason, exception, environment));
 
-                    _serviceSubscriptions[subscriptionKey] = new CatchUpServiceSubscription(messageSubscription, eventstoreSubscription);
-                }
+                _serviceSubscriptions[subscriptionKey] = new CatchUpServiceSubscription(messageSubscription, eventstoreSubscription);
+            }
         }
 
         private void SubscriptionDropped(AppFunc chain, string name, string stream, bool liveOnlySubscriptions, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)

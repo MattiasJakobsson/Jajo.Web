@@ -30,7 +30,7 @@ namespace SuperGlue.EventStore.Subscribers
             {
                 var lastEvent = events.Select(x => x.OriginalEventNumber).OrderByDescending(x => x).First();
 
-                manageStreamEventNumbers.UpdateLastEvent(subscriber, stream, lastEvent);
+                await manageStreamEventNumbers.UpdateLastEvent(subscriber, stream, lastEvent);
             }
 
             await _next(environment);

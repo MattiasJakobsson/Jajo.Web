@@ -1,8 +1,10 @@
-﻿namespace SuperGlue.EventStore.ProcessManagers
+﻿using System.Threading.Tasks;
+
+namespace SuperGlue.EventStore.ProcessManagers
 {
     public interface IManageProcessManagerStreamEventNumbers
     {
-        int? GetLastEvent(string processManager);
-        void UpdateLastEvent(string processManager, int lastEvent);
+        Task<int?> GetLastEvent(string processManager);
+        Task UpdateLastEvent(string processManager, int lastEvent);
     }
 }

@@ -1,0 +1,13 @@
+﻿type file
+id SuperGlue.EventStore.StreamManagers.RavenDb
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.EventStore.StreamManagers.RavenDb.dll ==> lib
+dependencies
+	SuperGlue.EventStore
+	SuperGlue.RavenDb
+	SuperGlue.Configuration
+	RavenDB.Client

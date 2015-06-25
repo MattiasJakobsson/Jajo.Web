@@ -50,15 +50,12 @@ namespace SuperGlue.EventStore.Projections
 
         public string Chain { get { return "chains.Projections"; } }
 
-        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                running = true;
+            running = true;
 
-                foreach (var projection in _projections)
-                    SubscribeProjection(projection, chain, settings);
-            });
+            foreach (var projection in _projections)
+                await SubscribeProjection(projection, chain, settings);
         }
 
         public Task ShutDown()
@@ -84,7 +81,7 @@ namespace SuperGlue.EventStore.Projections
             _writeToErrorStream.Write(new ProjectionFailed(projection.ProjectionName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
         }
 
-        private void SubscribeProjection(IEventStoreProjection currentEventStoreProjection, AppFunc chain, IDictionary<string, object> environment)
+        private async Task SubscribeProjection(IEventStoreProjection currentEventStoreProjection, AppFunc chain, IDictionary<string, object> environment)
         {
             if (!running)
                 return;
@@ -104,7 +101,7 @@ namespace SuperGlue.EventStore.Projections
                         .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
                         .Subscribe(async x => await PushEventsToProjections(chain, currentEventStoreProjection, x, environment));
 
-                    var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentEventStoreProjection.ProjectionName, eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName), true,
+                    var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentEventStoreProjection.ProjectionName, await eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName), true,
                         (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
                         subscriptionDropped: (subscription, reason, exception) => SubscriptionDropped(chain, currentEventStoreProjection, reason, exception, environment));
 
