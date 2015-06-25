@@ -15,7 +15,7 @@ namespace SuperGlue.Caching.Redis
                 environment.RegisterTransient(typeof(ICache), typeof(RedisCacheProvider));
                 environment.RegisterTransient(typeof(IRedisDataSerializer), typeof(DefaultRedisDataSerializer));
                 //HACK:Hard coded connectionstring name
-                environment.RegisterSingleton(typeof(ConnectionMultiplexer), x => ConnectionMultiplexer.Connect(ConfigurationManager.ConnectionStrings["Redis.Cache"].ConnectionString));
+                environment.RegisterSingleton(typeof(ConnectionMultiplexer), (x, y) => ConnectionMultiplexer.Connect(ConfigurationManager.ConnectionStrings["Redis.Cache"].ConnectionString));
             }, "superglue.CacheSetup");
         }
 

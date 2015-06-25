@@ -44,9 +44,9 @@ namespace SuperGlue
             environment.Get<Action<Type, Type>>(ContainerConstants.RegisterTransient)(serviceType, implimentationType);
         }
 
-        public static void RegisterTransient(this IDictionary<string, object> environment, Type serviceType, Func<IDictionary<string, object>, object> getService)
+        public static void RegisterTransient(this IDictionary<string, object> environment, Type serviceType, Func<Type, IDictionary<string, object>, object> getService)
         {
-            environment.Get<Action<Type, Func<IDictionary<string, object>, object>>>(ContainerConstants.RegisterTransientFromFunc)(serviceType, getService);
+            environment.Get<Action<Type, Func<Type, IDictionary<string, object>, object>>>(ContainerConstants.RegisterTransientFromFunc)(serviceType, getService);
         }
 
         public static void RegisterSingleton(this IDictionary<string, object> environment, Type serviceType, object instance)
@@ -54,9 +54,9 @@ namespace SuperGlue
             environment.Get<Action<Type, object>>(ContainerConstants.RegisterSingleton)(serviceType, instance);
         }
 
-        public static void RegisterSingleton(this IDictionary<string, object> environment, Type serviceType, Func<IDictionary<string, object>, object> getService)
+        public static void RegisterSingleton(this IDictionary<string, object> environment, Type serviceType, Func<Type, IDictionary<string, object>, object> getService)
         {
-            environment.Get<Action<Type, Func<IDictionary<string, object>, object>>>(ContainerConstants.RegisterSingletonFromFunc)(serviceType, getService);
+            environment.Get<Action<Type, Func<Type, IDictionary<string, object>, object>>>(ContainerConstants.RegisterSingletonFromFunc)(serviceType, getService);
         }
 
         public static void RegisterSingletonType(this IDictionary<string, object> environment, Type serviceType, Type implimentationType)

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using HtmlTags.Conventions;
 using HtmlTags.Conventions.Elements;
 using SuperGlue.Configuration;
 
@@ -12,9 +12,7 @@ namespace SuperGlue.Web.Output.Html
         {
             yield return new ConfigurationSetupResult("superglue.HtmlSetup", environment =>
             {
-                environment.RegisterTransient(typeof(ITagGenerator), x => new TagGenerator(x.Resolve<ITagLibrary>(), new ActiveProfile(), x.Resolve));
-                environment.RegisterTransient(typeof(ITagLibrary), typeof(TagLibrary));
-                environment.RegisterTransient(typeof(IElementGenerator<>), typeof(ElementGenerator<>));
+                environment.RegisterTransient(typeof(IElementGenerator<>), (x, y) => y.GetHtmlConventionSettings().ElementGeneratorFor(x.GenericTypeArguments.First()));
                 environment.RegisterTransient(typeof(IElementNamingConvention), typeof(DefaultElementNamingConvention));
             }, "superglue.ContainerSetup");
         }
@@ -26,7 +24,10 @@ namespace SuperGlue.Web.Output.Html
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.Factory.StartNew(() =>
+            {
+                configuration.Settings[HtmlEnvironmentExtensions.HtmlConstants.HtmlConventionsSettings] = configuration.WithSettings<HtmlConventionSettings>();
+            });
         }
     }
 }

@@ -52,6 +52,8 @@
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>
+    <Compile Include="HtmlConventionSettings.cs" />
+    <Compile Include="HtmlEnvironmentExtensions.cs" />
     <Compile Include="SetupHtmlConfiguration.cs" />
     <Compile Include="ViewFormExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
