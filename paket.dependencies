@@ -1,5 +1,6 @@
 source https://nuget.org/api/v2
 
+nuget BCrypt.Net
 nuget EventStore.Client
 nuget FluentCommandLineParser
 nuget FubuCsProjFile
