@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.Projections
 {
-    public abstract class EventStoreProjection<TState> : IEventStoreProjection where TState : class, IProjectionState
+    public abstract class EventStoreProjection<TState> : IEventStoreProjection where TState : class
     {
         private readonly IDictionary<string, TState> _instances = new Dictionary<string, TState>();
         private readonly ICollection<TState> _markedForDeletion = new Collection<TState>();
@@ -47,8 +47,6 @@ namespace SuperGlue.EventStore.Projections
                 }
 
                 handlerMapping.Item1(evnt, new EventContext<TState>(_instances[id], MarkForDeletion, metaData));
-
-                _instances[id].SetVersion(version);
             }
         }
 

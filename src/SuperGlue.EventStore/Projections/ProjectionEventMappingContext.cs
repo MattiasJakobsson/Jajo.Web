@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SuperGlue.EventStore.Projections
 {
-    public class ProjectionEventMappingContext<TState> where TState : IProjectionState
+    public class ProjectionEventMappingContext<TState>
     {
         private readonly IDictionary<Type, Tuple<Action<object, EventContext<TState>>, Func<object, string>>> _eventHandlerMappings;
 

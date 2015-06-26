@@ -103,7 +103,7 @@ namespace SuperGlue.EventStore.Projections
 
                     var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentEventStoreProjection.ProjectionName, await eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName), true,
                         (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
-                        subscriptionDropped: (subscription, reason, exception) => SubscriptionDropped(chain, currentEventStoreProjection, reason, exception, environment));
+                        subscriptionDropped: async (subscription, reason, exception) => await SubscriptionDropped(chain, currentEventStoreProjection, reason, exception, environment));
 
                     _projectionSubscriptions[currentEventStoreProjection.ProjectionName] = new ProjectionSubscription(messageSubscription, eventStoreSubscription);
 
@@ -121,14 +121,14 @@ namespace SuperGlue.EventStore.Projections
             }
         }
 
-        private void SubscriptionDropped(AppFunc chain, IEventStoreProjection projection, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)
+        private async Task SubscriptionDropped(AppFunc chain, IEventStoreProjection projection, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)
         {
             if (!running)
                 return;
 
             //TODO:Log
 
-            SubscribeProjection(projection, chain, environment);
+            await SubscribeProjection(projection, chain, environment);
         }
 
         private async Task PushEventsToProjections(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, IDictionary<string, object> environment)

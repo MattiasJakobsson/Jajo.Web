@@ -97,7 +97,6 @@
     <Compile Include="Projections\EventContext.cs" />
     <Compile Include="Projections\IEventStoreProjection.cs" />
     <Compile Include="Projections\InitializeProjections.cs" />
-    <Compile Include="Projections\IProjectionState.cs" />
     <Compile Include="Projections\ProjectionEventMappingContext.cs" />
     <Compile Include="Projections\ProjectionSubscription.cs" />
     <Compile Include="Projections\SetLastEvent.cs" />

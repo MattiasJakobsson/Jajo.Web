@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SuperGlue.EventStore.Projections
 {
-    public class EventContext<TState> where TState : IProjectionState
+    public class EventContext<TState>
     {
         private readonly Action<TState> _markForDeletion;
 
