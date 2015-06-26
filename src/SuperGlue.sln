@@ -118,6 +118,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SuperGlue.EventStoreService
 		SuperGlue.EventStoreService\paket.template = SuperGlue.EventStoreService\paket.template
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.MetaData", "SuperGlue.MetaData\SuperGlue.MetaData.csproj", "{8F59591F-320E-468F-AF32-4E47A5AAA432}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -276,6 +278,10 @@ Global
 		{7C6DB401-0523-439E-B0A5-766BA4522C72}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C6DB401-0523-439E-B0A5-766BA4522C72}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C6DB401-0523-439E-B0A5-766BA4522C72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F59591F-320E-468F-AF32-4E47A5AAA432}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F59591F-320E-468F-AF32-4E47A5AAA432}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F59591F-320E-468F-AF32-4E47A5AAA432}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F59591F-320E-468F-AF32-4E47A5AAA432}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

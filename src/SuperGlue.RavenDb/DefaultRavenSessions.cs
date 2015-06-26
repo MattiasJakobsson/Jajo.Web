@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Raven.Client;
 using SuperGlue.EventTracking;
+using SuperGlue.MetaData;
 
 namespace SuperGlue.RavenDb
 {
@@ -27,27 +28,27 @@ namespace SuperGlue.RavenDb
             get { return _environment; }
         }
 
-        public virtual IAsyncDocumentSession GetFor(string database, object associatedCommand = null, IDictionary<string, object> commandMetaData = null)
+        public virtual IAsyncDocumentSession GetFor(string database)
         {
             IAsyncDocumentSession session;
 
             if (_openedSessions.TryGetValue(database, out session))
                 return session;
 
-            session = new TrackingSession(_documentStore.OpenAsyncSession(database), _trackEntitiesWithEvents, associatedCommand, commandMetaData);
+            session = new TrackingSession(_documentStore.OpenAsyncSession(database), _trackEntitiesWithEvents, _environment.GetMetaData().MetaData);
             _openedSessions[database] = session;
 
             return session;
         }
 
-        public IDocumentSession GetSyncFor(string database, object associatedCommand = null, IDictionary<string, object> commandMetaData = null)
+        public IDocumentSession GetSyncFor(string database)
         {
             IDocumentSession session;
 
             if (_openedSyncSessions.TryGetValue(database, out session))
                 return session;
 
-            session = new TrackingSyncSession(_documentStore.OpenSession(database), _trackEntitiesWithEvents, associatedCommand, commandMetaData);
+            session = new TrackingSyncSession(_documentStore.OpenSession(database), _trackEntitiesWithEvents, _environment.GetMetaData().MetaData);
             _openedSyncSessions[database] = session;
 
             return session;

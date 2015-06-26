@@ -14,13 +14,11 @@ namespace SuperGlue.RavenDb
     {
         private readonly IDocumentSession _innerSession;
         private readonly ITrackEntitiesWithEvents _trackEntitiesWithEvents;
-        private readonly object _currentCommand;
-        private readonly IDictionary<string, object> _currentMetaData;
+        private readonly IReadOnlyDictionary<string, object> _currentMetaData;
 
-        public TrackingSyncSession(IDocumentSession innerSession, ITrackEntitiesWithEvents trackEntitiesWithEvents, object currentCommand, IDictionary<string, object> currentMetaData)
+        public TrackingSyncSession(IDocumentSession innerSession, ITrackEntitiesWithEvents trackEntitiesWithEvents, IReadOnlyDictionary<string, object> currentMetaData)
         {
             _trackEntitiesWithEvents = trackEntitiesWithEvents;
-            _currentCommand = currentCommand;
             _currentMetaData = currentMetaData;
             _innerSession = innerSession;
         }
@@ -251,7 +249,7 @@ namespace SuperGlue.RavenDb
             var canApplyEvents = entity as ICanApplyEvents;
 
             if (canApplyEvents != null)
-                _trackEntitiesWithEvents.Track(canApplyEvents, _currentCommand, _currentMetaData);
+                _trackEntitiesWithEvents.Track(canApplyEvents, _currentMetaData);
         }
     }
 }

@@ -12,10 +12,12 @@ namespace SuperGlue.Configuration
     {
         private readonly ICollection<MiddlewareWithArgs> _middleware = new List<MiddlewareWithArgs>();
         private readonly IDictionary<string, object> _environment;
+        private readonly string _chainName;
 
-        public BuildAppFunction(IDictionary<string, object> environment)
+        public BuildAppFunction(IDictionary<string, object> environment, string chainName)
         {
             _environment = environment;
+            _chainName = chainName;
         }
 
         public IBuildAppFunction Use<TMiddleware>(params object[] args)
@@ -33,6 +35,13 @@ namespace SuperGlue.Configuration
         public AppFunc Build()
         {
             var list = new List<MiddlewareWithArgs>(_middleware);
+
+            var wrappers = _environment.ResolveAll<IWrapMiddleware<ConfigureEnvironment>>().ToList();
+
+            if (wrappers.Any())
+                list.Add(new MiddlewareWithArgs(typeof(WrapMiddleware<ConfigureEnvironment>), new object[] { new WrapMiddlewareOptions<ConfigureEnvironment>(wrappers) }));
+
+            list.Add(new MiddlewareWithArgs(typeof(ConfigureEnvironment), new object[] { new ConfigureEnvironmentOptions(_environment, _chainName) }));
 
             list.Reverse();
 
@@ -66,7 +75,7 @@ namespace SuperGlue.Configuration
 
         public IBuildAppFunction New()
         {
-            return new BuildAppFunction(_environment);
+            return new BuildAppFunction(_environment, _chainName);
         }
 
         public class MiddlewareWithArgs

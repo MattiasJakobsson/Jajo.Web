@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Hosting
@@ -26,9 +25,6 @@ namespace SuperGlue.Hosting
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            foreach (var item in _options.ApplicationEnvironment.Where(item => !environment.ContainsKey(item.Key)))
-                environment[item.Key] = item.Value;
-
             await _options.Func(environment);
 
             await _next(environment);
@@ -37,13 +33,11 @@ namespace SuperGlue.Hosting
 
     public class RunAppFuncOptions
     {
-        public RunAppFuncOptions(AppFunc func, IDictionary<string, object> applicationEnvironment)
+        public RunAppFuncOptions(AppFunc func)
         {
             Func = func;
-            ApplicationEnvironment = applicationEnvironment;
         }
 
         public AppFunc Func { get; private set; }
-        public IDictionary<string, object> ApplicationEnvironment { get; private set; }
     }
 }

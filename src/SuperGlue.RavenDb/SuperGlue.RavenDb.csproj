@@ -80,6 +80,10 @@
       <Project>{ddc9a27c-73ab-48fd-91f0-46bc689bef6f}</Project>
       <Name>SuperGlue.EventTracking</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.MetaData\SuperGlue.MetaData.csproj">
+      <Project>{8f59591f-320e-468f-af32-4e47a5aaa432}</Project>
+      <Name>SuperGlue.MetaData</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Security\SuperGlue.Security.csproj">
       <Project>{a9e022f8-1aa3-4afc-8ec2-1d4a8d2e9f7a}</Project>
       <Name>SuperGlue.Security</Name>

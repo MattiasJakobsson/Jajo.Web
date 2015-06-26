@@ -33,7 +33,7 @@ namespace SuperGlue.EventStore
                 var entity = _trackEntitiesWithEvents.Pop();
                 var changes = entity.Entity.GetAppliedEvents().ToList();
 
-                await _repository.SaveToStream(string.Format("entity-{0}-{1}", entity.GetType().Name, entity.Entity.Id.Replace("/", "-")), changes, Guid.NewGuid(), entity.Entity.Context, new ActionMetaData(_environment, entity.AssociatedCommand, entity.CommandMetaData));
+                await _repository.SaveToStream(string.Format("entity-{0}-{1}", entity.GetType().Name, entity.Entity.Id.Replace("/", "-")), changes, Guid.NewGuid(), entity.Entity.Context, new ActionMetaData(_environment, entity.CommandMetaData));
             }
 
             await _repository.SaveChanges();

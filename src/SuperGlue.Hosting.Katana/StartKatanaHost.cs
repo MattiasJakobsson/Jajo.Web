@@ -21,7 +21,7 @@ namespace SuperGlue.Hosting.Katana
             {
                 var url = settings.Get("superglue.Web.Urls", "http://localhost:8020");
 
-                _webApp = WebApp.Start(new StartOptions(url), x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain, settings)));
+                _webApp = WebApp.Start(new StartOptions(url), x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain)));
             });
         }
 

@@ -6,3 +6,5 @@ description
         Middleware
 files
     bin/Release/SuperGlue.Web.Http.dll ==> lib
+dependencies
+	SuperGlue.MetaData

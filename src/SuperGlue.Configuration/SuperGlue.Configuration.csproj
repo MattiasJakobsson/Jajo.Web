@@ -52,6 +52,7 @@
     <Compile Include="BuildAppFunction.cs" />
     <Compile Include="AssemblyProxy.cs" />
     <Compile Include="BuildAppFunctionExtensions.cs" />
+    <Compile Include="ConfigureEnvironment.cs" />
     <Compile Include="ConfigurationFile.cs" />
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
     <Compile Include="ConfigurationSetupResult.cs" />

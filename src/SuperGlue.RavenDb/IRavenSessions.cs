@@ -7,8 +7,8 @@ namespace SuperGlue.RavenDb
     public interface IRavenSessions
     {
         IDictionary<string, object> Environment { get; }
-        IAsyncDocumentSession GetFor(string database, object associatedCommand = null, IDictionary<string, object> commandMetaData = null);
-        IDocumentSession GetSyncFor(string database, object associatedCommand = null, IDictionary<string, object> commandMetaData = null);
+        IAsyncDocumentSession GetFor(string database);
+        IDocumentSession GetSyncFor(string database);
         Task SaveChanges();
     }
 }

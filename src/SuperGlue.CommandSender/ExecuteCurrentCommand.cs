@@ -11,7 +11,7 @@ namespace SuperGlue.CommandSender
     public class ExecuteCurrentCommand
     {
         private readonly AppFunc _next;
-        private readonly Cache<Type, Func<object, object, IDictionary<string, object>, Task>> _commandExecutionMethods = new Cache<Type, Func<object, object, IDictionary<string, object>, Task>>();
+        private readonly Cache<Type, Func<object, object, Task>> _commandExecutionMethods = new Cache<Type, Func<object, object, Task>>();
 
         public ExecuteCurrentCommand(AppFunc next)
         {
@@ -33,37 +33,36 @@ namespace SuperGlue.CommandSender
                 {
                     var executionMethod = _commandExecutionMethods.Get(command.GetType(), key => CompileExecutionFunctionFor(executor.GetType(), command.GetType()));
 
-                    await executionMethod(executor, command, environment);
+                    await executionMethod(executor, command);
                 }
             }
 
             await _next(environment);
         }
 
-        protected Func<object, object, IDictionary<string, object>, Task> CompileExecutionFunctionFor(Type executorType, Type commandType)
+        protected Func<object, object, Task> CompileExecutionFunctionFor(Type executorType, Type commandType)
         {
-            return (Func<object, object, IDictionary<string, object>, Task>)GetType()
+            return (Func<object, object, Task>)GetType()
                 .GetMethod("CompileExecutionFunctionForGeneric", BindingFlags.NonPublic | BindingFlags.Instance)
                 .MakeGenericMethod(executorType, commandType)
                 .Invoke(this, new object[0]);
         }
 
-        protected Func<object, object, IDictionary<string, object>, Task> CompileExecutionFunctionForGeneric<TExecutor, TCommand>()
+        protected Func<object, object, Task> CompileExecutionFunctionForGeneric<TExecutor, TCommand>()
         {
             var executorType = typeof(TExecutor);
             var commandType = typeof(TCommand);
 
-            var method = executorType.GetMethod("Handle", new[] { commandType, typeof(IDictionary<string, object>) });
+            var method = executorType.GetMethod("Handle", new[] { commandType });
 
             var executorParameter = Expression.Parameter(executorType);
             var commandParameter = Expression.Parameter(commandType);
-            var environmentParameter = Expression.Parameter(typeof(IDictionary<string, object>));
 
             var execute = Expression
-                .Lambda<Func<TExecutor, TCommand, IDictionary<string, object>, Task>>(Expression.Call(executorParameter, method, commandParameter, environmentParameter), executorParameter, commandParameter, environmentParameter)
+                .Lambda<Func<TExecutor, TCommand, Task>>(Expression.Call(executorParameter, method, commandParameter), executorParameter, commandParameter)
                 .Compile();
 
-            return ((executor, command, environment) => execute((TExecutor)executor, (TCommand)command, environment));
+            return ((executor, command) => execute((TExecutor)executor, (TCommand)command));
         }
     }
 }

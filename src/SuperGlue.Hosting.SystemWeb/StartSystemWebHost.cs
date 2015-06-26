@@ -18,7 +18,7 @@ namespace SuperGlue.Hosting.SystemWeb
             {
                 var appBuilder = settings.Get<IAppBuilder>(SystemWebEnvironmentConstants.AppBuilder);
 
-                appBuilder.Use<RunAppFunc>(new RunAppFuncOptions(chain, settings));
+                appBuilder.Use<RunAppFunc>(new RunAppFuncOptions(chain));
             });
         }
 

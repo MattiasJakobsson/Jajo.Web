@@ -11,6 +11,7 @@ namespace SuperGlue.Configuration
             public const string Assemblies = "superglue.Assemblies";
             public const string AlterConfigSettings = "superglue.Configuration.AlterSettings";
             public const string ResolvePathFunc = "superglue.Configuration.ResolvePath";
+            public const string ChainName = "superglue.Configuration.ChainName";
         }
 
         public static IEnumerable<Assembly> GetAssemblies(this IDictionary<string, object> environment)
@@ -36,6 +37,11 @@ namespace SuperGlue.Configuration
         public static string ResolvePath(this IDictionary<string, object> environment, string relativePath)
         {
             return environment.Get<Func<string, string>>(ConfigurationConstants.ResolvePathFunc)(relativePath);
+        }
+
+        public static string GetCurrentChain(this IDictionary<string, object> environment)
+        {
+            return environment.Get<string>(ConfigurationConstants.ChainName);
         }
     }
 }
