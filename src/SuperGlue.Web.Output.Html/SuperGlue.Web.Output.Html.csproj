@@ -52,10 +52,15 @@
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>
+    <Compile Include="DefaultListFinder.cs" />
+    <Compile Include="IFindListOf.cs" />
     <Compile Include="FormBuilder.cs" />
     <Compile Include="HtmlConventionSettings.cs" />
     <Compile Include="HtmlEnvironmentExtensions.cs" />
+    <Compile Include="SelectListItem.cs" />
     <Compile Include="SetupHtmlConfiguration.cs" />
+    <Compile Include="ValueObjectDropdownBuilder.cs" />
+    <Compile Include="ValueOfAttribute.cs" />
     <Compile Include="ViewFormExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="InputViewExtensions.cs" />

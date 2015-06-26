@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using HtmlTags.Conventions.Elements;
 using HtmlTags.Conventions.Elements.Builders;
+using HtmlTags.Reflection;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.Output.Html
@@ -15,6 +16,7 @@ namespace SuperGlue.Web.Output.Html
             {
                 environment.RegisterTransient(typeof(IElementGenerator<>), (x, y) => y.GetHtmlConventionSettings().ElementGeneratorFor(x.GenericTypeArguments.First()));
                 environment.RegisterTransient(typeof(IElementNamingConvention), typeof(DefaultElementNamingConvention));
+                environment.RegisterTransient(typeof(IFindListOf), typeof(DefaultListFinder));
 
                 environment.AlterSettings<HtmlConventionSettings>(x =>
                 {
@@ -23,6 +25,10 @@ namespace SuperGlue.Web.Output.Html
                     x.Editors.Always.BuildBy<TextboxBuilder>();
 
                     x.Editors.Modifier<AddNameModifier>();
+
+                    x.Editors.If(y => y.Accessor.HasAttribute<ValueOfAttribute>()).BuildBy<ValueObjectDropdownBuilder>();
+
+                    x.Editors.IfPropertyIs<bool>().ModifyWith(y => y.CurrentTag.Attr("type", "checkbox").Attr("value", "true"));
 
                     x.Displays.Always.BuildBy<SpanDisplayBuilder>();
 
