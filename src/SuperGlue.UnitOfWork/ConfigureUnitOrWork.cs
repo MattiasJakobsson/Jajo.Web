@@ -8,7 +8,11 @@ namespace SuperGlue.UnitOfWork
     {
         public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironmente)
         {
-            yield return new ConfigurationSetupResult("superglue.UnitOfWork.Configure", environment => environment.RegisterAll(typeof(ISuperGlueUnitOfWork)), "superglue.ContainerSetup");
+            yield return new ConfigurationSetupResult("superglue.UnitOfWork.Configure", environment =>
+            {
+                environment.RegisterAll(typeof(ISuperGlueUnitOfWork));
+                environment.RegisterAll(typeof(IApplicationTask));
+            }, "superglue.ContainerSetup");
         }
 
         public Task Shutdown(IDictionary<string, object> applicationData)
@@ -21,4 +25,6 @@ namespace SuperGlue.UnitOfWork
             return Task.Factory.StartNew(() => { });
         }
     }
+    
+
 }

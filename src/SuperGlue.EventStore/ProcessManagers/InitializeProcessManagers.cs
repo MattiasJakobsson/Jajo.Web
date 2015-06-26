@@ -58,7 +58,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                 await SubscribeProcessManager(chain, processManager, settings);
         }
 
-        public Task ShutDown()
+        public Task ShutDown(IDictionary<string, object> settings)
         {
             return Task.Factory.StartNew(() =>
             {

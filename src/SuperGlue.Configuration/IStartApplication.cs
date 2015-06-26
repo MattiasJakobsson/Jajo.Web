@@ -10,7 +10,7 @@ namespace SuperGlue.Configuration
     {
         string Chain { get; }
         Task Start(AppFunc chain, IDictionary<string, object> settings, string environment);
-        Task ShutDown();
+        Task ShutDown(IDictionary<string, object> settings);
         AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment);
     }
 }

@@ -58,7 +58,7 @@ namespace SuperGlue.EventStore.Projections
                 await SubscribeProjection(projection, chain, settings);
         }
 
-        public Task ShutDown()
+        public Task ShutDown(IDictionary<string, object> settings)
         {
             return Task.Factory.StartNew(() =>
             {

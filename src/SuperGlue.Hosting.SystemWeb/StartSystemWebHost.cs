@@ -22,7 +22,7 @@ namespace SuperGlue.Hosting.SystemWeb
             });
         }
 
-        public Task ShutDown()
+        public Task ShutDown(IDictionary<string, object> settings)
         {
             return Task.Factory.StartNew(() => { });
         }

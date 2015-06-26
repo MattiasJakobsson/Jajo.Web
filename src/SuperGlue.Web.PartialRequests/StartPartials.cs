@@ -16,7 +16,7 @@ namespace SuperGlue.Web.PartialRequests
             return Task.Factory.StartNew(() => Partials.Initialize(chain));
         }
 
-        public Task ShutDown()
+        public Task ShutDown(IDictionary<string, object> settings)
         {
             return Task.Factory.StartNew(() => { });
         }

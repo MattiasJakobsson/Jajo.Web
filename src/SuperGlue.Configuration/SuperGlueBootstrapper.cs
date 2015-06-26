@@ -81,7 +81,7 @@ namespace SuperGlue.Configuration
             var appStarters = _appStarters ?? new List<IStartApplication>();
 
             foreach (var startApplication in appStarters)
-                await startApplication.ShutDown();
+                await startApplication.ShutDown(_environment);
 
             var setups = _setups ?? new List<ISetupConfigurations>();
 

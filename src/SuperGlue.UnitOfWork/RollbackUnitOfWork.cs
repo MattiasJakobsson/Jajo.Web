@@ -26,7 +26,7 @@ namespace SuperGlue.UnitOfWork
             var exception = environment.GetException();
 
             foreach (var unitOfWork in unitOfWorks)
-                unitOfWork.Rollback(exception);
+                await unitOfWork.Rollback(exception);
 
             await _next(environment);
         }

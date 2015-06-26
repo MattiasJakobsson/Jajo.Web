@@ -19,7 +19,7 @@ namespace SuperGlue.CommandSender
             return Task.Factory.StartNew(() => { CommandPipeline.Use(chain); });
         }
 
-        public Task ShutDown()
+        public Task ShutDown(IDictionary<string, object> settings)
         {
             return Task.Factory.StartNew(() => { });
         }

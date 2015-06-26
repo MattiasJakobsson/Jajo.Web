@@ -58,7 +58,7 @@ namespace SuperGlue.EventStore.Subscribers
                 await SubscribeService(chain, name, stream, settings);
         }
 
-        public Task ShutDown()
+        public Task ShutDown(IDictionary<string, object> settings)
         {
             return Task.Factory.StartNew(() =>
             {

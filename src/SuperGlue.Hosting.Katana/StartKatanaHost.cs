@@ -25,7 +25,7 @@ namespace SuperGlue.Hosting.Katana
             });
         }
 
-        public Task ShutDown()
+        public Task ShutDown(IDictionary<string, object> settings)
         {
             return Task.Factory.StartNew(() =>
             {

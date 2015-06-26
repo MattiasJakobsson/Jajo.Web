@@ -24,12 +24,12 @@ namespace SuperGlue.UnitOfWork
             var unitOfWorks = environment.ResolveAll<ISuperGlueUnitOfWork>().ToList();
 
             foreach (var unitOfWork in unitOfWorks)
-                unitOfWork.Begin();
+                await unitOfWork.Begin();
 
             await _next(environment);
 
             foreach (var unitOfWork in unitOfWorks)
-                unitOfWork.Commit();
+                await unitOfWork.Commit();
         }
     }
 }
