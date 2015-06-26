@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace SuperGlue.EventStore.ProcessManagers
 {
-    public class EventMappingContext<TState> where TState : IProcessManagerState
+    public class ProcessManagerEventMappingContext<TState> where TState : IProcessManagerState
     {
         private readonly IDictionary<Type, Tuple<Action<object, TState, IDictionary<string, object>>, Func<object, string>>> _eventHandlerMappings;
 
-        public EventMappingContext(IDictionary<Type, Tuple<Action<object, TState, IDictionary<string, object>>, Func<object, string>>> eventHandlerMappings)
+        public ProcessManagerEventMappingContext(IDictionary<Type, Tuple<Action<object, TState, IDictionary<string, object>>, Func<object, string>>> eventHandlerMappings)
         {
             _eventHandlerMappings = eventHandlerMappings;
         }

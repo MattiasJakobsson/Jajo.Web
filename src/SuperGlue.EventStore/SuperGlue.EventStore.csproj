@@ -83,10 +83,11 @@
     <Compile Include="ProcessManagers\InitializeProcessManagers.cs" />
     <Compile Include="ProcessManagers\ProcessManagerSubscription.cs" />
     <Compile Include="ProcessManagers\IManageProcessManagerStreamEventNumbers.cs" />
-    <Compile Include="ProcessManagers\EventMappingContext.cs" />
+    <Compile Include="ProcessManagers\ProcessManagerEventMappingContext.cs" />
     <Compile Include="ProcessManagers\IProcessManagerState.cs" />
     <Compile Include="ProcessManagers\IManageProcess.cs" />
     <Compile Include="ProcessManagers\SetLastEvent.cs" />
+    <Compile Include="Projections\ApplyStateChangesTo.cs" />
     <Compile Include="Projections\ConfigureProjections.cs" />
     <Compile Include="Projections\ExecuteProjection.cs" />
     <Compile Include="IFindPartitionKey.cs" />
@@ -97,6 +98,7 @@
     <Compile Include="Projections\IEventStoreProjection.cs" />
     <Compile Include="Projections\InitializeProjections.cs" />
     <Compile Include="Projections\IProjectionState.cs" />
+    <Compile Include="Projections\ProjectionEventMappingContext.cs" />
     <Compile Include="Projections\ProjectionSubscription.cs" />
     <Compile Include="Projections\SetLastEvent.cs" />
     <Compile Include="Subscribers\CatchUpServiceSubscription.cs" />

@@ -31,7 +31,7 @@ namespace SuperGlue.EventStore.ProcessManagers
         public void Start()
         {
             var eventMappings = new Dictionary<Type, Tuple<Action<object, TState, IDictionary<string, object>>, Func<object, string>>>();
-            var mappingContext = new EventMappingContext<TState>(eventMappings);
+            var mappingContext = new ProcessManagerEventMappingContext<TState>(eventMappings);
 
             MapEvents(mappingContext);
 
@@ -93,7 +93,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             state.ClearUncommittedChanges();
         }
 
-        protected abstract void MapEvents(EventMappingContext<TState> mappingContext);
+        protected abstract void MapEvents(ProcessManagerEventMappingContext<TState> mappingContext);
         protected abstract TState CreateDefaultState(string id);
 
         protected virtual void OnStarted() { }
