@@ -40,6 +40,8 @@ NUGET
     Newtonsoft.Json (7.0.1)
     Owin (1.0)
     RavenDB.Client (3.0.3690)
+    RavenDB.Client.Authorization (3.0.3690)
+      RavenDB.Client (3.0.3690)
     Rx-Core (2.2.5)
       Rx-Interfaces (>= 2.2.5)
     Rx-Interfaces (2.2.5)

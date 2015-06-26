@@ -2,21 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using SuperGlue.Security.Authentication;
-using SuperGlue.Security.Authorization;
 using SuperGlue.Web.Validation;
 
 namespace SuperGlue.Web.Sample.AspNet
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
-
-    public class TestAuthorizer : IAuthorizeRequest
-    {
-        public bool IsAuthorized(IEnumerable<AuthenticationToken> tokens, IDictionary<string, object> environment)
-        {
-            return !environment["owin.RequestPath"].ToString().Contains("unauthorized");
-        }
-    }
 
     public class TestMiddleware
     {

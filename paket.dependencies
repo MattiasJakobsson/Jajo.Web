@@ -10,6 +10,7 @@ nuget Microsoft.Owin.SelfHost
 nuget Newtonsoft.Json
 nuget Owin
 nuget RavenDB.Client
+nuget RavenDB.Client.Authorization
 nuget Rx-Main
 nuget Spark
 nuget StackExchange.Redis

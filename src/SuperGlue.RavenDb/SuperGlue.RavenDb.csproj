@@ -48,6 +48,7 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
+    <Compile Include="TrackingSyncSession.cs" />
     <Compile Include="TrackingSession.cs" />
     <Compile Include="DefaultRavenSessions.cs" />
     <Compile Include="IRavenSessions.cs" />
@@ -79,6 +80,10 @@
       <Project>{ddc9a27c-73ab-48fd-91f0-46bc689bef6f}</Project>
       <Name>SuperGlue.EventTracking</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Security\SuperGlue.Security.csproj">
+      <Project>{a9e022f8-1aa3-4afc-8ec2-1d4a8d2e9f7a}</Project>
+      <Name>SuperGlue.Security</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.UnitOfWork\SuperGlue.UnitOfWork.csproj">
       <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
       <Name>SuperGlue.UnitOfWork</Name>
@@ -107,5 +112,8 @@
         </Reference>
       </ItemGroup>
     </When>
+  </Choose>
+  <Choose>
+    <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')" />
   </Choose>
 </Project>

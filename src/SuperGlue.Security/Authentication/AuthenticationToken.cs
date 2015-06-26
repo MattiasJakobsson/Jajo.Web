@@ -4,11 +4,13 @@ namespace SuperGlue.Security.Authentication
 {
     public class AuthenticationToken
     {
-        public AuthenticationToken(IEnumerable<Claim> claims)
+        public AuthenticationToken(string source, IEnumerable<Claim> claims)
         {
             Claims = claims;
+            Source = source;
         }
 
+        public string Source { get; private set; }
         public IEnumerable<Claim> Claims { get; private set; }
 
         public class Claim

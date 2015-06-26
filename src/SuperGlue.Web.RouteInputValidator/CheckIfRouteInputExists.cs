@@ -55,7 +55,7 @@ namespace SuperGlue.Web.RouteInputValidator
             var inputParameter = Expression.Parameter(inputType);
 
             var execute = Expression
-                .Lambda<Func<TEnsureExists, TInput, Task<Boolean>>>(Expression.Call(ensureExistsParameter, method, inputParameter), ensureExistsParameter, inputParameter)
+                .Lambda<Func<TEnsureExists, TInput, Task<bool>>>(Expression.Call(ensureExistsParameter, method, inputParameter), ensureExistsParameter, inputParameter)
                 .Compile();
 
             return ((ensureExists, input) => execute((TEnsureExists)ensureExists, (TInput)input));

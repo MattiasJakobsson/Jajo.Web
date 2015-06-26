@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SuperGlue.Configuration;
+﻿using SuperGlue.Configuration;
 using SuperGlue.Diagnostics;
 using SuperGlue.ExceptionManagement;
 using SuperGlue.FeatureToggler;
@@ -27,7 +25,7 @@ namespace SuperGlue.Web.Sample.AspNet
                 app
                     .Use<RouteUsingSuperscribe>()
                     .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(x => x.GetRouteInformation().InputTypes))
-                    .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
+                    .Use<AuthorizeRequest>()
                     .Use<ExecuteEndpoint>()
                     .Use<RenderOutput>();
             });
@@ -63,7 +61,7 @@ namespace SuperGlue.Web.Sample.AspNet
                     .Use<RouteUsingSuperscribe>()
                     .Use<HandleUnitOfWork>()
                     .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(x => x.GetRouteInformation().InputTypes))
-                    .Use<AuthorizeRequest>(new AuthorizeRequestOptions().WithAuthorizer(new TestAuthorizer()))
+                    .Use<AuthorizeRequest>()
                     .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))
                     .Use<ExecuteEndpoint>()
                     .Use<RenderOutput>();
