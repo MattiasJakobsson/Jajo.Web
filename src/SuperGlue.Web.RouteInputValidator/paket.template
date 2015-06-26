@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.Web.RouteInputValidator
+version 1.0
+authors Mattias Jakobsson
+description
+        SuperGlue.Web.RouteInputValidator middleware
+files
+    bin/Release/SuperGlue.Web.RouteInputValidator.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.Web.Routing

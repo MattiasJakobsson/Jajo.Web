@@ -30,6 +30,13 @@ namespace SuperGlue.Web.Routing.Superscribe
 
                 environment[RouteExtensions.RouteConstants.EndpointFromInput] = (Func<object, object>) (environment.GetEndpointFor);
 
+                environment[RouteExtensions.RouteConstants.InputsForEndpoint] = (Func<object, IEnumerable<Type>>) (x =>
+                {
+                    var route = environment.GetRouteForEndpoint(x);
+
+                    return route == null ? new List<Type>() : route.InputTypes;
+                });
+
                 environment[RouteExtensions.RouteConstants.ReverseRoute] = (Func<object, string>)(endpoint =>
                 {
                     var endpointRoute = environment.GetRouteForEndpoint(endpoint);

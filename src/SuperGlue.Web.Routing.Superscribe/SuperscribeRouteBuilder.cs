@@ -68,7 +68,7 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             var finalFunctions = _selectedMethods.Select(x => new FinalFunction(x, y =>
             {
-                return _checkIfRouteExists.All(z => z.Exists(routeTo, y.Environment)) ? routeTo : null;
+                return _checkIfRouteExists.All(z => z.Exists(routeTo, y.Environment).Result) ? routeTo : null;
             })).ToList();
 
             if (_node == null)
