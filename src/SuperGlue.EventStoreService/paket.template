@@ -1,0 +1,15 @@
+﻿type file
+id SuperGlue.EventStoreService
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+dependencies
+	SuperGlue.Hosting.TopShelf
+	SuperGlue.CommandSender
+	SuperGlue.Configuration
+	SuperGlue.EventStore
+	SuperGlue.EventStore.StreamManagers.RavenDb
+	SuperGlue.EventStore.Timeouts.RavenDb
+	SuperGlue.RavenDb
+	SuperGlue.UnitOfWork
