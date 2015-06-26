@@ -7,6 +7,6 @@ namespace SuperGlue.Security.Authentication
         AuthenticationResult CheckAuthentication<TAuthenticationRequest>(TAuthenticationRequest authenticationRequest, IDictionary<string, object> environment) where TAuthenticationRequest : IAuthenticationRequest;
         void SignOut(IDictionary<string, object> environment);
         void SigntOutBehalfOf(IDictionary<string, object> environment);
-        AuthenticationInformation GetUser(IDictionary<string, object> environment);
+        AuthenticationInformation GetUser(IDictionary<string, object> environment, string source = null);
     }
 }

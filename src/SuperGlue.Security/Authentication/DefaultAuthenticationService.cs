@@ -37,13 +37,13 @@ namespace SuperGlue.Security.Authentication
                 strategy.SignOut(environment);
         }
 
-        public AuthenticationInformation GetUser(IDictionary<string, object> environment)
+        public AuthenticationInformation GetUser(IDictionary<string, object> environment, string source = null)
         {
             foreach (var strategy in _strategies)
             {
                 var information = strategy.GetUser(environment);
 
-                if (information.IsAuthenticated)
+                if (information.IsAuthenticated && (string.IsNullOrEmpty(source) || information.User.Source == source))
                     return information;
             }
 
