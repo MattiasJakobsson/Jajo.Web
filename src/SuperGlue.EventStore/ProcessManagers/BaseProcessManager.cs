@@ -9,15 +9,13 @@ namespace SuperGlue.EventStore.ProcessManagers
     public abstract class BaseProcessManager<TState> : IManageProcess where TState : IProcessManagerState
     {
         private readonly IRepository _repository;
-        private readonly IDictionary<string, object> _environment;
 
         private readonly IDictionary<string, TState> _instances = new Dictionary<string, TState>();
         private IReadOnlyDictionary<Type, Tuple<Action<object, TState, IDictionary<string, object>>, Func<object, string>>> _eventMappings;
 
-        protected BaseProcessManager(IRepository repository, IDictionary<string, object> environment)
+        protected BaseProcessManager(IRepository repository)
         {
             _repository = repository;
-            _environment = environment;
         }
 
         public virtual string ProcessName { get { return GetType().FullName.Replace(".", "-").ToLower(); } }
@@ -90,7 +88,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             var streamName = GetStreamName(state.Id);
             var changes = state.GetUncommittedChanges();
 
-            await _repository.SaveToStream(streamName, changes.Events, Guid.NewGuid(), new ActionMetaData(_environment));
+            await _repository.SaveToStream(streamName, changes.Events, Guid.NewGuid());
 
             state.ClearUncommittedChanges();
         }

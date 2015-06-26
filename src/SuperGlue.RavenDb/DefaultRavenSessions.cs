@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Raven.Client;
 using SuperGlue.EventTracking;
-using SuperGlue.MetaData;
 
 namespace SuperGlue.RavenDb
 {
@@ -35,7 +34,7 @@ namespace SuperGlue.RavenDb
             if (_openedSessions.TryGetValue(database, out session))
                 return session;
 
-            session = new TrackingSession(_documentStore.OpenAsyncSession(database), _trackEntitiesWithEvents, _environment.GetMetaData().MetaData);
+            session = new TrackingSession(_documentStore.OpenAsyncSession(database), _trackEntitiesWithEvents);
             _openedSessions[database] = session;
 
             return session;
@@ -48,7 +47,7 @@ namespace SuperGlue.RavenDb
             if (_openedSyncSessions.TryGetValue(database, out session))
                 return session;
 
-            session = new TrackingSyncSession(_documentStore.OpenSession(database), _trackEntitiesWithEvents, _environment.GetMetaData().MetaData);
+            session = new TrackingSyncSession(_documentStore.OpenSession(database), _trackEntitiesWithEvents);
             _openedSyncSessions[database] = session;
 
             return session;

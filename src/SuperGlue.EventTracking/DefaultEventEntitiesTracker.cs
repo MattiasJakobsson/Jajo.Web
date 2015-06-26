@@ -8,19 +8,16 @@ namespace SuperGlue.EventTracking
         private readonly object _lockObject = new object();
         private readonly Stack<TrackedEntity> _canApplyEvents = new Stack<TrackedEntity>();
 
-        public void Track(ICanApplyEvents canApplyEvents, IReadOnlyDictionary<string, object> commandMetaData)
+        public void Track(ICanApplyEvents canApplyEvents)
         {
             lock (_lockObject)
             {
                 var current = _canApplyEvents.FirstOrDefault(x => x.Entity == canApplyEvents);
 
                 if (current != null)
-                {
-                    current.SetMetaData(commandMetaData);
                     return;
-                }
 
-                _canApplyEvents.Push(new TrackedEntity(canApplyEvents, commandMetaData));
+                _canApplyEvents.Push(new TrackedEntity(canApplyEvents));
             }
         }
 

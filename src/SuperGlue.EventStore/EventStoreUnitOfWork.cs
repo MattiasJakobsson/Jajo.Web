@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.EventStore.Data;
@@ -12,13 +11,11 @@ namespace SuperGlue.EventStore
     {
         private readonly IRepository _repository;
         private readonly ITrackEntitiesWithEvents _trackEntitiesWithEvents;
-        private readonly IDictionary<string, object> _environment;
 
-        public EventStoreUnitOfWork(IRepository repository, ITrackEntitiesWithEvents trackEntitiesWithEvents, IDictionary<string, object> environment)
+        public EventStoreUnitOfWork(IRepository repository, ITrackEntitiesWithEvents trackEntitiesWithEvents)
         {
             _repository = repository;
             _trackEntitiesWithEvents = trackEntitiesWithEvents;
-            _environment = environment;
         }
 
         public Task Begin()
@@ -33,7 +30,7 @@ namespace SuperGlue.EventStore
                 var entity = _trackEntitiesWithEvents.Pop();
                 var changes = entity.Entity.GetAppliedEvents().ToList();
 
-                await _repository.SaveToStream(string.Format("entity-{0}-{1}", entity.GetType().Name, entity.Entity.Id.Replace("/", "-")), changes, Guid.NewGuid(), entity.Entity.Context, new ActionMetaData(_environment, entity.CommandMetaData));
+                await _repository.SaveToStream(string.Format("entity-{0}-{1}", entity.GetType().Name, entity.Entity.Id.Replace("/", "-")), changes, Guid.NewGuid(), entity.Entity.Context);
             }
 
             await _repository.SaveChanges();

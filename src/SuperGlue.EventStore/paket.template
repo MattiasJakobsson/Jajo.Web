@@ -13,3 +13,4 @@ dependencies
 	SuperGlue.Configuration
 	SuperGlue.UnitOfWork
 	SuperGlue.EventTracking
+	SuperGlue.MetaData

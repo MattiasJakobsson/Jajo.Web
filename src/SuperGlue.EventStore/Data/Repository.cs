@@ -7,6 +7,7 @@ using EventStore.ClientAPI;
 using EventStore.ClientAPI.Exceptions;
 using SuperGlue.EventStore.ConflictManagement;
 using SuperGlue.EventStore.Timeouts;
+using SuperGlue.MetaData;
 
 namespace SuperGlue.EventStore.Data
 {
@@ -19,6 +20,7 @@ namespace SuperGlue.EventStore.Data
         private readonly IHandleStreamNames _handleStreamNames;
         private readonly IEnumerable<IManageChanges> _manageChanges;
         private readonly IManageTimeOuts _timeoutManager;
+        private readonly IDictionary<string, object> _environment;
         private readonly ConcurrentDictionary<string, LoadedAggregate> _loadedAggregates = new ConcurrentDictionary<string, LoadedAggregate>();
 
         private const string AggregateClrTypeHeader = "AggregateClrTypeName";
@@ -29,7 +31,7 @@ namespace SuperGlue.EventStore.Data
         private const int ReadPageSize = 500;
 
         public Repository(IInstantiateAggregate instantiateAggregate, IEventStoreConnection eventStoreConnection, IHandleEventSerialization eventSerialization, ICheckConflicts checkConflicts, IHandleStreamNames handleStreamNames,
-            IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager)
+            IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager, IDictionary<string, object> environment)
         {
             _instantiateAggregate = instantiateAggregate;
             _eventStoreConnection = eventStoreConnection;
@@ -38,22 +40,21 @@ namespace SuperGlue.EventStore.Data
             _handleStreamNames = handleStreamNames;
             _manageChanges = manageChanges;
             _timeoutManager = timeoutManager;
+            _environment = environment;
         }
 
-        public async Task<T> Load<T>(string id, ActionMetaData actionMetaData) where T : IAggregate, new()
+        public async Task<T> Load<T>(string id) where T : IAggregate, new()
         {
             LoadedAggregate aggregate;
 
             if (_loadedAggregates.TryGetValue(id, out aggregate))
                 return (T)aggregate.Aggregate;
 
-            return await LoadVersion<T>(id, int.MaxValue, actionMetaData);
+            return await LoadVersion<T>(id, int.MaxValue);
         }
 
-        public async Task<T> LoadVersion<T>(string id, int version, ActionMetaData actionMetaData) where T : IAggregate, new()
+        public async Task<T> LoadVersion<T>(string id, int version) where T : IAggregate, new()
         {
-            actionMetaData = actionMetaData ?? new ActionMetaData(new Dictionary<string, object>());
-
             var aggregate = _instantiateAggregate.Instantiate<T>(id);
             var streamName = _handleStreamNames.GetAggregateStreamName(aggregate);
 
@@ -64,7 +65,7 @@ namespace SuperGlue.EventStore.Data
             if (aggregate.Version != version && version < int.MaxValue)
                 throw new AggregateVersionException(id, typeof(T), aggregate.Version, version);
 
-            OnAggregateLoaded(aggregate, actionMetaData);
+            OnAggregateLoaded(aggregate);
 
             return aggregate;
         }
@@ -85,14 +86,16 @@ namespace SuperGlue.EventStore.Data
         public async Task SaveChanges()
         {
             foreach (var aggregate in _loadedAggregates)
-                await Save(aggregate.Value.Aggregate, Guid.NewGuid(), aggregate.Value.MetaData);
+                await Save(aggregate.Value.Aggregate, Guid.NewGuid());
         }
 
-        private async Task Save(IAggregate aggregate, Guid commitId, ActionMetaData actionMetaData)
+        private async Task Save(IAggregate aggregate, Guid commitId)
         {
             var commitHeaders = new Dictionary<string, object>();
 
-            foreach (var item in actionMetaData.MetaData)
+            var metaData = _environment.GetMetaData().MetaData;
+
+            foreach (var item in metaData)
                 commitHeaders[item.Key] = item.Value;
 
             commitHeaders[CommitIdHeader] = commitId;
@@ -106,9 +109,6 @@ namespace SuperGlue.EventStore.Data
             var originalVersion = aggregate.Version - newEvents.Count;
 
             var versionToExpect = originalVersion == 0 ? ExpectedVersion.Any : originalVersion;
-
-            if (actionMetaData.ExpectedVersion.HasValue)
-                versionToExpect = actionMetaData.ExpectedVersion.Value;
 
             while (true)
             {
@@ -127,7 +127,7 @@ namespace SuperGlue.EventStore.Data
 
                 var currentVersion = storedEvents.Select(x => x.OriginalEventNumber).OrderByDescending(x => x).FirstOrDefault();
 
-                if (_checkConflicts.HasConflicts(newEvents, storedEvents, actionMetaData.Environment))
+                if (_checkConflicts.HasConflicts(newEvents, storedEvents, _environment))
                     throw new ConflictingEventException(streamName, versionToExpect, currentVersion);
 
                 versionToExpect = currentVersion;
@@ -136,25 +136,29 @@ namespace SuperGlue.EventStore.Data
             aggregate.ClearUncommittedChanges();
         }
 
-        public async Task SaveToStream(string stream, IEnumerable<object> events, Guid commitId, ActionMetaData actionMetaData)
+        public async Task SaveToStream(string stream, IEnumerable<object> events, Guid commitId)
         {
             var commitHeaders = new Dictionary<string, object>();
 
-            foreach (var item in actionMetaData.MetaData)
+            var metaData = _environment.GetMetaData().MetaData;
+
+            foreach (var item in metaData)
                 commitHeaders[item.Key] = item.Value;
 
             commitHeaders[CommitIdHeader] = commitId;
 
             var newEvents = events.ToList();
 
-            await SaveEventsToStream(stream, actionMetaData.ExpectedVersion ?? ExpectedVersion.Any, newEvents, commitHeaders);
+            await SaveEventsToStream(stream, ExpectedVersion.Any, newEvents, commitHeaders);
         }
 
-        public async Task SaveToStream(string stream, IEnumerable<object> events, Guid commitId, string context, ActionMetaData actionMetaData)
+        public async Task SaveToStream(string stream, IEnumerable<object> events, Guid commitId, string context)
         {
             var commitHeaders = new Dictionary<string, object>();
 
-            foreach (var item in actionMetaData.MetaData)
+            var metaData = _environment.GetMetaData().MetaData;
+
+            foreach (var item in metaData)
                 commitHeaders[item.Key] = item.Value;
 
             commitHeaders[CommitIdHeader] = commitId;
@@ -163,14 +167,16 @@ namespace SuperGlue.EventStore.Data
             var streamName = _handleStreamNames.GetStreamName(stream, context);
             var newEvents = events.ToList();
 
-            await SaveEventsToStream(streamName, actionMetaData.ExpectedVersion ?? ExpectedVersion.Any, newEvents, commitHeaders);
+            await SaveEventsToStream(streamName, ExpectedVersion.Any, newEvents, commitHeaders);
         }
 
-        public async Task SaveToNamedStream(string stream, IEnumerable<object> events, Guid commitId, string context, ActionMetaData actionMetaData)
+        public async Task SaveToNamedStream(string stream, IEnumerable<object> events, Guid commitId, string context)
         {
             var commitHeaders = new Dictionary<string, object>();
 
-            foreach (var item in actionMetaData.MetaData)
+            var metaData = _environment.GetMetaData().MetaData;
+
+            foreach (var item in metaData)
                 commitHeaders[item.Key] = item.Value;
 
             commitHeaders[CommitIdHeader] = commitId;
@@ -181,17 +187,17 @@ namespace SuperGlue.EventStore.Data
             await SaveEventsToStream(stream, ExpectedVersion.Any, newEvents, commitHeaders);
         }
 
-        public void Attache(IAggregate aggregate, ActionMetaData actionMetaData)
+        public void Attache(IAggregate aggregate)
         {
-            actionMetaData = actionMetaData ?? new ActionMetaData(new Dictionary<string, object>());
-
-            OnAggregateLoaded(aggregate, actionMetaData);
+            OnAggregateLoaded(aggregate);
         }
 
-        public event Action<IAggregate, ActionMetaData> AggregateLoaded;
+        public event Action<IAggregate> AggregateLoaded;
 
         protected async Task SaveEventsToStream(string streamName, int expectedVersion, IReadOnlyCollection<object> events, IDictionary<string, object> commitHeaders)
         {
+
+
             var eventsToSave = events.Select(e => ToEventData(Guid.NewGuid(), e, commitHeaders)).ToList();
 
             if (!eventsToSave.Any())
@@ -248,14 +254,14 @@ namespace SuperGlue.EventStore.Data
             return result;
         }
 
-        protected void OnAggregateLoaded(IAggregate aggregate, ActionMetaData actionMetaData)
+        protected void OnAggregateLoaded(IAggregate aggregate)
         {
-            aggregate.AggregateAttached += x => OnAggregateLoaded(x, actionMetaData);
+            aggregate.AggregateAttached += OnAggregateLoaded;
 
-            _loadedAggregates[aggregate.Id] = new LoadedAggregate(aggregate, actionMetaData);
+            _loadedAggregates[aggregate.Id] = new LoadedAggregate(aggregate);
 
             var handler = AggregateLoaded;
-            if (handler != null) handler(aggregate, actionMetaData);
+            if (handler != null) handler(aggregate);
         }
 
         private EventData ToEventData(Guid eventId, object evnt, IDictionary<string, object> headers)
@@ -272,14 +278,12 @@ namespace SuperGlue.EventStore.Data
 
         private class LoadedAggregate
         {
-            public LoadedAggregate(IAggregate aggregate, ActionMetaData metaData)
+            public LoadedAggregate(IAggregate aggregate)
             {
                 Aggregate = aggregate;
-                MetaData = metaData;
             }
 
             public IAggregate Aggregate { get; private set; }
-            public ActionMetaData MetaData { get; private set; }
         }
     }
 }

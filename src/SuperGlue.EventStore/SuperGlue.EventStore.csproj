@@ -49,7 +49,6 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
-    <Compile Include="ActionMetaData.cs" />
     <Compile Include="AggregateVersionException.cs" />
     <Compile Include="BaseAggregate.cs" />
     <Compile Include="EventStoreEnvironmentExtensions.cs" />
@@ -135,6 +134,10 @@
     <ProjectReference Include="..\SuperGlue.EventTracking\SuperGlue.EventTracking.csproj">
       <Project>{ddc9a27c-73ab-48fd-91f0-46bc689bef6f}</Project>
       <Name>SuperGlue.EventTracking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.MetaData\SuperGlue.MetaData.csproj">
+      <Project>{8f59591f-320e-468f-af32-4e47a5aaa432}</Project>
+      <Name>SuperGlue.MetaData</Name>
     </ProjectReference>
     <ProjectReference Include="..\SuperGlue.UnitOfWork\SuperGlue.UnitOfWork.csproj">
       <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
