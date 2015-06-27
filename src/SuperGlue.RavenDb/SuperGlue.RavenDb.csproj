@@ -48,6 +48,7 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
+    <Compile Include="DocumentSessionExtensions.cs" />
     <Compile Include="QueryableExtensions.cs" />
     <Compile Include="TrackingSyncSession.cs" />
     <Compile Include="TrackingSession.cs" />
