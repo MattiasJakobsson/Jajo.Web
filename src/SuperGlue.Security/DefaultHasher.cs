@@ -8,10 +8,10 @@ namespace SuperGlue.Security
 {
     public class DefaultHasher : IHasher
     {
-        private static readonly IDictionary<string, Func<string, string>> HashAlgorithms = new Dictionary<string, Func<string, string>>
+        private static readonly IDictionary<string, Func<string, string>> AvailableHashAlgorithms = new Dictionary<string, Func<string, string>>
         {
-            {"SHA1", HashUsingSha1},
-            {"BCRYPT", HashUsingBcrypt}
+            {HashAlgorithms.Sha1, HashUsingSha1},
+            {HashAlgorithms.Bcrypt, HashUsingBcrypt}
         };
 
         private readonly HasherSettings _settings;
@@ -31,7 +31,7 @@ namespace SuperGlue.Security
             var algorithmToUse = (algorithm ?? "").ToUpper();
             var input = string.Format("{0}{1}{2}", original, _settings.Key, salt);
 
-            return HashAlgorithms.ContainsKey(algorithmToUse) ? HashAlgorithms[algorithmToUse](input) : HashAlgorithms.First().Value(input);
+            return AvailableHashAlgorithms.ContainsKey(algorithmToUse) ? AvailableHashAlgorithms[algorithmToUse](input) : AvailableHashAlgorithms.First().Value(input);
         }
 
         public string GenerateRandomSalt()

@@ -67,6 +67,7 @@
     <Compile Include="Authorization\RequiredClaimsAuthorizationInformation.cs" />
     <Compile Include="Authorization\ValidateRequiredClaimsAuthorizationInformation.cs" />
     <Compile Include="DefaultHasher.cs" />
+    <Compile Include="HashAlgorithms.cs" />
     <Compile Include="HasherSettings.cs" />
     <Compile Include="IHasher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
