@@ -7,10 +7,12 @@ namespace SuperGlue.Security.Authentication
     public class DefaultAuthenticationService : IAuthenticationService
     {
         private readonly IEnumerable<IAuthenticationStrategy> _strategies;
+        private readonly IEnumerable<IAuthenticationTokenSource> _authenticationTokenSources;
 
-        public DefaultAuthenticationService(IEnumerable<IAuthenticationStrategy> strategies)
+        public DefaultAuthenticationService(IEnumerable<IAuthenticationStrategy> strategies, IEnumerable<IAuthenticationTokenSource> authenticationTokenSources)
         {
             _strategies = strategies;
+            _authenticationTokenSources = authenticationTokenSources;
         }
 
         public AuthenticationResult CheckAuthentication<TAuthenticationRequest>(TAuthenticationRequest authenticationRequest, IDictionary<string, object> environment) where TAuthenticationRequest : IAuthenticationRequest
@@ -25,29 +27,45 @@ namespace SuperGlue.Security.Authentication
             return strategy.CheckAuthentication(authenticationRequest, environment);
         }
 
-        public void SignOut(IDictionary<string, object> environment)
+        public void SignOut(IDictionary<string, object> environment, string source = null)
         {
-            foreach (var strategy in _strategies)
-                strategy.SignOut(environment);
+            foreach (var tokenSource in _authenticationTokenSources.Where(x => string.IsNullOrEmpty(source) || x.Name == source))
+                tokenSource.SignOut(environment);
         }
 
-        public void SigntOutBehalfOf(IDictionary<string, object> environment)
+        public void SigntOutBehalfOf(IDictionary<string, object> environment, string source = null)
         {
-            foreach (var strategy in _strategies)
-                strategy.SignOut(environment);
+            foreach (var tokenSource in _authenticationTokenSources.Where(x => string.IsNullOrEmpty(source) || x.Name == source))
+                tokenSource.SignOut(environment);
         }
 
         public AuthenticationInformation GetUser(IDictionary<string, object> environment, string source = null)
         {
-            foreach (var strategy in _strategies)
+            foreach (var tokenSource in _authenticationTokenSources.Where(x => string.IsNullOrEmpty(source) || x.Name == source))
             {
-                var information = strategy.GetUser(environment);
+                var information = tokenSource.GetUser(environment);
 
-                if (information.IsAuthenticated && (string.IsNullOrEmpty(source) || information.User.Source == source))
+                if (information.IsAuthenticated)
                     return information;
             }
 
             return new AuthenticationInformation(null, null);
+        }
+
+        public void SetAuthenticatedUser(AuthenticationToken token, IDictionary<string, object> environment)
+        {
+            foreach (var tokenSource in _authenticationTokenSources.Where(x => string.IsNullOrEmpty(token.Source) || x.Name == token.Source))
+            {
+                tokenSource.SetAuthenticatedUser(token, environment);
+            }
+        }
+
+        public void SetOnBehalfOf(AuthenticationToken token, IDictionary<string, object> environment)
+        {
+            foreach (var tokenSource in _authenticationTokenSources.Where(x => string.IsNullOrEmpty(token.Source) || x.Name == token.Source))
+            {
+                tokenSource.SetOnBehalfOf(token, environment);
+            }
         }
     }
 }
