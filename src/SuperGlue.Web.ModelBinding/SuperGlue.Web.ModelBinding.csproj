@@ -62,7 +62,9 @@
     </Compile>
     <Compile Include="BindingContext.cs" />
     <Compile Include="BindingSources\BindingSourceCollection.cs" />
+    <Compile Include="BindingSources\PostedFilesBindingSource.cs" />
     <Compile Include="CollectionPropertyBinder.cs" />
+    <Compile Include="PostedFile.cs" />
     <Compile Include="PropertyBinders\ComplexTypePropertyBinder.cs" />
     <Compile Include="ConfigureModelBinders.cs" />
     <Compile Include="BindingSources\CookieBindingSource.cs" />

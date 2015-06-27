@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Web
@@ -110,7 +111,7 @@ namespace SuperGlue.Web
             public string PathBase { get { return _environment.Get<string>(OwinConstants.RequestPathBase); } }
             public string Path { get { return _environment.Get<string>(OwinConstants.RequestPath); } }
             public string QueryString { get { return _environment.Get<string>(OwinConstants.RequestQueryString); } }
-            public ReadableStringCollection Query{get { return new ReadableStringCollection(GetQuery()); }}
+            public ReadableStringCollection Query { get { return new ReadableStringCollection(GetQuery()); } }
             public Uri Uri { get { return new Uri(Scheme + Uri.SchemeDelimiter + Host + PathBase + Path + QueryString); } }
             public string Protocol { get { return _environment.Get<string>(OwinConstants.RequestProtocol); } }
             public RequestHeaders Headers { get { return new RequestHeaders(new ReadOnlyDictionary<string, string[]>(_environment.Get<IDictionary<string, string[]>>(OwinConstants.RequestHeaders, new Dictionary<string, string[]>()))); } }
@@ -120,18 +121,12 @@ namespace SuperGlue.Web
 
             public async Task<ReadableStringCollection> ReadForm()
             {
-                var form = _environment.Get<ReadableStringCollection>("SuperGlue.Owin.Form#collection");
-                if (form != null) 
-                    return form;
-                
-                string text;
-                using (var reader = new StreamReader(Body, Encoding.UTF8, true, 4 * 1024, true))
-                    text = await reader.ReadToEndAsync();
+                return (await GetForm()).Form;
+            }
 
-                form = GetForm(text);
-                Set("SuperGlue.Owin.Form#collection", form);
-
-                return form;
+            public async Task<IEnumerable<HttpFile>> ReadFiles()
+            {
+                return (await GetForm()).Files;
             }
 
             public int? LocalPort
@@ -237,17 +232,72 @@ namespace SuperGlue.Web
                     existing.Add(value);
             };
 
-            private static ReadableStringCollection GetForm(string text)
+            private async Task<FormData> GetForm()
             {
-                var form = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase);
-                var accumulator = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+                var formData = _environment.Get<FormData>("SuperGlue.Owin.Form#data");
 
-                ParseDelimited(text, new[] { '&' }, AppendItemCallback, accumulator);
+                if (formData != null)
+                    return formData;
 
-                foreach (var kv in accumulator)
-                    form.Add(kv.Key, kv.Value.ToArray());
+                var form = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
-                return new ReadableStringCollection(form);
+                if (string.IsNullOrEmpty(Headers.ContentType))
+                {
+                    formData = new FormData(new ReadableStringCollection(form.ToDictionary(x => x.Key, x => x.Value.ToArray())), new List<HttpFile>());
+                    Set("SuperGlue.Owin.Form#data", formData);
+                    return formData;
+                }
+
+                var contentType = Headers.ContentType;
+                var mimeType = contentType.Split(';').First();
+                if (mimeType.Equals("application/x-www-form-urlencoded", StringComparison.OrdinalIgnoreCase))
+                {
+                    var reader = new StreamReader(Body, Encoding.UTF8, true, 4 * 1024, true);
+
+                    var accumulator = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+
+                    ParseDelimited(await reader.ReadToEndAsync(), new[] { '&' }, AppendItemCallback, accumulator);
+
+                    foreach (var kv in accumulator)
+                        form.Add(kv.Key, kv.Value);
+                }
+
+                if (!mimeType.Equals("multipart/form-data", StringComparison.OrdinalIgnoreCase))
+                {
+                    formData = new FormData(new ReadableStringCollection(form.ToDictionary(x => x.Key, x => x.Value.ToArray())), new List<HttpFile>());
+                    Set("SuperGlue.Owin.Form#data", formData);
+                    return formData;
+                }
+
+                var boundary = Regex.Match(contentType, @"boundary=(?<token>[^\n\; ]*)").Groups["token"].Value;
+                var multipart = new HttpMultipart(Body, boundary);
+
+                var files = new List<HttpFile>();
+
+                foreach (var httpMultipartBoundary in multipart.GetBoundaries())
+                {
+                    if (string.IsNullOrEmpty(httpMultipartBoundary.Filename))
+                    {
+                        var reader = new StreamReader(httpMultipartBoundary.Value);
+
+                        if (!form.ContainsKey(httpMultipartBoundary.Name))
+                            form[httpMultipartBoundary.Name] = new List<string>();
+
+                        form[httpMultipartBoundary.Name].Add(reader.ReadToEnd());
+                    }
+                    else
+                    {
+                        files.Add(new HttpFile(
+                                           httpMultipartBoundary.ContentType,
+                                           httpMultipartBoundary.Filename,
+                                           httpMultipartBoundary.Value
+                                           ));
+                    }
+                }
+
+                formData = new FormData(new ReadableStringCollection(form.ToDictionary(x => x.Key, x => x.Value.ToArray())), files);
+                Set("SuperGlue.Owin.Form#data", formData);
+                return formData;
             }
 
             private static readonly char[] AmpersandAndSemicolon = { '&', ';' };
@@ -262,7 +312,7 @@ namespace SuperGlue.Web
                 }
 
                 var text = QueryString;
-                if (_environment.Get<string>("SuperGlue.Owin.Query#text") == text) 
+                if (_environment.Get<string>("SuperGlue.Owin.Query#text") == text)
                     return query;
 
                 query.Clear();
@@ -335,6 +385,389 @@ namespace SuperGlue.Web
                 {
                     return GetEnumerator();
                 }
+            }
+
+            public class HttpFile
+            {
+                public HttpFile(string contentType, string name, Stream value)
+                {
+                    ContentType = contentType;
+                    Name = name;
+                    Value = value;
+                }
+
+                public string ContentType { get; private set; }
+                public string Name { get; private set; }
+                public Stream Value { get; private set; }
+            }
+
+            public class HttpMultipart
+            {
+                private const byte Lf = (byte)'\n';
+                private readonly HttpMultipartBuffer _readBuffer;
+                private readonly Stream _requestStream;
+
+                public HttpMultipart(Stream requestStream, string boundary)
+                {
+                    _requestStream = requestStream;
+                    var boundaryAsBytes = GetBoundaryAsBytes(boundary);
+                    _readBuffer = new HttpMultipartBuffer(boundaryAsBytes);
+                }
+
+                public IEnumerable<HttpMultipartBoundary> GetBoundaries()
+                {
+                    return
+                        (from boundaryStream in GetBoundarySubStreams()
+                         select new HttpMultipartBoundary(boundaryStream)).ToList();
+                }
+
+                private IEnumerable<HttpMultipartSubStream> GetBoundarySubStreams()
+                {
+                    var boundarySubStreams = new List<HttpMultipartSubStream>();
+                    var boundaryStart = GetNextBoundaryPosition();
+
+                    while (boundaryStart > -1)
+                    {
+                        var boundaryEnd = GetNextBoundaryPosition();
+
+                        boundarySubStreams.Add(new HttpMultipartSubStream(
+                            _requestStream,
+                            boundaryStart,
+                            GetActualEndOfBoundary(boundaryEnd)));
+
+                        boundaryStart = boundaryEnd;
+                    }
+
+                    return boundarySubStreams;
+                }
+
+                private long GetActualEndOfBoundary(long boundaryEnd)
+                {
+                    if (CheckIfFoundEndOfStream())
+                    {
+                        return _requestStream.Position - (_readBuffer.Length + 2);
+                    }
+
+                    return boundaryEnd - (_readBuffer.Length + 2);
+                }
+
+                private bool CheckIfFoundEndOfStream()
+                {
+                    return _requestStream.Position.Equals(_requestStream.Length);
+                }
+
+                private static byte[] GetBoundaryAsBytes(string boundary)
+                {
+                    var boundaryBuilder = new StringBuilder();
+
+                    boundaryBuilder.Append("--");
+                    boundaryBuilder.Append(boundary);
+                    boundaryBuilder.Append('\r');
+                    boundaryBuilder.Append('\n');
+
+                    var bytes =
+                        Encoding.ASCII.GetBytes(boundaryBuilder.ToString());
+
+                    return bytes;
+                }
+
+                private long GetNextBoundaryPosition()
+                {
+                    _readBuffer.Reset();
+                    while (true)
+                    {
+                        var byteReadFromStream = _requestStream.ReadByte();
+
+                        if (byteReadFromStream == -1)
+                        {
+                            return -1;
+                        }
+
+                        _readBuffer.Insert((byte)byteReadFromStream);
+
+                        if (_readBuffer.IsFull && _readBuffer.IsBoundary)
+                        {
+                            return _requestStream.Position;
+                        }
+
+                        if (byteReadFromStream.Equals(Lf) || _readBuffer.IsFull)
+                        {
+                            _readBuffer.Reset();
+                        }
+                    }
+                }
+
+                public class HttpMultipartBuffer
+                {
+                    private readonly byte[] _boundaryAsBytes;
+                    private readonly byte[] _buffer;
+                    private int _position;
+
+                    public HttpMultipartBuffer(byte[] boundaryAsBytes)
+                    {
+                        _boundaryAsBytes = boundaryAsBytes;
+                        _buffer = new byte[_boundaryAsBytes.Length];
+                    }
+
+                    public bool IsBoundary
+                    {
+                        get { return _buffer.SequenceEqual(_boundaryAsBytes); }
+                    }
+
+                    public bool IsFull
+                    {
+                        get { return _position.Equals(_buffer.Length); }
+                    }
+
+                    public int Length
+                    {
+                        get { return _buffer.Length; }
+                    }
+
+                    public void Reset()
+                    {
+                        _position = 0;
+                    }
+
+                    public void Insert(byte value)
+                    {
+                        _buffer[_position++] = value;
+                    }
+                }
+
+                public class HttpMultipartBoundary
+                {
+                    private const byte Lf = (byte)'\n';
+                    private const byte Cr = (byte)'\r';
+
+                    public HttpMultipartBoundary(HttpMultipartSubStream boundaryStream)
+                    {
+                        Value = boundaryStream;
+                        ExtractHeaders();
+                    }
+
+                    public string ContentType { get; private set; }
+                    public string Filename { get; private set; }
+                    public string Name { get; private set; }
+
+                    public HttpMultipartSubStream Value { get; private set; }
+
+                    private void ExtractHeaders()
+                    {
+                        while (true)
+                        {
+                            var header =
+                                ReadLineFromStream();
+
+                            if (string.IsNullOrEmpty(header))
+                            {
+                                break;
+                            }
+
+                            if (header.StartsWith("Content-Disposition", StringComparison.CurrentCultureIgnoreCase))
+                            {
+                                Name = Regex.Match(header, @"name=""(?<name>[^\""]*)", RegexOptions.IgnoreCase).Groups["name"].Value;
+                                Filename = Regex.Match(header, @"filename=""(?<filename>[^\""]*)", RegexOptions.IgnoreCase).Groups["filename"].Value;
+                            }
+
+                            if (header.StartsWith("Content-Type", StringComparison.InvariantCultureIgnoreCase))
+                            {
+                                ContentType = header.Split(' ').Last().Trim();
+                            }
+                        }
+
+                        Value.PositionStartAtCurrentLocation();
+                    }
+
+                    private string ReadLineFromStream()
+                    {
+                        var readBuffer = new StringBuilder();
+
+                        while (true)
+                        {
+                            var byteReadFromStream = Value.ReadByte();
+
+                            if (byteReadFromStream == -1)
+                            {
+                                return null;
+                            }
+
+                            if (byteReadFromStream.Equals(Lf))
+                            {
+                                break;
+                            }
+
+                            readBuffer.Append((char)byteReadFromStream);
+                        }
+
+                        var lineReadFromStream =
+                            readBuffer.ToString().Trim((char)Cr);
+
+                        return lineReadFromStream;
+                    }
+                }
+
+                public class HttpMultipartSubStream : Stream
+                {
+                    private readonly Stream _stream;
+                    private long _start;
+                    private readonly long _end;
+                    private long _position;
+
+                    public HttpMultipartSubStream(Stream stream, long start, long end)
+                    {
+                        _stream = stream;
+                        _start = start;
+                        _position = start;
+                        _end = end;
+                    }
+
+                    public override bool CanRead
+                    {
+                        get { return true; }
+                    }
+
+                    public override bool CanSeek
+                    {
+                        get { return true; }
+                    }
+
+                    public override bool CanWrite
+                    {
+                        get { return false; }
+                    }
+
+                    public override long Length
+                    {
+                        get { return (_end - _start); }
+                    }
+
+                    public override long Position
+                    {
+                        get { return _position - _start; }
+                        set { _position = Seek(value, SeekOrigin.Begin); }
+                    }
+
+                    private long CalculateSubStreamRelativePosition(SeekOrigin origin, long offset)
+                    {
+                        var subStreamRelativePosition = 0L;
+
+                        switch (origin)
+                        {
+                            case SeekOrigin.Begin:
+                                subStreamRelativePosition = _start + offset;
+                                break;
+
+                            case SeekOrigin.Current:
+                                subStreamRelativePosition = _position + offset;
+                                break;
+
+                            case SeekOrigin.End:
+                                subStreamRelativePosition = _end + offset;
+                                break;
+                        }
+                        return subStreamRelativePosition;
+                    }
+
+                    public void PositionStartAtCurrentLocation()
+                    {
+                        _start = _stream.Position;
+                    }
+
+                    public override void Flush()
+                    {
+                    }
+
+                    public override int Read(byte[] buffer, int offset, int count)
+                    {
+                        if (count > (_end - _position))
+                        {
+                            count = (int)(_end - _position);
+                        }
+
+                        if (count <= 0)
+                        {
+                            return 0;
+                        }
+
+                        _stream.Position = _position;
+
+                        var bytesReadFromStream =
+                            _stream.Read(buffer, offset, count);
+
+                        RepositionAfterRead(bytesReadFromStream);
+
+                        return bytesReadFromStream;
+                    }
+
+                    public override int ReadByte()
+                    {
+                        if (_position >= _end)
+                        {
+                            return -1;
+                        }
+
+                        _stream.Position = _position;
+
+                        var byteReadFromStream = _stream.ReadByte();
+
+                        RepositionAfterRead(1);
+
+                        return byteReadFromStream;
+                    }
+
+                    private void RepositionAfterRead(int bytesReadFromStream)
+                    {
+                        if (bytesReadFromStream == -1)
+                        {
+                            _position = _end;
+                        }
+                        else
+                        {
+                            _position += bytesReadFromStream;
+                        }
+                    }
+
+                    public override long Seek(long offset, SeekOrigin origin)
+                    {
+                        var subStreamRelativePosition =
+                            CalculateSubStreamRelativePosition(origin, offset);
+
+                        ThrowExceptionIsPositionIsOutOfBounds(subStreamRelativePosition);
+
+                        _position = _stream.Seek(subStreamRelativePosition, SeekOrigin.Begin);
+
+                        return _position;
+                    }
+
+                    public override void SetLength(long value)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    public override void Write(byte[] buffer, int offset, int count)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    private void ThrowExceptionIsPositionIsOutOfBounds(long subStreamRelativePosition)
+                    {
+                        if (subStreamRelativePosition < 0 || subStreamRelativePosition > _end)
+                            throw new InvalidOperationException();
+                    }
+                }
+            }
+
+            public class FormData
+            {
+                public FormData(ReadableStringCollection form, IEnumerable<HttpFile> files)
+                {
+                    Form = form;
+                    Files = files;
+                }
+
+                public ReadableStringCollection Form { get; private set; }
+                public IEnumerable<HttpFile> Files { get; private set; }
             }
 
             public class ReadableStringCollection : IEnumerable<KeyValuePair<string, string[]>>
