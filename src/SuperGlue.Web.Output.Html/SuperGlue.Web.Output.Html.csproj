@@ -43,6 +43,9 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\Cache.cs">
+      <Link>Cache.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
@@ -73,6 +76,10 @@
     <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
       <Name>SuperGlue.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Web.ModelBinding\SuperGlue.Web.ModelBinding.csproj">
+      <Project>{b2244942-cfd4-4cd1-a43a-33d24041e17d}</Project>
+      <Name>SuperGlue.Web.ModelBinding</Name>
     </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Web.Output\SuperGlue.Web.Output.csproj">
       <Project>{03129102-f787-4f77-81cd-e78682edf293}</Project>

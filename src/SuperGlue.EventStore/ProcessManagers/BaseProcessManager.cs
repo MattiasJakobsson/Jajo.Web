@@ -11,7 +11,7 @@ namespace SuperGlue.EventStore.ProcessManagers
         private readonly IRepository _repository;
 
         private readonly IDictionary<string, TState> _instances = new Dictionary<string, TState>();
-        private IReadOnlyDictionary<Type, Tuple<Action<object, TState, IDictionary<string, object>>, Func<object, string>>> _eventMappings;
+        private IReadOnlyDictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>>> _eventMappings;
 
         protected BaseProcessManager(IRepository repository)
         {
@@ -30,12 +30,12 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public void Start()
         {
-            var eventMappings = new Dictionary<Type, Tuple<Action<object, TState, IDictionary<string, object>>, Func<object, string>>>();
+            var eventMappings = new Dictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>>>();
             var mappingContext = new ProcessManagerEventMappingContext<TState>(eventMappings);
 
             MapEvents(mappingContext);
 
-            _eventMappings = new ReadOnlyDictionary<Type, Tuple<Action<object, TState, IDictionary<string, object>>, Func<object, string>>>(eventMappings);
+            _eventMappings = new ReadOnlyDictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>>>(eventMappings);
 
             OnStarted();
         }
@@ -58,7 +58,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                     _instances[id] = processManagerInstance;
                 }
 
-                handlerMapping.Item1(evnt, _instances[id], metaData);
+                await handlerMapping.Item1(evnt, _instances[id], metaData);
             }
         }
 

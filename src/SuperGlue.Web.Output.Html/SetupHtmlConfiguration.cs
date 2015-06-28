@@ -5,6 +5,7 @@ using HtmlTags.Conventions.Elements;
 using HtmlTags.Conventions.Elements.Builders;
 using HtmlTags.Reflection;
 using SuperGlue.Configuration;
+using SuperGlue.Web.ModelBinding;
 
 namespace SuperGlue.Web.Output.Html
 {
@@ -30,11 +31,15 @@ namespace SuperGlue.Web.Output.Html
 
                     x.Editors.IfPropertyIs<bool>().ModifyWith(y => y.CurrentTag.Attr("type", "checkbox").Attr("value", "true"));
 
+                    x.Editors.IfPropertyIs<PostedFile>().ModifyWith(y => y.CurrentTag.Attr("type", "file"));
+
                     x.Displays.Always.BuildBy<SpanDisplayBuilder>();
 
                     x.Labels.Always.BuildBy<DefaultLabelBuilder>();
 
                     x.Forms.Always.BuildBy<FormBuilder>();
+
+                    x.Forms.If(y => y.Accessor.OwnerType.GetProperties().Any(z => typeof(PostedFile).IsAssignableFrom(z.PropertyType))).ModifyWith(y => y.CurrentTag.Attr("enctype", "multipart/form-data"));
                 });
             }, "superglue.ContainerSetup");
         }

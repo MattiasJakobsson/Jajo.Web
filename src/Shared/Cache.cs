@@ -6,7 +6,7 @@ using System.Linq;
 namespace SuperGlue
 {
     [Serializable]
-    public class Cache<TKey, TValue> : IEnumerable<TValue>
+    internal class Cache<TKey, TValue> : IEnumerable<TValue>
     {
         private readonly object _locker = new object();
         private readonly IDictionary<TKey, TValue> _values;

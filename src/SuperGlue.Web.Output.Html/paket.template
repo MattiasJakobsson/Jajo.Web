@@ -9,3 +9,4 @@ files
 dependencies
 	HtmlTags
 	SuperGlue.Web.Output
+	SuperGlue.Web.ModelBinding

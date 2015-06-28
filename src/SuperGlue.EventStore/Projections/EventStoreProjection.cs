@@ -9,7 +9,7 @@ namespace SuperGlue.EventStore.Projections
     {
         private readonly IDictionary<string, TState> _instances = new Dictionary<string, TState>();
         private readonly ICollection<TState> _markedForDeletion = new Collection<TState>();
-        private IDictionary<Type, Tuple<Action<object, EventContext<TState>>, Func<object, string>>> _eventHandlerMappings;
+        private IDictionary<Type, Tuple<Func<object, EventContext<TState>, Task>, Func<object, string>>> _eventHandlerMappings;
         private Func<string, TState> _createDefaultInstance;
 
         public virtual string ProjectionName { get { return string.Join("-", GetType().FullName.Split('.')).ToLower(); } }
@@ -46,7 +46,7 @@ namespace SuperGlue.EventStore.Projections
                     _instances[id] = projectionInstance;
                 }
 
-                handlerMapping.Item1(evnt, new EventContext<TState>(_instances[id], MarkForDeletion, metaData));
+                await handlerMapping.Item1(evnt, new EventContext<TState>(_instances[id], MarkForDeletion, metaData));
             }
         }
 

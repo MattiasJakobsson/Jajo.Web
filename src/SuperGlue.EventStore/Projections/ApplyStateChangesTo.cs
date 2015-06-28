@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.Projections
 {
     public abstract class ApplyStateChangesTo<TState> : IApplyStateChangesTo<TState>
     {
-        public IDictionary<Type, Tuple<Action<object, EventContext<TState>>, Func<object, string>>> GetMappings()
+        public IDictionary<Type, Tuple<Func<object, EventContext<TState>, Task>, Func<object, string>>> GetMappings()
         {
-            var eventHandlerMappings = new Dictionary<Type, Tuple<Action<object, EventContext<TState>>, Func<object, string>>>();
+            var eventHandlerMappings = new Dictionary<Type, Tuple<Func<object, EventContext<TState>, Task>, Func<object, string>>>();
 
             MapInterestingEvents(new ProjectionEventMappingContext<TState>(eventHandlerMappings));
 
