@@ -17,12 +17,12 @@ namespace SuperGlue.Caching.Redis
             _redisDataSerializer = redisDataSerializer;
         }
 
-        public T Get<T>(string key) where T : class
+        public async Task<T> Get<T>(string key) where T : class
         {
-            return Get(key) as T;
+            return (await Get(key)) as T;
         }
 
-        public object Get(string key)
+        public async Task<object> Get(string key)
         {
             Task<RedisValue> result = null;
 
@@ -31,57 +31,81 @@ namespace SuperGlue.Caching.Redis
             byte[] data = null;
 
             if (result != null)
-                data = result.Result;
+                data = await result;
 
             return _redisDataSerializer.Deserialize(data);
         }
 
-        public IEnumerable<object> GetList(string key, int? numberOfItems = null)
+        public async Task<IEnumerable<object>> GetList(string key, int? numberOfItems = null)
         {
-            Task<RedisValue[]> result = null;
+            Task<RedisValue[]> resultTask = null;
 
-            Transactionally(x => result = x.ListRangeAsync(key, stop: numberOfItems - 1 ?? -1));
+            Transactionally(x => resultTask = x.ListRangeAsync(key, stop: numberOfItems - 1 ?? -1));
 
-            return result == null ? new List<object>() : result.Result.Select(x => _redisDataSerializer.Deserialize(x)).ToList();
+            var result = await resultTask;
+
+            return result == null ? new List<object>() : result.Select(x => _redisDataSerializer.Deserialize(x)).ToList();
         }
 
-        public void Set(string key, object value, TimeSpan? expires = null)
+        public Task<bool> Set(string key, object value, TimeSpan? expires = null)
         {
             var data = _redisDataSerializer.Serialize(value);
 
-            Transactionally(x => x.StringSetAsync(key, data, expires));
+            Task<bool> result = null;
+
+            Transactionally(x => result = x.StringSetAsync(key, data, expires));
+
+            return result;
         }
 
-        public void AddToList(string key, object value, int? maxListLength = null, TimeSpan? expires = null)
+        public Task AddToList(string key, object value, int? maxListLength = null, TimeSpan? expires = null)
         {
             var data = _redisDataSerializer.Serialize(value);
+
+            Task result = null;
 
             Transactionally(x =>
             {
-                x.ListLeftPushAsync(key, data);
-
-                if (maxListLength.HasValue)
-                    x.ListTrimAsync(key, 0, maxListLength.Value);
-
-                if (expires.HasValue)
-                    x.KeyExpireAsync(key, expires.Value);
+                result = x
+                    .ListLeftPushAsync(key, data)
+                    .ContinueWith(y =>
+                    {
+                        if (maxListLength.HasValue)
+                            x.ListTrimAsync(key, 0, maxListLength.Value);
+                    })
+                    .ContinueWith(y =>
+                    {
+                        if (expires.HasValue)
+                            x.KeyExpireAsync(key, expires.Value);
+                    });
             });
+
+            return result;
         }
 
-        public void AddToList(string key, IEnumerable<object> values, int? maxListLength = null, TimeSpan? expires = null)
+        public Task AddToList(string key, IEnumerable<object> values, int? maxListLength = null, TimeSpan? expires = null)
         {
             var data = values.Select(x => (RedisValue)_redisDataSerializer.Serialize(x)).ToArray();
 
+            Task result = null;
+
             Transactionally(x =>
             {
-                x.ListLeftPushAsync(key, data);
-
-                if (maxListLength.HasValue)
-                    x.ListTrimAsync(key, 0, maxListLength.Value);
-
-                if (expires.HasValue)
-                    x.KeyExpireAsync(key, expires.Value);
+                result = x
+                    .ListLeftPushAsync(key, data)
+                    .ContinueWith(y =>
+                    {
+                        if (maxListLength.HasValue)
+                            x.ListTrimAsync(key, 0, maxListLength.Value);
+                    })
+                    .ContinueWith(y =>
+                    {
+                        if (expires.HasValue)
+                            x.KeyExpireAsync(key, expires.Value);
+                    });
             });
+
+            return result;
         }
 
         private void Transactionally(Action<ITransaction> action)

@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Caching
 {
     public interface ICache
     {
-        T Get<T>(string key) where T : class;
+        Task<T> Get<T>(string key) where T : class;
 
-        object Get(string key);
+        Task<object> Get(string key);
 
-        IEnumerable<object> GetList(string key, int? numberOfItems = null);
+        Task<IEnumerable<object>> GetList(string key, int? numberOfItems = null);
 
-        void Set(string key, object value, TimeSpan? expires = null);
+        Task<bool> Set(string key, object value, TimeSpan? expires = null);
 
-        void AddToList(string key, object value, int? maxListLength = null, TimeSpan? expires = null);
+        Task AddToList(string key, object value, int? maxListLength = null, TimeSpan? expires = null);
 
-        void AddToList(string key, IEnumerable<object> values, int? maxListLength = null, TimeSpan? expires = null);
+        Task AddToList(string key, IEnumerable<object> values, int? maxListLength = null, TimeSpan? expires = null);
     }
 }

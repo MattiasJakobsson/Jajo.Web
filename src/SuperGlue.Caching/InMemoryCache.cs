@@ -2,43 +2,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Caching;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Caching
 {
     public class InMemoryCache : ICache
     {
-        public T Get<T>(string key) where T : class
+        public async Task<T> Get<T>(string key) where T : class
         {
-            return Get(key) as T;
+            return (await Get(key)) as T;
         }
 
-        public object Get(string key)
+        public Task<object> Get(string key)
         {
-            return MemoryCache.Default.Get(key);
+            return Task.FromResult(MemoryCache.Default.Get(key));
         }
 
-        public IEnumerable<object> GetList(string key, int? numberOfItems = null)
+        public Task<IEnumerable<object>> GetList(string key, int? numberOfItems = null)
         {
             var list = GetListFor(key);
 
             if (list == null)
-                return new List<object>();
+                return Task.FromResult(Enumerable.Empty<object>());
 
             if (numberOfItems == null || !(list.Count > numberOfItems)) 
-                return list;
+                return Task.FromResult(list.AsEnumerable());
 
-            return list.Take(numberOfItems.Value).ToList();
+            return Task.FromResult(list.Take(numberOfItems.Value));
         }
 
-        public void Set(string key, object value, TimeSpan? expires = null)
+        public Task<bool> Set(string key, object value, TimeSpan? expires = null)
         {
             MemoryCache.Default.Set(key, value, new CacheItemPolicy
             {
                 AbsoluteExpiration = expires.HasValue ? new DateTimeOffset(DateTime.UtcNow + expires.Value) : ObjectCache.InfiniteAbsoluteExpiration
             });
+
+            return Task.FromResult(true);
         }
 
-        public void AddToList(string key, object value, int? maxListLength = null, TimeSpan? expires = null)
+        public Task AddToList(string key, object value, int? maxListLength = null, TimeSpan? expires = null)
         {
             var list = GetListFor(key);
 
@@ -54,12 +57,14 @@ namespace SuperGlue.Caching
                 list = list.Take(maxListLength.Value).ToList();
 
             Set(key, list, expires);
+
+            return Task.CompletedTask;
         }
 
-        public void AddToList(string key, IEnumerable<object> values, int? maxListLength = null, TimeSpan? expires = null)
+        public async Task AddToList(string key, IEnumerable<object> values, int? maxListLength = null, TimeSpan? expires = null)
         {
             foreach (var value in values)
-                AddToList(key, value, maxListLength, expires);
+                await AddToList(key, value, maxListLength, expires);
         }
 
         private static ICollection<object> GetListFor(string key)
