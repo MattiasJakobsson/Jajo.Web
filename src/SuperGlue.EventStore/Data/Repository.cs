@@ -196,8 +196,6 @@ namespace SuperGlue.EventStore.Data
 
         protected async Task SaveEventsToStream(string streamName, int expectedVersion, IReadOnlyCollection<object> events, IDictionary<string, object> commitHeaders)
         {
-
-
             var eventsToSave = events.Select(e => ToEventData(Guid.NewGuid(), e, commitHeaders)).ToList();
 
             if (!eventsToSave.Any())
@@ -223,7 +221,7 @@ namespace SuperGlue.EventStore.Data
             }
 
             foreach (var manageChanges in _manageChanges)
-                manageChanges.ChangesSaved(events, commitHeaders);
+                await manageChanges.ChangesSaved(events, commitHeaders);
         }
 
         protected async Task<IEnumerable<ResolvedEvent>> LoadEventsFromStream(string streamName, int from, int to)

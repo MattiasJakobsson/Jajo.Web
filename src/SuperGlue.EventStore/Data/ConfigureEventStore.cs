@@ -25,6 +25,7 @@ namespace SuperGlue.EventStore.Data
 
                 environment.RegisterSingleton(typeof(IEventStoreConnection), connection);
                 environment.RegisterSingleton(typeof(EventStoreConnectionString), connectionString);
+                environment.RegisterAll(typeof(IManageChanges));
             }, "superglue.ContainerSetup");
         }
 

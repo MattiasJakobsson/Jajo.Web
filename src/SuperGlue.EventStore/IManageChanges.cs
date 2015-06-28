@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore
 {
     public interface IManageChanges
     {
-        void ChangesSaved(IEnumerable<object> changes, IDictionary<string, object> metaData);
+        Task ChangesSaved(IEnumerable<object> changes, IDictionary<string, object> metaData);
     }
 }
