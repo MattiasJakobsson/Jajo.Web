@@ -78,6 +78,7 @@
     <Compile Include="Messages\ServiceEventProcessingFailed.cs" />
     <Compile Include="Messages\ProjectionFailed.cs" />
     <Compile Include="ProcessManagers\BaseProcessManager.cs" />
+    <Compile Include="ProcessManagers\BaseProcessManagerState.cs" />
     <Compile Include="ProcessManagers\ConfigureProcessManagers.cs" />
     <Compile Include="ProcessManagers\ExecuteProcessManager.cs" />
     <Compile Include="ProcessManagers\InitializeProcessManagers.cs" />
