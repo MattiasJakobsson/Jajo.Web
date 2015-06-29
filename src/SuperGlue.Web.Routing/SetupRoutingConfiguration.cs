@@ -29,42 +29,41 @@ namespace SuperGlue.Web.Routing
 
         public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                var policies = configuration.WithSettings<RouteSettings>().GetPolicies();
+            var policies = configuration.WithSettings<RouteSettings>().GetPolicies();
 
-                if (!policies.Any())
-                    policies = new ReadOnlyCollection<IRoutePolicy>(new List<IRoutePolicy>
+            if (!policies.Any())
+                policies = new ReadOnlyCollection<IRoutePolicy>(new List<IRoutePolicy>
                     {
                         new QueryCommandMethodRoutePolicy(configuration.Settings.GetAssemblies())
                     });
 
-                foreach (var policy in policies)
+            foreach (var policy in policies)
+            {
+                var endpoints = policy.Build();
+
+                foreach (var endpoint in endpoints)
                 {
-                    var endpoints = policy.Build();
+                    var routeBuilder = configuration.Settings.CreateRouteBuilder();
 
-                    foreach (var endpoint in endpoints)
-                    {
-                        var routeBuilder = configuration.Settings.CreateRouteBuilder();
+                    if (routeBuilder == null)
+                        continue;
 
-                        if (routeBuilder == null)
-                            continue;
+                    if (endpoint.HttpMethods.Any())
+                        routeBuilder.RestrictMethods(endpoint.HttpMethods);
 
-                        if (endpoint.HttpMethods.Any())
-                            routeBuilder.RestrictMethods(endpoint.HttpMethods);
+                    foreach (var urlPart in endpoint.UrlParts)
+                        urlPart.AddToBuilder(routeBuilder);
 
-                        foreach (var urlPart in endpoint.UrlParts)
-                            urlPart.AddToBuilder(routeBuilder);
-
-                        routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings);
-                    }
+                    routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings);
                 }
-            });
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

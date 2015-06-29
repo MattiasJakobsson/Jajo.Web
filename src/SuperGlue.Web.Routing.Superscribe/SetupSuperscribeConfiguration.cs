@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Routing.Superscribe
     {
         public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
-            yield return new ConfigurationSetupResult("superglue.SuperscribeSetup", environment =>
+            yield return new ConfigurationSetupResult("superglue.RoutingImplimentationSetup", environment =>
             {
                 var stringRouteParser = new StringRouteParser();
 
