@@ -8,17 +8,17 @@ namespace SuperGlue.EventStore.Subscribers
     {
         public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
-            yield return new ConfigurationSetupResult("superglue.ContainerSetup", environment => environment.RegisterAllClosing(typeof(ISubscribeTo<>)));
+            yield return new ConfigurationSetupResult("superglue.EventStoreSubscribersSetup", environment => environment.RegisterAllClosing(typeof(ISubscribeTo<>)), "superglue.ContainerSetup");
         }
 
         public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
     }
 }
