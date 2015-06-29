@@ -44,8 +44,7 @@ namespace SuperGlue.Web.Output.Html
 
                     x.Editors.IfPropertyIs<PostedFile>().ModifyWith(y => y.CurrentTag.Attr("type", "file"));
 
-                    x.Editors.If(y => y.Accessor.HasAttribute<AutocompleteAttribute>()).ModifyWith(
-                    y =>
+                    x.Editors.If(y => y.Accessor.HasAttribute<AutocompleteAttribute>()).ModifyWith(y =>
                     {
                         var attribute = y.Accessor.GetAttribute<AutocompleteAttribute>();
                         y.OriginalTag.AddClass("autocomplete");

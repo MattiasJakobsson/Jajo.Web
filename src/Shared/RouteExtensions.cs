@@ -50,7 +50,7 @@ namespace SuperGlue
 
         public static void CreateRoute(this IDictionary<string, object> environment, string pattern, object routeTo, Dictionary<Type, Func<object, IDictionary<string, object>>> inputParameters, params string[] methods)
         {
-            environment.Get<Action<string, object, Dictionary<Type, Func<object, IDictionary<string, object>>>, string[]>>(RouteConstants.CreateRouteFunc)(pattern, routeTo, inputParameters, methods);
+            environment.Get<Action<string, object, IDictionary<Type, Func<object, IDictionary<string, object>>>, string[]>>(RouteConstants.CreateRouteFunc)(pattern, routeTo, inputParameters, methods);
         }
 
         public class RoutingData
