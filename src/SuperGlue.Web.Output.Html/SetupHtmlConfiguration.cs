@@ -69,7 +69,7 @@ namespace SuperGlue.Web.Output.Html
 
                     x.Forms.If(y => y.Accessor.OwnerType.GetProperties().Any(z => typeof(PostedFile).IsAssignableFrom(z.PropertyType))).ModifyWith(y => y.CurrentTag.Attr("enctype", "multipart/form-data"));
                 });
-            }, "superglue.ContainerSetup");
+            }, "superglue.RoutingSetup");
         }
 
         public Task Shutdown(IDictionary<string, object> applicationData)
