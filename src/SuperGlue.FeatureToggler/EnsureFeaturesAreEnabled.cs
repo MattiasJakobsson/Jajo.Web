@@ -42,7 +42,7 @@ namespace SuperGlue.FeatureToggler
 
                 while (currentFeatureType != null && typeof(IFeature).IsAssignableFrom(currentFeatureType))
                 {
-                    if (!featuresChecker.IsEnabled(currentFeatureType, environment))
+                    if (!await featuresChecker.IsEnabled(currentFeatureType, environment))
                     {
                         environment[FeatureEnvironmentExtensions.FeatureConstants.FeatureValidationFailed] = true;
                         return;

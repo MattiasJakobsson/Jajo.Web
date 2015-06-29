@@ -11,20 +11,20 @@ namespace SuperGlue.FeatureToggler
             yield return new ConfigurationSetupResult("superglue.FeaturesSetup", environment =>
             {
                 environment.RegisterTransient(typeof(ICheckIfFeatureIsEnabled), typeof(DefaultFeatureEnabledChecker));
+                environment.RegisterAll(typeof(IFeature));
             }, "superglue.ContainerSetup");
         }
 
         public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                configuration.Settings[FeatureEnvironmentExtensions.FeatureConstants.FeatureSettings] = configuration.WithSettings<FeatureSettings>();
-            });
+            configuration.Settings[FeatureEnvironmentExtensions.FeatureConstants.FeatureSettings] = configuration.WithSettings<FeatureSettings>();
+
+            return Task.CompletedTask;
         }
     }
 }
