@@ -77,6 +77,7 @@
     <Compile Include="IModelBinderCollection.cs" />
     <Compile Include="PropertyBinders\IPropertyBinder.cs" />
     <Compile Include="PropertyBinders\IPropertyBinderCollection.cs" />
+    <Compile Include="ValueConverters\DateTimeValueConverter.cs" />
     <Compile Include="ValueConverters\IValueConverter.cs" />
     <Compile Include="ValueConverters\IValueConverterCollection.cs" />
     <Compile Include="BindingSources\JsonRequestBodyBindingSource.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="BindingSources\QueryStringBindingSource.cs" />
     <Compile Include="BindingSources\RouteParametersBindingSource.cs" />
     <Compile Include="PropertyBinders\SimpleTypePropertyBinder.cs" />
+    <Compile Include="ValueConverters\TimeSpanValueConverter.cs" />
     <Compile Include="ValueConverters\ValueConverterCollection.cs" />
     <Compile Include="ValueConverters\BoolValueConverter.cs" />
     <Compile Include="ValueConverters\ByteValueConverter.cs" />
