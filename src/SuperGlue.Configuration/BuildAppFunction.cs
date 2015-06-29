@@ -34,7 +34,7 @@ namespace SuperGlue.Configuration
 
         public AppFunc Build()
         {
-            var list = new List<MiddlewareWithArgs>(_middleware);
+            var list = new List<MiddlewareWithArgs>();
 
             var wrappers = _environment.ResolveAll<IWrapMiddleware<ConfigureEnvironment>>().ToList();
 
@@ -42,6 +42,8 @@ namespace SuperGlue.Configuration
                 list.Add(new MiddlewareWithArgs(typeof(WrapMiddleware<ConfigureEnvironment>), new object[] { new WrapMiddlewareOptions<ConfigureEnvironment>(wrappers) }));
 
             list.Add(new MiddlewareWithArgs(typeof(ConfigureEnvironment), new object[] { new ConfigureEnvironmentOptions(_environment, _chainName) }));
+
+            list.AddRange(_middleware);
 
             list.Reverse();
 
