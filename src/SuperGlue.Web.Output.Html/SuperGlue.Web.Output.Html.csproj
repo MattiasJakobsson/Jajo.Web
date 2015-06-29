@@ -55,7 +55,11 @@
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>
+    <Compile Include="Autocomplete\AutocompleteSearchResult.cs" />
+    <Compile Include="Autocomplete\AutocompleteAttribute.cs" />
+    <Compile Include="Autocomplete\Search.cs" />
     <Compile Include="DefaultListFinder.cs" />
+    <Compile Include="Autocomplete\IAutocompleteSearcher.cs" />
     <Compile Include="IFindListOf.cs" />
     <Compile Include="FormBuilder.cs" />
     <Compile Include="HtmlConventionSettings.cs" />

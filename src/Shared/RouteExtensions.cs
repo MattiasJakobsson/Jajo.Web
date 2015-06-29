@@ -48,9 +48,9 @@ namespace SuperGlue
             environment[RouteConstants.Parameters] = parameters ?? new Dictionary<string, object>();
         }
 
-        public static void CreateRoute(this IDictionary<string, object> environment, string pattern, object routeTo, params string[] methods)
+        public static void CreateRoute(this IDictionary<string, object> environment, string pattern, object routeTo, Dictionary<Type, Func<object, IDictionary<string, object>>> inputParameters, params string[] methods)
         {
-            environment.Get<Action<string, object, string[]>>(RouteConstants.CreateRouteFunc)(pattern, routeTo, methods);
+            environment.Get<Action<string, object, Dictionary<Type, Func<object, IDictionary<string, object>>>, string[]>>(RouteConstants.CreateRouteFunc)(pattern, routeTo, inputParameters, methods);
         }
 
         public class RoutingData

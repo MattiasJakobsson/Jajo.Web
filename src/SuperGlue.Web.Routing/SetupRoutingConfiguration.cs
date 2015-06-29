@@ -15,15 +15,14 @@ namespace SuperGlue.Web.Routing
             {
                 environment.RegisterAll(typeof(ICheckIfRouteExists));
 
-                environment[RouteExtensions.RouteConstants.CreateRouteFunc] = (Action<string, object, string[]>)((pattern, routeTo, methods) =>
+                environment[RouteExtensions.RouteConstants.CreateRouteFunc] = (Action<string, object, IDictionary<Type, Func<object, IDictionary<string, object>>>, string[]>)((pattern, routeTo, inputParameters, methods) =>
                 {
                     var routeBuilder = environment.CreateRouteBuilder();
 
                     routeBuilder.RestrictMethods(methods);
                     routeBuilder.AppendPattern(pattern);
 
-                    //TODO:Handle parameters
-                    routeBuilder.Build(routeTo, new Dictionary<Type, Func<object, IDictionary<string, object>>>(), environment);
+                    routeBuilder.Build(routeTo, inputParameters, environment);
                 });
             }, "superglue.ContainerSetup");
         }
