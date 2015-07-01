@@ -19,10 +19,10 @@ namespace SuperGlue.Web.ModelBinding
 
         public bool Matches(PropertyInfo propertyInfo)
         {
-            return typeof (IEnumerable).IsAssignableFrom(propertyInfo.PropertyType);
+            return typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType) && propertyInfo.PropertyType != typeof(string);
         }
 
-        public Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
+        public async Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
         {
             var type = propertyInfo.PropertyType;
             var itemType = type.GetGenericArguments()[0];
@@ -35,12 +35,12 @@ namespace SuperGlue.Web.ModelBinding
             var collection = currentCollection ?? Activator.CreateInstance(type);
             var collectionType = collection.GetType();
 
-            Func<Type, string, bool> addToCollection = (typeToBind, prefix) =>
+            Func<Type, string, Task<bool>> addToCollection = async (typeToBind, prefix) =>
                                                            {
                                                                using (bindingContext.OpenChildContext(prefix))
                                                                {
                                                                    var addMethod = AddMethods[collectionType];
-                                                                   var obj = bindingContext.Bind(itemType);
+                                                                   var obj = await bindingContext.Bind(itemType);
                                                                    if (obj != null)
                                                                    {
                                                                        addMethod.Invoke(collection, new[] { obj });
@@ -58,11 +58,11 @@ namespace SuperGlue.Web.ModelBinding
             {
                 currentPrefix = string.Format(formatString, index);
                 index++;
-            } while (addToCollection(itemType, currentPrefix));
+            } while (await addToCollection(itemType, currentPrefix));
 
             propertyInfo.SetValue(instance, collection, null);
 
-            return Task.Factory.StartNew(() => ((IEnumerable)collection).OfType<object>().Any());
+            return ((IEnumerable)collection).OfType<object>().Any();
         }
     }
 }

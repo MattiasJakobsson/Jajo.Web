@@ -1,5 +1,5 @@
 ﻿<viewdata model="SuperGlue.Web.Sample.SubApplication.SubAppEndpointQueryResult" />
-<use namespace="SuperGlue.Web.PartialRequests"/
+<use namespace="SuperGlue.Web.PartialRequests" />
 
 <html>
 <head>

@@ -21,7 +21,7 @@ namespace SuperGlue.Web.Routing.Superscribe
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var path = environment.GetRequest().Path;
+            var path = environment.GetRequest().Path + "?" + environment.GetRequest().QueryString;
             var method = environment.GetRequest().Method;
 
             var routeEngine = environment.GetRouteEngine();
@@ -32,7 +32,7 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             var endpoint = environment.GetRouteForEndpoint(data.Response);
 
-            environment.SetRouteDestination(data.Response, endpoint.InputTypes, (IDictionary<string, object>)data.Parameters);
+            environment.SetRouteDestination(data.Response, endpoint != null ? endpoint.InputTypes : new List<Type>(), (IDictionary<string, object>)data.Parameters);
 
             await _next(environment);
         }

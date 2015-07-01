@@ -1,26 +1,34 @@
 using System.Reflection;
 using System.Threading.Tasks;
+using SuperGlue.Web.ModelBinding.ValueConverters;
 
 namespace SuperGlue.Web.ModelBinding.PropertyBinders
 {
     public class ComplexTypePropertyBinder : IPropertyBinder
     {
-        public bool Matches(PropertyInfo propertyInfo)
+        private readonly IValueConverterCollection _valueConverterCollection;
+
+        public ComplexTypePropertyBinder(IValueConverterCollection valueConverterCollection)
         {
-            return true;
+            _valueConverterCollection = valueConverterCollection;
         }
 
-        public Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
+        public bool Matches(PropertyInfo propertyInfo)
+        {
+            return !_valueConverterCollection.CanConvert(propertyInfo.PropertyType);
+        }
+
+        public async Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
         {
             using (bindingContext.OpenChildContext(string.Format("{0}_", propertyInfo.Name)))
             {
-                var obj = bindingContext.Bind(propertyInfo.PropertyType);
-                if (obj == null) 
-                    return Task.Factory.StartNew(() => false);
+                var obj = await bindingContext.Bind(propertyInfo.PropertyType);
+                if (obj == null)
+                    return false;
 
                 propertyInfo.SetValue(instance, obj, new object[0]);
 
-                return Task.Factory.StartNew(() => true);
+                return true;
             }
         }
     }

@@ -19,14 +19,14 @@ namespace SuperGlue.Web.PartialRequests
             foreach (var item in environment)
                 partialEnvironment[item.Key] = item.Value;
 
-            var url = new Uri(environment.RouteTo(partial));
+            var urlParts = environment.RouteTo(partial).Split('?');
 
             var responseBody = new MemoryStream();
             partialEnvironment[WebEnvironmentExtensions.OwinConstants.ResponseBody] = responseBody;
 
             partialEnvironment[WebEnvironmentExtensions.OwinConstants.RequestMethod] = "GET";
-            partialEnvironment[WebEnvironmentExtensions.OwinConstants.RequestPath] = url.LocalPath;
-            partialEnvironment[WebEnvironmentExtensions.OwinConstants.RequestQueryString] = url.Query;
+            partialEnvironment[WebEnvironmentExtensions.OwinConstants.RequestPath] = urlParts[0];
+            partialEnvironment[WebEnvironmentExtensions.OwinConstants.RequestQueryString] = urlParts.Length > 1 ? urlParts[1] : "";
 
             partialEnvironment[PartialConstants.IsPartialRequest] = true;
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.ModelBinding
 {
@@ -21,14 +22,14 @@ namespace SuperGlue.Web.ModelBinding
             _modelBinderCollection = modelBinderCollection;
         }
 
-        public object Bind(Type type)
+        public Task<object> Bind(Type type)
         {
             return _modelBinderCollection.Bind(type, this);
         }
 
-        public void Bind(Type type, object instance)
+        public Task Bind(Type type, object instance)
         {
-            _modelBinderCollection.Bind(type, this, instance);
+            return _modelBinderCollection.Bind(type, this, instance);
         }
 
         public void PrefixWith(string prefix)

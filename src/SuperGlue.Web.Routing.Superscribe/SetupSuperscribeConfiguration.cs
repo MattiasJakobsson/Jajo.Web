@@ -44,7 +44,7 @@ namespace SuperGlue.Web.Routing.Superscribe
                     if (endpointRoute == null)
                         return "";
 
-                    var patternBuilder = new StringBuilder();
+                    var patternParts = new List<string>();
 
                     var node = endpointRoute.Node;
 
@@ -52,27 +52,33 @@ namespace SuperGlue.Web.Routing.Superscribe
 
                     while (node != null)
                     {
-                        patternBuilder.Append("/");
-
                         var paramNode = node as ParamNode;
 
                         if (paramNode != null)
                         {
                             if (endpointRoute.Parameters.ContainsKey(paramNode.Name))
                             {
-                                patternBuilder.Append(endpointRoute.Parameters[paramNode.Name]);
+                                patternParts.Add(endpointRoute.Parameters[paramNode.Name].ToString());
                                 appendedParameters.Add(paramNode.Name);
                             }
                         }
                         else
                         {
-                            patternBuilder.Append(node.Template);
+                            patternParts.Add(node.Template);
                         }
 
-                        node = node.Edges.FirstOrDefault();
+                        patternParts.Add("/");
+
+                        node = node.Parent;
                     }
 
                     var missingParameters = endpointRoute.Parameters.Where(x => !appendedParameters.Contains(x.Key));
+
+                    var patternBuilder = new StringBuilder();
+                    patternParts.Reverse();
+
+                    foreach (var part in patternParts)
+                        patternBuilder.Append(part);
 
                     var parameterSplitter = "?";
 

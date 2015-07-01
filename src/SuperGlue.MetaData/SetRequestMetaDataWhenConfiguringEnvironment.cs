@@ -6,41 +6,43 @@ using SuperGlue.Configuration;
 
 namespace SuperGlue.MetaData
 {
-    //public class SetRequestMetaDataWhenConfiguringEnvironment : IWrapMiddleware<ConfigureEnvironment>
-    //{
-    //    public IDisposable Begin(IDictionary<string, object> environment)
-    //    {
-    //        var suppliers = environment
-    //            .ResolveAll<ISupplyRequestMetaData>()
-    //            .Where(x => x.CanHandleChain(environment.GetCurrentChain()))
-    //            .ToList();
+    public class SetRequestMetaDataWhenConfiguringEnvironment : IWrapMiddleware<ConfigureEnvironment>
+    {
+        private readonly IEnumerable<ISupplyRequestMetaData> _metaDataSuppliers;
 
-    //        var metaData = new Dictionary<string, object>();
+        public SetRequestMetaDataWhenConfiguringEnvironment(IEnumerable<ISupplyRequestMetaData> metaDataSuppliers)
+        {
+            _metaDataSuppliers = metaDataSuppliers;
+        }
 
-    //        foreach (var item in suppliers.SelectMany(supplier => supplier.GetMetaData(environment)))
-    //            metaData[item.Key] = item.Value;
+        public IDisposable Begin(IDictionary<string, object> environment)
+        {
+            var metaData = new Dictionary<string, object>();
 
-    //        var oldMetaData = environment.GetMetaData();
-    //        environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = new RequestMetaData(new ReadOnlyDictionary<string, object>(metaData));
+            foreach (var item in _metaDataSuppliers.SelectMany(supplier => supplier.GetMetaData(environment)))
+                metaData[item.Key] = item.Value;
 
-    //        return new Disposable(environment, oldMetaData);
-    //    }
+            var oldMetaData = environment.GetMetaData();
+            environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = new RequestMetaData(new ReadOnlyDictionary<string, object>(metaData));
 
-    //    private class Disposable : IDisposable
-    //    {
-    //        private readonly IDictionary<string, object> _environment;
-    //        private readonly RequestMetaData _oldMetaData;
+            return new Disposable(environment, oldMetaData);
+        }
 
-    //        public Disposable(IDictionary<string, object> environment, RequestMetaData oldMetaData)
-    //        {
-    //            _environment = environment;
-    //            _oldMetaData = oldMetaData;
-    //        }
+        private class Disposable : IDisposable
+        {
+            private readonly IDictionary<string, object> _environment;
+            private readonly RequestMetaData _oldMetaData;
 
-    //        public void Dispose()
-    //        {
-    //            _environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = _oldMetaData;
-    //        }
-    //    }
-    //}
+            public Disposable(IDictionary<string, object> environment, RequestMetaData oldMetaData)
+            {
+                _environment = environment;
+                _oldMetaData = oldMetaData;
+            }
+
+            public void Dispose()
+            {
+                _environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = _oldMetaData;
+            }
+        }
+    }
 }

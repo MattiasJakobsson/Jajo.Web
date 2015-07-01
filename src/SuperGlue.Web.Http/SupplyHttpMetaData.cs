@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using SuperGlue.MetaData;
 
@@ -16,7 +15,7 @@ namespace SuperGlue.Web.Http
         {
             return new Dictionary<string, object>
             {
-                {HttpMetaDataKeys.IpAddress, environment.GetRequest().Headers.GetHeader("X-Forwarded-For").FirstOrDefault()},
+                {HttpMetaDataKeys.IpAddress, environment.GetRequest().Headers.GetHeader("X-Forwarded-For")},
                 {HttpMetaDataKeys.Culture, Thread.CurrentThread.CurrentCulture.Name}
             };
         }

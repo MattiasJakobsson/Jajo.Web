@@ -64,7 +64,7 @@ namespace SuperGlue.Web.Routing
                 var allAvailableParameters = GetAvailableRouteParameters(input.ParameterType, GetAllAvailableParameters()).ToList();
                 allAvailableParameters.AddRange(GetAvailableQueryStringParameters(input.ParameterType));
 
-                routedParameters[input.GetType()] = (x =>
+                routedParameters[input.ParameterType] = (x =>
                 {
                     return allAvailableParameters.ToDictionary(y => y.Name, y => y.GetValue(x));
                 });

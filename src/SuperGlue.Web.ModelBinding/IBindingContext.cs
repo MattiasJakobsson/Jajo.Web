@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Web.ModelBinding
 {
     public interface IBindingContext
     {
-        object Bind(Type type);
-        void Bind(Type type, object instance);
+        Task<object> Bind(Type type);
+        Task Bind(Type type, object instance);
         void PrefixWith(string prefix);
         string GetKey(string name);
         string GetPrefix();
