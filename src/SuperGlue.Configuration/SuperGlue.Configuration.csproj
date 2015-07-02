@@ -59,7 +59,6 @@
     <Compile Include="Continue.cs" />
     <Compile Include="IBuildAppFunction.cs" />
     <Compile Include="If.cs" />
-    <Compile Include="InitializedSubApplication.cs" />
     <Compile Include="ISetupConfigurations.cs" />
     <Compile Include="IStartApplication.cs" />
     <Compile Include="IWrapMiddleware.cs" />
@@ -67,10 +66,6 @@
     <Compile Include="SettingsConfiguration.cs" />
     <Compile Include="SetupApplicationConfigurations.cs" />
     <Compile Include="SetupMiddlewareWrappersConfiguration.cs" />
-    <Compile Include="SubApplication.cs" />
-    <Compile Include="SubApplications.cs" />
-    <Compile Include="SubApplicationsEnvironmentExtensions.cs" />
-    <Compile Include="SubAppsConfiguration.cs" />
     <Compile Include="SuperGlueBootstrapper.cs" />
     <Compile Include="WrapMiddleware.cs" />
   </ItemGroup>

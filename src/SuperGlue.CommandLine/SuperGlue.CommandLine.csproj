@@ -47,8 +47,6 @@
     </Compile>
     <Compile Include="AddProjectFromTemplateCommand.cs" />
     <Compile Include="BuildAssetsCommand.cs" />
-    <Compile Include="FileListener.cs" />
-    <Compile Include="IFileListener.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

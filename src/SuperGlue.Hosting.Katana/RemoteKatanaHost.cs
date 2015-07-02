@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.Hosting.Katana
@@ -9,11 +8,11 @@ namespace SuperGlue.Hosting.Katana
     {
         private SuperGlueBootstrapper _bootstrapper;
 
-        public IEnumerable<string> Start(string environment)
+        public void Start(string environment)
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            return _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, ApplicationStartersOverrides.Prefer<StartKatanaHost>()).Result.ToList();
+            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, ApplicationStartersOverrides.Prefer<StartKatanaHost>()).Wait();
         }
 
         public void Stop()

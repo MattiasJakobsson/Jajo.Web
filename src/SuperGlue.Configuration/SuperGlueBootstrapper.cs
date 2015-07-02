@@ -19,7 +19,7 @@ namespace SuperGlue.Configuration
         private IReadOnlyCollection<ISetupConfigurations> _setups;
         private IDictionary<string, object> _environment;
 
-        public virtual async Task<IEnumerable<string>> StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
+        public virtual async Task StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
         {
             _environment = settings;
 
@@ -33,13 +33,7 @@ namespace SuperGlue.Configuration
 
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
 
-            var subApplications = SubApplications.Init(basePath).ToList();
-
-            settings[SubApplicationsEnvironmentExtensions.SubApplicationConstants.SubApplications] = subApplications;
-
             var assemblies = new List<Assembly>();
-
-            assemblies.AddRange(subApplications.Select(x => x.Assembly));
 
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName.StartsWith("SuperGlue")))
             {
@@ -72,8 +66,6 @@ namespace SuperGlue.Configuration
                 if (chain != null)
                     await starter.Start(chain, settings, environment);
             }
-
-            return subApplications.Select(x => x.Path).ToList();
         }
 
         public virtual async Task ShutDown()

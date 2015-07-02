@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Microsoft.Owin.Diagnostics;
 using Microsoft.Owin.Host.HttpListener;
@@ -14,7 +13,6 @@ namespace SuperGlue
     {
         private readonly string _path;
         private readonly string _environment;
-        private readonly IFileListener _fileListener;
         private AppDomain _appDomain;
         private RemoteKatanaHost _katanaHost;
 
@@ -22,7 +20,6 @@ namespace SuperGlue
         {
             _path = path;
             _environment = environment;
-            _fileListener = new FileListener();
         }
 
         public void Start()
@@ -52,22 +49,11 @@ namespace SuperGlue
 
             _katanaHost = (RemoteKatanaHost)_appDomain.CreateInstanceAndUnwrap(typeof(RemoteKatanaHost).Assembly.FullName, typeof(RemoteKatanaHost).FullName);
 
-            var directories = _katanaHost.Start(_environment).ToList();
-
-            foreach (var directory in directories)
-                Console.WriteLine("Loaded subapplication from path: {0}", directory);
-
-            var paths = directories.ToList();
-            paths.AddRange(privateBinPath.ToString().Split(';').Where(x => !string.IsNullOrEmpty(x)));
-
-            foreach (var path in paths)
-                _fileListener.StartListening(path, "*.dll", x => Recycle());
+            _katanaHost.Start(_environment);
         }
 
         public void Stop()
         {
-            _fileListener.StopListeners();
-
             _katanaHost.Stop();
 
             AppDomain.Unload(_appDomain);

@@ -1,5 +1,4 @@
 using System.IO;
-using SuperGlue.Configuration;
 using SuperGlue.Web.Assets;
 
 namespace SuperGlue
@@ -16,20 +15,6 @@ namespace SuperGlue
                 .SetSetupEnabled(true)
                 .UseDestination(Destination)
                 .AddSource(Path.Combine(AppPath, "assets"), 1);
-
-            var subApplications = SubApplications.Init(AppPath);
-
-            var priority = 2;
-
-            foreach (var subApplication in subApplications)
-            {
-                var application = subApplication;
-                var currentPriority = priority;
-
-                settings.AddSource(Path.Combine(application.Path, "/assets"), currentPriority);
-
-                priority++;
-            }
 
             Assets.CollectAllAssets(settings).Wait();
         }

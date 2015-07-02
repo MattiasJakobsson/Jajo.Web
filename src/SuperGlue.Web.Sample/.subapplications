@@ -1,8 +1,0 @@
-{
-    "SubApplications": [
-        {
-            "Name": "SuperGlue.Web.Sample.SubApplication",
-            "RelativePath": "..\\..\\..\\SuperGlue.Web.Sample.SubApplication\\bin\\Debug"
-        }
-    ]
-}

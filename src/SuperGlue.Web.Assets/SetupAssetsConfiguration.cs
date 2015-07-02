@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
@@ -19,20 +18,6 @@ namespace SuperGlue.Web.Assets
                     .SetSetupEnabled(applicationEnvironment == "test")
                     .UseDestination(environment.ResolvePath("~/_assets"))
                     .AddSource(environment.ResolvePath("~/assets"), 1));
-
-                var subApplications = environment.Get<IEnumerable<InitializedSubApplication>>(SubApplicationsEnvironmentExtensions.SubApplicationConstants.SubApplications);
-
-                var priority = 2;
-                foreach (var subApplication in subApplications)
-                {
-                    var application = subApplication;
-                    var currentPriority = priority;
-
-                    environment.AlterSettings<AssetSettings>(x => x.AddSource(Path.Combine(application.Path, "/assets"), currentPriority));
-
-                    priority++;
-                }
-
             }, "superglue.ContainerSetup");
         }
 
