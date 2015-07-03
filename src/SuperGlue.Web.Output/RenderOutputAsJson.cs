@@ -10,21 +10,18 @@ namespace SuperGlue.Web.Output
     {
         public Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                var output = environment.GetOutput();
+            var output = environment.GetOutput();
 
-                if (output == null)
-                    return null;
+            if (output == null)
+                return null;
 
-                var serialized = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(output));
+            var serialized = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(output));
 
-                var stream = (Stream)new MemoryStream(serialized);
+            var stream = (Stream)new MemoryStream(serialized);
 
-                stream.Position = 0;
+            stream.Position = 0;
 
-                return new OutputRenderingResult(stream, "application/json");
-            });
+            return Task.FromResult(new OutputRenderingResult(stream, "application/json"));
         }
     }
 }
