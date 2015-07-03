@@ -6,9 +6,11 @@ namespace SuperGlue.Web.Endpoints
 {
     public class ExecuteActionEndpoint : IExecuteTypeOfEndpoint<Action>
     {
-        public async Task Execute(Action endpoint, IDictionary<string, object> environment)
+        public Task Execute(Action endpoint, IDictionary<string, object> environment)
         {
             endpoint();
+
+            return Task.CompletedTask;
         }
     }
 }
