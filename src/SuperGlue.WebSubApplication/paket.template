@@ -1,9 +1,9 @@
 ﻿type file
-id SuperGlue.WebSubApplication
+id SuperGlue.WebApplication
 version 1.0
 authors Mattias Jakobsson
 description
-        Middleware
+        Web application package
 dependencies
 	SuperGlue.Web.FileUpload
 	SuperGlue.Web.Output.Html
@@ -17,4 +17,5 @@ dependencies
 	SuperGlue.ParameterParsing
 	SuperGlue.Security
 	SuperGlue.UnitOfWork
-	SuperGlue.RavenDb
+	SuperGlue.Web.Endpoints
+	SuperGlue.Web.ModelBinding
