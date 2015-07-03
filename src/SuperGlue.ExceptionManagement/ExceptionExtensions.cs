@@ -1,16 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
-namespace SuperGlue
+namespace SuperGlue.ExceptionManagement
 {
-    internal static class ExceptionExtensions
+    public static class ExceptionExtensions
     {
         internal class ExceptionConstants
         {
             public const string Exception = "superglue.Exception";
         }
 
-        internal static Exception GetException(this IDictionary<string, object> environment)
+        public static Exception GetException(this IDictionary<string, object> environment)
         {
             return environment.Get<Exception>(ExceptionConstants.Exception);
         }
