@@ -73,6 +73,7 @@
     <Compile Include="RenderOutputAsJson.cs" />
     <Compile Include="RenderOutputAsXml.cs" />
     <Compile Include="RenderRedirectOutput.cs" />
+    <Compile Include="RenderStreamOutput.cs" />
     <Compile Include="RenderStringOutput.cs" />
   </ItemGroup>
   <ItemGroup>
