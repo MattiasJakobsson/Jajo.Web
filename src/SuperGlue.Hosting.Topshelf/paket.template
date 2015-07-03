@@ -5,7 +5,7 @@ authors Mattias Jakobsson
 description
         SuperGlue topshelf host
 files
-    bin/Release/SuperGlue.Hosting.Topshelf.dll ==> lib
+    bin/Release/SuperGlue.Hosting.Topshelf.exe ==> lib
 dependencies
 	Topshelf
 	SuperGlue.Configuration
