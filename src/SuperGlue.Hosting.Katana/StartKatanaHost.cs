@@ -17,21 +17,19 @@ namespace SuperGlue.Hosting.Katana
 
         public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                var url = settings.Get("superglue.Web.Urls", "http://localhost:8020");
+            var url = settings.Get("superglue.Web.Urls", "http://localhost:8020");
 
-                _webApp = WebApp.Start(new StartOptions(url), x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain)));
-            });
+            _webApp = WebApp.Start(new StartOptions(url), x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain)));
+
+            return Task.CompletedTask;
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                if (_webApp != null)
-                    _webApp.Dispose();
-            });
+            if (_webApp != null)
+                _webApp.Dispose();
+
+            return Task.CompletedTask;
         }
 
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)

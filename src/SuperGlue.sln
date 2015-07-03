@@ -120,7 +120,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Collections", "Su
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SuperGlue.WebApplication", "SuperGlue.WebApplication", "{ABA2674A-2159-42EE-94DA-8DEE3C3CEE4F}"
 	ProjectSection(SolutionItems) = preProject
-		SuperGlue.WebSubApplication\paket.template = SuperGlue.WebSubApplication\paket.template
+		SuperGlue.WebApplication\paket.template = SuperGlue.WebApplication\paket.template
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.HttpClient", "SuperGlue.HttpClient\SuperGlue.HttpClient.csproj", "{206CBCAA-A2A4-4E50-8E20-F15F3DB7C68B}"

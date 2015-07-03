@@ -1,5 +1,5 @@
 ﻿type file
-id SuperGlue.WebSubApplication
+id SuperGlue.WebApplication
 version 1.0
 authors Mattias Jakobsson
 description
@@ -17,3 +17,10 @@ dependencies
 	SuperGlue.ParameterParsing
 	SuperGlue.Security
 	SuperGlue.UnitOfWork
+	SuperGlue.Web.Endpoints
+	SuperGlue.Web.ModelBinding
+	SuperGlue.Diagnostics
+	SuperGlue.RequestBranching
+	SuperGlue.Web.Http
+	SuperGlue.StructureMap
+	SuperGlue.Web.Routing.Superscribe
