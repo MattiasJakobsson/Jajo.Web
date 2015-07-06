@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using SuperGlue.Security.Authentication;
@@ -16,8 +15,11 @@ namespace SuperGlue.Security
                 environment.RegisterAll(typeof(IAuthenticationTokenSource));
                 environment.RegisterAll(typeof(IFindRequiredAuthorizationInformationFromRequest));
                 environment.RegisterAllClosing(typeof(IValidateAuthorizationInformation<>));
+                environment.RegisterAll(typeof(IAuthenticationStrategy));
+                environment.RegisterAllClosing(typeof(IAuthenticationStrategy<>));
 
                 environment.RegisterTransient(typeof(IHasher), (x, y) => new DefaultHasher(y.GetHasherSettings()));
+                environment.RegisterTransient(typeof(IAuthenticationService), typeof(DefaultAuthenticationService));
             }, "superglue.ContainerSetup");
         }
 
