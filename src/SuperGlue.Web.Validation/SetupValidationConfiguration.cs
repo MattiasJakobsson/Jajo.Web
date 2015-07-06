@@ -18,12 +18,12 @@ namespace SuperGlue.Web.Validation
 
         public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            throw new System.NotImplementedException();
+            return Task.CompletedTask;
         }
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            throw new System.NotImplementedException();
+            return Task.CompletedTask;
         }
     }
 }
