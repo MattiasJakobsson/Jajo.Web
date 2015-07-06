@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
 using SuperGlue.EventStore.ConflictManagement;
+using SuperGlue.EventStore.Timeouts;
 
 namespace SuperGlue.EventStore.Data
 {
@@ -33,6 +34,9 @@ namespace SuperGlue.EventStore.Data
                 environment.RegisterTransient(typeof(IRepository), typeof(DefaultRepository));
                 environment.RegisterTransient(typeof(ICheckConflicts), typeof(DefaultConflictChecker));
                 environment.RegisterAllClosing(typeof(ICheckConflict<,>));
+                environment.RegisterTransient(typeof(IManageTimeOuts), typeof(DefaultTimeOutManager));
+
+                TimeOutManager.Configure(() => new StoreTimeoutsInMemory());
             }, "superglue.ContainerSetup");
         }
 
