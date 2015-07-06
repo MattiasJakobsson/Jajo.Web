@@ -8,7 +8,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
     {
         public Task<IDictionary<string, object>> GetValues(IDictionary<string, object> envinronment)
         {
-            return Task.Factory.StartNew(() => (IDictionary<string, object>)envinronment.GetRouteInformation().Parameters.ToDictionary(x => x.Key, x => x.Value));
+            return Task.FromResult((IDictionary<string, object>)envinronment.GetRouteInformation().Parameters.ToDictionary(x => x.Key, x => x.Value));
         }
     }
 }

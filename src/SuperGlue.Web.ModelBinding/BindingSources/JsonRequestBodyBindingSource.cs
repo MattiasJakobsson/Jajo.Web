@@ -15,7 +15,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
         {
             SetValues(envinronment);
 
-            return Task.Factory.StartNew(() => (IDictionary<string, object>)_data.ToDictionary(x => x.Key.ToLower(), x => (object)x.Value));
+            return Task.FromResult((IDictionary<string, object>)_data.ToDictionary(x => x.Key.ToLower(), x => (object)x.Value));
         }
 
         private void SetValues(IDictionary<string, object> envinronment)

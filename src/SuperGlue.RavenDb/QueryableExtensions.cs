@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Raven.Client;
 using SuperGlue.Collections;
 
@@ -12,6 +13,15 @@ namespace SuperGlue.RavenDb
             var skip = (page - 1) * pageSize;
 
             var items = query.Skip(skip).Take(pageSize).ToList();
+
+            return new PagedList<TItem>(items, statistics.TotalResults, page, pageSize);
+        }
+
+        public static async Task<IPagedList<TItem>> ToPagedListAsync<TItem>(this IQueryable<TItem> query, RavenQueryStatistics statistics, int page, int pageSize)
+        {
+            var skip = (page - 1) * pageSize;
+
+            var items = await query.Skip(skip).Take(pageSize).ToListAsync();
 
             return new PagedList<TItem>(items, statistics.TotalResults, page, pageSize);
         }
