@@ -4,11 +4,11 @@ using EventStore.ClientAPI;
 
 namespace SuperGlue.EventStore.ConflictManagement
 {
-    public class CheckConflicts : ICheckConflicts
+    public class DefaultConflictChecker : ICheckConflicts
     {
         private readonly IHandleEventSerialization _eventSerialization;
 
-        public CheckConflicts(IHandleEventSerialization eventSerialization)
+        public DefaultConflictChecker(IHandleEventSerialization eventSerialization)
         {
             _eventSerialization = eventSerialization;
         }

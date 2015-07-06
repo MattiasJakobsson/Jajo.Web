@@ -55,7 +55,7 @@
     <Compile Include="EventStoreUnitOfWork.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="IWriteToErrorStream.cs" />
-    <Compile Include="ConflictManagement\CheckConflicts.cs" />
+    <Compile Include="ConflictManagement\DefaultConflictChecker.cs" />
     <Compile Include="ConflictManagement\ConflictingEventException.cs" />
     <Compile Include="ConflictManagement\ICheckConflict.cs" />
     <Compile Include="ConflictManagement\ICheckConflicts.cs" />

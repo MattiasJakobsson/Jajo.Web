@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
+using SuperGlue.EventStore.ConflictManagement;
 
 namespace SuperGlue.EventStore.Data
 {
@@ -30,6 +31,8 @@ namespace SuperGlue.EventStore.Data
                 environment.RegisterTransient(typeof(IWriteToErrorStream), typeof(DefaultErrorStreamWriter));
                 environment.RegisterTransient(typeof(IInstantiateAggregate), typeof(DefaultAggregateInstantiator));
                 environment.RegisterTransient(typeof(IRepository), typeof(DefaultRepository));
+                environment.RegisterTransient(typeof(ICheckConflicts), typeof(DefaultConflictChecker));
+                environment.RegisterAllClosing(typeof(ICheckConflict<,>));
             }, "superglue.ContainerSetup");
         }
 
