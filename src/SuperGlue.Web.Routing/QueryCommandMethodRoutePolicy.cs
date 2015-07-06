@@ -22,7 +22,7 @@ namespace SuperGlue.Web.Routing
             return possibleEndpoints.Select(Build);
         }
 
-        private EndpointInformation Build(MethodInfo method)
+        protected virtual EndpointInformation Build(MethodInfo method)
         {
             var httpMethods = new string[0];
 
@@ -31,16 +31,18 @@ namespace SuperGlue.Web.Routing
             if (methodNameMethod.ContainsKey(method.Name))
                 httpMethods = methodNameMethod[method.Name];
 
-            var parts = new List<IUrlPart>();
+            var parts = GetInitialUrlParts().ToList();
 
             var handlerType = method.ReflectedType;
             var input = method.GetParameters().FirstOrDefault();
 
             if (handlerType != null)
             {
-                var namespacePart = (handlerType.Namespace ?? "").Split('.').LastOrDefault();
-                if (!string.IsNullOrEmpty(namespacePart) && !GetNamespacePartsToIgnore().Contains(namespacePart))
-                    parts.Add(new StaticUrlPart(namespacePart.ToLower()));
+                var namespaceParts = GetNamespaceParts(handlerType.Namespace ?? "");
+
+                parts.AddRange((from namespacePart in namespaceParts 
+                                where !string.IsNullOrEmpty(namespacePart) && !GetNamespacePartsToIgnore().Contains(namespacePart) 
+                                select new StaticUrlPart(namespacePart.ToLower())));
 
                 if (input != null)
                 {
@@ -87,6 +89,16 @@ namespace SuperGlue.Web.Routing
         {
             var availableUrlParameterNames = GetAllAvailableParameters();
             return input.GetProperties().Where(x => !availableUrlParameterNames.Any(y => y.Equals(x.Name, StringComparison.OrdinalIgnoreCase))).Select(RouteParameter.FromProperty).ToList();
+        }
+
+        protected virtual IEnumerable<string> GetNamespaceParts(string ns)
+        {
+            yield return ns.Split('.').LastOrDefault();
+        }
+
+        protected virtual IEnumerable<IUrlPart> GetInitialUrlParts()
+        {
+            return new List<IUrlPart>();
         }
 
         protected virtual IReadOnlyDictionary<string, string[]> GetMethodNameMethods()
