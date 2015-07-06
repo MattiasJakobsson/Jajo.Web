@@ -33,13 +33,7 @@ namespace SuperGlue.Configuration
 
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
 
-            var assemblies = new List<Assembly>();
-
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.GlobalAssemblyCache && !x.IsDynamic))
-            {
-                if (!assemblies.Contains(assembly))
-                    assemblies.Add(assembly);
-            }
+            var assemblies = LoadApplicationAssemblies().ToList();
 
             _setups = RunConfigurations(assemblies, environment);
 
@@ -152,6 +146,14 @@ namespace SuperGlue.Configuration
             }
 
             return setups;
+        }
+
+        protected virtual IEnumerable<Assembly> LoadApplicationAssemblies()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .Where(x =>
+                        !x.GlobalAssemblyCache && !x.IsDynamic && !x.FullName.StartsWith("System") &&
+                        !x.FullName.StartsWith("Microsoft"));
         }
 
         protected virtual IEnumerable<string> ExecuteConfigurationsDependingOn(IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn)
