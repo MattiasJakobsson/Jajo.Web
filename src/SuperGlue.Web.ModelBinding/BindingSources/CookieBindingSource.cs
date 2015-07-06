@@ -8,7 +8,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
     {
         public Task<IDictionary<string, object>> GetValues(IDictionary<string, object> envinronment)
         {
-            return Task.Factory.StartNew(() => (IDictionary<string, object>)envinronment.GetRequest().Cookies.ToDictionary(x => x.Key.ToLower(), x => (object)x.Value));
+            return Task.FromResult((IDictionary<string, object>)envinronment.GetRequest().Cookies.ToDictionary(x => x.Key.ToLower(), x => (object)x.Value));
         }
     }
 }

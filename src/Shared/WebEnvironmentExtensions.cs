@@ -161,7 +161,7 @@ namespace SuperGlue.Web
             {
                 var cookies = new Dictionary<string, string>();
 
-                var text = Headers.GetHeader("Cookie");
+                var text = Headers.GetHeader("Cookie") ?? "";
 
                 ParseDelimited(text, SemicolonAndComma, AddCookieCallback, cookies);
 
