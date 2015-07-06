@@ -22,7 +22,8 @@ namespace SuperGlue.Web.ModelBinding
         public async Task<object> Bind(Type type, IBindingContext bindingContext)
         {
             var instance = Activator.CreateInstance(type);
-            return await Bind(type, bindingContext, instance) ? instance : null;
+            await Bind(type, bindingContext, instance);
+            return instance;
         }
 
         public async Task<bool> Bind(Type type, IBindingContext bindingContext, object instance)

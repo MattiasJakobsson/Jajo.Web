@@ -107,10 +107,15 @@ namespace SuperGlue.Web.Sample
 
     public class TestEndpoint
     {
-        public TestEndpointQueryResult Query()
+        public TestEndpointQueryResult Query(TestEndpointQueryInput input)
         {
             return new TestEndpointQueryResult("Hello world!");
         }
+    }
+
+    public class TestEndpointQueryInput
+    {
+        public string TestInput { get; set; }
     }
 
     public class TestEndpointQueryResult

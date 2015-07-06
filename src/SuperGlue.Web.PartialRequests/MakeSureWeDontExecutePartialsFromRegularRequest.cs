@@ -8,13 +8,7 @@ namespace SuperGlue.Web.PartialRequests
     {
         public Task<bool> Exists(object routeEndpoint, IDictionary<string, object> environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                if (environment.IsPartial())
-                    return true;
-
-                return !environment.IsPartialEndpoint(routeEndpoint);
-            });
+            return Task.FromResult(environment.IsPartial() || !environment.IsPartialEndpoint(routeEndpoint));
         }
     }
 }

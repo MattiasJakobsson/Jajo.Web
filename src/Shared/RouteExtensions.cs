@@ -19,9 +19,9 @@ namespace SuperGlue
 
         public static RoutingData GetRouteInformation(this IDictionary<string, object> environment)
         {
-            return new RoutingData(new ReadOnlyDictionary<string, object>(environment.Get<IDictionary<string, object>>(RouteConstants.Parameters)), 
+            return new RoutingData(new ReadOnlyDictionary<string, object>(environment.Get<IDictionary<string, object>>(RouteConstants.Parameters, new Dictionary<string, object>())), 
                 environment.Get<object>(RouteConstants.RoutedTo),
-                environment.Get<IEnumerable<Type>>(RouteConstants.InputTypes));
+                environment.Get<IEnumerable<Type>>(RouteConstants.InputTypes, new List<Type>()));
         }
 
         public static string RouteTo(this IDictionary<string, object> environment, object input)
