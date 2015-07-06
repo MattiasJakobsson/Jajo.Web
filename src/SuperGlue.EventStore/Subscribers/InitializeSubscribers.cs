@@ -18,19 +18,17 @@ namespace SuperGlue.EventStore.Subscribers
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly IWriteToErrorStream _writeToErrorStream;
         private readonly IEventStoreConnection _eventStoreConnection;
-        private readonly IFindPartitionKey _findPartitionKey;
         private static bool running;
         private readonly IDictionary<string, IServiceSubscription> _serviceSubscriptions = new Dictionary<string, IServiceSubscription>();
 
         private readonly int _dispatchWaitSeconds;
         private readonly int _numberOfEventsPerBatch;
 
-        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection, IFindPartitionKey findPartitionKey)
+        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection)
         {
             _eventSerialization = eventSerialization;
             _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
-            _findPartitionKey = findPartitionKey;
 
             _dispatchWaitSeconds = 1;
 
@@ -128,7 +126,7 @@ namespace SuperGlue.EventStore.Subscribers
             {
                 var eventstoreSubscription = _eventStoreConnection.SubscribeToStreamAsync(stream, true,
                     (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
-                    (subscription, reason, exception) => SubscriptionDropped(chain, name, stream, true, reason, exception, environment)).Result;
+                    async (subscription, reason, exception) => await SubscriptionDropped(chain, name, stream, true, reason, exception, environment)).Result;
 
                 _serviceSubscriptions[subscriptionKey] = new LiveOnlyServiceSubscription(messageSubscription, eventstoreSubscription);
             }
@@ -147,14 +145,14 @@ namespace SuperGlue.EventStore.Subscribers
             }
         }
 
-        private void SubscriptionDropped(AppFunc chain, string name, string stream, bool liveOnlySubscriptions, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)
+        private async Task SubscriptionDropped(AppFunc chain, string name, string stream, bool liveOnlySubscriptions, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)
         {
             if (!running)
                 return;
 
             //TODO:Log
 
-            SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
+            await SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
         }
 
         private async Task PushEventsToService(AppFunc chain, string name, string stream, IEnumerable<DeSerializationResult> events, bool catchup, IDictionary<string, object> environment)
@@ -165,24 +163,20 @@ namespace SuperGlue.EventStore.Subscribers
             foreach (var evnt in failedEvents)
                 OnServiceError(name, stream, evnt.Data, evnt.Metadata, evnt.Error);
 
-            var groupedEvents = eventsList
-                .Where(x => x.Successful)
-                .GroupBy(x => _findPartitionKey.FindFrom(x.Metadata));
+            var successfullEvents = eventsList
+                .Where(x => x.Successful);
 
-            foreach (var groupedEvent in groupedEvents)
+            try
             {
-                try
-                {
-                    await PushEvents(chain, name, stream, groupedEvent.Select(x => x), groupedEvent.Key, catchup, environment);
-                }
-                catch (Exception ex)
-                {
-                    //TODO:Log
-                }
+                await PushEvents(chain, name, stream, successfullEvents, catchup, environment);
+            }
+            catch (Exception ex)
+            {
+                //TODO:Log
             }
         }
 
-        private async Task PushEvents(AppFunc chain, string service, string stream, IEnumerable<DeSerializationResult> events, string partitionKey, bool catchup, IDictionary<string, object> environment)
+        private async Task PushEvents(AppFunc chain, string service, string stream, IEnumerable<DeSerializationResult> events, bool catchup, IDictionary<string, object> environment)
         {
             var requestEnvironment = new Dictionary<string, object>();
             foreach (var item in environment)
@@ -193,7 +187,6 @@ namespace SuperGlue.EventStore.Subscribers
             request.Service = service;
             request.Stream = stream;
             request.Events = events;
-            request.PartitionKey = partitionKey;
             request.IsCatchUp = catchup;
             request.OnException = (exception, evnt) => OnServiceError(service, stream, evnt.Data, evnt.Metadata, exception);
 

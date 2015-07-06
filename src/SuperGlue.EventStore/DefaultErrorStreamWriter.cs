@@ -5,11 +5,11 @@ using EventStore.ClientAPI;
 
 namespace SuperGlue.EventStore
 {
-    public class WriteToErrorStream : IWriteToErrorStream
+    public class DefaultErrorStreamWriter : IWriteToErrorStream
     {
         private readonly IHandleEventSerialization _eventSerialization;
 
-        public WriteToErrorStream(IHandleEventSerialization eventSerialization)
+        public DefaultErrorStreamWriter(IHandleEventSerialization eventSerialization)
         {
             _eventSerialization = eventSerialization;
         }

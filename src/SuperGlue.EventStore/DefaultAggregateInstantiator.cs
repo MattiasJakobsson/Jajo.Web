@@ -1,6 +1,6 @@
 namespace SuperGlue.EventStore
 {
-    public class InstantiateAggregate : IInstantiateAggregate
+    public class DefaultAggregateInstantiator : IInstantiateAggregate
     {
         public T Instantiate<T>(string id) where T : IAggregate, new()
         {

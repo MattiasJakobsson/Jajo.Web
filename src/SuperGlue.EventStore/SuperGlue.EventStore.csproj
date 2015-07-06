@@ -70,10 +70,9 @@
     <Compile Include="IEventHandler.cs" />
     <Compile Include="IEventHandlerMappingStrategy.cs" />
     <Compile Include="IEventStream.cs" />
-    <Compile Include="IHandleStreamNames.cs" />
     <Compile Include="IInstantiateAggregate.cs" />
     <Compile Include="IManageChanges.cs" />
-    <Compile Include="Data\Repository.cs" />
+    <Compile Include="Data\DefaultRepository.cs" />
     <Compile Include="Messages\ProcessManagerFailed.cs" />
     <Compile Include="Messages\ServiceEventProcessingFailed.cs" />
     <Compile Include="Messages\ProjectionFailed.cs" />
@@ -91,7 +90,6 @@
     <Compile Include="Projections\ApplyStateChangesTo.cs" />
     <Compile Include="Projections\ConfigureProjections.cs" />
     <Compile Include="Projections\ExecuteProjection.cs" />
-    <Compile Include="IFindPartitionKey.cs" />
     <Compile Include="Projections\IManageEventNumbersForProjections.cs" />
     <Compile Include="Projections\EventStoreProjection.cs" />
     <Compile Include="Projections\IApplyStateChangesTo.cs" />
@@ -101,7 +99,6 @@
     <Compile Include="Projections\ProjectionEventMappingContext.cs" />
     <Compile Include="Projections\ProjectionSubscription.cs" />
     <Compile Include="Projections\SetLastEvent.cs" />
-    <Compile Include="SetupEventStoreConfiguration.cs" />
     <Compile Include="Subscribers\CatchUpServiceSubscription.cs" />
     <Compile Include="Subscribers\ConfigureSubscribers.cs" />
     <Compile Include="Subscribers\ISubscribeTo.cs" />
@@ -113,7 +110,7 @@
     <Compile Include="Subscribers\SetLastEvent.cs" />
     <Compile Include="Timeouts\DefaultTimeOutManager.cs" />
     <Compile Include="Timeouts\IManageTimeOuts.cs" />
-    <Compile Include="InstantiateAggregate.cs" />
+    <Compile Include="DefaultAggregateInstantiator.cs" />
     <Compile Include="Data\InvalidEventstoreConnectionStringException.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="NoEventHandlerAttribute.cs" />
@@ -123,7 +120,7 @@
     <Compile Include="Timeouts\TimeoutData.cs" />
     <Compile Include="Timeouts\TimeOutManager.cs" />
     <Compile Include="TypeThresholdedActionBasedDomainEventHandler.cs" />
-    <Compile Include="WriteToErrorStream.cs" />
+    <Compile Include="DefaultErrorStreamWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />

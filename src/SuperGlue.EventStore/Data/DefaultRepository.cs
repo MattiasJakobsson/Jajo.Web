@@ -11,13 +11,12 @@ using SuperGlue.MetaData;
 
 namespace SuperGlue.EventStore.Data
 {
-    public class Repository : IRepository
+    public class DefaultRepository : IRepository
     {
         private readonly IInstantiateAggregate _instantiateAggregate;
         private readonly IEventStoreConnection _eventStoreConnection;
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly ICheckConflicts _checkConflicts;
-        private readonly IHandleStreamNames _handleStreamNames;
         private readonly IEnumerable<IManageChanges> _manageChanges;
         private readonly IManageTimeOuts _timeoutManager;
         private readonly IDictionary<string, object> _environment;
@@ -30,14 +29,13 @@ namespace SuperGlue.EventStore.Data
         private const int WritePageSize = 500;
         private const int ReadPageSize = 500;
 
-        public Repository(IInstantiateAggregate instantiateAggregate, IEventStoreConnection eventStoreConnection, IHandleEventSerialization eventSerialization, ICheckConflicts checkConflicts, IHandleStreamNames handleStreamNames,
+        public DefaultRepository(IInstantiateAggregate instantiateAggregate, IEventStoreConnection eventStoreConnection, IHandleEventSerialization eventSerialization, ICheckConflicts checkConflicts,
             IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager, IDictionary<string, object> environment)
         {
             _instantiateAggregate = instantiateAggregate;
             _eventStoreConnection = eventStoreConnection;
             _eventSerialization = eventSerialization;
             _checkConflicts = checkConflicts;
-            _handleStreamNames = handleStreamNames;
             _manageChanges = manageChanges;
             _timeoutManager = timeoutManager;
             _environment = environment;
@@ -56,7 +54,7 @@ namespace SuperGlue.EventStore.Data
         public async Task<T> LoadVersion<T>(string id, int version) where T : IAggregate, new()
         {
             var aggregate = _instantiateAggregate.Instantiate<T>(id);
-            var streamName = _handleStreamNames.GetAggregateStreamName(aggregate);
+            var streamName = GetAggregateStreamName(aggregate);
 
             var events = await LoadEventsFromStream(streamName, 0, version);
 
@@ -103,7 +101,7 @@ namespace SuperGlue.EventStore.Data
             commitHeaders[ContextHeader] = aggregate.Context;
             commitHeaders[AggregateIdHeader] = aggregate.Id;
 
-            var streamName = _handleStreamNames.GetAggregateStreamName(aggregate);
+            var streamName = GetAggregateStreamName(aggregate);
             var eventStream = aggregate.GetUncommittedChanges();
             var newEvents = eventStream.Events.ToList();
             var originalVersion = aggregate.Version - newEvents.Count;
@@ -164,7 +162,7 @@ namespace SuperGlue.EventStore.Data
             commitHeaders[CommitIdHeader] = commitId;
             commitHeaders[ContextHeader] = context;
 
-            var streamName = _handleStreamNames.GetStreamName(stream, context);
+            var streamName = GetStreamName(stream, context);
             var newEvents = events.ToList();
 
             await SaveEventsToStream(streamName, ExpectedVersion.Any, newEvents, commitHeaders);
@@ -260,6 +258,16 @@ namespace SuperGlue.EventStore.Data
 
             var handler = AggregateLoaded;
             if (handler != null) handler(aggregate);
+        }
+
+        protected virtual string GetAggregateStreamName(IAggregate aggregate)
+        {
+            return string.Format("aggregate-{0}-{1}-{2}", aggregate.Context, aggregate.GetType().Name, aggregate.Id);
+        }
+
+        protected virtual string GetStreamName(string stream, string context)
+        {
+            return string.Format("{0}-{1}", context, stream);
         }
 
         private EventData ToEventData(Guid eventId, object evnt, IDictionary<string, object> headers)

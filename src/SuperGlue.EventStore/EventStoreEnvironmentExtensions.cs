@@ -15,7 +15,6 @@ namespace SuperGlue.EventStore
             public const string Stream = "superglue.EventStore.Stream";
             public const string IsCatchUp = "superglue.EventStore.IsCatchUp";
             public const string Events = "superglue.EventStore.Events";
-            public const string PartitionKey = "superglue.EventStore.PartitionKey";
             public const string OnException = "superglue.EventStore.OnException";
         }
 
@@ -67,12 +66,6 @@ namespace SuperGlue.EventStore
             {
                 get { return _environment.Get<bool>(EventStoreConstants.IsCatchUp); }
                 set { _environment[EventStoreConstants.IsCatchUp] = value; }
-            }
-
-            public string PartitionKey
-            {
-                get { return _environment.Get<string>(EventStoreConstants.PartitionKey); }
-                set { _environment[EventStoreConstants.PartitionKey] = value; }
             }
 
             public Action<Exception, DeSerializationResult> OnException

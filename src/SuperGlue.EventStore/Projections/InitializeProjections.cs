@@ -19,7 +19,6 @@ namespace SuperGlue.EventStore.Projections
         private readonly IEnumerable<IEventStoreProjection> _projections;
         private readonly IEventStoreConnection _eventStoreConnection;
         private readonly IWriteToErrorStream _writeToErrorStream;
-        private readonly IFindPartitionKey _findPartitionKey;
         private static bool running;
         private readonly IDictionary<string, ProjectionSubscription> _projectionSubscriptions = new Dictionary<string, ProjectionSubscription>();
 
@@ -27,13 +26,12 @@ namespace SuperGlue.EventStore.Projections
         private readonly int _numberOfEventsPerBatch;
 
         public InitializeProjections(IHandleEventSerialization eventSerialization, IEnumerable<IEventStoreProjection> projections, IWriteToErrorStream writeToErrorStream,
-            IEventStoreConnection eventStoreConnection, IFindPartitionKey findPartitionKey)
+            IEventStoreConnection eventStoreConnection)
         {
             _eventSerialization = eventSerialization;
             _projections = projections;
             _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
-            _findPartitionKey = findPartitionKey;
 
             _dispatchWaitSeconds = 1;
 
@@ -139,24 +137,20 @@ namespace SuperGlue.EventStore.Projections
             foreach (var evnt in failedEvents)
                 OnProjectionError(projection, evnt.Data, evnt.Metadata, evnt.Error);
 
-            var groupedEvents = eventsList
-                .Where(x => x.Successful)
-                .GroupBy(x => _findPartitionKey.FindFrom(x.Metadata));
+            var successfullEvents = eventsList
+                .Where(x => x.Successful);
 
-            foreach (var groupedEvent in groupedEvents)
+            try
             {
-                try
-                {
-                    await PushEvents(chain, projection, groupedEvent.Select(x => x), groupedEvent.Key, environment);
-                }
-                catch (Exception ex)
-                {
-                    //TODO:Log
-                }
+                await PushEvents(chain, projection, successfullEvents, environment);
+            }
+            catch (Exception ex)
+            {
+                //TODO:Log
             }
         }
 
-        private async Task PushEvents(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, string partitionKey, IDictionary<string, object> environment)
+        private async Task PushEvents(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, IDictionary<string, object> environment)
         {
             var requestEnvironment = new Dictionary<string, object>();
             foreach (var item in environment)
@@ -166,7 +160,6 @@ namespace SuperGlue.EventStore.Projections
 
             request.Projection = projection;
             request.Events = events;
-            request.PartitionKey = partitionKey;
             request.OnException = (exception, evnt) => OnProjectionError(projection, evnt.Data, evnt.Metadata, exception);
 
             await chain(requestEnvironment);

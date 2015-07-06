@@ -26,17 +26,21 @@ namespace SuperGlue.EventStore.Data
                 environment.RegisterSingleton(typeof(IEventStoreConnection), connection);
                 environment.RegisterSingleton(typeof(EventStoreConnectionString), connectionString);
                 environment.RegisterAll(typeof(IManageChanges));
+                environment.RegisterTransient(typeof(IHandleEventSerialization), typeof(DefaultEventSerializer));
+                environment.RegisterTransient(typeof(IWriteToErrorStream), typeof(DefaultErrorStreamWriter));
+                environment.RegisterTransient(typeof(IInstantiateAggregate), typeof(DefaultAggregateInstantiator));
+                environment.RegisterTransient(typeof(IRepository), typeof(DefaultRepository));
             }, "superglue.ContainerSetup");
         }
 
         public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
     }
 }
