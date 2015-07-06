@@ -5,12 +5,12 @@ using Newtonsoft.Json;
 
 namespace SuperGlue.EventStore
 {
-    public class HandleEventSerialization : IHandleEventSerialization
+    public class DefaultEventSerializer : IHandleEventSerialization
     {
         private static readonly JsonSerializerSettings SerializerSettings;
         private const string EventClrTypeHeader = "EventClrTypeName";
 
-        static HandleEventSerialization()
+        static DefaultEventSerializer()
         {
             SerializerSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None };
         }

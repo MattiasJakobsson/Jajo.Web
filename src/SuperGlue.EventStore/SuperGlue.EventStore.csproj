@@ -59,7 +59,7 @@
     <Compile Include="ConflictManagement\ConflictingEventException.cs" />
     <Compile Include="ConflictManagement\ICheckConflict.cs" />
     <Compile Include="ConflictManagement\ICheckConflicts.cs" />
-    <Compile Include="HandleEventSerialization.cs" />
+    <Compile Include="DefaultEventSerializer.cs" />
     <Compile Include="IHandleEventSerialization.cs" />
     <Compile Include="Data\ConfigureEventStore.cs" />
     <Compile Include="ConventionalEventHandlerMappingStrategy.cs" />
@@ -101,6 +101,7 @@
     <Compile Include="Projections\ProjectionEventMappingContext.cs" />
     <Compile Include="Projections\ProjectionSubscription.cs" />
     <Compile Include="Projections\SetLastEvent.cs" />
+    <Compile Include="SetupEventStoreConfiguration.cs" />
     <Compile Include="Subscribers\CatchUpServiceSubscription.cs" />
     <Compile Include="Subscribers\ConfigureSubscribers.cs" />
     <Compile Include="Subscribers\ISubscribeTo.cs" />
