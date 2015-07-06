@@ -12,7 +12,6 @@ using SuperGlue.Web.ModelBinding;
 using SuperGlue.Web.Output;
 using SuperGlue.Web.Routing.Superscribe;
 using SuperGlue.Web.Validation;
-using SuperGlue.Web.Validation.InputValidation;
 
 namespace SuperGlue.Web.Sample
 {
@@ -62,7 +61,7 @@ namespace SuperGlue.Web.Sample
                     .Use<HandleUnitOfWork>()
                     .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(x => x.GetRouteInformation().InputTypes))
                     .Use<AuthorizeRequest>()
-                    .Use<ValidateRequest>(new ValidateRequestOptions().UsingValidator(new ValidateRequestInput()))
+                    .Use<ValidateRequest>()
                     .Use<ExecuteEndpoint>()
                     .Use<RenderOutput>();
             });

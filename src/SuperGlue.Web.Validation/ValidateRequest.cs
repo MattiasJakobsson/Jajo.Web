@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Web.Validation
@@ -10,22 +9,22 @@ namespace SuperGlue.Web.Validation
     public class ValidateRequest
     {
         private readonly AppFunc _next;
-        private readonly ValidateRequestOptions _options;
 
-        public ValidateRequest(AppFunc next, ValidateRequestOptions options)
+        public ValidateRequest(AppFunc next)
         {
             if (next == null)
                 throw new ArgumentNullException("next");
 
             _next = next;
-            _options = options;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
             var errors = new List<ValidationResult.ValidationError>();
 
-            foreach (var validator in _options.Validators)
+            var validators = environment.ResolveAll<IValidateRequest>();
+
+            foreach (var validator in validators)
             {
                 var result = await validator.Validate(environment);
                 errors.AddRange(result.Errors);
@@ -37,20 +36,6 @@ namespace SuperGlue.Web.Validation
                 await _next(environment);
             else
                 environment[ValidationEnvironmentExtensions.ValidationConstants.ValidationResult] = validationResult;
-        }
-    }
-
-    public class ValidateRequestOptions
-    {
-        private readonly IList<IValidateRequest> _validators = new List<IValidateRequest>();
-
-        public IReadOnlyCollection<IValidateRequest> Validators { get { return new ReadOnlyCollection<IValidateRequest>(_validators); } }
-
-        public ValidateRequestOptions UsingValidator(IValidateRequest validator)
-        {
-            _validators.Add(validator);
-
-            return this;
         }
     }
 }

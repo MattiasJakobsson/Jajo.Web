@@ -6,3 +6,5 @@ description
         Middleware
 files
     bin/Release/SuperGlue.Web.Validation.dll ==> lib
+dependencies
+	SuperGlue.Configuration
