@@ -35,7 +35,7 @@ namespace SuperGlue.Configuration
 
             var assemblies = new List<Assembly>();
 
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => x.FullName.StartsWith("SuperGlue")))
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Where(x => !x.GlobalAssemblyCache && !x.IsDynamic))
             {
                 if (!assemblies.Contains(assembly))
                     assemblies.Add(assembly);
