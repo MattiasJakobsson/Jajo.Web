@@ -51,6 +51,8 @@
     </Compile>
     <Compile Include="AggregateVersionException.cs" />
     <Compile Include="BaseAggregate.cs" />
+    <Compile Include="Data\ProjectionsManagerExtensions.cs" />
+    <Compile Include="Data\ProjectionBuilder.cs" />
     <Compile Include="EventStoreEnvironmentExtensions.cs" />
     <Compile Include="EventStoreUnitOfWork.cs" />
     <Compile Include="MessageProcessor.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="ProcessManagers\SetLastEvent.cs" />
     <Compile Include="Projections\ApplyStateChangesTo.cs" />
     <Compile Include="Projections\ConfigureProjections.cs" />
+    <Compile Include="Projections\CreateEventStoreProjections.cs" />
     <Compile Include="Projections\ExecuteProjection.cs" />
     <Compile Include="Projections\IManageEventNumbersForProjections.cs" />
     <Compile Include="Projections\EventStoreProjection.cs" />

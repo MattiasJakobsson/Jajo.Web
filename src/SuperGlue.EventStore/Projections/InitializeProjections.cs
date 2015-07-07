@@ -58,15 +58,14 @@ namespace SuperGlue.EventStore.Projections
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                running = false;
+            running = false;
 
-                foreach (var subscription in _projectionSubscriptions)
-                    subscription.Value.Close();
+            foreach (var subscription in _projectionSubscriptions)
+                subscription.Value.Close();
 
-                _projectionSubscriptions.Clear();
-            });
+            _projectionSubscriptions.Clear();
+
+            return Task.CompletedTask;
         }
 
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
