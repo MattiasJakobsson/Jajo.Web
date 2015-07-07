@@ -14,10 +14,19 @@ namespace SuperGlue.EventStore.ProcessManagers
             _eventStoreSubscription = eventStoreSubscription;
         }
 
-        public void Close()
+        public bool Close()
         {
-            _eventStoreSubscription.Stop(TimeSpan.FromSeconds(5));
-            _observableSubscription.Dispose();
+            try
+            {
+                _eventStoreSubscription.Stop(TimeSpan.FromSeconds(5));
+                _observableSubscription.Dispose();
+                
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

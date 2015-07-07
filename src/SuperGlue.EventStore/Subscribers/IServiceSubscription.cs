@@ -2,6 +2,6 @@
 {
     public interface IServiceSubscription
     {
-        void Close();
+        bool Close();
     }
 }

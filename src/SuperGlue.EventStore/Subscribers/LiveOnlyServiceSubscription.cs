@@ -14,10 +14,19 @@ namespace SuperGlue.EventStore.Subscribers
             _eventStoreSubscription = eventStoreSubscription;
         }
 
-        public void Close()
+        public bool Close()
         {
-            _eventStoreSubscription.Close();
-            _observableSubscription.Dispose();
+            try
+            {
+                _eventStoreSubscription.Close();
+                _observableSubscription.Dispose();
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

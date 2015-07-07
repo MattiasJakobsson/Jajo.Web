@@ -20,7 +20,7 @@ namespace SuperGlue.EventStore
 
         public Task Begin()
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
         public async Task Commit()
@@ -39,7 +39,7 @@ namespace SuperGlue.EventStore
         public Task Rollback(Exception exception = null)
         {
             //TODO:Implement
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
     }
 }
