@@ -1,7 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using Raven.Client;
+using Raven.Client.Indexes;
 using SuperGlue.EventTracking;
 
 namespace SuperGlue.RavenDb
@@ -68,6 +70,13 @@ namespace SuperGlue.RavenDb
         public Task EnsureDbExists(string name)
         {
             return _documentStore.AsyncDatabaseCommands.GlobalAdmin.EnsureDatabaseExistsAsync(name);
+        }
+
+        public Task CreateIndexes(Assembly assembly, string database)
+        {
+            var documentStore = RavenDocumentStore.Create(_environment, database);
+
+            return IndexCreation.CreateIndexesAsync(assembly, documentStore);
         }
     }
 }

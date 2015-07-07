@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -50,6 +51,7 @@
     </Compile>
     <Compile Include="DocumentSessionExtensions.cs" />
     <Compile Include="QueryableExtensions.cs" />
+    <Compile Include="RavenDocumentStore.cs" />
     <Compile Include="TrackingSyncSession.cs" />
     <Compile Include="TrackingSession.cs" />
     <Compile Include="DefaultRavenSessions.cs" />

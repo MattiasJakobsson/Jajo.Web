@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Raven.Client;
-using Raven.Client.Document;
 using SuperGlue.Configuration;
 using SuperGlue.RavenDb.Search;
 
@@ -13,8 +12,7 @@ namespace SuperGlue.RavenDb
         {
             yield return new ConfigurationSetupResult("superglue.RavenDb.Configure", environment =>
             {
-                var connectionStringName = environment.Get<string>(RavenEnvironmentConstants.ConnectionStringName) ?? "RavenDb";
-                var documentStore = CreateDocumentStore(connectionStringName);
+                var documentStore = RavenDocumentStore.Create(environment);
 
                 environment[RavenEnvironmentConstants.DocumentStore] = documentStore;
 
@@ -37,18 +35,6 @@ namespace SuperGlue.RavenDb
         public Task Configure(SettingsConfiguration configuration)
         {
             return Task.CompletedTask;
-        }
-
-        private static IDocumentStore CreateDocumentStore(string connectionStringName)
-        {
-            var documentStore = new DocumentStore
-            {
-                ConnectionStringName = connectionStringName
-            };
-
-            documentStore.Initialize();
-
-            return documentStore;
         }
     }
 }
