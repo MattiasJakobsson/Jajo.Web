@@ -9,6 +9,7 @@ nuget HtmlTags
 nuget Microsoft.CodeAnalysis.CSharp
 nuget Microsoft.Owin.Host.SystemWeb
 nuget Microsoft.Owin.SelfHost
+nuget NLog
 nuget Newtonsoft.Json
 nuget Owin
 nuget RavenDB.Client

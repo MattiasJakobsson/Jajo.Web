@@ -1,0 +1,12 @@
+﻿type file
+id SuperGlue.Logging.NLog
+version 1.0
+authors Mattias Jakobsson
+description
+        Logging middleware
+files
+    bin/Release/SuperGlue.Logging.NLog.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.Logging
+	NLog
