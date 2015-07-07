@@ -26,7 +26,7 @@ namespace SuperGlue.Web.ModelBinding.PropertyBinders
             if (!await _bindingSourceCollection.ContainsKey(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment))
                 return false;
 
-            propertyInfo.SetValue(instance, _valueConverterCollection.Convert(propertyInfo.PropertyType, _bindingSourceCollection.Get(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment)), new object[0]);
+            propertyInfo.SetValue(instance, _valueConverterCollection.Convert(propertyInfo.PropertyType, await _bindingSourceCollection.Get(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment)), new object[0]);
 
             return true;
         }
