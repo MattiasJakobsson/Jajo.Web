@@ -8,17 +8,19 @@ namespace SuperGlue.EventStore.Projections
     {
         public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
-            yield return new ConfigurationSetupResult("superglue.EventStore.Projections.Configured", environment => environment.RegisterAll(typeof(IEventStoreProjection)), "superglue.ContainerSetup");
+            yield return new ConfigurationSetupResult("superglue.EventStore.Projections.Configured", 
+                environment => environment.RegisterAll(typeof(IEventStoreProjection)), 
+                "superglue.ContainerSetup");
         }
 
         public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
     }
 }

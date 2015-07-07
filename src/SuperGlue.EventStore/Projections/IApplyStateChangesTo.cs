@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.Projections
 {
-    public interface IApplyStateChangesTo<TState>
+    public interface IApplyStateChangesTo : IDisposable
     {
-        IDictionary<Type, Tuple<Func<object, EventContext<TState>, Task>, Func<object, string>>> GetMappings();
-        TState Initialize(string id);
+        Task Apply(object evnt, int version, IDictionary<string, object> metaData);
     }
 }

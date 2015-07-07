@@ -58,20 +58,19 @@ namespace SuperGlue.EventStore.Subscribers
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                running = false;
+            running = false;
 
-                foreach (var subscription in _serviceSubscriptions)
-                    subscription.Value.Close();
+            foreach (var subscription in _serviceSubscriptions)
+                subscription.Value.Close();
 
-                _serviceSubscriptions.Clear();
-            });
+            _serviceSubscriptions.Clear();
+
+            return Task.CompletedTask;
         }
 
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
-            return buildApp.Use<ExecuteSubscribers>().Build();
+            return buildApp.Use<ExecuteSubscribers>().Use<SetLastEvent>().Build();
         }
 
         protected virtual void OnServiceError(string service, string stream, object message, IDictionary<string, object> metaData, Exception exception)

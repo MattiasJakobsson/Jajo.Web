@@ -28,12 +28,12 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
 
         public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
     }
 }

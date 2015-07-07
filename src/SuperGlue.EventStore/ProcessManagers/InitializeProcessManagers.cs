@@ -71,7 +71,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
-            return buildApp.Use<ExecuteProcessManager>().Build();
+            return buildApp.Use<ExecuteProcessManager>().Use<SetLastEvent>().Build();
         }
 
         protected virtual void OnProcessManagerError(IManageProcess processManager, object message, IDictionary<string, object> metaData, Exception exception)

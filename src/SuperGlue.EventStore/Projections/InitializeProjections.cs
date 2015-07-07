@@ -71,7 +71,7 @@ namespace SuperGlue.EventStore.Projections
 
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
-            return buildApp.Use<ExecuteProjection>().Build();
+            return buildApp.Use<ExecuteProjection>().Use<SetLastEvent>().Build();
         }
 
         protected virtual void OnProjectionError(IEventStoreProjection projection, object message, IDictionary<string, object> metaData, Exception exception)

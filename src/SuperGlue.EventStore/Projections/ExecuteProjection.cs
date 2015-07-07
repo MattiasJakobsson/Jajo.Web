@@ -24,30 +24,31 @@ namespace SuperGlue.EventStore.Projections
             var events = environment.GetEventStoreRequest().Events;
             var onError = environment.GetEventStoreRequest().OnException;
 
-            foreach (var evnt in events)
+            using (var stateApplier = projection.GetStateApplyer(environment))
             {
-                Exception lastException = null;
-                var retryCount = 0;
-
-                while (retryCount < 5)
+                foreach (var evnt in events)
                 {
-                    try
+                    Exception lastException = null;
+                    var retryCount = 0;
+
+                    while (retryCount < 5)
                     {
-                        await projection.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
-                        break;
+                        try
+                        {
+                            await stateApplier.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
+                            break;
+                        }
+                        catch (Exception exception)
+                        {
+                            lastException = exception;
+                            retryCount++;
+                        }
                     }
-                    catch (Exception exception)
-                    {
-                        lastException = exception;
-                        retryCount++;
-                    }
+
+                    if (lastException != null)
+                        onError(lastException, evnt);
                 }
-
-                if (lastException != null)
-                    onError(lastException, evnt);
             }
-
-            await projection.Commit();
 
             await _next(environment);
         }
