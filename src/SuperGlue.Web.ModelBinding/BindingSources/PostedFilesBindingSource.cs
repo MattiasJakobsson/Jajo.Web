@@ -10,7 +10,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
         {
             var files = await envinronment.GetRequest().ReadFiles();
 
-            return files.ToDictionary(x => x.Name, x => (object)new PostedFile(x.Name, x.ContentType, x.Value));
+            return files.ToDictionary(x => x.Name.ToLower(), x => (object)new PostedFile(x.Name, x.ContentType, x.Value));
         }
     }
 }
