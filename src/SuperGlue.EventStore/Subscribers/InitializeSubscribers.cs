@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
 using SuperGlue.EventStore.Messages;
+using SuperGlue.Logging;
 
 namespace SuperGlue.EventStore.Subscribers
 {
@@ -18,17 +19,19 @@ namespace SuperGlue.EventStore.Subscribers
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly IWriteToErrorStream _writeToErrorStream;
         private readonly IEventStoreConnection _eventStoreConnection;
+        private readonly ILog _log;
         private static bool running;
         private readonly IDictionary<string, IServiceSubscription> _serviceSubscriptions = new Dictionary<string, IServiceSubscription>();
 
         private readonly int _dispatchWaitSeconds;
         private readonly int _numberOfEventsPerBatch;
 
-        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection)
+        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection, ILog log)
         {
             _eventSerialization = eventSerialization;
             _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
+            _log = log;
 
             _dispatchWaitSeconds = 1;
 
@@ -47,6 +50,8 @@ namespace SuperGlue.EventStore.Subscribers
 
         public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
+            _log.Info("Starting subscribers for environment: {0}", environment);
+
             running = true;
 
             var streams = ConfigurationManager.AppSettings["EventStore.Streams"].Split(';').ToList();
@@ -58,6 +63,8 @@ namespace SuperGlue.EventStore.Subscribers
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
+            _log.Info("Shutting down subscribers");
+
             running = false;
 
             foreach (var subscription in _serviceSubscriptions)
@@ -70,12 +77,14 @@ namespace SuperGlue.EventStore.Subscribers
 
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
+            _log.Info("Getting default chain for subscribers for environment: {0}", environment);
             return buildApp.Use<ExecuteSubscribers>().Use<SetLastEvent>().Build();
         }
 
         protected virtual void OnServiceError(string service, string stream, object message, IDictionary<string, object> metaData, Exception exception)
         {
             _writeToErrorStream.Write(new ServiceEventProcessingFailed(service, stream, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
+            _log.Error(string.Format("Error while processing event of type: {0} for stream: {1}", message != null ? message.GetType().FullName : "Unknown", stream), exception);
         }
 
         private async Task SubscribeService(AppFunc chain, string name, string stream, IDictionary<string, object> environment)
@@ -84,13 +93,13 @@ namespace SuperGlue.EventStore.Subscribers
             if (!running)
                 return;
 
+            _log.Info("Subscribing to stream: {0}", stream);
+
             while (true)
             {
                 try
                 {
                     await SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
-                    //TODO:Log
-
                     return;
                 }
                 catch (Exception ex)
@@ -98,8 +107,9 @@ namespace SuperGlue.EventStore.Subscribers
                     if (!running)
                         return;
 
+                    _log.Error(string.Format("Couldn't subscribe to stream: {0}. Retrying in 500 ms.", stream), ex);
+
                     Thread.Sleep(TimeSpan.FromMilliseconds(500));
-                    //TODO:Log
                 }
             }
         }
@@ -149,7 +159,7 @@ namespace SuperGlue.EventStore.Subscribers
             if (!running)
                 return;
 
-            //TODO:Log
+            _log.Warn(string.Format("Subscription dropped for stream: {0}. Reason: {1}. Retrying...", stream, reason), exception);
 
             await SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
         }
@@ -171,7 +181,7 @@ namespace SuperGlue.EventStore.Subscribers
             }
             catch (Exception ex)
             {
-                //TODO:Log
+                _log.Error(string.Format("Couldn't push events from stream: {0}", stream), ex);
             }
         }
 

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
 using SuperGlue.EventStore.Messages;
+using SuperGlue.Logging;
 
 namespace SuperGlue.EventStore.Projections
 {
@@ -19,6 +20,7 @@ namespace SuperGlue.EventStore.Projections
         private readonly IEnumerable<IEventStoreProjection> _projections;
         private readonly IEventStoreConnection _eventStoreConnection;
         private readonly IWriteToErrorStream _writeToErrorStream;
+        private readonly ILog _log;
         private static bool running;
         private readonly IDictionary<string, ProjectionSubscription> _projectionSubscriptions = new Dictionary<string, ProjectionSubscription>();
 
@@ -26,12 +28,13 @@ namespace SuperGlue.EventStore.Projections
         private readonly int _numberOfEventsPerBatch;
 
         public InitializeProjections(IHandleEventSerialization eventSerialization, IEnumerable<IEventStoreProjection> projections, IWriteToErrorStream writeToErrorStream,
-            IEventStoreConnection eventStoreConnection)
+            IEventStoreConnection eventStoreConnection, ILog log)
         {
             _eventSerialization = eventSerialization;
             _projections = projections;
             _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
+            _log = log;
 
             _dispatchWaitSeconds = 1;
 
@@ -50,6 +53,8 @@ namespace SuperGlue.EventStore.Projections
 
         public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
+            _log.Info("Starting projections for environment: {0}", environment);
+
             running = true;
 
             foreach (var projection in _projections)
@@ -58,6 +63,8 @@ namespace SuperGlue.EventStore.Projections
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
+            _log.Info("Shutting down projections");
+
             running = false;
 
             foreach (var subscription in _projectionSubscriptions)
@@ -70,18 +77,22 @@ namespace SuperGlue.EventStore.Projections
 
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
+            _log.Info("Getting default chain for projections for environment: {0}", environment);
             return buildApp.Use<ExecuteProjection>().Use<SetLastEvent>().Build();
         }
 
         protected virtual void OnProjectionError(IEventStoreProjection projection, object message, IDictionary<string, object> metaData, Exception exception)
         {
             _writeToErrorStream.Write(new ProjectionFailed(projection.ProjectionName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
+            _log.Error(string.Format("Error while processing event of type: {0} for projection: {1}", message != null ? message.GetType().FullName : "Unknown", projection.ProjectionName), exception);
         }
 
         private async Task SubscribeProjection(IEventStoreProjection currentEventStoreProjection, AppFunc chain, IDictionary<string, object> environment)
         {
             if (!running)
                 return;
+
+            _log.Info("Subscribing projection: {0}", currentEventStoreProjection.ProjectionName);
 
             while (true)
             {
@@ -111,7 +122,7 @@ namespace SuperGlue.EventStore.Projections
                     if (!running)
                         return;
 
-                    //TODO:Log
+                    _log.Error(string.Format("Couldn't subscribe projection: {0}. Retrying in 500 ms.", currentEventStoreProjection.ProjectionName), ex);
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(500));
                 }
@@ -123,7 +134,7 @@ namespace SuperGlue.EventStore.Projections
             if (!running)
                 return;
 
-            //TODO:Log
+            _log.Warn(string.Format("Subscription dropped for projection: {0}. Reason: {1}. Retrying...", projection.ProjectionName, reason), exception);
 
             await SubscribeProjection(projection, chain, environment);
         }
@@ -145,7 +156,7 @@ namespace SuperGlue.EventStore.Projections
             }
             catch (Exception ex)
             {
-                //TODO:Log
+                _log.Error(string.Format("Couldn't push events to projection: {0}", projection.ProjectionName), ex);
             }
         }
 
