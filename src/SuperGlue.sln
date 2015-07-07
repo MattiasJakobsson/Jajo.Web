@@ -125,6 +125,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SuperGlue.WebApplication", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.HttpClient", "SuperGlue.HttpClient\SuperGlue.HttpClient.csproj", "{206CBCAA-A2A4-4E50-8E20-F15F3DB7C68B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Logging", "SuperGlue.Logging\SuperGlue.Logging.csproj", "{54D633A5-A7DF-48D4-98AF-7B39BCA91AD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -287,6 +289,10 @@ Global
 		{206CBCAA-A2A4-4E50-8E20-F15F3DB7C68B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{206CBCAA-A2A4-4E50-8E20-F15F3DB7C68B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{206CBCAA-A2A4-4E50-8E20-F15F3DB7C68B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54D633A5-A7DF-48D4-98AF-7B39BCA91AD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54D633A5-A7DF-48D4-98AF-7B39BCA91AD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54D633A5-A7DF-48D4-98AF-7B39BCA91AD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54D633A5-A7DF-48D4-98AF-7B39BCA91AD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
