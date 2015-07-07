@@ -10,5 +10,6 @@ namespace SuperGlue.RavenDb
         IAsyncDocumentSession GetFor(string database);
         IDocumentSession GetSyncFor(string database);
         Task SaveChanges();
+        Task EnsureDbExists(string name);
     }
 }

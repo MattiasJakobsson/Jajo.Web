@@ -64,5 +64,10 @@ namespace SuperGlue.RavenDb
             _openedSessions.Clear();
             _openedSyncSessions.Clear();
         }
+
+        public Task EnsureDbExists(string name)
+        {
+            return _documentStore.AsyncDatabaseCommands.GlobalAdmin.EnsureDatabaseExistsAsync(name);
+        }
     }
 }
