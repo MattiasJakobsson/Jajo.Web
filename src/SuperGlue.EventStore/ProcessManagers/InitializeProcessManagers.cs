@@ -150,7 +150,11 @@ namespace SuperGlue.EventStore.ProcessManagers
                 OnProcessManagerError(processManager, evnt.Data, evnt.Metadata, evnt.Error);
 
             var successfullEvents = eventsList
-                .Where(x => x.Successful);
+                .Where(x => x.Successful)
+                .ToList();
+
+            if(!successfullEvents.Any())
+                return;
 
             try
             {
