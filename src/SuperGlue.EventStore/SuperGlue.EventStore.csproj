@@ -55,6 +55,7 @@
     <Compile Include="Data\ProjectionBuilder.cs" />
     <Compile Include="EventStoreEnvironmentExtensions.cs" />
     <Compile Include="EventStoreUnitOfWork.cs" />
+    <Compile Include="GroupEvents.cs" />
     <Compile Include="MessageProcessor.cs" />
     <Compile Include="IWriteToErrorStream.cs" />
     <Compile Include="ConflictManagement\DefaultConflictChecker.cs" />

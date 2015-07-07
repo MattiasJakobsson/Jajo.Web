@@ -16,11 +16,17 @@ namespace SuperGlue.EventStore
             public const string IsCatchUp = "superglue.EventStore.IsCatchUp";
             public const string Events = "superglue.EventStore.Events";
             public const string OnException = "superglue.EventStore.OnException";
+            public const string EventsGroupedBy = "superglue.EventStore.EventsGroupedBy";
         }
 
         public static EventStoreRequestEnvironment GetEventStoreRequest(this IDictionary<string, object> environment)
         {
             return new EventStoreRequestEnvironment(environment);
+        }
+
+        public static object GetEventsGroupedBy(this IDictionary<string, object> environment)
+        {
+            return environment.Get<object>(EventStoreConstants.EventsGroupedBy);
         }
 
         public class EventStoreRequestEnvironment
