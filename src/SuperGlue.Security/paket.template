@@ -8,3 +8,5 @@ files
     bin/Release/SuperGlue.Security.dll ==> lib
 dependencies
 	SuperGlue.Configuration
+	SuperGlue.MetaData
+	BCrypt.Net

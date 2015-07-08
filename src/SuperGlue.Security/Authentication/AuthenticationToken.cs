@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SuperGlue.Security.Authentication
 {
@@ -23,6 +24,11 @@ namespace SuperGlue.Security.Authentication
 
             public string Type { get; private set; }
             public string Value { get; private set; }
-        } 
+        }
+
+        public string GetClaimsString()
+        {
+            return string.Join(";", Claims.Select(x => string.Concat(x.Type, "=", x.Value)));
+        }
     }
 }

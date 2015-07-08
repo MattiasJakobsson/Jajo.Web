@@ -52,6 +52,11 @@ namespace SuperGlue.Security.Authentication
             return new AuthenticationInformation(null, null);
         }
 
+        public IEnumerable<AuthenticationInformation> GetUsers(IDictionary<string, object> environment)
+        {
+            return _authenticationTokenSources.Select(tokenSource => tokenSource.GetUser(environment)).Where(information => information.IsAuthenticated);
+        }
+
         public void SetAuthenticatedUser(AuthenticationToken token, IDictionary<string, object> environment)
         {
             foreach (var tokenSource in _authenticationTokenSources.Where(x => string.IsNullOrEmpty(token.Source) || x.Name == token.Source))
