@@ -52,6 +52,7 @@
     <Compile Include="MetaDataEnvironmentExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestMetaData.cs" />
+    <Compile Include="SetMetaData.cs" />
     <Compile Include="SetRequestMetaDataWhenConfiguringEnvironment.cs" />
     <Compile Include="SetupMetaDataConfiguration.cs" />
   </ItemGroup>
