@@ -120,14 +120,16 @@ namespace SuperGlue.EventStore.Data
                     await SaveEventsToStream(streamName, versionToExpect, newEvents, commitHeaders);
                     break;
                 }
-                catch (WrongExpectedVersionException)
+                catch (WrongExpectedVersionException ex)
                 {
-                    
+                    _log.Debug(ex, "Events where added to aggregate with id: {0} since last load. Checking for conflicts and trying again...", aggregate.Id);
                 }
                 catch (AggregateException ae)
                 {
                     if (!(ae.InnerException is WrongExpectedVersionException))
                         throw;
+
+                    _log.Debug(ae.InnerException, "Events where added to aggregate with id: {0} since last load. Checking for conflicts and trying again...", aggregate.Id);
                 }
 
                 var storedEvents = (await LoadEventsFromStream(streamName, versionToExpect < 0 ? 0 : versionToExpect, int.MaxValue)).ToList();

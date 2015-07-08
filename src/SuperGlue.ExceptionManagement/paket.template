@@ -6,3 +6,6 @@ description
         Middleware
 files
     bin/Release/SuperGlue.ExceptionManagement.dll ==> lib
+dependencies
+	SuperGlue.Logging
+	SuperGlue.Configuration

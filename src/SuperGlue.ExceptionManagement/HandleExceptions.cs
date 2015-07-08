@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.Configuration;
+using SuperGlue.Logging;
 
 namespace SuperGlue.ExceptionManagement
 {
@@ -27,6 +29,10 @@ namespace SuperGlue.ExceptionManagement
             catch (Exception ex)
             {
                 environment[ExceptionExtensions.ExceptionConstants.Exception] = ex;
+
+                var log = environment.Resolve<ILog>();
+
+                log.Error(ex, "Exception while executing chain: {0}", environment.GetCurrentChain());
             }
         }
     }
