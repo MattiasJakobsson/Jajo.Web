@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using SuperGlue.MetaData;
 
 namespace SuperGlue.Web.Http
@@ -11,13 +12,13 @@ namespace SuperGlue.Web.Http
             return chain == "chains.Web" || chain == "chains.Partials";
         }
 
-        public IDictionary<string, object> GetMetaData(IDictionary<string, object> environment)
+        public Task<IDictionary<string, object>> GetMetaData(IDictionary<string, object> environment)
         {
-            return new Dictionary<string, object>
+            return Task.FromResult<IDictionary<string, object>>(new Dictionary<string, object>
             {
                 {HttpMetaDataKeys.IpAddress, environment.GetRequest().RemoteIpAddress},
                 {HttpMetaDataKeys.Culture, Thread.CurrentThread.CurrentCulture.Name}
-            };
+            });
         }
     }
 }

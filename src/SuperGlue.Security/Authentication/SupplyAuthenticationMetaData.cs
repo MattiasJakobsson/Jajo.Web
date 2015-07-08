@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SuperGlue.MetaData;
 
 namespace SuperGlue.Security.Authentication
@@ -17,7 +18,7 @@ namespace SuperGlue.Security.Authentication
             return true;
         }
 
-        public IDictionary<string, object> GetMetaData(IDictionary<string, object> environment)
+        public Task<IDictionary<string, object>> GetMetaData(IDictionary<string, object> environment)
         {
             var metaData = new Dictionary<string, object>();
 
@@ -31,7 +32,7 @@ namespace SuperGlue.Security.Authentication
                     metaData[string.Format("Authentications.{0}.OnBehalfOf", user.User.Source)] = user.OnBehalfOf.GetClaimsString();
             }
 
-            return metaData;
+            return Task.FromResult<IDictionary<string, object>>(metaData);
         }
     }
 }

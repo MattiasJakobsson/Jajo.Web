@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Configuration
 {
     public interface IWrapMiddleware<TMiddleware>
     {
-        IDisposable Begin(IDictionary<string, object> environment);
+        Task<IDisposable> Begin(IDictionary<string, object> environment);
     }
 }

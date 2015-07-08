@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.MetaData
@@ -15,12 +16,17 @@ namespace SuperGlue.MetaData
             _metaDataSuppliers = metaDataSuppliers;
         }
 
-        public IDisposable Begin(IDictionary<string, object> environment)
+        public async Task<IDisposable> Begin(IDictionary<string, object> environment)
         {
             var metaData = new Dictionary<string, object>();
 
-            foreach (var item in _metaDataSuppliers.SelectMany(supplier => supplier.GetMetaData(environment)))
-                metaData[item.Key] = item.Value;
+            foreach (var supplier in _metaDataSuppliers.Where(supplier => supplier.CanHandleChain(environment.GetCurrentChain())))
+            {
+                var data = await supplier.GetMetaData(environment);
+
+                foreach (var item in data)
+                    metaData[item.Key] = item.Value;
+            }
 
             var oldMetaData = environment.GetMetaData();
             environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = new RequestMetaData(new ReadOnlyDictionary<string, object>(metaData));
