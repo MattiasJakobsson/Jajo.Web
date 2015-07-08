@@ -111,7 +111,7 @@ namespace SuperGlue.EventStore.Data
             var newEvents = eventStream.Events.ToList();
             var originalVersion = aggregate.Version - newEvents.Count;
 
-            var versionToExpect = originalVersion == 0 ? ExpectedVersion.Any : originalVersion;
+            var versionToExpect = originalVersion == 0 ? ExpectedVersion.Any : originalVersion - 1;
 
             while (true)
             {
@@ -119,6 +119,10 @@ namespace SuperGlue.EventStore.Data
                 {
                     await SaveEventsToStream(streamName, versionToExpect, newEvents, commitHeaders);
                     break;
+                }
+                catch (WrongExpectedVersionException)
+                {
+                    
                 }
                 catch (AggregateException ae)
                 {
