@@ -19,6 +19,10 @@ namespace SuperGlue.MetaData
         public async Task<IDisposable> Begin(IDictionary<string, object> environment)
         {
             var metaData = new Dictionary<string, object>();
+            var oldMetaData = environment.GetMetaData();
+
+            foreach (var item in oldMetaData.MetaData)
+                metaData[item.Key] = item.Value;
 
             foreach (var supplier in _metaDataSuppliers.Where(supplier => supplier.CanHandleChain(environment.GetCurrentChain())))
             {
@@ -28,7 +32,6 @@ namespace SuperGlue.MetaData
                     metaData[item.Key] = item.Value;
             }
 
-            var oldMetaData = environment.GetMetaData();
             environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = new RequestMetaData(new ReadOnlyDictionary<string, object>(metaData));
 
             return new Disposable(environment, oldMetaData);

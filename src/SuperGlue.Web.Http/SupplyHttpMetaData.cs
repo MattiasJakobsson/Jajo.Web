@@ -9,7 +9,7 @@ namespace SuperGlue.Web.Http
     {
         public bool CanHandleChain(string chain)
         {
-            return chain == "chains.Web" || chain == "chains.Partials";
+            return chain == "chains.Web";
         }
 
         public Task<IDictionary<string, object>> GetMetaData(IDictionary<string, object> environment)
