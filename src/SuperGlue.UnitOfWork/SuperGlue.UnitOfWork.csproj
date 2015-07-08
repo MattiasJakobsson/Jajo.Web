@@ -49,16 +49,11 @@
       <Link>ResolveExtensions.cs</Link>
     </Compile>
     <Compile Include="ConfigureUnitOrWork.cs" />
-    <Compile Include="HandleApplicationTasks.cs" />
-    <Compile Include="IApplicationTask.cs" />
     <Compile Include="PushExceptionsToApplicationTasks.cs" />
     <Compile Include="RollbackUnitOfWork.cs" />
     <Compile Include="ISuperGlueUnitOfWork.cs" />
     <Compile Include="HandleUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SetupEnvironmentExtensions.cs" />
-    <Compile Include="SetupMode.cs" />
-    <Compile Include="StartSetupApplication.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.template" />

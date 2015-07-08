@@ -42,6 +42,11 @@ namespace SuperGlue.Configuration
             foreach (var setup in _setups)
                 await setup.Configure(new SettingsConfiguration(GetSettings, settings, environment));
 
+            var applicationTasks = settings.ResolveAll<IApplicationTask>();
+
+            foreach (var applicationTask in applicationTasks)
+                await applicationTask.Start();
+
             _appStarters = settings.ResolveAll<IStartApplication>();
 
             settings["superglue.ApplicationStarters"] = _appStarters;
@@ -68,6 +73,11 @@ namespace SuperGlue.Configuration
 
             foreach (var startApplication in appStarters)
                 await startApplication.ShutDown(_environment);
+
+            var applicationTasks = _environment.ResolveAll<IApplicationTask>();
+
+            foreach (var applicationTask in applicationTasks)
+                await applicationTask.ShutDown();
 
             var setups = _setups ?? new List<ISetupConfigurations>();
 

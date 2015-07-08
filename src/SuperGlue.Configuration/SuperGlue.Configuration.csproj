@@ -57,6 +57,7 @@
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
     <Compile Include="ConfigurationSetupResult.cs" />
     <Compile Include="Continue.cs" />
+    <Compile Include="IApplicationTask.cs" />
     <Compile Include="IBuildAppFunction.cs" />
     <Compile Include="If.cs" />
     <Compile Include="ISetupConfigurations.cs" />

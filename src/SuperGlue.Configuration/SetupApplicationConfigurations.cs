@@ -7,7 +7,11 @@ namespace SuperGlue.Configuration
     {
         public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
-            yield return new ConfigurationSetupResult("superglue.Configuration.ApplicationsConfigured", environment => environment.RegisterAll(typeof (IStartApplication)), "superglue.ContainerSetup");
+            yield return new ConfigurationSetupResult("superglue.Configuration.ApplicationsConfigured", environment =>
+            {
+                environment.RegisterAll(typeof(IApplicationTask));
+                environment.RegisterAll(typeof(IStartApplication));
+            }, "superglue.ContainerSetup");
         }
 
         public Task Shutdown(IDictionary<string, object> applicationData)
