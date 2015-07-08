@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SuperGlue.EventStore
 {
@@ -6,11 +7,11 @@ namespace SuperGlue.EventStore
     {
         string Id { get; set; }
         int Version { get; }
-        string Context { get; }
 
         void BuildFromHistory(IEventStream eventStream);
         IEventStream GetUncommittedChanges();
         void ClearUncommittedChanges();
+        string GetStreamName(IDictionary<string, object> environment);
 
         event Action<IAggregate> AggregateAttached;
     }

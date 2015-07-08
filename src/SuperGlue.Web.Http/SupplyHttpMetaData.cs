@@ -8,14 +8,14 @@ namespace SuperGlue.Web.Http
     {
         public bool CanHandleChain(string chain)
         {
-            return chain == "chains.Web";
+            return chain == "chains.Web" || chain == "chains.Partials";
         }
 
         public IDictionary<string, object> GetMetaData(IDictionary<string, object> environment)
         {
             return new Dictionary<string, object>
             {
-                {HttpMetaDataKeys.IpAddress, environment.GetRequest().Headers.GetHeader("X-Forwarded-For")},
+                {HttpMetaDataKeys.IpAddress, environment.GetRequest().RemoteIpAddress},
                 {HttpMetaDataKeys.Culture, Thread.CurrentThread.CurrentCulture.Name}
             };
         }

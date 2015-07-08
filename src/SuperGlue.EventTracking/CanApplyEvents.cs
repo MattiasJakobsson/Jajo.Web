@@ -21,6 +21,11 @@ namespace SuperGlue.EventTracking
             _events.Clear();
         }
 
+        public string GetStreamName(IDictionary<string, object> environment)
+        {
+            return string.Format("entity-{0}-{1}", GetType().Name, Id.Replace("/", "-"));
+        }
+
         protected void ApplyEvent(object evnt)
         {
             _events.Add(evnt);

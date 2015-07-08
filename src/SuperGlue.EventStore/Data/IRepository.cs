@@ -12,8 +12,6 @@ namespace SuperGlue.EventStore.Data
         Task RequestTimeOut(string stream, Guid commitId, object evnt, IReadOnlyDictionary<string, object> metaData, DateTime at);
         Task SaveChanges();
         Task SaveToStream(string stream, IEnumerable<object> events, Guid commitId);
-        Task SaveToStream(string stream, IEnumerable<object> events, Guid commitId, string context);
-        Task SaveToNamedStream(string stream, IEnumerable<object> events, Guid commitId, string context);
         void Attache(IAggregate aggregate);
 
         event Action<IAggregate> AggregateLoaded;

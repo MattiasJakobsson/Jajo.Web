@@ -40,6 +40,11 @@ namespace SuperGlue.EventStore
             _uncommittedChanges.Clear();
         }
 
+        public virtual string GetStreamName(IDictionary<string, object> environment)
+        {
+            return string.Format("aggregate-{0}-{1}", GetType().Name, Id);
+        }
+
         public event Action<IAggregate> AggregateAttached;
 
         protected virtual void OnAggregateAttached(IAggregate aggregate)
