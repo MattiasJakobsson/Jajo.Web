@@ -5,14 +5,14 @@ namespace SuperGlue.Logging
     public interface ILog
     {
         void Debug(string message, params object[] parameters);
-        void Debug(string message, Exception exception);
+        void Debug(Exception exception, string message, params object[] parameters);
         void Info(string message, params object[] parameters);
-        void Info(string message, Exception exception);
+        void Info(Exception exception, string message, params object[] parameters);
         void Warn(string message, params object[] parameters);
-        void Warn(string message, Exception exception);
+        void Warn(Exception exception, string message, params object[] parameters);
         void Error(string message, params object[] parameters);
-        void Error(string message, Exception exception);
+        void Error(Exception exception, string message, params object[] parameters);
         void Fatal(string message, params object[] parameters);
-        void Fatal(string message, Exception exception);
+        void Fatal(Exception exception, string message, params object[] parameters);
     }
 }

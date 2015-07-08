@@ -9,9 +9,9 @@ namespace SuperGlue.Logging
             Write("DEBUG", message, parameters, null);
         }
 
-        public void Debug(string message, Exception exception)
+        public void Debug(Exception exception, string message, params object[] parameters)
         {
-            Write("DEBUG", message, new object[0], exception);
+            Write("DEBUG", message, parameters, exception);
         }
 
         public void Info(string message, params object[] parameters)
@@ -19,9 +19,9 @@ namespace SuperGlue.Logging
             Write("INFO", message, parameters, null);
         }
 
-        public void Info(string message, Exception exception)
+        public void Info(Exception exception, string message, params object[] parameters)
         {
-            Write("INFO", message, new object[0], exception);
+            Write("INFO", message, parameters, exception);
         }
 
         public void Warn(string message, params object[] parameters)
@@ -29,9 +29,9 @@ namespace SuperGlue.Logging
             Write("WARN", message, parameters, null);
         }
 
-        public void Warn(string message, Exception exception)
+        public void Warn(Exception exception, string message, params object[] parameters)
         {
-            Write("WARN", message, new object[0], exception);
+            Write("WARN", message, parameters, exception);
         }
 
         public void Error(string message, params object[] parameters)
@@ -39,9 +39,9 @@ namespace SuperGlue.Logging
             Write("ERROR", message, parameters, null);
         }
 
-        public void Error(string message, Exception exception)
+        public void Error(Exception exception, string message, params object[] parameters)
         {
-            Write("ERROR", message, new object[0], exception);
+            Write("ERROR", message, parameters, exception);
         }
 
         public void Fatal(string message, params object[] parameters)
@@ -49,9 +49,9 @@ namespace SuperGlue.Logging
             Write("FATAL", message, parameters, null);
         }
 
-        public void Fatal(string message, Exception exception)
+        public void Fatal(Exception exception, string message, params object[] parameters)
         {
-            Write("FATAL", message, new object[0], exception);
+            Write("FATAL", message, parameters, exception);
         }
 
         private static void Write(string level, string message, object[] parameters, Exception exception)

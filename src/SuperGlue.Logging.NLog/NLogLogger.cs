@@ -17,9 +17,9 @@ namespace SuperGlue.Logging.NLog
             _logger.Debug(message, parameters);
         }
 
-        public void Debug(string message, Exception exception)
+        public void Debug(Exception exception, string message, params object[] parameters)
         {
-            _logger.Debug(exception, message);
+            _logger.Debug(exception, message, parameters);
         }
 
         public void Info(string message, params object[] parameters)
@@ -27,9 +27,9 @@ namespace SuperGlue.Logging.NLog
             _logger.Info(message, parameters);
         }
 
-        public void Info(string message, Exception exception)
+        public void Info(Exception exception, string message, params object[] parameters)
         {
-            _logger.Info(exception, message);
+            _logger.Info(exception, message, parameters);
         }
 
         public void Warn(string message, params object[] parameters)
@@ -37,9 +37,9 @@ namespace SuperGlue.Logging.NLog
             _logger.Warn(message, parameters);
         }
 
-        public void Warn(string message, Exception exception)
+        public void Warn(Exception exception, string message, params object[] parameters)
         {
-            _logger.Warn(exception, message);
+            _logger.Warn(exception, message, parameters);
         }
 
         public void Error(string message, params object[] parameters)
@@ -47,9 +47,9 @@ namespace SuperGlue.Logging.NLog
             _logger.Error(message, parameters);
         }
 
-        public void Error(string message, Exception exception)
+        public void Error(Exception exception, string message, params object[] parameters)
         {
-            _logger.Error(exception, message);
+            _logger.Error(exception, message, parameters);
         }
 
         public void Fatal(string message, params object[] parameters)
@@ -57,9 +57,9 @@ namespace SuperGlue.Logging.NLog
             _logger.Fatal(message, parameters);
         }
 
-        public void Fatal(string message, Exception exception)
+        public void Fatal(Exception exception, string message, params object[] parameters)
         {
-            _logger.Fatal(exception, message);
+            _logger.Fatal(exception, message, parameters);
         }
     }
 }

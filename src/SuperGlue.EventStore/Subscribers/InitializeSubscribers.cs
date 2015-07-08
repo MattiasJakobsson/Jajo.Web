@@ -107,7 +107,7 @@ namespace SuperGlue.EventStore.Subscribers
                     if (!running)
                         return;
 
-                    _log.Error(string.Format("Couldn't subscribe to stream: {0}. Retrying in 500 ms.", stream), ex);
+                    _log.Error(ex, "Couldn't subscribe to stream: {0}. Retrying in 500 ms.", stream);
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(500));
                 }
@@ -159,7 +159,7 @@ namespace SuperGlue.EventStore.Subscribers
             if (!running)
                 return;
 
-            _log.Warn(string.Format("Subscription dropped for stream: {0}. Reason: {1}. Retrying...", stream, reason), exception);
+            _log.Warn(exception, "Subscription dropped for stream: {0}. Reason: {1}. Retrying...", stream, reason);
 
             await SubscribeService(chain, name, stream, liveOnlySubscriptions, environment);
         }
@@ -185,7 +185,7 @@ namespace SuperGlue.EventStore.Subscribers
             }
             catch (Exception ex)
             {
-                _log.Error(string.Format("Couldn't push events from stream: {0}", stream), ex);
+                _log.Error(ex, "Couldn't push events from stream: {0}", stream);
             }
         }
 

@@ -83,7 +83,7 @@ namespace SuperGlue.EventStore.ProcessManagers
         protected virtual void OnProcessManagerError(IManageProcess processManager, object message, IDictionary<string, object> metaData, Exception exception)
         {
             _writeToErrorStream.Write(new ProcessManagerFailed(processManager.ProcessName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
-            _log.Error(string.Format("Error while processing event of type: {0} for processmanager: {1}", message != null ? message.GetType().FullName : "Unknown", processManager.ProcessName), exception);
+            _log.Error(exception, "Error while processing event of type: {0} for processmanager: {1}", message != null ? message.GetType().FullName : "Unknown", processManager.ProcessName);
         }
 
         private async Task SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)
@@ -124,7 +124,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                     if (!running)
                         return;
 
-                    _log.Error(string.Format("Couldn't subscribe processmanager: {0}. Retrying in 500 ms.", currentProcessManager.ProcessName), ex);
+                    _log.Error(ex, "Couldn't subscribe processmanager: {0}. Retrying in 500 ms.", currentProcessManager.ProcessName);
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(500));
                 }
@@ -136,7 +136,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             if (!running)
                 return;
 
-            _log.Warn(string.Format("Subscription dropped for processmanager: {0}. Reason: {1}. Retrying...", processManager.ProcessName, reason), exception);
+            _log.Warn(exception, "Subscription dropped for processmanager: {0}. Reason: {1}. Retrying...", processManager.ProcessName, reason);
 
             await SubscribeProcessManager(chain, processManager, environment);
         }
@@ -162,7 +162,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             }
             catch (Exception ex)
             {
-                _log.Error(string.Format("Couldn't push events to processmanager: {0}", processManager.ProcessName), ex);
+                _log.Error(ex, "Couldn't push events to processmanager: {0}", processManager.ProcessName);
             }
         }
 

@@ -51,6 +51,8 @@
     </Compile>
     <Compile Include="AggregateVersionException.cs" />
     <Compile Include="BaseAggregate.cs" />
+    <Compile Include="Data\EventStoreLog.cs" />
+    <Compile Include="Data\EventStoreSettings.cs" />
     <Compile Include="Data\ProjectionsManagerExtensions.cs" />
     <Compile Include="Data\ProjectionBuilder.cs" />
     <Compile Include="EventStoreEnvironmentExtensions.cs" />
@@ -73,7 +75,6 @@
     <Compile Include="IEventHandler.cs" />
     <Compile Include="IEventHandlerMappingStrategy.cs" />
     <Compile Include="IEventStream.cs" />
-    <Compile Include="IInstantiateAggregate.cs" />
     <Compile Include="IManageChanges.cs" />
     <Compile Include="Data\DefaultRepository.cs" />
     <Compile Include="Messages\ProcessManagerFailed.cs" />
@@ -114,7 +115,6 @@
     <Compile Include="Subscribers\SetLastEvent.cs" />
     <Compile Include="Timeouts\DefaultTimeOutManager.cs" />
     <Compile Include="Timeouts\IManageTimeOuts.cs" />
-    <Compile Include="DefaultAggregateInstantiator.cs" />
     <Compile Include="Data\InvalidEventstoreConnectionStringException.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="NoEventHandlerAttribute.cs" />

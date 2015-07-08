@@ -7,18 +7,19 @@ using EventStore.ClientAPI;
 using EventStore.ClientAPI.Exceptions;
 using SuperGlue.EventStore.ConflictManagement;
 using SuperGlue.EventStore.Timeouts;
+using SuperGlue.Logging;
 using SuperGlue.MetaData;
 
 namespace SuperGlue.EventStore.Data
 {
     public class DefaultRepository : IRepository
     {
-        private readonly IInstantiateAggregate _instantiateAggregate;
         private readonly IEventStoreConnection _eventStoreConnection;
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly ICheckConflicts _checkConflicts;
         private readonly IEnumerable<IManageChanges> _manageChanges;
         private readonly IManageTimeOuts _timeoutManager;
+        private readonly ILog _log;
         private readonly IDictionary<string, object> _environment;
         private readonly ConcurrentDictionary<string, LoadedAggregate> _loadedAggregates = new ConcurrentDictionary<string, LoadedAggregate>();
 
@@ -29,16 +30,16 @@ namespace SuperGlue.EventStore.Data
         private const int WritePageSize = 500;
         private const int ReadPageSize = 500;
 
-        public DefaultRepository(IInstantiateAggregate instantiateAggregate, IEventStoreConnection eventStoreConnection, IHandleEventSerialization eventSerialization, ICheckConflicts checkConflicts,
-            IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager, IDictionary<string, object> environment)
+        public DefaultRepository(IEventStoreConnection eventStoreConnection, IHandleEventSerialization eventSerialization, ICheckConflicts checkConflicts,
+            IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager, IDictionary<string, object> environment, ILog log)
         {
-            _instantiateAggregate = instantiateAggregate;
             _eventStoreConnection = eventStoreConnection;
             _eventSerialization = eventSerialization;
             _checkConflicts = checkConflicts;
             _manageChanges = manageChanges;
             _timeoutManager = timeoutManager;
             _environment = environment;
+            _log = log;
         }
 
         public async Task<T> Load<T>(string id) where T : IAggregate, new()
@@ -53,7 +54,11 @@ namespace SuperGlue.EventStore.Data
 
         public async Task<T> LoadVersion<T>(string id, int version) where T : IAggregate, new()
         {
-            var aggregate = _instantiateAggregate.Instantiate<T>(id);
+            var aggregate = new T
+            {
+                Id = id
+            };
+
             var streamName = GetAggregateStreamName(aggregate);
 
             var events = await LoadEventsFromStream(streamName, 0, version);
@@ -202,6 +207,7 @@ namespace SuperGlue.EventStore.Data
             if (eventsToSave.Count < WritePageSize)
             {
                 await _eventStoreConnection.AppendToStreamAsync(streamName, expectedVersion, eventsToSave);
+                _log.Debug("Saved {0} events to stream {1}.", eventsToSave.Count, streamName);
             }
             else
             {
@@ -210,8 +216,9 @@ namespace SuperGlue.EventStore.Data
                 var position = 0;
                 while (position < eventsToSave.Count)
                 {
-                    var pageEvents = eventsToSave.Skip(position).Take(WritePageSize);
+                    var pageEvents = eventsToSave.Skip(position).Take(WritePageSize).ToList();
                     await transaction.WriteAsync(pageEvents);
+                    _log.Debug("Saved {0} events to stream {1}.", pageEvents.Count, streamName);
                     position += WritePageSize;
                 }
 

@@ -122,7 +122,7 @@ namespace SuperGlue.EventStore.Projections
                     if (!running)
                         return;
 
-                    _log.Error(string.Format("Couldn't subscribe projection: {0}. Retrying in 500 ms.", currentEventStoreProjection.ProjectionName), ex);
+                    _log.Error(ex, "Couldn't subscribe projection: {0}. Retrying in 500 ms.", currentEventStoreProjection.ProjectionName);
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(500));
                 }
@@ -134,7 +134,7 @@ namespace SuperGlue.EventStore.Projections
             if (!running)
                 return;
 
-            _log.Warn(string.Format("Subscription dropped for projection: {0}. Reason: {1}. Retrying...", projection.ProjectionName, reason), exception);
+            _log.Warn(exception, "Subscription dropped for projection: {0}. Reason: {1}. Retrying...", projection.ProjectionName, reason);
 
             await SubscribeProjection(projection, chain, environment);
         }
@@ -160,7 +160,7 @@ namespace SuperGlue.EventStore.Projections
             }
             catch (Exception ex)
             {
-                _log.Error(string.Format("Couldn't push events to projection: {0}", projection.ProjectionName), ex);
+                _log.Error(ex, "Couldn't push events to projection: {0}", projection.ProjectionName);
             }
         }
 
