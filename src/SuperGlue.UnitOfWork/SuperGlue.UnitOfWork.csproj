@@ -49,6 +49,7 @@
       <Link>ResolveExtensions.cs</Link>
     </Compile>
     <Compile Include="ConfigureUnitOrWork.cs" />
+    <Compile Include="IApplicationTask.cs" />
     <Compile Include="PushExceptionsToApplicationTasks.cs" />
     <Compile Include="RollbackUnitOfWork.cs" />
     <Compile Include="ISuperGlueUnitOfWork.cs" />

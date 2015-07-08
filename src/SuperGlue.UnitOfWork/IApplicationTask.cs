@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace SuperGlue.Configuration
+namespace SuperGlue.UnitOfWork
 {
     public interface IApplicationTask
     {

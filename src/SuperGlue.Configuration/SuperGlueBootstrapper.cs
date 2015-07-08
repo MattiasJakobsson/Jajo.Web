@@ -42,10 +42,7 @@ namespace SuperGlue.Configuration
             foreach (var setup in _setups)
                 await setup.Configure(new SettingsConfiguration(GetSettings, settings, environment));
 
-            var applicationTasks = settings.ResolveAll<IApplicationTask>();
-
-            foreach (var applicationTask in applicationTasks)
-                await applicationTask.Start();
+            await settings.Publish(ConfigurationEvents.BeforeApplicationStart);
 
             _appStarters = settings.ResolveAll<IStartApplication>();
 
@@ -65,19 +62,20 @@ namespace SuperGlue.Configuration
                 if (chain != null)
                     await starter.Start(chain, settings, environment);
             }
+
+            await settings.Publish(ConfigurationEvents.AfterApplicationStart);
         }
 
         public virtual async Task ShutDown()
         {
             var appStarters = _appStarters ?? new List<IStartApplication>();
 
+            await _environment.Publish(ConfigurationEvents.BeforeApplicationShutDown);
+
             foreach (var startApplication in appStarters)
                 await startApplication.ShutDown(_environment);
 
-            var applicationTasks = _environment.ResolveAll<IApplicationTask>();
-
-            foreach (var applicationTask in applicationTasks)
-                await applicationTask.ShutDown();
+            await _environment.Publish(ConfigurationEvents.AfterApplicationShutDown);
 
             var setups = _setups ?? new List<ISetupConfigurations>();
 

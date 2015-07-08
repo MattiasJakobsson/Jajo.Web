@@ -52,12 +52,12 @@
     <Compile Include="BuildAppFunction.cs" />
     <Compile Include="AssemblyProxy.cs" />
     <Compile Include="BuildAppFunctionExtensions.cs" />
+    <Compile Include="ConfigurationEvents.cs" />
     <Compile Include="ConfigureEnvironment.cs" />
     <Compile Include="ConfigurationFile.cs" />
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
     <Compile Include="ConfigurationSetupResult.cs" />
     <Compile Include="Continue.cs" />
-    <Compile Include="IApplicationTask.cs" />
     <Compile Include="IBuildAppFunction.cs" />
     <Compile Include="If.cs" />
     <Compile Include="ISetupConfigurations.cs" />

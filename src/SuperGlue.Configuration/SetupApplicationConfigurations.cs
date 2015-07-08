@@ -9,7 +9,6 @@ namespace SuperGlue.Configuration
         {
             yield return new ConfigurationSetupResult("superglue.Configuration.ApplicationsConfigured", environment =>
             {
-                environment.RegisterAll(typeof(IApplicationTask));
                 environment.RegisterAll(typeof(IStartApplication));
             }, "superglue.ContainerSetup");
         }

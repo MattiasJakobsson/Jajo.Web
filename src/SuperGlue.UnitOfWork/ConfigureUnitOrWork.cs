@@ -12,19 +12,33 @@ namespace SuperGlue.UnitOfWork
             {
                 environment.RegisterAll(typeof(ISuperGlueUnitOfWork));
                 environment.RegisterAll(typeof(IApplicationTask));
+
+                environment.SubscribeTo(ConfigurationEvents.BeforeApplicationStart, async x =>
+                {
+                    var applicationTasks = x.ResolveAll<IApplicationTask>();
+
+                    foreach (var applicationTask in applicationTasks)
+                        await applicationTask.Start();
+                });
+
+                environment.SubscribeTo(ConfigurationEvents.AfterApplicationShutDown, async x =>
+                {
+                    var applicationTasks = x.ResolveAll<IApplicationTask>();
+
+                    foreach (var applicationTask in applicationTasks)
+                        await applicationTask.ShutDown();
+                });
             }, "superglue.ContainerSetup");
         }
 
         public Task Shutdown(IDictionary<string, object> applicationData)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
         public Task Configure(SettingsConfiguration configuration)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
     }
-    
-
 }
