@@ -11,6 +11,7 @@ namespace SuperGlue.EventStore
         void BuildFromHistory(IEventStream eventStream);
         IEventStream GetUncommittedChanges();
         void ClearUncommittedChanges();
+        IDictionary<string, object> GetMetaData(IDictionary<string, object> environment);
         string GetStreamName(IDictionary<string, object> environment);
 
         event Action<IAggregate> AggregateAttached;

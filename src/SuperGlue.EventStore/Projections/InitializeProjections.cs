@@ -84,7 +84,7 @@ namespace SuperGlue.EventStore.Projections
         protected virtual void OnProjectionError(IEventStoreProjection projection, object message, IDictionary<string, object> metaData, Exception exception)
         {
             _writeToErrorStream.Write(new ProjectionFailed(projection.ProjectionName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
-            _log.Error(string.Format("Error while processing event of type: {0} for projection: {1}", message != null ? message.GetType().FullName : "Unknown", projection.ProjectionName), exception);
+            _log.Error(exception, "Error while processing event of type: {0} for projection: {1}", message != null ? message.GetType().FullName : "Unknown", projection.ProjectionName);
         }
 
         private async Task SubscribeProjection(IEventStoreProjection currentEventStoreProjection, AppFunc chain, IDictionary<string, object> environment)

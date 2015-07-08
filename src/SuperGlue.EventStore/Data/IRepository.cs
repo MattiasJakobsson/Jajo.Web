@@ -9,9 +9,9 @@ namespace SuperGlue.EventStore.Data
         Task<T> Load<T>(string id) where T : IAggregate, new();
         Task<T> LoadVersion<T>(string id, int version) where T : IAggregate, new();
         Task<IEnumerable<object>> LoadStream(string stream);
-        Task RequestTimeOut(string stream, Guid commitId, object evnt, IReadOnlyDictionary<string, object> metaData, DateTime at);
+        Task RequestTimeOut(string stream, object evnt, IReadOnlyDictionary<string, object> metaData, DateTime at);
         Task SaveChanges();
-        Task SaveToStream(string stream, IEnumerable<object> events, Guid commitId);
+        Task SaveToStream(string stream, IEnumerable<object> events, IReadOnlyDictionary<string, object> metaData);
         void Attache(IAggregate aggregate);
 
         event Action<IAggregate> AggregateLoaded;

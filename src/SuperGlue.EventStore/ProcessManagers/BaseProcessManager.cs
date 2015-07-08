@@ -62,10 +62,10 @@ namespace SuperGlue.EventStore.ProcessManagers
             }
         }
 
-        public async Task Commit()
+        public async Task Commit(IDictionary<string, object> environment)
         {
             foreach (var instance in _instances)
-                await Save(instance.Value);
+                await Save(instance.Value, environment);
 
             _instances.Clear();
         }
@@ -83,12 +83,12 @@ namespace SuperGlue.EventStore.ProcessManagers
             return state;
         }
 
-        private async Task Save(TState state)
+        private async Task Save(TState state, IDictionary<string, object> environment)
         {
             var streamName = GetStreamName(state.Id);
             var changes = state.GetUncommittedChanges();
 
-            await _repository.SaveToStream(streamName, changes.Events, Guid.NewGuid());
+            await _repository.SaveToStream(streamName, changes.Events, new ReadOnlyDictionary<string, object>(state.GetMetaData(environment)));
 
             state.ClearUncommittedChanges();
         }
@@ -101,7 +101,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         protected Task RequestTimeOut(object evnt, IDictionary<string, object> metaData, DateTime at)
         {
-            return _repository.RequestTimeOut(GetTimeOutsStreamName(), Guid.NewGuid(), evnt, new ReadOnlyDictionary<string, object>(metaData), at);
+            return _repository.RequestTimeOut(GetTimeOutsStreamName(), evnt, new ReadOnlyDictionary<string, object>(metaData), at);
         }
 
         protected virtual string GetStreamName(string id)

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.EventStore.Data;
@@ -33,7 +34,7 @@ namespace SuperGlue.EventStore
                 var entity = _trackEntitiesWithEvents.Pop();
                 var changes = entity.Entity.GetAppliedEvents().ToList();
 
-                await _repository.SaveToStream(entity.Entity.GetStreamName(_environment), changes, Guid.NewGuid());
+                await _repository.SaveToStream(entity.Entity.GetStreamName(_environment), changes, new ReadOnlyDictionary<string, object>(entity.Entity.GetMetaData(_environment)));
             }
 
             await _repository.SaveChanges();

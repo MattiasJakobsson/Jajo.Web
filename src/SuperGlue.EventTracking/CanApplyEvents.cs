@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,6 +7,10 @@ namespace SuperGlue.EventTracking
 {
     public abstract class CanApplyEvents : ICanApplyEvents
     {
+        private const string EntityClrTypeHeader = "EntityClrTypeName";
+        private const string CommitIdHeader = "CommitId";
+        private const string EntityIdHeader = "EntityId";
+
         private readonly ICollection<object> _events = new Collection<object>();
 
         public string Id { get; set; }
@@ -19,6 +24,16 @@ namespace SuperGlue.EventTracking
         public void ClearAppliedEvents()
         {
             _events.Clear();
+        }
+
+        public IDictionary<string, object> GetMetaData(IDictionary<string, object> environment)
+        {
+            return new Dictionary<string, object>
+            {
+                {EntityClrTypeHeader, GetType().AssemblyQualifiedName},
+                {CommitIdHeader, Guid.NewGuid()},
+                {EntityIdHeader, Id}
+            };
         }
 
         public string GetStreamName(IDictionary<string, object> environment)

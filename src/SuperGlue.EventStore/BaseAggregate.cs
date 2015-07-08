@@ -7,6 +7,10 @@ namespace SuperGlue.EventStore
 {
     public abstract class BaseAggregate : IAggregate
     {
+        private const string AggregateClrTypeHeader = "AggregateClrTypeName";
+        private const string CommitIdHeader = "CommitId";
+        private const string AggregateIdHeader = "AggregateId";
+
         private readonly ICollection<object> _uncommittedChanges = new Collection<object>();
         private readonly IList<IEventHandler> _eventHandlers = new List<IEventHandler>();
 
@@ -18,7 +22,6 @@ namespace SuperGlue.EventStore
 
         public string Id { get; set; }
         public int Version { get; private set; }
-        public abstract string Context { get; }
 
         public void BuildFromHistory(IEventStream eventStream)
         {
@@ -38,6 +41,16 @@ namespace SuperGlue.EventStore
         public void ClearUncommittedChanges()
         {
             _uncommittedChanges.Clear();
+        }
+
+        public virtual IDictionary<string, object> GetMetaData(IDictionary<string, object> environment)
+        {
+            return new Dictionary<string, object>
+            {
+                {AggregateClrTypeHeader, GetType().AssemblyQualifiedName},
+                {CommitIdHeader, Guid.NewGuid()},
+                {AggregateIdHeader, Id}
+            };
         }
 
         public virtual string GetStreamName(IDictionary<string, object> environment)

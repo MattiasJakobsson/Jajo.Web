@@ -10,6 +10,6 @@ namespace SuperGlue.EventStore.ProcessManagers
         IEnumerable<string> GetStreamsToProcess();
         void Start();
         Task Apply(object evnt, int version, IDictionary<string, object> metaData);
-        Task Commit();
+        Task Commit(IDictionary<string, object> environment);
     }
 }

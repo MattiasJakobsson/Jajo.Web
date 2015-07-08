@@ -84,7 +84,7 @@ namespace SuperGlue.EventStore.Subscribers
         protected virtual void OnServiceError(string service, string stream, object message, IDictionary<string, object> metaData, Exception exception)
         {
             _writeToErrorStream.Write(new ServiceEventProcessingFailed(service, stream, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
-            _log.Error(string.Format("Error while processing event of type: {0} for stream: {1}", message != null ? message.GetType().FullName : "Unknown", stream), exception);
+            _log.Error(exception, "Error while processing event of type: {0} for stream: {1}", message != null ? message.GetType().FullName : "Unknown", stream);
         }
 
         private async Task SubscribeService(AppFunc chain, string name, string stream, IDictionary<string, object> environment)

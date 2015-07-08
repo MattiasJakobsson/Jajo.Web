@@ -50,7 +50,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                     onError(lastException, evnt);
             }
 
-            await processManager.Commit();
+            await processManager.Commit(environment);
 
             await _next(environment);
         }
