@@ -33,7 +33,7 @@ namespace SuperGlue.EventStore.Subscribers
                 {
                     try
                     {
-                        await Execute(evnt.Data, environment);
+                        await Execute(evnt, environment);
                         lastException = null;
                         break;
                     }
@@ -51,7 +51,7 @@ namespace SuperGlue.EventStore.Subscribers
             await _next(environment);
         }
 
-        private static async Task Execute(object evnt, IDictionary<string, object> environment)
+        private static async Task Execute(DeSerializationResult evnt, IDictionary<string, object> environment)
         {
             var baseTypes = FindInheritedEventTypes(evnt).Distinct().ToList();
 
@@ -64,8 +64,8 @@ namespace SuperGlue.EventStore.Subscribers
             foreach (var subscriber in subscribers)
             {
                 await ((Task)subscriber.Subscriber.GetType()
-                    .GetMethod("Handle", new[] { subscriber.Type })
-                    .Invoke(subscriber.Subscriber, new[] { evnt }));
+                    .GetMethod("Handle", new[] { subscriber.Type, typeof(IDictionary<string, object>) })
+                    .Invoke(subscriber.Subscriber, new[] { evnt.Data, evnt.Metadata }));
             }
         }
 
