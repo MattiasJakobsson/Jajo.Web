@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.Web.Security
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Web.Security.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.Security

@@ -131,6 +131,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Logging.NLog", "S
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Validation.FluentValidation", "SuperGlue.Web.Validation.FluentValidation\SuperGlue.Web.Validation.FluentValidation.csproj", "{5ACCD7BE-79D0-4D89-BFF3-1FF7C630E005}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Security", "SuperGlue.Web.Security\SuperGlue.Web.Security.csproj", "{65A79524-DE0E-49DB-AB4B-6055D4C792D4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -305,6 +307,10 @@ Global
 		{5ACCD7BE-79D0-4D89-BFF3-1FF7C630E005}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5ACCD7BE-79D0-4D89-BFF3-1FF7C630E005}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5ACCD7BE-79D0-4D89-BFF3-1FF7C630E005}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65A79524-DE0E-49DB-AB4B-6055D4C792D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65A79524-DE0E-49DB-AB4B-6055D4C792D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65A79524-DE0E-49DB-AB4B-6055D4C792D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65A79524-DE0E-49DB-AB4B-6055D4C792D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -329,5 +335,6 @@ Global
 		{4C6A4C58-891B-41FD-B40B-3950B935EA71} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 		{7C6DB401-0523-439E-B0A5-766BA4522C72} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 		{5ACCD7BE-79D0-4D89-BFF3-1FF7C630E005} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
+		{65A79524-DE0E-49DB-AB4B-6055D4C792D4} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 	EndGlobalSection
 EndGlobal
