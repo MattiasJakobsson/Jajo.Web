@@ -15,10 +15,7 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
         {
             yield return new ConfigurationSetupResult("superglue.RavenDbStreamManagerSetup", environment =>
             {
-                var databaseName = ConfigurationManager.AppSettings["StreamManagers.RavenDb.DatabaseName"];
-                
-                if (string.IsNullOrEmpty(databaseName))
-                    databaseName = "Site";
+                var databaseName = ConfigurationManager.AppSettings["StreamManagers.RavenDb.DatabaseName"] ?? "";
 
                 environment.RegisterTransient(typeof(IManageProcessManagerStreamEventNumbers), (x, y) => new ManageProcessManagerStreamEventNumbersInRavenDb(y.Resolve<IRavenSessions>().GetFor(databaseName)));
                 environment.RegisterTransient(typeof(IManageEventNumbersForProjections), (x, y) => new ManageEventNumbersForProjectionsInRavenDb(y.Resolve<IRavenSessions>().GetFor(databaseName)));
