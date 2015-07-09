@@ -54,7 +54,7 @@ namespace SuperGlue.EventStore.Subscribers
 
             running = true;
 
-            var streams = ConfigurationManager.AppSettings["EventStore.Streams"].Split(';').ToList();
+            var streams = (ConfigurationManager.AppSettings["EventStore.Streams"] ?? "").Split(';').Where(x => !string.IsNullOrEmpty(x)).ToList();
             var name = ConfigurationManager.AppSettings["Service.Name"];
 
             foreach (var stream in streams)
