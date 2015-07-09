@@ -14,7 +14,6 @@ namespace SuperGlue.EventTracking
         private readonly ICollection<object> _events = new Collection<object>();
 
         public string Id { get; set; }
-        public abstract string Context { get; }
 
         public IEnumerable<object> GetAppliedEvents()
         {

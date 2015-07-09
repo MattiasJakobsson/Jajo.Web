@@ -57,7 +57,8 @@
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>
-    <Compile Include="InputValidation\IValidateInput.cs" />
+    <Compile Include="InputValidation\IAmValidatedBy.cs" />
+    <Compile Include="InputValidation\IInputValidator.cs" />
     <Compile Include="InputValidation\ValidateRequestInput.cs" />
     <Compile Include="IValidateRequest.cs" />
     <Compile Include="SetupValidationConfiguration.cs" />

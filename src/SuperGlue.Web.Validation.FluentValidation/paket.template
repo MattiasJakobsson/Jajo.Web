@@ -1,0 +1,10 @@
+﻿type file
+id SuperGlue.Web.Validation.FluentValidation
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Web.Validation.FluentValidation.dll ==> lib
+dependencies
+	SuperGlue.Web.Validation

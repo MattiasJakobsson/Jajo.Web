@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
-using SuperGlue.Web.Validation.InputValidation;
 
 namespace SuperGlue.Web.Validation
 {
@@ -11,7 +10,6 @@ namespace SuperGlue.Web.Validation
         {
             yield return new ConfigurationSetupResult("superglue.ValidationSetup", environment =>
             {
-                environment.RegisterAllClosing(typeof(IValidateInput<>));
                 environment.RegisterAll(typeof(IValidateRequest));
             }, "superglue.Container");
         }
