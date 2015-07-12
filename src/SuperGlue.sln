@@ -133,6 +133,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Validation.Fl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Security", "SuperGlue.Web.Security\SuperGlue.Web.Security.csproj", "{65A79524-DE0E-49DB-AB4B-6055D4C792D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.ApiDiscovery", "SuperGlue.ApiDiscovery\SuperGlue.ApiDiscovery.csproj", "{8415B608-D32F-4569-848F-109063B080A3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Api.Hal", "SuperGlue.Api.Hal\SuperGlue.Api.Hal.csproj", "{66737979-5B17-42CE-BECA-0CE67BE0E930}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Api.Hal", "SuperGlue.Web.Api.Hal\SuperGlue.Web.Api.Hal.csproj", "{3551CF79-3185-4FC4-A21D-CE42B6AC4EAB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.ApiDiscovery", "SuperGlue.Web.ApiDiscovery\SuperGlue.Web.ApiDiscovery.csproj", "{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -311,6 +319,22 @@ Global
 		{65A79524-DE0E-49DB-AB4B-6055D4C792D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65A79524-DE0E-49DB-AB4B-6055D4C792D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65A79524-DE0E-49DB-AB4B-6055D4C792D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8415B608-D32F-4569-848F-109063B080A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8415B608-D32F-4569-848F-109063B080A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8415B608-D32F-4569-848F-109063B080A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8415B608-D32F-4569-848F-109063B080A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66737979-5B17-42CE-BECA-0CE67BE0E930}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66737979-5B17-42CE-BECA-0CE67BE0E930}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66737979-5B17-42CE-BECA-0CE67BE0E930}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66737979-5B17-42CE-BECA-0CE67BE0E930}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3551CF79-3185-4FC4-A21D-CE42B6AC4EAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3551CF79-3185-4FC4-A21D-CE42B6AC4EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3551CF79-3185-4FC4-A21D-CE42B6AC4EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3551CF79-3185-4FC4-A21D-CE42B6AC4EAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -336,5 +360,7 @@ Global
 		{7C6DB401-0523-439E-B0A5-766BA4522C72} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 		{5ACCD7BE-79D0-4D89-BFF3-1FF7C630E005} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 		{65A79524-DE0E-49DB-AB4B-6055D4C792D4} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
+		{3551CF79-3185-4FC4-A21D-CE42B6AC4EAB} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
+		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 	EndGlobalSection
 EndGlobal

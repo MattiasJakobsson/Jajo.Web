@@ -29,7 +29,7 @@ namespace SuperGlue.Configuration
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ResolvePathFunc] = (Func<string, string>)(x => x.Replace("~", basePath));
 
-            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.AlterConfigSettings] = (Action<Type, Action<object>>)((settingsType, alter) => alter(GetSettings(settingsType)));
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetConfigSettings] = (Func<Type, object>)GetSettings;
 
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
 
@@ -106,7 +106,7 @@ namespace SuperGlue.Configuration
             _chains[name] = appFuncBuilder.Build();
         }
 
-        protected void AlterSettings<TSettings>(Action<TSettings> action)
+        protected void AlterSettings<TSettings>(Action<TSettings> action) where TSettings : class
         {
             _environment.AlterSettings(action);
         }

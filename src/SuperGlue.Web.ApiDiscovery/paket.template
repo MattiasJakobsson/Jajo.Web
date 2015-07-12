@@ -1,0 +1,12 @@
+﻿type file
+id SuperGlue.Web.ApiDiscovery
+version 1.0
+authors Mattias Jakobsson
+description
+	Api discovery api tool
+files
+    bin/Release/SuperGlue.Web.ApiDiscovery.dll ==> lib
+dependencies
+	SuperGlue.Web.Output
+	SuperGlue.ApiDiscovery
+	SuperGlue.Configuration

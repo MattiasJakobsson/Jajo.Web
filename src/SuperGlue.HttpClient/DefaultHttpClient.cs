@@ -22,5 +22,10 @@ namespace SuperGlue.HttpClient
 
             return Task.FromResult(response.StaticBody<TResponse>());
         }
+
+        public IHttpRequest Start(string url)
+        {
+            return null;
+        }
     }
 }

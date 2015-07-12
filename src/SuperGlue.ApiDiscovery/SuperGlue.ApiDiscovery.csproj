@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{8415B608-D32F-4569-848F-109063B080A3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SuperGlue.ApiDiscovery</RootNamespace>
+    <AssemblyName>SuperGlue.ApiDiscovery</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\CommonAssemblyInfo.cs">
+      <Link>CommonAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\EnvironmentExtensions.cs">
+      <Link>EnvironmentExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\ResolveExtensions.cs">
+      <Link>ResolveExtensions.cs</Link>
+    </Compile>
+    <Compile Include="ApiDefinition.cs" />
+    <Compile Include="ApiException.cs" />
+    <Compile Include="ApiExtensions.cs" />
+    <Compile Include="ChildSelector.cs" />
+    <Compile Include="DefaultApi.cs" />
+    <Compile Include="ApiForm.cs" />
+    <Compile Include="ApiLink.cs" />
+    <Compile Include="ApiResource.cs" />
+    <Compile Include="IApi.cs" />
+    <Compile Include="IApiForm.cs" />
+    <Compile Include="IApiLink.cs" />
+    <Compile Include="IApiLinkTravelInstruction.cs" />
+    <Compile Include="IApiRegistry.cs" />
+    <Compile Include="IApiResource.cs" />
+    <Compile Include="IApiResponse.cs" />
+    <Compile Include="IApiSource.cs" />
+    <Compile Include="IFormTravelInstruction.cs" />
+    <Compile Include="IHandleApi.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetupApiDiscoveryConfiguration.cs" />
+    <Compile Include="StateObject.cs" />
+    <Compile Include="TravelChildren.cs" />
+    <Compile Include="TravelToChildForm.cs" />
+    <Compile Include="TravelToTopLevelForm.cs" />
+    <Compile Include="TravelToTopLevelLink.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="paket.template" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
+      <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
+      <Name>SuperGlue.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.HttpClient\SuperGlue.HttpClient.csproj">
+      <Project>{206cbcaa-a2a4-4e50-8e20-f15f3db7c68b}</Project>
+      <Name>SuperGlue.HttpClient</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

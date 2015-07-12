@@ -6,6 +6,7 @@ nuget EventStore.Client
 nuget FluentCommandLineParser
 nuget FluentValidation
 nuget FubuCsProjFile
+nuget HalClient.Net
 nuget HtmlTags
 nuget Microsoft.CodeAnalysis.CSharp
 nuget Microsoft.Owin.Host.SystemWeb

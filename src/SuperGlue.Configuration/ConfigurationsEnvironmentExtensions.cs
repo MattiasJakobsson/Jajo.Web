@@ -12,7 +12,7 @@ namespace SuperGlue.Configuration
         public static class ConfigurationConstants
         {
             public const string Assemblies = "superglue.Assemblies";
-            public const string AlterConfigSettings = "superglue.Configuration.AlterSettings";
+            public const string GetConfigSettings = "superglue.Configuration.GetConfigSettings";
             public const string ResolvePathFunc = "superglue.Configuration.ResolvePath";
             public const string ChainName = "superglue.Configuration.ChainName";
             public const string EventHandlers = "superglue.EventHandlers";
@@ -31,11 +31,16 @@ namespace SuperGlue.Configuration
                 assemblies.Add(assembly);
         }
 
-        public static void AlterSettings<TSettings>(this IDictionary<string, object> environment, Action<TSettings> alterer)
+        public static void AlterSettings<TSettings>(this IDictionary<string, object> environment, Action<TSettings> alterer) where TSettings : class
         {
-            var alter = environment.Get<Action<Type, Action<object>>>(ConfigurationConstants.AlterConfigSettings);
+            var settings = GetSettings<TSettings>(environment);
 
-            alter(typeof(TSettings), x => alterer((TSettings)x));
+            alterer(settings);
+        }
+
+        public static TSettings GetSettings<TSettings>(this IDictionary<string, object> environment) where TSettings : class
+        {
+            return environment.Get<Func<Type, object>>(ConfigurationConstants.GetConfigSettings)(typeof(TSettings)) as TSettings;
         }
 
         public static string ResolvePath(this IDictionary<string, object> environment, string relativePath)

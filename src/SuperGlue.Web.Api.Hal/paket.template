@@ -1,0 +1,13 @@
+﻿type file
+id SuperGlue.Web.Api.Hal
+version 1.0
+authors Mattias Jakobsson
+description
+	HAL api tool
+files
+    bin/Release/SuperGlue.Web.Api.Hal.dll ==> lib
+dependencies
+	SuperGlue.Web.Output
+	SuperGlue.ApiDiscovery
+	SuperGlue.Configuration
+	SuperGlue.Web.ApiDiscovery

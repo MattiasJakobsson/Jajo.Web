@@ -1,0 +1,13 @@
+﻿type file
+id SuperGlue.Api.Hal
+version 1.0
+authors Mattias Jakobsson
+description
+	HAL api tool
+files
+    bin/Release/SuperGlue.Api.Hal.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.ApiDiscovery
+	SuperGlue.HttpClient
+	Newtonsoft.Json
