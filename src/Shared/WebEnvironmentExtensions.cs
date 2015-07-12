@@ -77,6 +77,8 @@ namespace SuperGlue.Web
             internal const string ContentLength = "Content-Length";
             internal const string SetCookie = "Set-Cookie";
             internal const string Expires = "Expires";
+            internal const string Pragma = "Pragma";
+            internal const string Vary = "Vary";
         }
 
         internal class WebRequest
@@ -917,6 +919,24 @@ namespace SuperGlue.Web
                 {
                     get { return GetHeader(HeadersConstants.Location); }
                     set { SetHeader(HeadersConstants.Location, value); }
+                }
+
+                public string CacheControl
+                {
+                    get { return GetHeader(HeadersConstants.CacheControl); }
+                    set { SetHeader(HeadersConstants.CacheControl, value); }
+                }
+
+                public string Pragma
+                {
+                    get { return GetHeader(HeadersConstants.Pragma); }
+                    set { SetHeader(HeadersConstants.Pragma, value); }
+                }
+
+                public string Vary
+                {
+                    get { return GetHeader(HeadersConstants.Vary); }
+                    set { SetHeader(HeadersConstants.Vary, value); }
                 }
 
                 public DateTimeOffset? Expires
