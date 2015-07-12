@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.HttpClient;
 
 namespace SuperGlue.ApiDiscovery
 {
-    public interface IApi
+    public interface IApiClient
     {
         Task<IApiResource> TravelTo(ApiDefinition api, IDictionary<string, object> data, params IApiLinkTravelInstruction[] instructions);
-        Task<string> ExecuteForm(IApiResource resource, IDictionary<string, object> data, IFormTravelInstruction travelInstruction);
+        Task<IHttpResponse> ExecuteForm(IApiResource resource, IDictionary<string, object> data, IFormTravelInstruction travelInstruction);
     }
 }

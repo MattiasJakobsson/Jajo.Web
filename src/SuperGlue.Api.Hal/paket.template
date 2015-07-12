@@ -7,7 +7,6 @@ description
 files
     bin/Release/SuperGlue.Api.Hal.dll ==> lib
 dependencies
-	SuperGlue.Configuration
 	SuperGlue.ApiDiscovery
 	SuperGlue.HttpClient
 	Newtonsoft.Json

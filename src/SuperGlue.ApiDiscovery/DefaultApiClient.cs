@@ -1,31 +1,30 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SuperGlue.ApiDiscovery;
 using SuperGlue.HttpClient;
 
-namespace SuperGlue.Api.Hal
+namespace SuperGlue.ApiDiscovery
 {
-    public class DefaultHalApiClient : IHandleApi
+    public class DefaultApiClient : IApiClient
     {
+        private readonly IEnumerable<IParseApiResponse> _responseParsers;
         private readonly IHttpClient _httpClient;
-        private readonly IHalJsonParser _halJsonParser;
 
-        public DefaultHalApiClient(IHttpClient httpClient, IHalJsonParser halJsonParser)
+        public DefaultApiClient(IEnumerable<IParseApiResponse> responseParsers, IHttpClient httpClient)
         {
+            _responseParsers = responseParsers;
             _httpClient = httpClient;
-            _halJsonParser = halJsonParser;
         }
 
-        public bool Accepts(ApiDefinition definition)
+        public async Task<IApiResource> TravelTo(ApiDefinition api, IDictionary<string, object> data, params IApiLinkTravelInstruction[] instructions)
         {
-            return definition.Accepts.Contains("application/hal+json");
-        }
+            var parser = _responseParsers.FirstOrDefault(x => api.Accepts.Contains(x.ContentType));
 
-        public async Task<IApiResource> Travel(ApiDefinition api, IDictionary<string, object> data, params IApiLinkTravelInstruction[] instructions)
-        {
-            var currentResource = await GetAsync(api.Location, null, api);
+            if(parser == null)
+                throw new ApiException(string.Format("Can't handle api named: {0}", api.Name));
+
+            var currentResource = await GetAsync(api.Location, parser);
 
             foreach (var instruction in instructions)
             {
@@ -48,13 +47,13 @@ namespace SuperGlue.Api.Hal
                     uri = new Uri(template.Resolve());
                 }
 
-                currentResource = await GetAsync(uri, documentLink.Type, api);
+                currentResource = await GetAsync(uri, parser);
             }
 
             return currentResource;
         }
 
-        public async Task<string> ExecuteForm(IApiResource resource, IDictionary<string, object> data, IFormTravelInstruction travelInstruction)
+        public Task<IHttpResponse> ExecuteForm(IApiResource resource, IDictionary<string, object> data, IFormTravelInstruction travelInstruction)
         {
             var form = travelInstruction.TravelTo(resource);
 
@@ -98,17 +97,17 @@ namespace SuperGlue.Api.Hal
                 .Headers
                 .Aggregate(request, (current, header) => current.Header(header.Key, header.Value));
 
-            return (await request.Send()).RawBody;
+            return request.Send();
         }
 
-        private async Task<IApiResource> GetAsync(Uri uri, string type, ApiDefinition definition)
+        private async Task<IApiResource> GetAsync(Uri uri, IParseApiResponse parser)
         {
             var response = await _httpClient
                 .Start(uri.ToString())
-                .ContentType(type ?? "application/hal+json")
+                .ContentType(parser.ContentType)
                 .Send();
 
-            return _halJsonParser.ParseResource(definition, response.RawBody);
+            return parser.Parse(response);
         }
     }
 }

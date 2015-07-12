@@ -49,14 +49,16 @@
       <Link>ResolveExtensions.cs</Link>
     </Compile>
     <Compile Include="ApiDefinition.cs" />
+    <Compile Include="ApiDiscoverySettings.cs" />
     <Compile Include="ApiException.cs" />
     <Compile Include="ApiExtensions.cs" />
     <Compile Include="ChildSelector.cs" />
-    <Compile Include="DefaultApi.cs" />
     <Compile Include="ApiForm.cs" />
     <Compile Include="ApiLink.cs" />
     <Compile Include="ApiResource.cs" />
-    <Compile Include="IApi.cs" />
+    <Compile Include="DefaultApiClient.cs" />
+    <Compile Include="DefaultApiRegistry.cs" />
+    <Compile Include="UriTemplate.cs" />
     <Compile Include="IApiForm.cs" />
     <Compile Include="IApiLink.cs" />
     <Compile Include="IApiLinkTravelInstruction.cs" />
@@ -65,7 +67,8 @@
     <Compile Include="IApiResponse.cs" />
     <Compile Include="IApiSource.cs" />
     <Compile Include="IFormTravelInstruction.cs" />
-    <Compile Include="IHandleApi.cs" />
+    <Compile Include="IApiClient.cs" />
+    <Compile Include="IParseApiResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupApiDiscoveryConfiguration.cs" />
     <Compile Include="StateObject.cs" />

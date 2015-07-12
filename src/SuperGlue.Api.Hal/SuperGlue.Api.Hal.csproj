@@ -42,18 +42,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\EnvironmentExtensions.cs">
-      <Link>EnvironmentExtensions.cs</Link>
-    </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
-    <Compile Include="HalJsonParser.cs" />
-    <Compile Include="UriTemplate.cs" />
-    <Compile Include="IHalJsonParser.cs" />
-    <Compile Include="DefaultHalApiClient.cs" />
+    <Compile Include="ParseHalApiResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SetupHalApiConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />
@@ -63,10 +53,6 @@
     <ProjectReference Include="..\SuperGlue.ApiDiscovery\SuperGlue.ApiDiscovery.csproj">
       <Project>{8415b608-d32f-4569-848f-109063b080a3}</Project>
       <Name>SuperGlue.ApiDiscovery</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
-      <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
-      <Name>SuperGlue.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\SuperGlue.HttpClient\SuperGlue.HttpClient.csproj">
       <Project>{206cbcaa-a2a4-4e50-8e20-f15f3db7c68b}</Project>

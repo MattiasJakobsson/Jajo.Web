@@ -12,8 +12,8 @@ namespace SuperGlue.ApiDiscovery
             yield return new ConfigurationSetupResult("superglue.ApiDiscoverySetup", environment =>
             {
                 environment.RegisterAll(typeof(IApiSource));
-                environment.RegisterAll(typeof(IHandleApi));
-                environment.RegisterTransient(typeof(IApi), typeof(DefaultApi));
+                environment.RegisterAll(typeof(IParseApiResponse));
+                environment.RegisterTransient(typeof(IApiClient), typeof(DefaultApiClient));
                 environment.RegisterTransient(typeof(IApiRegistry), typeof(DefaultApiRegistry));
 
                 environment.SubscribeTo(ConfigurationEvents.AfterApplicationStart, async x =>

@@ -4,7 +4,6 @@ namespace SuperGlue.ApiDiscovery
 {
     public interface IApiResource
     {
-        ApiDefinition Definition { get; }
         string Name { get; }
         IEnumerable<IApiLink> Links { get; }
         IReadOnlyDictionary<string, StateObject> State { get; }

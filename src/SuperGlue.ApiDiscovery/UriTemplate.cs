@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SuperGlue.Api.Hal
+namespace SuperGlue.ApiDiscovery
 {
     /// <summary>
     /// this is https://github.com/tavis-software/UriTemplates
