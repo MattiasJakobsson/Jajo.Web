@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SuperGlue.ApiDiscovery;
 using SuperGlue.HttpClient;
@@ -13,9 +14,9 @@ namespace SuperGlue.Api.Hal
             get { return "application/hal+json"; }
         }
 
-        public IApiResource Parse(IHttpResponse response)
+        public async Task<IApiResource> Parse(IHttpResponse response)
         {
-            var obj = JObject.Parse(response.RawBody);
+            var obj = JObject.Parse(await response.ReadRawBody());
             var resource = ParseRootResourceObject(obj);
 
             return resource;

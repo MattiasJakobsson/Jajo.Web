@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using SuperGlue.HttpClient;
 
 namespace SuperGlue.ApiDiscovery
@@ -5,6 +6,6 @@ namespace SuperGlue.ApiDiscovery
     public interface IParseApiResponse
     {
         string ContentType { get; }
-        IApiResource Parse(IHttpResponse response);
+        Task<IApiResource> Parse(IHttpResponse response);
     }
 }

@@ -87,15 +87,16 @@ namespace SuperGlue.ApiDiscovery
             }
 
             var request = _httpClient
-                .Start(uri.ToString())
-                .Method(form.Method);
+                .Start(uri)
+                .Method(form.Method)
+                .ModifyHeaders(x =>
+                {
+                    foreach (var header in form.Headers)
+                        x.Add(header.Key, header.Value);
+                });
 
             request = formData
                 .Aggregate(request, (current, item) => current.Parameter(item.Key, item.Value));
-
-            request = form
-                .Headers
-                .Aggregate(request, (current, header) => current.Header(header.Key, header.Value));
 
             return request.Send();
         }
@@ -103,11 +104,11 @@ namespace SuperGlue.ApiDiscovery
         private async Task<IApiResource> GetAsync(Uri uri, IParseApiResponse parser)
         {
             var response = await _httpClient
-                .Start(uri.ToString())
+                .Start(uri)
                 .ContentType(parser.ContentType)
                 .Send();
 
-            return parser.Parse(response);
+            return await parser.Parse(response);
         }
     }
 }
