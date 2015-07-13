@@ -37,9 +37,9 @@ namespace SuperGlue.ApiDiscovery
             var result = await _api.TravelTo(settings.RegistrationRoot, new Dictionary<string, object>
             {
                 {"name", name}
-            }, new TravelChildren("find", new ChildSelector("resources", x => x.State.ContainsKey("name") && x.State["name"].Value == "registration")));
+            }, new TravelChildren("details", new ChildSelector("resources", x => x.State.ContainsKey("name") && x.State["name"].Value == "registration")));
         
-            return new ApiDefinition(result.State["name"].Value, new Uri(result.State["uri"].Value), result.State["accepts"].Value.Split(';'));
+            return new ApiDefinition(result.State["Name"].Value, new Uri(result.State["Location"].Value), result.State["Accepts"].Value.Split(';'));
         }
     }
 }
