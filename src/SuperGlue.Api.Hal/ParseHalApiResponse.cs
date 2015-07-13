@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SuperGlue.ApiDiscovery;
@@ -26,7 +27,7 @@ namespace SuperGlue.Api.Hal
         {
             var links = new List<IApiLink>();
             var embedded = new List<IApiResource>();
-            var state = new List<StateObject>();
+            var state = new ExpandoObject();
             var forms = new List<IApiForm>();
 
             ParseResourceObject(outer, links, forms, embedded, state);
@@ -38,7 +39,7 @@ namespace SuperGlue.Api.Hal
         {
             var links = new List<IApiLink>();
             var embedded = new List<IApiResource>();
-            var state = new List<StateObject>();
+            var state = new ExpandoObject();
             var forms = new List<IApiForm>();
 
             ParseResourceObject(outer, links, forms, embedded, state);
@@ -86,12 +87,10 @@ namespace SuperGlue.Api.Hal
             return form;
         }
 
-        private static void ParseResourceObject(JObject outer, List<IApiLink> links, List<IApiForm> forms, List<IApiResource> embedded, List<StateObject> state)
+        private static void ParseResourceObject(JObject outer, List<IApiLink> links, List<IApiForm> forms, List<IApiResource> embedded, IDictionary<string, object> state)
         {
             foreach (var inner in outer.Properties())
             {
-                var type = inner.Value.Type.ToString();
-
                 if (inner.Value.Type == JTokenType.Object)
                 {
                     var value = (JObject)inner.Value;
@@ -108,7 +107,7 @@ namespace SuperGlue.Api.Hal
                             forms.AddRange(ParseObjectOrArrayOfObjects(value, ParseFormsResourceObject));
                             break;
                         default:
-                            state.Add(new StateObject(inner.Name, value.ToString(), type));
+                            state[inner.Name] = value.Value<dynamic>();
                             break;
                     }
                 }
@@ -125,7 +124,7 @@ namespace SuperGlue.Api.Hal
                         case "_forms":
                             throw new FormatException("Invalid value for _forms: " + value);
                         default:
-                            state.Add(new StateObject(inner.Name, value, type));
+                            state[inner.Name] = inner.Value.Value<dynamic>();
                             break;
                     }
                 }

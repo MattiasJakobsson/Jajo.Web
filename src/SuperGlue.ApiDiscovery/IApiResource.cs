@@ -6,7 +6,7 @@ namespace SuperGlue.ApiDiscovery
     {
         string Name { get; }
         IEnumerable<IApiLink> Links { get; }
-        IReadOnlyDictionary<string, StateObject> State { get; }
+        dynamic State { get; }
         IReadOnlyDictionary<string, IApiForm> Forms { get; } 
         IReadOnlyDictionary<string, IEnumerable<IApiResource>> Children { get; }
     }
