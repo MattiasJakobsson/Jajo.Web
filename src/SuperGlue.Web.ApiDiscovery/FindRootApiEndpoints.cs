@@ -21,7 +21,7 @@ namespace SuperGlue.Web.ApiDiscovery
         {
             var accepts = _outputRenderers.Select(x => x.Type).ToList();
 
-            var result = _apiEndpoints.Select(input => new ApiDefinition(input.GetName(), new Uri(environment.RouteTo(input)), accepts)).ToList();
+            var result = _apiEndpoints.Select(input => new ApiDefinition(input.GetName(environment), new Uri(environment.RouteTo(input)), accepts)).ToList();
 
             return Task.FromResult<IEnumerable<ApiDefinition>>(result);
         }

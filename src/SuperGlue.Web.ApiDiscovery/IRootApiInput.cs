@@ -1,7 +1,9 @@
-﻿namespace SuperGlue.Web.ApiDiscovery
+﻿using System.Collections.Generic;
+
+namespace SuperGlue.Web.ApiDiscovery
 {
     public interface IRootApiInput
     {
-        string GetName();
+        string GetName(IDictionary<string, object> environment);
     }
 }
