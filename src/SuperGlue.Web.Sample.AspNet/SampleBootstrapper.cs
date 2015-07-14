@@ -66,5 +66,10 @@ namespace SuperGlue.Web.Sample.AspNet
                     .Use<RenderOutput>();
             });
         }
+
+        protected override string ApplicationName
+        {
+            get { return "AspNetSample"; }
+        }
     }
 }

@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Raven.Client;
+using SuperGlue.Configuration;
 using SuperGlue.EventStore.Subscribers;
 
 namespace SuperGlue.EventStore.StreamManagers.RavenDb
@@ -13,15 +15,19 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
             _session = session;
         }
 
-        public async Task<int?> GetLastEvent(string service, string stream)
+        public async Task<int?> GetLastEvent(string stream, IDictionary<string, object> environment)
         {
+            var service = environment.GetApplicationName();
+
             var serviceEventNumber = await GetServiceEventNumber(service, stream);
 
             return serviceEventNumber.LastEvent;
         }
 
-        public async Task UpdateLastEvent(string service, string stream, int lastEvent)
+        public async Task UpdateLastEvent(string stream, int lastEvent, IDictionary<string, object> environment)
         {
+            var service = environment.GetApplicationName();
+
             var serviceEventNumber = await GetServiceEventNumber(service, stream);
 
             serviceEventNumber.LastEvent = lastEvent;

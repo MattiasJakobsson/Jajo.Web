@@ -111,7 +111,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                         .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
                         .Subscribe(x => PushEventsToProcessManager(chain, currentProcessManager, x, environment));
 
-                    var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentProcessManager.ProcessName, await eventNumberManager.GetLastEvent(currentProcessManager.ProcessName), true,
+                    var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentProcessManager.ProcessName, await eventNumberManager.GetLastEvent(currentProcessManager.ProcessName, environment), true,
                         (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
                         subscriptionDropped: async (subscription, reason, exception) => await SubscriptionDropped(chain, currentProcessManager, reason, exception, environment));
 

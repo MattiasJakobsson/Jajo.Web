@@ -66,5 +66,10 @@ namespace SuperGlue.Web.Sample
                     .Use<RenderOutput>();
             });
         }
+
+        protected override string ApplicationName
+        {
+            get { return "KatanaSample"; }
+        }
     }
 }

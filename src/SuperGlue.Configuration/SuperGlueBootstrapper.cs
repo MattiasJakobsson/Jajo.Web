@@ -31,6 +31,8 @@ namespace SuperGlue.Configuration
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetConfigSettings] = (Func<Type, object>)GetSettings;
 
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ApplicationName] = ApplicationName;
+
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
 
             var assemblies = LoadApplicationAssemblies().ToList();
@@ -84,6 +86,8 @@ namespace SuperGlue.Configuration
         }
 
         protected abstract void Configure(string environment);
+
+        protected abstract string ApplicationName { get; }
 
         protected virtual object GetSettings(Type settingsType)
         {

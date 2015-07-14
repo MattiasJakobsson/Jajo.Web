@@ -5,9 +5,9 @@
         public string Id { get; set; }
         public int? LastEvent { get; set; }
 
-        public static string GetId(string processManager)
+        public static string GetId(string service, string processManager)
         {
-            return string.Format("ProcessManagerEventNumber/{0}", processManager);
+            return string.Format("Services/{0}/ProcessManagers/{1}", service, processManager);
         }
     }
 }

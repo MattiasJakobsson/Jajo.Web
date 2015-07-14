@@ -29,7 +29,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             {
                 var lastEvent = events.Select(x => x.OriginalEventNumber).OrderByDescending(x => x).First();
 
-                await eventNumbersForProjections.UpdateLastEvent(processManager.ProcessName, lastEvent);
+                await eventNumbersForProjections.UpdateLastEvent(processManager.ProcessName, lastEvent, environment);
             }
 
             await _next(environment);

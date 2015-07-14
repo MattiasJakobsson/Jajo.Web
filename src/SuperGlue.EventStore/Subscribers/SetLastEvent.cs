@@ -22,7 +22,6 @@ namespace SuperGlue.EventStore.Subscribers
         public async Task Invoke(IDictionary<string, object> environment)
         {
             var events = environment.GetEventStoreRequest().Events.ToList();
-            var subscriber = environment.GetEventStoreRequest().Service;
             var stream = environment.GetEventStoreRequest().Stream;
             var manageStreamEventNumbers = environment.Resolve<IManageEventNumbersForSubscriber>();
 
@@ -30,7 +29,7 @@ namespace SuperGlue.EventStore.Subscribers
             {
                 var lastEvent = events.Select(x => x.OriginalEventNumber).OrderByDescending(x => x).First();
 
-                await manageStreamEventNumbers.UpdateLastEvent(subscriber, stream, lastEvent);
+                await manageStreamEventNumbers.UpdateLastEvent(stream, lastEvent, environment);
             }
 
             await _next(environment);

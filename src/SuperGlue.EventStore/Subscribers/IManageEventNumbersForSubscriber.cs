@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.EventStore.Subscribers
 {
     public interface IManageEventNumbersForSubscriber
     {
-        Task<int?> GetLastEvent(string service, string stream);
-        Task UpdateLastEvent(string service, string stream, int lastEvent);
+        Task<int?> GetLastEvent(string stream, IDictionary<string, object> environment);
+        Task UpdateLastEvent(string stream, int lastEvent, IDictionary<string, object> environment);
     }
 }

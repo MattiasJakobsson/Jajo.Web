@@ -11,7 +11,6 @@ namespace SuperGlue.EventStore
         {
             public const string ProcessManager = "superglue.EventStore.ProcessManager";
             public const string Projection = "superglue.EventStore.Projection";
-            public const string Service = "superglue.EventStore.Service";
             public const string Stream = "superglue.EventStore.Stream";
             public const string IsCatchUp = "superglue.EventStore.IsCatchUp";
             public const string Events = "superglue.EventStore.Events";
@@ -54,12 +53,6 @@ namespace SuperGlue.EventStore
             {
                 get { return _environment.Get<IEnumerable<DeSerializationResult>>(EventStoreConstants.Events) ?? new List<DeSerializationResult>(); }
                 set { _environment[EventStoreConstants.Events] = value; }
-            }
-
-            public string Service
-            {
-                get { return _environment.Get<string>(EventStoreConstants.Service); }
-                set { _environment[EventStoreConstants.Service] = value; }
             }
 
             public string Stream

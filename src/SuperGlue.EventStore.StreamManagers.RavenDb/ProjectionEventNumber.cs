@@ -5,9 +5,9 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
         public string Id { get; set; }
         public int? LastEvent { get; set; }
 
-        public static string GetId(string projectionName)
+        public static string GetId(string service, string projectionName)
         {
-            return string.Format("ProjectionEventNumbers/{0}", projectionName);
+            return string.Format("Services/{0}/Projections/{1}", service, projectionName);
         }
     }
 }
