@@ -50,6 +50,7 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProxyCommand.cs" />
     <Compile Include="RemoteApplication.cs" />
     <Compile Include="RunCommand.cs" />
   </ItemGroup>

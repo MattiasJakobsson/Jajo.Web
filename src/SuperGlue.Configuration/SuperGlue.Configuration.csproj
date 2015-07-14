@@ -58,6 +58,7 @@
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
     <Compile Include="ConfigurationSetupResult.cs" />
     <Compile Include="Continue.cs" />
+    <Compile Include="Files.cs" />
     <Compile Include="IBuildAppFunction.cs" />
     <Compile Include="If.cs" />
     <Compile Include="ISetupConfigurations.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="SettingsConfiguration.cs" />
     <Compile Include="SetupApplicationConfigurations.cs" />
     <Compile Include="SetupMiddlewareWrappersConfiguration.cs" />
+    <Compile Include="StreamExtensions.cs" />
     <Compile Include="SuperGlueBootstrapper.cs" />
     <Compile Include="WrapMiddleware.cs" />
   </ItemGroup>

@@ -48,6 +48,8 @@
     <Compile Include="..\Shared\RunAppFunc.cs">
       <Link>RunAppFunc.cs</Link>
     </Compile>
+    <Compile Include="HostingOptions.cs" />
+    <Compile Include="KatanaSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteKatanaHost.cs" />
     <Compile Include="StartKatanaHost.cs" />
@@ -60,6 +62,10 @@
     <ProjectReference Include="..\SuperGlue.Configuration\SuperGlue.Configuration.csproj">
       <Project>{489ec87d-682a-4fd3-886d-6746f449b46e}</Project>
       <Name>SuperGlue.Configuration</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Logging\SuperGlue.Logging.csproj">
+      <Project>{54d633a5-a7df-48d4-98af-7b39bca91ad5}</Project>
+      <Name>SuperGlue.Logging</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

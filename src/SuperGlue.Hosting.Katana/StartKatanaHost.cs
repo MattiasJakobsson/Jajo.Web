@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
 using Owin;
 using SuperGlue.Configuration;
+using SuperGlue.Logging;
 
 namespace SuperGlue.Hosting.Katana
 {
@@ -12,16 +16,56 @@ namespace SuperGlue.Hosting.Katana
     public class StartKatanaHost : IStartApplication
     {
         private IDisposable _webApp;
+        private readonly ILog _log;
+
+        public StartKatanaHost(ILog log)
+        {
+            _log = log;
+        }
 
         public string Chain { get { return "chains.Web"; } }
 
-        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            var url = settings.Get("superglue.Web.Urls", "http://localhost:8020");
+            _log.Info("Starting katana host for environment: \"{0}\"", environment);
 
-            _webApp = WebApp.Start(new StartOptions(url), x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain)));
+            var katanaSettings = settings.GetSettings<KatanaSettings>();
+            var bindings = katanaSettings.GetBindings();
 
-            return Task.CompletedTask;
+            var startOptions = new StartOptions();
+
+            foreach (var binding in bindings)
+                startOptions.Urls.Add(binding);
+
+            if (!startOptions.Urls.Any())
+            {
+                var optionsPath = settings.ResolvePath("~/.hostingoptions");
+
+                var options = await Files.ReadAsJson<HostingOptions>(optionsPath);
+
+                var updated = false;
+                if (options == null)
+                {
+                    updated = true;
+                    options = new HostingOptions();
+                }
+
+                if (!options.Bindings.Any())
+                {
+                    updated = true;
+                    options.Bindings.Add(string.Format("http://localhost:{0}", GetRandomUnusedPort()));
+                }
+
+                if (updated)
+                    await Files.WriteJsonTo(optionsPath, options);
+
+                foreach (var binding in options.Bindings)
+                    startOptions.Urls.Add(binding);
+            }
+
+            _webApp = WebApp.Start(startOptions, x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain)));
+
+            _log.Info("Katana host started with bindings: {0}", string.Join(", ", startOptions.Urls));
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
@@ -35,6 +79,15 @@ namespace SuperGlue.Hosting.Katana
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
         {
             return null;
+        }
+
+        private static int GetRandomUnusedPort()
+        {
+            var listener = new TcpListener(IPAddress.Any, 0);
+            listener.Start();
+            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
+            listener.Stop();
+            return port;
         }
     }
 }

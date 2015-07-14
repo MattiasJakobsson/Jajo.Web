@@ -12,7 +12,8 @@ namespace SuperGlue
         {
             {"run", BuildRunCommand},
             {"add", BuildAddProjectFromTemplateCommand},
-            {"buildassets", BuildBuildAssetsCommand}
+            {"buildassets", BuildBuildAssetsCommand},
+            {"proxy", BuildProxyCommand}
         };
 
         static void Main(string[] args)
@@ -90,6 +91,25 @@ namespace SuperGlue
                 .Setup<string>('d', "destination")
                 .Callback(x => command.Destination = Path.IsPathRooted(x) ? x : Path.Combine(Environment.CurrentDirectory, x))
                 .SetDefault("/_assets");
+
+            parser.Parse(args);
+
+            return command;
+        }
+
+        private static ProxyCommand BuildProxyCommand(FluentCommandLineParser parser, string[] args)
+        {
+            var command = new ProxyCommand();
+
+            parser
+                .Setup<string>('p', "path")
+                .Callback(x => command.AppPath = Path.IsPathRooted(x) ? x : Path.Combine(Environment.CurrentDirectory, x))
+                .SetDefault(Environment.CurrentDirectory);
+
+            parser
+                .Setup<string>('b', "bindings")
+                .Callback(x => command.Bindings = x.Split(';'))
+                .SetDefault("http://localhost:8800");
 
             parser.Parse(args);
 
