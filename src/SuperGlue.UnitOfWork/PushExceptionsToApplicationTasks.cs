@@ -8,7 +8,7 @@ namespace SuperGlue.UnitOfWork
 {
     public class PushExceptionsToApplicationTasks : IWrapMiddleware<HandleExceptions>
     {
-        public Task<IDisposable> Begin(IDictionary<string, object> environment)
+        public Task<IDisposable> Begin(IDictionary<string, object> environment, Type middlewareType)
         {
             return Task.FromResult<IDisposable>(new Disposable(environment));
         }

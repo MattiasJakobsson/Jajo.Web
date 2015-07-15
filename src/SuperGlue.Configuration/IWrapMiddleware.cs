@@ -6,6 +6,6 @@ namespace SuperGlue.Configuration
 {
     public interface IWrapMiddleware<TMiddleware>
     {
-        Task<IDisposable> Begin(IDictionary<string, object> environment);
+        Task<IDisposable> Begin(IDictionary<string, object> environment, Type middlewareType);
     }
 }

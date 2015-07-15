@@ -25,7 +25,7 @@ namespace SuperGlue.Configuration
             var wrappers = new List<IDisposable>();
 
             foreach (var wrapper in _options.Wrappers)
-                wrappers.Add(await wrapper.Begin(environment));
+                wrappers.Add(await wrapper.Begin(environment, _options.MiddleWareType));
 
             await _next(environment);
 
@@ -36,11 +36,13 @@ namespace SuperGlue.Configuration
 
     public class WrapMiddlewareOptions<TMiddleware>
     {
-        public WrapMiddlewareOptions(IEnumerable<IWrapMiddleware<TMiddleware>> wrappers)
+        public WrapMiddlewareOptions(IEnumerable<IWrapMiddleware<TMiddleware>> wrappers, Type middleWareType)
         {
             Wrappers = wrappers;
+            MiddleWareType = middleWareType;
         }
 
-        public IEnumerable<IWrapMiddleware<TMiddleware>> Wrappers { get; private set; } 
+        public IEnumerable<IWrapMiddleware<TMiddleware>> Wrappers { get; private set; }
+        public Type MiddleWareType { get; private set; }
     }
 }

@@ -1,30 +1,24 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace SuperGlue.Diagnostics
 {
     public class ManageDiagnosticsInformationInMemory : IManageDiagnosticsInformation
     {
-        private readonly IDictionary<string, IDictionary<string, ConcurrentLruLSet<TimeSpan>>> _messurements = new ConcurrentDictionary<string, IDictionary<string, ConcurrentLruLSet<TimeSpan>>>(); 
+        private readonly IDictionary<string, ConcurrentLruLSet<DiagnosticsData>> _messurements = new ConcurrentDictionary<string, ConcurrentLruLSet<DiagnosticsData>>();
 
-        public void AddMessurement(string messurementKey, string key, TimeSpan executionTime)
+        public void AddMessurement(string messurementKey, DiagnosticsData data)
         {
             if(!_messurements.ContainsKey(messurementKey))
-                _messurements[messurementKey] = new ConcurrentDictionary<string, ConcurrentLruLSet<TimeSpan>>();
+                _messurements[messurementKey] = new ConcurrentLruLSet<DiagnosticsData>(100);
 
-            if(!_messurements[messurementKey].ContainsKey(key))
-                _messurements[messurementKey][key] = new ConcurrentLruLSet<TimeSpan>(100);
-
-            _messurements[messurementKey][key].Push(executionTime);
+            _messurements[messurementKey].Push(data);
         }
 
-        public IReadOnlyDictionary<string, IReadOnlyDictionary<string, TimeSpan>> GetAllMessurements()
+        public IReadOnlyDictionary<string, IEnumerable<DiagnosticsData>> GetAllMessurements()
         {
-            return new ReadOnlyDictionary<string, IReadOnlyDictionary<string, TimeSpan>>(_messurements.ToDictionary(x => x.Key, 
-                x => (IReadOnlyDictionary<string, TimeSpan>)new ReadOnlyDictionary<string, TimeSpan>(x.Value.ToDictionary(y => y.Key, y => TimeSpan.FromMilliseconds(y.Value.Average(z => z.TotalMilliseconds))))));
+            return new ConcurrentDictionary<string, IEnumerable<DiagnosticsData>>(_messurements.ToDictionary(x => x.Key, x => (IEnumerable<DiagnosticsData>)x.Value));
         }
     }
 }

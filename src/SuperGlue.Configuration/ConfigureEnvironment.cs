@@ -30,11 +30,11 @@ namespace SuperGlue.Configuration
                 environment[item.Key] = item.Value;
 
             var chainBefore = environment.GetCurrentChain();
-            environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ChainName] = _options.ChainName;
+            environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.CurrentChainData] = new ConfigurationsEnvironmentExtensions.ChainData(_options.ChainName, Guid.NewGuid().ToString());
 
             await _next(environment);
 
-            environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ChainName] = chainBefore;
+            environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.CurrentChainData] = chainBefore;
         }
     }
 

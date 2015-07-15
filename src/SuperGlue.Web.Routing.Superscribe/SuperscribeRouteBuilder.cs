@@ -82,6 +82,13 @@ namespace SuperGlue.Web.Routing.Superscribe
             baseNode.Zip(_node.Base());
 
             environment.AddRouteToEndpoint(routeTo, routedInputs, _node);
+
+            environment.PushDiagnosticsData(DiagnosticTypes.Setup, new Tuple<string, IDictionary<string, object>>("Routing", new Dictionary<string, object>
+            {
+                {"Pattern", _node.Pattern},
+                {"Inputs", string.Join(", ", routedInputs.Select(x => x.Key.Name))},
+                {"RoutedTo", routeTo}
+            }));
         }
 
         private static ParamNode CreateIntNode(string name)

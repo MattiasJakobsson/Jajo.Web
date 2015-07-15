@@ -14,7 +14,7 @@ namespace SuperGlue.Configuration
             public const string Assemblies = "superglue.Assemblies";
             public const string GetConfigSettings = "superglue.Configuration.GetConfigSettings";
             public const string ResolvePathFunc = "superglue.Configuration.ResolvePath";
-            public const string ChainName = "superglue.Configuration.ChainName";
+            public const string CurrentChainData = "superglue.Configuration.CurrentChainData";
             public const string EventHandlers = "superglue.EventHandlers";
             public const string ApplicationName = "superglue.ApplicationName";
         }
@@ -49,9 +49,9 @@ namespace SuperGlue.Configuration
             return environment.Get<Func<string, string>>(ConfigurationConstants.ResolvePathFunc)(relativePath);
         }
 
-        public static string GetCurrentChain(this IDictionary<string, object> environment)
+        public static ChainData GetCurrentChain(this IDictionary<string, object> environment)
         {
-            return environment.Get<string>(ConfigurationConstants.ChainName);
+            return environment.Get(ConfigurationConstants.CurrentChainData, new ChainData("", ""));
         }
 
         public static string GetApplicationName(this IDictionary<string, object> environment)
@@ -107,6 +107,18 @@ namespace SuperGlue.Configuration
 
             public string Event { get; private set; }
             public Func<IDictionary<string, object>, Task> Handler { get; private set; }
+        }
+
+        public class ChainData
+        {
+            public ChainData(string name, string requestId)
+            {
+                Name = name;
+                RequestId = requestId;
+            }
+
+            public string Name { get; private set; }
+            public string RequestId { get; private set; }
         }
     }
 }

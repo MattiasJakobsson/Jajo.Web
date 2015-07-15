@@ -32,6 +32,15 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             var endpoint = environment.GetRouteForEndpoint(data.Response);
 
+            if (endpoint == null)
+                environment.PushDiagnosticsData(DiagnosticTypes.MiddleWareExecutionFor(environment), new Tuple<string, IDictionary<string, object>>("MissedRoute", new Dictionary<string, object>()));
+            else
+                environment.PushDiagnosticsData(DiagnosticTypes.MiddleWareExecutionFor(environment), new Tuple<string, IDictionary<string, object>>("FoundRoute", new Dictionary<string, object>
+                {
+                    {"RoutedTo", endpoint},
+                    {"Url", environment.GetRequest().Uri.ToString()}
+                }));
+
             environment.SetRouteDestination(data.Response, endpoint != null ? endpoint.InputTypes : new List<Type>(), (IDictionary<string, object>)data.Parameters);
 
             await _next(environment);
