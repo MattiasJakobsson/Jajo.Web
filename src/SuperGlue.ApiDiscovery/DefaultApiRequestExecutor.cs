@@ -24,7 +24,7 @@ namespace SuperGlue.ApiDiscovery
             if(parser == null)
                 throw new ApiException(string.Format("Can't handle api named: {0}", definition.Name));
 
-            var currentResource = await GetAsync(definition.Location, parser);
+            var currentResource = await GetAsync(new Uri(definition.Location), parser);
 
             foreach (var instruction in instructions)
             {
