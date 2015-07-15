@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -22,6 +23,8 @@ namespace SuperGlue.Configuration
 
         public virtual async Task StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
         {
+            var stopwatch = Stopwatch.StartNew();
+
             _environment = settings;
             _applicationEnvironment = environment;
 
@@ -75,6 +78,15 @@ namespace SuperGlue.Configuration
             await Task.WhenAll(startTasks);
 
             await settings.Publish(ConfigurationEvents.AfterApplicationStart);
+
+            stopwatch.Stop();
+
+            _environment.PushDiagnosticsData(DiagnosticTypes.Setup, new Tuple<string, IDictionary<string, object>>("Bootstrapping", new Dictionary<string, object>
+            {
+                {"ExecutionTime", stopwatch.Elapsed},
+                {"Environment", environment},
+                {"ApplicationName", ApplicationName}
+            }));
         }
 
         public virtual async Task ShutDown()
