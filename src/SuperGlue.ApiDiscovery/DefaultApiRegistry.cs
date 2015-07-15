@@ -19,7 +19,7 @@ namespace SuperGlue.ApiDiscovery
             var settings = environment.GetSettings<ApiDiscoverySettings>();
 
             if(settings.RegistrationRoot == null)
-                throw new ApiException("No registration root was configured");
+                return Task.CompletedTask;
 
             return StartQuery(() => Task.FromResult(settings.RegistrationRoot))
                 .ExecuteForm(new TravelToTopLevelForm("register"), new Dictionary<string, object>
