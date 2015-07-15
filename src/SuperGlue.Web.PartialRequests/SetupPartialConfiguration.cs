@@ -25,19 +25,13 @@ namespace SuperGlue.Web.PartialRequests
                         return endpointClass != null && endpointClass.Name.Contains("Partial");
                     });
                 });
-            }, "superglue.ContainerSetup");
-        }
 
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() =>
+                return Task.CompletedTask;
+            }, "superglue.ContainerSetup", configureAction: configuration =>
             {
                 configuration.Settings[PartialEnvironmentExtensions.PartialConstants.PartialSettings] = configuration.WithSettings<PartialSettings>();
+
+                return Task.CompletedTask;
             });
         }
     }

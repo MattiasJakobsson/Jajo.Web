@@ -20,20 +20,9 @@ namespace SuperGlue.Web.Output
                     .When(y => (y.GetOutput() as IRedirectable) != null).UseRenderer(new RenderRedirectOutput()));
 
                 environment.RegisterTransient(typeof(IRenderToOutput), typeof(DefaultOutputRenderer));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                configuration.Settings[OutputEnvironmentExtensions.OutputConstants.Renderers] = configuration.WithSettings<OutputSettings>();
-            });
         }
     }
 }

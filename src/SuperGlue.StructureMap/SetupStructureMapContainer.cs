@@ -11,24 +11,24 @@ namespace SuperGlue.StructureMap
         {
             var container = new Container();
 
-            yield return new ConfigurationSetupResult("superglue.StructureMap.ContainerSetup", x => x[StructureMapEnvironmentExtensions.StructureMapConstants.Container] = container);
+            yield return new ConfigurationSetupResult("superglue.StructureMap.ContainerSetup", x =>
+            {
+                x[StructureMapEnvironmentExtensions.StructureMapConstants.Container] = container;
+
+                return Task.CompletedTask;
+            });
+
             yield return new ConfigurationSetupResult("superglue.ContainerSetup", environment =>
             {
                 environment.SetupContainerInEnvironment(container);
-            }, "superglue.StructureMap.ContainerSetup");
-        }
 
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() =>
+                return Task.CompletedTask;
+            }, "superglue.StructureMap.ContainerSetup", environment =>
             {
-                applicationData.GetContainer().Dispose();
-            });
-        }
+                environment.GetContainer().Dispose();
 
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
+                return Task.CompletedTask;
+            });
         }
     }
 }

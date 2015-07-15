@@ -20,17 +20,9 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
                 environment.RegisterTransient(typeof(IManageProcessManagerStreamEventNumbers), (x, y) => new ManageProcessManagerStreamEventNumbersInRavenDb(y.Resolve<IRavenSessions>().GetFor(databaseName)));
                 environment.RegisterTransient(typeof(IManageEventNumbersForProjections), (x, y) => new ManageEventNumbersForProjectionsInRavenDb(y.Resolve<IRavenSessions>().GetFor(databaseName)));
                 environment.RegisterTransient(typeof(IManageEventNumbersForSubscriber), (x, y) => new ManageEventNumbersForSubscriberInRavenDb(y.Resolve<IRavenSessions>().GetFor(databaseName)));
+
+                return Task.CompletedTask;
             }, "superglue.RavenDb.Configure");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

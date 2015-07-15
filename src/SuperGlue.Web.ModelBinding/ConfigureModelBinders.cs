@@ -22,17 +22,9 @@ namespace SuperGlue.Web.ModelBinding
                 environment.RegisterSingletonType(typeof(IPropertyBinderCollection), typeof(PropertyBinderCollection));
                 environment.RegisterSingletonType(typeof(IValueConverterCollection), typeof(ValueConverterCollection));
                 environment.RegisterSingletonType(typeof(IBindingSourceCollection), typeof(BindingSourceCollection));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

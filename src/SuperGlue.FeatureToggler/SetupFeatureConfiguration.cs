@@ -12,19 +12,14 @@ namespace SuperGlue.FeatureToggler
             {
                 environment.RegisterTransient(typeof(ICheckIfFeatureIsEnabled), typeof(DefaultFeatureEnabledChecker));
                 environment.RegisterAll(typeof(IFeature));
-            }, "superglue.ContainerSetup");
-        }
 
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
+                return Task.CompletedTask;
+            }, "superglue.ContainerSetup", configureAction: configuration =>
+            {
+                configuration.Settings[FeatureEnvironmentExtensions.FeatureConstants.FeatureSettings] = configuration.WithSettings<FeatureSettings>();
 
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            configuration.Settings[FeatureEnvironmentExtensions.FeatureConstants.FeatureSettings] = configuration.WithSettings<FeatureSettings>();
-
-            return Task.CompletedTask;
+                return Task.CompletedTask;
+            });
         }
     }
 }

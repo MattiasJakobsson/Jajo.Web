@@ -90,17 +90,9 @@ namespace SuperGlue.Web.Routing.Superscribe
 
                     return patternBuilder.ToString();
                 });
+
+                return Task.CompletedTask;
             }, "superglue.RoutingSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

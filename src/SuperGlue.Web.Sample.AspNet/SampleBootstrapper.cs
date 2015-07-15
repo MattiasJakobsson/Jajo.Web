@@ -1,4 +1,5 @@
-﻿using SuperGlue.Configuration;
+﻿using System.Threading.Tasks;
+using SuperGlue.Configuration;
 using SuperGlue.Diagnostics;
 using SuperGlue.ExceptionManagement;
 using SuperGlue.FeatureToggler;
@@ -17,9 +18,9 @@ namespace SuperGlue.Web.Sample.AspNet
 {
     public class SampleBootstrapper : SuperGlueBootstrapper
     {
-        protected override void Configure(string environment)
+        protected override async Task Configure(string environment)
         {
-            AddChain("chains.Partials", app =>
+            await AddChain("chains.Partials", app =>
             {
                 app
                     .Use<RouteUsingSuperscribe>()
@@ -29,7 +30,7 @@ namespace SuperGlue.Web.Sample.AspNet
                     .Use<RenderOutput>();
             });
 
-            AddChain("chains.Web", app =>
+            await AddChain("chains.Web", app =>
             {
                 app.Use<NestedStructureMapContainer>()
                     .Use<Diagnose>(new DiagnoseOptions("Urls", x => x.GetRequest().Uri.ToString()))

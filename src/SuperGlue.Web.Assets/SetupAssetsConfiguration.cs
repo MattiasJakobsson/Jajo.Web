@@ -18,17 +18,9 @@ namespace SuperGlue.Web.Assets
                     .SetSetupEnabled(applicationEnvironment == "test")
                     .UseDestination(environment.ResolvePath("~/_assets"))
                     .AddSource(environment.ResolvePath("~/assets"), 1));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public async Task Configure(SettingsConfiguration configuration)
-        {
-            await Assets.CollectAllAssets(configuration.WithSettings<AssetSettings>());
         }
     }
 }

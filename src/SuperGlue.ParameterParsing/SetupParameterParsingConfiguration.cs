@@ -15,17 +15,9 @@ namespace SuperGlue.ParameterParsing
 
                 environment.RegisterTransient(typeof(IHandleParameters), typeof(DefaultParameterHandler));
                 environment.RegisterTransient(typeof(IParseExpressionFor), typeof(DefaultExpressionParser));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

@@ -11,17 +11,9 @@ namespace SuperGlue.Web.RouteInputValidator
             yield return new ConfigurationSetupResult("superglue.RouteInputValidatorSetup", environment =>
             {
                 environment.RegisterAllClosing(typeof(IEnsureExists<>));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

@@ -35,26 +35,24 @@ namespace SuperGlue.EventStore.Data
                 environment.RegisterTransient(typeof(IManageTimeOuts), typeof(DefaultTimeOutManager));
 
                 TimeOutManager.Configure(() => new StoreTimeoutsInMemory());
-            }, "superglue.LoggingSetup");
-        }
 
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            connection.Close();
+                return Task.CompletedTask;
+            }, "superglue.LoggingSetup", environment =>
+            {
+                connection.Close();
 
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            var connectionInformation = configuration
+                return Task.CompletedTask;
+            }, configuration =>
+            {
+                var connectionInformation = configuration
                 .WithSettings<EventStoreSettings>()
                 .CreateConnection();
 
-            connection = connectionInformation.Item2;
-            connectionString = connectionInformation.Item1;
+                connection = connectionInformation.Item2;
+                connectionString = connectionInformation.Item1;
 
-            return connection.ConnectAsync();
+                return connection.ConnectAsync();
+            });
         }
     }
 }

@@ -12,17 +12,9 @@ namespace SuperGlue.Logging.NLog
             yield return new ConfigurationSetupResult("superglue.LoggingSetup", environment =>
             {
                 environment.RegisterTransient(typeof(ILog), (x, y) => new NLogLogger(LogManager.GetLogger(x.FullName)));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

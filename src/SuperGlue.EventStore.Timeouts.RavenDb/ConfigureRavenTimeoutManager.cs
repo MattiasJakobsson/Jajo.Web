@@ -28,17 +28,9 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                 new RavenTimeOutDataIndex().Execute(documentStore);
 
                 TimeOutManager.Configure(() => new StoreTimeOutsInRavenDb(documentStore, timeOutManagerName, databaseName));
+
+                return Task.CompletedTask;
             }, "superglue.RavenDb.Configure");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

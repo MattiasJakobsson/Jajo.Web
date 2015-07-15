@@ -12,17 +12,9 @@ namespace SuperGlue.Web.Security
             {
                 environment.RegisterTransient(typeof(IEncryptionService), typeof(DefaultEncryptionService));
                 environment.RegisterTransient(typeof(IHandleEncryptedCookies), typeof(DefaultCookieEncryptionHandler));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

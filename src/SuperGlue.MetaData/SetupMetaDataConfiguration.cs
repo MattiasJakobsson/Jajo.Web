@@ -11,17 +11,9 @@ namespace SuperGlue.MetaData
             yield return new ConfigurationSetupResult("superglue.MetaDataSetup", environment =>
             {
                 environment.RegisterAll(typeof(ISupplyRequestMetaData));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

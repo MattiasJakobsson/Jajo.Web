@@ -11,17 +11,9 @@ namespace SuperGlue.Logging
             yield return new ConfigurationSetupResult("superglue.LoggingSetup", environment =>
             {
                 environment.RegisterTransient(typeof(ILog), typeof(ConsoleLogger));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

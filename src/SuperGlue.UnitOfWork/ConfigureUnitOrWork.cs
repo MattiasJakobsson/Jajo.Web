@@ -28,17 +28,9 @@ namespace SuperGlue.UnitOfWork
                     foreach (var applicationTask in applicationTasks)
                         await applicationTask.ShutDown();
                 });
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

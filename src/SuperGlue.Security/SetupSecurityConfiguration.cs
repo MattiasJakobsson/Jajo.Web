@@ -20,19 +20,14 @@ namespace SuperGlue.Security
 
                 environment.RegisterTransient(typeof(IHasher), (x, y) => new DefaultHasher(y.GetHasherSettings()));
                 environment.RegisterTransient(typeof(IAuthenticationService), typeof(DefaultAuthenticationService));
-            }, "superglue.ContainerSetup");
-        }
 
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
+                return Task.CompletedTask;
+            }, "superglue.ContainerSetup", configureAction: configuration =>
+            {
+                configuration.Settings[SecurityEnvironmentExtensions.SecurityConstants.HasherSettings] = configuration.WithSettings<HasherSettings>();
 
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            configuration.Settings[SecurityEnvironmentExtensions.SecurityConstants.HasherSettings] = configuration.WithSettings<HasherSettings>();
-
-            return Task.CompletedTask;
+                return Task.CompletedTask;
+            });
         }
     }
 }

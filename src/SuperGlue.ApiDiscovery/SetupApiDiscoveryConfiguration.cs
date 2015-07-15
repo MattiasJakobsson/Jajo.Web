@@ -28,17 +28,9 @@ namespace SuperGlue.ApiDiscovery
                     if (definitions.Any())
                         await environment.Resolve<IApiRegistry>().Register(x, definitions.ToArray());
                 });
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

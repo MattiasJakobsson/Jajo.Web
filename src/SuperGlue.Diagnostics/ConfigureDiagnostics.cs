@@ -11,17 +11,9 @@ namespace SuperGlue.Diagnostics
             yield return new ConfigurationSetupResult("superglue.Diagnostics.Configured", environment =>
             {
                 environment.RegisterSingleton(typeof(IManageDiagnosticsInformation), new ManageDiagnosticsInformationInMemory());
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

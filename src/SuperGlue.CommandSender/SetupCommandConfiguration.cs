@@ -12,17 +12,9 @@ namespace SuperGlue.CommandSender
             {
                 environment.RegisterAllClosing(typeof(IHandleCommand<>));
                 environment.RegisterTransient(typeof(ISendCommand), typeof(DefaultCommandSender));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

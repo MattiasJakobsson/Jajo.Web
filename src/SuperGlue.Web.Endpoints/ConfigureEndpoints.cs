@@ -13,17 +13,9 @@ namespace SuperGlue.Web.Endpoints
                 environment.RegisterAllClosing(typeof(IExecuteTypeOfEndpoint<>));
 
                 environment.RegisterTransient(typeof(IExecuteAnyEndpoint), typeof(DefaultEndpointExecutor));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

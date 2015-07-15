@@ -68,19 +68,9 @@ namespace SuperGlue.Web.Output.Html
 
                     x.Forms.If(y => y.Accessor.OwnerType.GetProperties().Any(z => typeof(PostedFile).IsAssignableFrom(z.PropertyType))).ModifyWith(y => y.CurrentTag.Attr("enctype", "multipart/form-data"));
                 });
+
+                return Task.CompletedTask;
             }, "superglue.RoutingImplimentationSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            configuration.Settings[HtmlEnvironmentExtensions.HtmlConstants.HtmlConventionsSettings] = configuration.WithSettings<HtmlConventionSettings>();
-
-            return Task.CompletedTask;
         }
     }
 }

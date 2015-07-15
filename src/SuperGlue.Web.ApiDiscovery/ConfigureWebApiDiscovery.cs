@@ -25,17 +25,9 @@ namespace SuperGlue.Web.ApiDiscovery
                         .When(y => (y.GetOutput() as IApiResponse) != null && y.GetRequest().Headers.Accept.Contains(currentRenderer.Type))
                         .UseRenderer(currentRenderer));
                 }
+
+                return Task.CompletedTask;
             }, "superglue.OutputSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }

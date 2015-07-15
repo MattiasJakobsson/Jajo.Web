@@ -11,17 +11,9 @@ namespace SuperGlue.EventTracking
             yield return new ConfigurationSetupResult("superglue.EventTrackingSetup", environment =>
             {
                 environment.RegisterTransient(typeof(ITrackEntitiesWithEvents), typeof(DefaultEventEntitiesTracker));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

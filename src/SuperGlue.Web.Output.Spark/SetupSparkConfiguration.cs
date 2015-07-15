@@ -30,17 +30,9 @@ namespace SuperGlue.Web.Output.Spark
                 environment[SparkEnvironmentExtensions.SparkConstants.ViewEngine] = sparkViewEngine;
 
                 environment.AlterSettings<OutputSettings>(x => x.When(y => y.GetRequest().Headers.Accept.Contains("text/html")).UseRenderer(new RenderOutputUsingSpark(sparkViewEngine, templates)));
+
+                return Task.CompletedTask;
             }, "superglue.OutputSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.Factory.StartNew(() => { });
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.Factory.StartNew(() => { });
         }
     }
 }

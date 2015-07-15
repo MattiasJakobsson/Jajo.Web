@@ -24,46 +24,41 @@ namespace SuperGlue.Web.Routing
 
                     routeBuilder.Build(routeTo, inputParameters, environment);
                 });
-            }, "superglue.ContainerSetup");
-        }
 
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
+                return Task.CompletedTask;
+            }, "superglue.ContainerSetup", configureAction: configuration =>
+            {
+                var policies = configuration.WithSettings<RouteSettings>().GetPolicies();
 
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            var policies = configuration.WithSettings<RouteSettings>().GetPolicies();
-
-            if (!policies.Any())
-                policies = new ReadOnlyCollection<IRoutePolicy>(new List<IRoutePolicy>
+                if (!policies.Any())
+                    policies = new ReadOnlyCollection<IRoutePolicy>(new List<IRoutePolicy>
                     {
                         new QueryCommandMethodRoutePolicy(configuration.Settings.GetAssemblies())
                     });
 
-            foreach (var policy in policies)
-            {
-                var endpoints = policy.Build();
-
-                foreach (var endpoint in endpoints)
+                foreach (var policy in policies)
                 {
-                    var routeBuilder = configuration.Settings.CreateRouteBuilder();
+                    var endpoints = policy.Build();
 
-                    if (routeBuilder == null)
-                        continue;
+                    foreach (var endpoint in endpoints)
+                    {
+                        var routeBuilder = configuration.Settings.CreateRouteBuilder();
 
-                    if (endpoint.HttpMethods.Any())
-                        routeBuilder.RestrictMethods(endpoint.HttpMethods);
+                        if (routeBuilder == null)
+                            continue;
 
-                    foreach (var urlPart in endpoint.UrlParts)
-                        urlPart.AddToBuilder(routeBuilder);
+                        if (endpoint.HttpMethods.Any())
+                            routeBuilder.RestrictMethods(endpoint.HttpMethods);
 
-                    routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings);
+                        foreach (var urlPart in endpoint.UrlParts)
+                            urlPart.AddToBuilder(routeBuilder);
+
+                        routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings);
+                    }
                 }
-            }
 
-            return Task.CompletedTask;
+                return Task.CompletedTask;
+            });
         }
     }
 }

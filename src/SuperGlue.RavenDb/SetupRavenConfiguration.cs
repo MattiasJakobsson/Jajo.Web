@@ -24,17 +24,9 @@ namespace SuperGlue.RavenDb
                 environment.RegisterAllClosing(typeof(IRavenSpecialCommandSearch<>));
                 environment.RegisterAllClosing(typeof(IHandleLeftoverSearchPart<>));
                 environment.RegisterAllClosing(typeof(IRavenFreeTextSearch<>));
+
+                return Task.CompletedTask;
             }, "superglue.ContainerSetup");
-        }
-
-        public Task Shutdown(IDictionary<string, object> applicationData)
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Configure(SettingsConfiguration configuration)
-        {
-            return Task.CompletedTask;
         }
     }
 }
