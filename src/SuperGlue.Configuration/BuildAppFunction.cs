@@ -22,10 +22,10 @@ namespace SuperGlue.Configuration
 
         public IBuildAppFunction Use<TMiddleware>(params object[] args)
         {
-            var wrappers = _environment.ResolveAll<IWrapMiddleware<TMiddleware>>().ToList();
+            var wrappers = FindWrappersFor(typeof(TMiddleware));
 
-            if (wrappers.Any())
-                _middleware.Add(new MiddlewareWithArgs(typeof(WrapMiddleware<TMiddleware>), new object[] { new WrapMiddlewareOptions<TMiddleware>(wrappers) }));
+            foreach (var wrapper in wrappers)
+                _middleware.Add(wrapper);
 
             _middleware.Add(new MiddlewareWithArgs(typeof(TMiddleware), args));
 
@@ -34,12 +34,9 @@ namespace SuperGlue.Configuration
 
         public AppFunc Build()
         {
-            var list = new List<MiddlewareWithArgs>();
+            var wrappers = FindWrappersFor(typeof(ConfigureEnvironment));
 
-            var wrappers = _environment.ResolveAll<IWrapMiddleware<ConfigureEnvironment>>().ToList();
-
-            if (wrappers.Any())
-                list.Add(new MiddlewareWithArgs(typeof(WrapMiddleware<ConfigureEnvironment>), new object[] { new WrapMiddlewareOptions<ConfigureEnvironment>(wrappers) }));
+            var list = wrappers.ToList();
 
             list.Add(new MiddlewareWithArgs(typeof(ConfigureEnvironment), new object[] { new ConfigureEnvironmentOptions(_environment, _chainName) }));
 
@@ -78,6 +75,35 @@ namespace SuperGlue.Configuration
         public IBuildAppFunction New()
         {
             return new BuildAppFunction(_environment, _chainName);
+        }
+
+        private IEnumerable<MiddlewareWithArgs> FindWrappersFor(Type middleWareType)
+        {
+            return from type in FindInheritedTypes(middleWareType)
+                   let wrappers = _environment.ResolveAll(typeof(IWrapMiddleware<>).MakeGenericType(type))
+                   where wrappers.Any()
+                   let optionsConstructor = typeof(WrapMiddlewareOptions<>).MakeGenericType(type).GetConstructor(new[] { typeof(IEnumerable<>).MakeGenericType(typeof(IWrapMiddleware<>).MakeGenericType(type)) })
+                   where optionsConstructor != null
+                   select new MiddlewareWithArgs(typeof(WrapMiddleware<>).MakeGenericType(type), new[]
+                        {
+                            optionsConstructor.Invoke(new object[] {wrappers})
+                        });
+        }
+
+        private static IEnumerable<Type> FindInheritedTypes(Type middleWareType)
+        {
+            yield return middleWareType;
+
+            foreach (var @interface in middleWareType.GetInterfaces())
+                yield return @interface;
+
+            var baseType = middleWareType.BaseType;
+
+            while (baseType != null)
+            {
+                yield return baseType;
+                baseType = baseType.BaseType;
+            }
         }
 
         public class MiddlewareWithArgs
