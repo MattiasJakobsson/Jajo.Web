@@ -55,9 +55,9 @@ namespace SuperGlue.Configuration
 
             settings["superglue.ApplicationStarters"] = _appStarters;
 
-            var startTasks = new List<Task>();
+            var startTasks = new ConcurrentBag<Task>();
 
-            foreach (var item in _appStarters.GroupBy(x => x.Chain))
+            Parallel.ForEach(_appStarters.GroupBy(x => x.Chain), item =>
             {
                 var starter = item.OrderBy(x => overrides.GetSortOrder(x)).First();
 
@@ -70,7 +70,7 @@ namespace SuperGlue.Configuration
 
                 if (chain != null)
                     startTasks.Add(starter.Start(chain, settings, environment));
-            }
+            });
 
             await Task.WhenAll(startTasks);
 
@@ -83,7 +83,14 @@ namespace SuperGlue.Configuration
 
             await _environment.Publish(ConfigurationEvents.BeforeApplicationShutDown);
 
-            await Task.WhenAll(appStarters.Select(startApplication => startApplication.ShutDown(_environment)));
+            var actions = new ConcurrentBag<Task>();
+
+            Parallel.ForEach(appStarters, x =>
+            {
+                actions.Add(x.ShutDown(_environment));
+            });
+
+            await Task.WhenAll(actions);
 
             await _environment.Publish(ConfigurationEvents.AfterApplicationShutDown);
 
@@ -158,7 +165,12 @@ namespace SuperGlue.Configuration
 
                 if (!missingExecuted.Any())
                 {
-                    var actions = missing.Select(configuration => configuration.StartupAction(_environment));
+                    var actions = new ConcurrentBag<Task>();
+
+                    Parallel.ForEach(missing, x =>
+                    {
+                        actions.Add(executionAction(x));
+                    });
 
                     await Task.WhenAll(actions);
 
@@ -181,15 +193,15 @@ namespace SuperGlue.Configuration
         {
             var configurationsToExecute = configurations.Where(x => x.DependsOn == dependsOn).ToList();
 
-            var results = new List<ConfigurationSetupResult>();
+            var results = new ConcurrentBag<ConfigurationSetupResult>();
 
-            var actions = new List<Task>();
+            var actions = new ConcurrentBag<Task>();
 
-            foreach (var configuration in configurationsToExecute)
+            Parallel.ForEach(configurationsToExecute, configuration =>
             {
                 actions.Add(executionAction(configuration));
                 results.Add(configuration);
-            }
+            });
 
             await Task.WhenAll(actions);
 
