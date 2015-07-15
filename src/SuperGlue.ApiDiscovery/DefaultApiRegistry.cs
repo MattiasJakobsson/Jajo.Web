@@ -7,11 +7,11 @@ namespace SuperGlue.ApiDiscovery
 {
     public class DefaultApiRegistry : IApiRegistry
     {
-        private readonly IApiClient _api;
+        private readonly IExecuteApiRequests _executeApiRequests;
 
-        public DefaultApiRegistry(IApiClient api)
+        public DefaultApiRegistry(IExecuteApiRequests executeApiRequests)
         {
-            _api = api;
+            _executeApiRequests = executeApiRequests;
         }
 
         public Task Register(IDictionary<string, object> environment, params ApiDefinition[] apis)
@@ -21,25 +21,38 @@ namespace SuperGlue.ApiDiscovery
             if(settings.RegistrationRoot == null)
                 throw new ApiException("No registration root was configured");
 
-            return _api.ExecuteFormAt(settings.RegistrationRoot, new Dictionary<string, object>
-            {
-                {"Definitions", apis}
-            }, new TravelToTopLevelForm("register"), new TravelChildren("self", new ChildSelector("resources", x => x.State.ContainsKey("name") && x.State["name"].Value == "registration")));
+            return StartQuery(() => Task.FromResult(settings.RegistrationRoot))
+                .ExecuteForm(new TravelToTopLevelForm("register"), new Dictionary<string, object>
+                {
+                    {"Resources", apis}
+                });
         }
 
-        public async Task<ApiDefinition> Find(IDictionary<string, object> environment, string name)
+        public IApiQuery Start(IDictionary<string, object> environment, string apiName)
+        {
+            return StartQuery(() => FindDefinitionFor(environment, apiName));
+        }
+
+        protected virtual async Task<ApiDefinition> FindDefinitionFor(IDictionary<string, object> environment, string name)
         {
             var settings = environment.GetSettings<ApiDiscoverySettings>();
 
             if (settings.RegistrationRoot == null)
                 throw new ApiException("No registration root was configured");
 
-            var result = await _api.TravelTo(settings.RegistrationRoot, new Dictionary<string, object>
-            {
-                {"name", name}
-            }, new TravelChildren("details", new ChildSelector("resources", x => x.State.ContainsKey("name") && x.State["name"].Value == "registration")));
-        
-            return new ApiDefinition(result.State["Name"].Value, new Uri(result.State["Location"].Value), result.State["Accepts"].Value.Split(';'));
+            var response = await StartQuery(() => Task.FromResult(settings.RegistrationRoot))
+                .TravelTo(new TravelToTopLevelLink("details"))
+                .Query(new Dictionary<string, object>
+                {
+                    {"name", name}
+                });
+
+            return response.State;
+        }
+
+        protected virtual IApiQuery StartQuery(Func<Task<ApiDefinition>> findDefinition)
+        {
+            return new DefaultApiQuery(findDefinition, _executeApiRequests);
         }
     }
 }

@@ -6,6 +6,6 @@ namespace SuperGlue.ApiDiscovery
     public interface IApiRegistry
     {
         Task Register(IDictionary<string, object> environment, params ApiDefinition[] apis);
-        Task<ApiDefinition> Find(IDictionary<string, object> environment, string name);
+        IApiQuery Start(IDictionary<string, object> environment, string apiName);
     }
 }

@@ -13,7 +13,7 @@ namespace SuperGlue.ApiDiscovery
             {
                 environment.RegisterAll(typeof(IApiSource));
                 environment.RegisterAll(typeof(IParseApiResponse));
-                environment.RegisterTransient(typeof(IApiClient), typeof(DefaultApiClient));
+                environment.RegisterTransient(typeof(IExecuteApiRequests), typeof(DefaultApiRequestExecutor));
                 environment.RegisterTransient(typeof(IApiRegistry), typeof(DefaultApiRegistry));
 
                 environment.SubscribeTo(ConfigurationEvents.AfterApplicationStart, async x =>
