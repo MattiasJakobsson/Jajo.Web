@@ -6,7 +6,7 @@ using SuperGlue.Configuration;
 
 namespace SuperGlue.Diagnostics
 {
-    public class MessureMiddlewareExecutions// : IWrapMiddleware<object>
+    public class MessureMiddlewareExecutions : IWrapMiddleware<object>
     {
         public Task<IEndThings> Begin(IDictionary<string, object> environment, Type middleWareType)
         {

@@ -38,21 +38,19 @@ namespace SuperGlue.Web.Http
                 return;
             }
 
-            var response = environment.GetResponse();
-
-            var body = response.Body;
-            response.Body = new BufferingStream(body, environment);
+            var body = environment.GetResponse().Body;
+            environment.GetResponse().Body = new BufferingStream(body, environment);
 
             try
             {
                 await _next(environment);
 
-                if (response.Body is BufferingStream)
-                    await response.Body.FlushAsync();
+                if (environment.GetResponse().Body is BufferingStream)
+                    await environment.GetResponse().Body.FlushAsync();
             }
             finally
             {
-                response.Body = body;
+                environment.GetResponse().Body = body;
             }
         }
 
