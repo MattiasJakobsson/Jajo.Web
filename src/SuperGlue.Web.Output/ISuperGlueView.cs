@@ -4,7 +4,8 @@ namespace SuperGlue.Web.Output
 {
     public interface ISuperGlueView
     {
-        IDictionary<string, object> Environment { get; } 
+        IDictionary<string, object> Environment { get; }
+        string RouteTo(object input);
     }
 
     public interface ISuperGlueView<out TModel> : ISuperGlueView

@@ -16,7 +16,7 @@ namespace SuperGlue.MetaData
             _metaDataSuppliers = metaDataSuppliers;
         }
 
-        public async Task<IDisposable> Begin(IDictionary<string, object> environment, Type middlewareType)
+        public async Task<IEndThings> Begin(IDictionary<string, object> environment, Type middlewareType)
         {
             var metaData = new Dictionary<string, object>();
             var oldMetaData = environment.GetMetaData();
@@ -37,7 +37,7 @@ namespace SuperGlue.MetaData
             return new Disposable(environment, oldMetaData);
         }
 
-        private class Disposable : IDisposable
+        private class Disposable : IEndThings
         {
             private readonly IDictionary<string, object> _environment;
             private readonly RequestMetaData _oldMetaData;
@@ -48,9 +48,11 @@ namespace SuperGlue.MetaData
                 _oldMetaData = oldMetaData;
             }
 
-            public void Dispose()
+            public Task End()
             {
                 _environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = _oldMetaData;
+
+                return Task.CompletedTask;
             }
         }
     }

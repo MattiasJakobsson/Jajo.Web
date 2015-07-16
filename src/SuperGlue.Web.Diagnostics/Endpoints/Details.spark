@@ -1,0 +1,17 @@
+﻿<viewdata model="SuperGlue.Web.Diagnostics.Endpoints.DetailsQueryResult" />
+
+<html>
+<head>
+    <title>${Model.Type}</title>
+</head>
+<body>
+    <h1>${Model.Type}</h1>
+    <ul>
+        <li each="var key in Model.Keys">
+            <a href="!{this.RouteTo(Model.GetInformationInput(key))}">
+                ${key}
+            </a>
+        </li>
+    </ul>
+</body>
+</html>

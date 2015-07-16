@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.Output
 {
@@ -7,7 +8,7 @@ namespace SuperGlue.Web.Output
     {
         public virtual async Task Render(IDictionary<string, object> environment)
         {
-            var renderers = environment.Get(OutputEnvironmentExtensions.OutputConstants.Renderers, new OutputSettings());
+            var renderers = environment.GetSettings<OutputSettings>();
 
             var renderer = renderers.FindRenderer(environment);
 

@@ -12,7 +12,7 @@ namespace SuperGlue.Diagnostics
         {
             yield return new ConfigurationSetupResult("superglue.Diagnostics.Configured", environment =>
             {
-                environment.RegisterSingleton(typeof(IManageDiagnosticsInformation), new ManageDiagnosticsInformationInMemory());
+                environment.RegisterTransient(typeof(IManageDiagnosticsInformation), typeof(ManageDiagnosticsInformationInMemory));
 
                 environment.AlterSettings<DiagnosticsSettings>(x =>
                 {
@@ -22,14 +22,14 @@ namespace SuperGlue.Diagnostics
                         x.DisllowAll();
                 });
 
-                environment[DiagnosticsExtensions.DiagnosticsConstants.AddData] = (Action<IDictionary<string, object>, string, Tuple<string, IDictionary<string, object>>>)((x, y, z) =>
+                environment[DiagnosticsExtensions.DiagnosticsConstants.AddData] = (Func<IDictionary<string, object>, string, Tuple<string, IDictionary<string, object>>, Task>)((x, y, z) =>
                 {
                     if (!x.GetSettings<DiagnosticsSettings>().IsKeyAllowed(y))
-                        return;
+                        return Task.CompletedTask;
 
                     var manager = x.Resolve<IManageDiagnosticsInformation>();
 
-                    manager.AddMessurement(y, new DiagnosticsData(z.Item1, z.Item2.ToDictionary(a => a.Key, a => (a.Value as IDiagnosticsValue) ?? new ObjectDiagnosticsValue(a))));
+                    return manager.AddDiagnostics(y, new DiagnosticsData(z.Item1, z.Item2.ToDictionary(a => a.Key, a => (a.Value as IDiagnosticsValue) ?? new ObjectDiagnosticsValue(a))));
                 });
 
                 return Task.CompletedTask;

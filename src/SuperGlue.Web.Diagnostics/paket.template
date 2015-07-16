@@ -1,0 +1,14 @@
+﻿type file
+id SuperGlue.Web.Diagnostics
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Web.Diagnostics.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.Diagnostics
+	SuperGlue.Web.Output.Spark
+	SuperGlue.Web.RouteInputValidator
+	SuperGlue.Web.Routing

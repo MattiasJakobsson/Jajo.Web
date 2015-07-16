@@ -26,7 +26,7 @@ namespace SuperGlue.Configuration
 
             await _next(environment);
 
-            wrapper.Dispose();
+            await wrapper.End();
         }
     }
 

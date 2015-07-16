@@ -96,6 +96,10 @@
       <Project>{a9e022f8-1aa3-4afc-8ec2-1d4a8d2e9f7a}</Project>
       <Name>SuperGlue.Security</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Web.Diagnostics\SuperGlue.Web.Diagnostics.csproj">
+      <Project>{cacf0b53-767d-4859-ae34-e7e449ee1b13}</Project>
+      <Name>SuperGlue.Web.Diagnostics</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Web.Endpoints\SuperGlue.Web.Endpoints.csproj">
       <Project>{12f8f1f4-2249-4c0b-991d-60f629cb82f1}</Project>
       <Name>SuperGlue.Web.Endpoints</Name>

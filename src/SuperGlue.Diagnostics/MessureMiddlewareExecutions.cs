@@ -8,20 +8,20 @@ namespace SuperGlue.Diagnostics
 {
     public class MessureMiddlewareExecutions : IWrapMiddleware<object>
     {
-        public Task<IDisposable> Begin(IDictionary<string, object> environment, Type middleWareType)
+        public Task<IEndThings> Begin(IDictionary<string, object> environment, Type middleWareType)
         {
             var key = DiagnosticTypes.MiddleWareExecutionFor(environment);
             var requestId = environment.GetCurrentChain().RequestId;
 
             if (string.IsNullOrEmpty(requestId) || !environment.GetSettings<DiagnosticsSettings>().IsKeyAllowed(key))
-                return Task.FromResult<IDisposable>(new FakeDisposable());
+                return Task.FromResult<IEndThings>(new FakeDisposable());
 
             var stopwatch = Stopwatch.StartNew();
 
-            return Task.FromResult<IDisposable>(new Disposable(middleWareType, key, stopwatch, environment, requestId));
+            return Task.FromResult<IEndThings>(new Disposable(middleWareType, key, stopwatch, environment, requestId));
         }
 
-        public class Disposable : IDisposable
+        public class Disposable : IEndThings
         {
             private readonly string _key;
             private readonly Type _middleWareType;
@@ -48,13 +48,24 @@ namespace SuperGlue.Diagnostics
                     {"ExecutionTime", _stopwatch.Elapsed}
                 }));
             }
+
+            public Task End()
+            {
+                _stopwatch.Stop();
+
+                return _environment.PushDiagnosticsData(_key, new Tuple<string, IDictionary<string, object>>(_requestId, new Dictionary<string, object>
+                {
+                    {"Middleware", _middleWareType},
+                    {"ExecutionTime", _stopwatch.Elapsed}
+                }));
+            }
         }
 
-        public class FakeDisposable : IDisposable
+        public class FakeDisposable : IEndThings
         {
-            public void Dispose()
+            public Task End()
             {
-
+                return Task.CompletedTask;
             }
         }
     }

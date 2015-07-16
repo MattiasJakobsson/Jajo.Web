@@ -141,6 +141,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Api.Hal", "Su
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.ApiDiscovery", "SuperGlue.Web.ApiDiscovery\SuperGlue.Web.ApiDiscovery.csproj", "{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Diagnostics", "SuperGlue.Web.Diagnostics\SuperGlue.Web.Diagnostics.csproj", "{CACF0B53-767D-4859-AE34-E7E449EE1B13}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -335,6 +337,10 @@ Global
 		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CACF0B53-767D-4859-AE34-E7E449EE1B13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CACF0B53-767D-4859-AE34-E7E449EE1B13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CACF0B53-767D-4859-AE34-E7E449EE1B13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CACF0B53-767D-4859-AE34-E7E449EE1B13}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -362,5 +368,6 @@ Global
 		{65A79524-DE0E-49DB-AB4B-6055D4C792D4} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 		{3551CF79-3185-4FC4-A21D-CE42B6AC4EAB} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 		{2172F27A-9D4F-49EE-8CA3-09EBEE231EB6} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
+		{CACF0B53-767D-4859-AE34-E7E449EE1B13} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 	EndGlobalSection
 EndGlobal

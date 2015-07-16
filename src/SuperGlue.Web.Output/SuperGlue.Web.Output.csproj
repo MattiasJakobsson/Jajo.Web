@@ -64,7 +64,6 @@
     <Compile Include="IRenderToOutput.cs" />
     <Compile Include="ISuperGlueView.cs" />
     <Compile Include="MimeType.cs" />
-    <Compile Include="OutputEnvironmentExtensions.cs" />
     <Compile Include="OutputRenderingResult.cs" />
     <Compile Include="OutputSettingsExtensions.cs" />
     <Compile Include="OutputSettings.cs" />

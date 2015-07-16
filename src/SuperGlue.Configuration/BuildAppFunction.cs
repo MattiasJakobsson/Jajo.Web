@@ -44,7 +44,7 @@ namespace SuperGlue.Configuration
 
             list.Reverse();
 
-            AppFunc lastFunc = x => Task.Factory.StartNew(() => { });
+            AppFunc lastFunc = x => Task.CompletedTask;
 
             foreach (var item in list)
             {

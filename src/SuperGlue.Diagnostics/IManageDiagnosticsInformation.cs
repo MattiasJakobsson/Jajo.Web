@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Diagnostics
 {
     public interface IManageDiagnosticsInformation
     {
-        void AddMessurement(string messurementKey, DiagnosticsData data);
-        IReadOnlyDictionary<string, IEnumerable<DiagnosticsData>> GetAllMessurements();
+        Task AddDiagnostics(string type, DiagnosticsData data);
+        Task<IEnumerable<string>> GetTypes();
+        Task<IEnumerable<string>> GetKeysFor(string type);
+        Task<IReadOnlyDictionary<string, IDiagnosticsValue>> GetDataFor(string type, string key);
     }
 }

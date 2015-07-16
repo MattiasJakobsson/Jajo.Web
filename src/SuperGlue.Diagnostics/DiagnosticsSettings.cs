@@ -11,14 +11,14 @@ namespace SuperGlue.Diagnostics
 
         public DiagnosticsSettings Allow(string key)
         {
-            _allowedKeys.Add(key);
+            _allowedKeys.Add((key ?? "").ToLower());
 
             return this;
         }
 
         public DiagnosticsSettings Disallow(string key)
         {
-            _disAllowedKeys.Add(key);
+            _disAllowedKeys.Add((key ?? "").ToLower());
 
             return this;
         }
@@ -53,7 +53,7 @@ namespace SuperGlue.Diagnostics
             if (_allowAll)
                 return true;
 
-            return !_disAllowedKeys.Contains(key) && _allowedKeys.Contains(key);
+            return !_disAllowedKeys.Contains((key ?? "").ToLower()) && _allowedKeys.Contains((key ?? "").ToLower());
         }
     }
 }

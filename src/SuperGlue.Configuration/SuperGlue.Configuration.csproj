@@ -63,6 +63,7 @@
     <Compile Include="Continue.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="IBuildAppFunction.cs" />
+    <Compile Include="IEndThings.cs" />
     <Compile Include="If.cs" />
     <Compile Include="ISetupConfigurations.cs" />
     <Compile Include="IStartApplication.cs" />

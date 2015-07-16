@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
 namespace SuperGlue
@@ -11,9 +12,9 @@ namespace SuperGlue
             public static string AddData = "superglue.Diagnostics.AddData";
         }
 
-        public static void PushDiagnosticsData(this IDictionary<string, object> environment, string type, Tuple<string, IDictionary<string, object>> data)
+        public static Task PushDiagnosticsData(this IDictionary<string, object> environment, string type, Tuple<string, IDictionary<string, object>> data)
         {
-            environment.Get(DiagnosticsConstants.AddData, (Action<IDictionary<string, object>,  string, Tuple<string, IDictionary<string, object>>>)((x, y, z) => { }))(environment, type, data);
+            return environment.Get(DiagnosticsConstants.AddData, (Func<IDictionary<string, object>,  string, Tuple<string, IDictionary<string, object>>, Task>)((x, y, z) => Task.CompletedTask))(environment, type, data);
         }
     }
 

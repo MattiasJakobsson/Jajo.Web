@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using SuperGlue.ExceptionManagement;
@@ -8,12 +9,12 @@ namespace SuperGlue.UnitOfWork
 {
     public class PushExceptionsToApplicationTasks : IWrapMiddleware<HandleExceptions>
     {
-        public Task<IDisposable> Begin(IDictionary<string, object> environment, Type middlewareType)
+        public Task<IEndThings> Begin(IDictionary<string, object> environment, Type middlewareType)
         {
-            return Task.FromResult<IDisposable>(new Disposable(environment));
+            return Task.FromResult<IEndThings>(new Disposable(environment));
         }
 
-        private class Disposable : IDisposable
+        private class Disposable : IEndThings
         {
             private readonly IDictionary<string, object> _environment;
 
@@ -22,17 +23,18 @@ namespace SuperGlue.UnitOfWork
                 _environment = environment;
             }
 
-            public void Dispose()
+            public Task End()
             {
                 var exception = _environment.GetException();
 
-                if(exception == null)
-                    return;
+                if (exception == null)
+                    return Task.CompletedTask;
 
                 var applicationTasks = _environment.ResolveAll<IApplicationTask>();
 
-                foreach (var applicationTask in applicationTasks)
-                    applicationTask.Exception(exception).Wait();
+                var actions = applicationTasks.Select(applicationTask => applicationTask.Exception(exception)).ToList();
+
+                return Task.WhenAll(actions);
             }
         }
     }

@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
-using SuperGlue.Diagnostics;
 using SuperGlue.ExceptionManagement;
 using SuperGlue.FeatureToggler;
 using SuperGlue.RequestBranching;
