@@ -41,10 +41,10 @@ namespace SuperGlue.Diagnostics
 
             var settings = _environment.GetSettings<DiagnosticsSettings>();
 
-            return !settings.IsKeyAllowed(loweredType) ? Task.FromResult(Enumerable.Empty<string>()) : Task.FromResult(!Messurements.ContainsKey(loweredType) ? Enumerable.Empty<string>() : Messurements[loweredType].Select(x => x.Key));
+            return !settings.IsKeyAllowed(loweredType) ? Task.FromResult(Enumerable.Empty<string>()) : Task.FromResult(!Messurements.ContainsKey(loweredType) ? Enumerable.Empty<string>() : Messurements[loweredType].Select(x => x.Key).Distinct());
         }
 
-        public Task<IReadOnlyDictionary<string, IDiagnosticsValue>> GetDataFor(string type, string key)
+        public Task<IEnumerable<KeyValuePair<string, IDiagnosticsValue>>> GetDataFor(string type, string key)
         {
             var loweredType = (type ?? "").ToLower();
             var loweredKey = (key ?? "").ToLower();
@@ -52,13 +52,11 @@ namespace SuperGlue.Diagnostics
             var settings = _environment.GetSettings<DiagnosticsSettings>();
 
             if (!settings.IsKeyAllowed(loweredType) || !Messurements.ContainsKey(loweredType))
-                return Task.FromResult<IReadOnlyDictionary<string, IDiagnosticsValue>>(new Dictionary<string, IDiagnosticsValue>());
+                return Task.FromResult(Enumerable.Empty<KeyValuePair<string, IDiagnosticsValue>>());
 
-            return Task.FromResult<IReadOnlyDictionary<string, IDiagnosticsValue>>(Messurements[loweredType]
+            return Task.FromResult(Messurements[loweredType]
                 .Where(x => x.Key == loweredKey)
-                .SelectMany(x => x.Data)
-                .GroupBy(x => x.Key)
-                .ToDictionary(x => x.Key, x => x.Select(y => y.Value).First()));
+                .SelectMany(x => x.Data));
         }
     }
 }

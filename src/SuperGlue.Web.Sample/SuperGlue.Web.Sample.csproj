@@ -148,6 +148,10 @@
       <Project>{692410ed-060a-4049-91bc-a08be4c0b57b}</Project>
       <Name>SuperGlue.UnitOfWork</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Web.Routing\SuperGlue.Web.Routing.csproj">
+      <Project>{03FE4F2A-FB85-4E97-A826-6C7AC0DA4378}</Project>
+      <Name>SuperGlue.Web.Routing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Web.Validation\SuperGlue.Web.Validation.csproj">
       <Project>{f466c803-e04e-493d-91d6-25001dc5a281}</Project>
       <Name>SuperGlue.Web.Validation</Name>

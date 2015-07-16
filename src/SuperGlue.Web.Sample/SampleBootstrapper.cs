@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using SuperGlue.ExceptionManagement;
@@ -10,6 +12,7 @@ using SuperGlue.Web.Endpoints;
 using SuperGlue.Web.Http;
 using SuperGlue.Web.ModelBinding;
 using SuperGlue.Web.Output;
+using SuperGlue.Web.Routing;
 using SuperGlue.Web.Routing.Superscribe;
 using SuperGlue.Web.Validation;
 
@@ -19,6 +22,8 @@ namespace SuperGlue.Web.Sample
     {
         protected override async Task Configure(string environment)
         {
+            AlterSettings<RouteSettings>(x => x.UsePolicy(new QueryCommandMethodRoutePolicy(new List<Assembly> { GetType().Assembly })));
+
             await AddChain("chains.Partials", app =>
             {
                 app

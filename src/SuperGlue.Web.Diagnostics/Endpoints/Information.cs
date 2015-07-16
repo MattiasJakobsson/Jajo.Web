@@ -19,7 +19,7 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
         {
             var data = await _manageDiagnosticsInformation.GetDataFor(input.Slug, input.Id);
             
-            return new InformationQueryResult(input.Slug, input.Id, data.ToDictionary(x => x.Key, x => x.Value.GetStringRepresentation()));
+            return new InformationQueryResult(input.Slug, input.Id, data.Select(x => new KeyValuePair<string, string>(x.Key, x.Value.GetStringRepresentation())));
         }
 
         public async Task<bool> Exists(InformationQueryInput input)
@@ -36,7 +36,7 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
 
     public class InformationQueryResult
     {
-        public InformationQueryResult(string type, string key, IDictionary<string, string> data)
+        public InformationQueryResult(string type, string key, IEnumerable<KeyValuePair<string, string>> data)
         {
             Type = type;
             Key = key;
@@ -45,6 +45,6 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
 
         public string Type { get; private set; }
         public string Key { get; private set; }
-        public IDictionary<string, string> Data { get; private set; }
+        public IEnumerable<KeyValuePair<string, string>> Data { get; private set; }
     }
 }
