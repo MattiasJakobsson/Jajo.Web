@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Superscribe.Models;
 using Superscribe.Utils;
 using String = Superscribe.Models.String;
@@ -85,10 +86,36 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             environment.PushDiagnosticsData(DiagnosticTypes.Setup, new Tuple<string, IDictionary<string, object>>("Routing", new Dictionary<string, object>
             {
-                {"Pattern", _node.Pattern},
+                {"Pattern", GetPattern()},
                 {"Inputs", string.Join(", ", routedInputs.Select(x => x.Key.Name))},
                 {"RoutedTo", routeTo}
             }));
+        }
+
+        private string GetPattern()
+        {
+            var patternParts = new List<string>();
+
+            var node = _node;
+
+            while (node != null)
+            {
+                var paramNode = node as ParamNode;
+
+                patternParts.Add(paramNode != null ? string.Concat("{", paramNode.Name, "}") : node.Template);
+
+                patternParts.Add("/");
+
+                node = node.Parent;
+            }
+
+            var patternBuilder = new StringBuilder();
+            patternParts.Reverse();
+
+            foreach (var part in patternParts)
+                patternBuilder.Append(part);
+
+            return patternBuilder.ToString();
         }
 
         private static ParamNode CreateIntNode(string name)
