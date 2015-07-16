@@ -30,10 +30,13 @@ namespace SuperGlue.Web.Routing.Superscribe
         private readonly IEnumerable<ICheckIfRouteExists> _checkIfRouteExists;
         private readonly IStringRouteParser _stringRouteParser;
 
-        public SuperscribeRouteBuilder(IEnumerable<ICheckIfRouteExists> checkIfRouteExists, IStringRouteParser stringRouteParser)
+        public SuperscribeRouteBuilder(IEnumerable<ICheckIfRouteExists> checkIfRouteExists, IStringRouteParser stringRouteParser, IDictionary<string, object> environment)
         {
             _checkIfRouteExists = checkIfRouteExists;
             _stringRouteParser = stringRouteParser;
+
+            foreach (var part in environment.GetWebApplicationRoot().Split('/').Where(x => !string.IsNullOrEmpty(x)))
+                Append(part);
         }
 
         public void RestrictMethods(params string[] methods)

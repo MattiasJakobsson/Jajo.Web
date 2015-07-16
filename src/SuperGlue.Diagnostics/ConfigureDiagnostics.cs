@@ -29,7 +29,7 @@ namespace SuperGlue.Diagnostics
 
                     var manager = x.Resolve<IManageDiagnosticsInformation>();
 
-                    return manager.AddDiagnostics(y, new DiagnosticsData(z.Item1, z.Item2.ToDictionary(a => a.Key, a => (a.Value as IDiagnosticsValue) ?? new ObjectDiagnosticsValue(a))));
+                    return manager.AddDiagnostics(y, new DiagnosticsData(z.Item1, z.Item2.ToDictionary(a => a.Key, a => (a.Value as IDiagnosticsValue) ?? new ObjectDiagnosticsValue(a.Value))));
                 });
 
                 return Task.CompletedTask;

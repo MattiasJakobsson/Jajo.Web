@@ -9,6 +9,9 @@ namespace SuperGlue.Web.Routing
 {
     public class SetupRoutingConfiguration : ISetupConfigurations
     {
+        private static readonly ICollection<Tuple<string, object, IDictionary<Type, Func<object, IDictionary<string, object>>>, string[]>> RoutesToConfigure = new List<Tuple<string, object, IDictionary<Type, Func<object, IDictionary<string, object>>>, string[]>>();
+        private static bool shouldDelayRouteConfiguration = true;
+
         public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
             yield return new ConfigurationSetupResult("superglue.RoutingSetup", environment =>
@@ -17,17 +20,24 @@ namespace SuperGlue.Web.Routing
 
                 environment[RouteExtensions.RouteConstants.CreateRouteFunc] = (Action<string, object, IDictionary<Type, Func<object, IDictionary<string, object>>>, string[]>)((pattern, routeTo, inputParameters, methods) =>
                 {
-                    var routeBuilder = environment.CreateRouteBuilder();
+                    var configuration = new Tuple<string, object, IDictionary<Type, Func<object, IDictionary<string, object>>>, string[]>(pattern, routeTo, inputParameters, methods);
 
-                    routeBuilder.RestrictMethods(methods);
-                    routeBuilder.AppendPattern(pattern);
-
-                    routeBuilder.Build(routeTo, inputParameters, environment);
+                    if (shouldDelayRouteConfiguration)
+                        RoutesToConfigure.Add(configuration);
+                    else
+                        AddRoute(configuration, environment);
                 });
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup", configureAction: configuration =>
             {
+                shouldDelayRouteConfiguration = false;
+
+                foreach (var routeToConfigure in RoutesToConfigure)
+                    AddRoute(routeToConfigure, configuration.Settings);
+
+                RoutesToConfigure.Clear();
+
                 var policies = configuration.WithSettings<RouteSettings>().GetPolicies();
 
                 if (!policies.Any())
@@ -59,6 +69,16 @@ namespace SuperGlue.Web.Routing
 
                 return Task.CompletedTask;
             });
+        }
+
+        private static void AddRoute(Tuple<string, object, IDictionary<Type, Func<object, IDictionary<string, object>>>, string[]> routeToConfigure, IDictionary<string, object> environment)
+        {
+            var routeBuilder = environment.CreateRouteBuilder();
+
+            routeBuilder.RestrictMethods(routeToConfigure.Item4);
+            routeBuilder.AppendPattern(routeToConfigure.Item1);
+
+            routeBuilder.Build(routeToConfigure.Item2, routeToConfigure.Item3, environment);
         }
     }
 }

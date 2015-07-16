@@ -68,7 +68,7 @@ namespace SuperGlue.Web.Sample
                     .Use<ValidateRequest>()
                     .Use<ExecuteEndpoint>()
                     .Use<RenderOutput>();
-            });
+            }, x => x.SetWebApplicationRoot("/test/"));
         }
 
         protected override string ApplicationName

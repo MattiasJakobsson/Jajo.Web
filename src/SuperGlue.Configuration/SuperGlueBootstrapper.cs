@@ -16,6 +16,7 @@ namespace SuperGlue.Configuration
     {
         private readonly IDictionary<string, AppFunc> _chains = new ConcurrentDictionary<string, AppFunc>();
         private readonly IDictionary<Type, object> _settings = new ConcurrentDictionary<Type, object>();
+        private readonly IDictionary<string, ChainSettings> _chainSettings = new ConcurrentDictionary<string, ChainSettings>();
         private IEnumerable<IStartApplication> _appStarters;
         private IReadOnlyCollection<ConfigurationSetupResult> _setups;
         private IDictionary<string, object> _environment;
@@ -35,6 +36,8 @@ namespace SuperGlue.Configuration
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ResolvePathFunc] = (Func<string, string>)(x => x.Replace("~", basePath));
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetConfigSettings] = (Func<Type, object>)GetSettings;
+
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChainSettings] = (Func<string, ChainSettings>)GetChainSettings;
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ApplicationName] = ApplicationName;
 
@@ -81,7 +84,7 @@ namespace SuperGlue.Configuration
 
             stopwatch.Stop();
 
-            _environment.PushDiagnosticsData(DiagnosticTypes.Setup, new Tuple<string, IDictionary<string, object>>("Bootstrapping", new Dictionary<string, object>
+            await _environment.PushDiagnosticsData(DiagnosticTypes.Setup, new Tuple<string, IDictionary<string, object>>("Bootstrapping", new Dictionary<string, object>
             {
                 {"ExecutionTime", stopwatch.Elapsed},
                 {"Environment", environment},
@@ -125,13 +128,28 @@ namespace SuperGlue.Configuration
             return settings;
         }
 
-        protected Task AddChain(string name, Action<IBuildAppFunction> configure)
+        protected virtual ChainSettings GetChainSettings(string chain)
+        {
+            if (_chainSettings.ContainsKey(chain))
+                return _chainSettings[chain];
+
+            var settings = new ChainSettings();
+
+            _chainSettings[chain] = settings;
+
+            return settings;
+        }
+
+        protected Task AddChain(string name, Action<IBuildAppFunction> configure, Action<ChainSettings> alterSettings = null)
         {
             var appFuncBuilder = GetAppFunctionBuilder(name);
 
             configure(appFuncBuilder);
 
             _chains[name] = appFuncBuilder.Build();
+
+            if (alterSettings != null)
+                alterSettings(GetChainSettings(name));
 
             return Task.CompletedTask;
         }
