@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -15,13 +13,9 @@ namespace SuperGlue.Web.Output
             if (output == null)
                 return null;
 
-            var serialized = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(output));
+            var serialized = JsonConvert.SerializeObject(output);
 
-            var stream = (Stream)new MemoryStream(serialized);
-
-            stream.Position = 0;
-
-            return Task.FromResult(new OutputRenderingResult(stream, "application/json"));
+            return Task.FromResult(new OutputRenderingResult(serialized, "application/json"));
         }
     }
 }

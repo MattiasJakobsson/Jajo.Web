@@ -53,6 +53,7 @@
     </Compile>
     <Compile Include="CacheLevel.cs" />
     <Compile Include="CacheOptions.cs" />
+    <Compile Include="GzipOutput.cs" />
     <Compile Include="HttpMetaDataKeys.cs" />
     <Compile Include="IWantToBeCached.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

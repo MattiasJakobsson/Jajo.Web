@@ -34,12 +34,8 @@ namespace SuperGlue.EventStore
             try
             {
                 var deSerializedMetaData = (Dictionary<string, object>)JsonConvert.DeserializeObject(Encoding.UTF8.GetString(metadata), typeof(Dictionary<string, object>));
-                object deSerializedData;
 
-                if (deSerializedMetaData.ContainsKey(EventClrTypeHeader))
-                    deSerializedData = JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data), Type.GetType((string)deSerializedMetaData[EventClrTypeHeader]));
-                else
-                    deSerializedData = new EventStoreEvent();
+                var deSerializedData = deSerializedMetaData.ContainsKey(EventClrTypeHeader) ? JsonConvert.DeserializeObject(Encoding.UTF8.GetString(data), Type.GetType((string)deSerializedMetaData[EventClrTypeHeader])) : new EventStoreEvent();
 
                 return new DeSerializationResult(eventId, eventNumber, originalEventNumber, deSerializedData, deSerializedMetaData);
             }

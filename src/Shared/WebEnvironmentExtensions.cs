@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Web
@@ -35,6 +36,7 @@ namespace SuperGlue.Web
             public const string RequestProtocol = "owin.RequestProtocol";
             public const string RequestHeaders = "owin.RequestHeaders";
             public const string RequestBody = "owin.RequestBody";
+            public const string CallCancelled = "owin.CallCancelled";
 
             // http://owin.org/spec/owin-1.0.0.html
 
@@ -119,6 +121,11 @@ namespace SuperGlue.Web
             public RequestHeaders Headers { get { return new RequestHeaders(new ReadOnlyDictionary<string, string[]>(_environment.Get<IDictionary<string, string[]>>(OwinConstants.RequestHeaders, new Dictionary<string, string[]>()))); } }
             public RequestCookieCollection Cookies { get { return new RequestCookieCollection(GetCookies()); } }
             public Stream Body { get { return _environment.Get<Stream>(OwinConstants.RequestBody); } }
+            public CancellationToken CallCancelled
+            {
+                get { return _environment.Get<CancellationToken>(OwinConstants.CallCancelled); }
+                set { Set(OwinConstants.CallCancelled, value); }
+            }
             public string LocalIpAddress { get { return _environment.Get<string>(OwinConstants.CommonKeys.LocalIpAddress); } }
 
             public async Task<ReadableStringCollection> ReadForm()
@@ -539,8 +546,8 @@ namespace SuperGlue.Web
 
                 public class HttpMultipartBoundary
                 {
-                    private const byte Lf = (byte)'\n';
-                    private const byte Cr = (byte)'\r';
+                    private const byte MultiLf = (byte)'\n';
+                    private const byte MultiCr = (byte)'\r';
 
                     public HttpMultipartBoundary(HttpMultipartSubStream boundaryStream)
                     {
@@ -594,7 +601,7 @@ namespace SuperGlue.Web
                                 return null;
                             }
 
-                            if (byteReadFromStream.Equals(Lf))
+                            if (byteReadFromStream.Equals(MultiLf))
                             {
                                 break;
                             }
@@ -603,7 +610,7 @@ namespace SuperGlue.Web
                         }
 
                         var lineReadFromStream =
-                            readBuffer.ToString().Trim((char)Cr);
+                            readBuffer.ToString().Trim((char)MultiCr);
 
                         return lineReadFromStream;
                     }
@@ -854,24 +861,36 @@ namespace SuperGlue.Web
 
             public ResponseHeaders Headers { get { return new ResponseHeaders(_environment.Get<IDictionary<string, string[]>>(OwinConstants.ResponseHeaders, new Dictionary<string, string[]>())); } }
             public ResponseCookieCollection Cookies { get { return new ResponseCookieCollection(Headers); } }
-            public Stream Body { get { return _environment.Get<Stream>(OwinConstants.ResponseBody); } }
 
-            public async Task Write(string text)
+            public Stream Body
             {
-                var textWriter = new StreamWriter(Body);
-
-                await textWriter.WriteAsync(text);
-                await textWriter.FlushAsync();
+                get { return _environment.Get<Stream>(OwinConstants.ResponseBody); }
+                set { Set(OwinConstants.ResponseBody, value); }
             }
 
-            public async Task Write(Stream stream)
+            public virtual Task Write(string text)
             {
-                if (stream == null)
-                    return;
+                return Write(text, CancellationToken.None);
+            }
 
-                stream.Position = 0;
+            public virtual Task Write(string text, CancellationToken token)
+            {
+                return Write(Encoding.UTF8.GetBytes(text), token);
+            }
 
-                await stream.CopyToAsync(Body);
+            public virtual Task Write(byte[] data)
+            {
+                return Write(data, CancellationToken.None);
+            }
+
+            public virtual Task Write(byte[] data, CancellationToken token)
+            {
+                return Write(data, 0, data == null ? 0 : data.Length, token);
+            }
+
+            public virtual Task Write(byte[] data, int offset, int count, CancellationToken token)
+            {
+                return Body.WriteAsync(data, offset, count, token);
             }
 
             private void Set(string key, object value)

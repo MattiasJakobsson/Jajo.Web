@@ -35,8 +35,8 @@ namespace SuperGlue.Web.Output.Spark
 
             var matchingTemplates = templates.Where(x => x.ModelType == output.GetType()).ToList();
 
-            if (matchingTemplates.Count < 1) 
-                return new OutputRenderingResult(new MemoryStream(), ContentType.Html);
+            if (matchingTemplates.Count < 1)
+                return new OutputRenderingResult("", ContentType.Html);
 
             if (matchingTemplates.Count > 1)
                 throw new Exception(
@@ -53,20 +53,19 @@ namespace SuperGlue.Web.Output.Spark
             var view = sparkViewEntry.CreateInstance() as SuperGlueSparkView;
 
             if (view == null)
-                return new OutputRenderingResult(new MemoryStream(), ContentType.Html);
+                return new OutputRenderingResult("", ContentType.Html);
 
-            return await Task.Factory.StartNew(() =>
-            {
-                var outputStream = new MemoryStream();
-                var writer = new StreamWriter(outputStream);
+            var outputStream = new MemoryStream();
+            var writer = new StreamWriter(outputStream);
 
-                view.Render(new ViewContext(output, environment), writer);
+            view.Render(new ViewContext(output, environment), writer);
 
-                writer.Flush();
-                outputStream.Position = 0;
+            writer.Flush();
+            outputStream.Position = 0;
 
-                return new OutputRenderingResult(outputStream, ContentType.Html);
-            });
+            var content = await new StreamReader(outputStream).ReadToEndAsync();
+
+            return new OutputRenderingResult(content, ContentType.Html);
         }
 
         private SparkViewDescriptor BuildDescriptor(Template template, bool searchForMaster, ICollection<string> searchedLocations)

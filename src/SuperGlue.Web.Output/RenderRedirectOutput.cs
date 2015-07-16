@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Web.Output
@@ -8,20 +7,17 @@ namespace SuperGlue.Web.Output
     {
         public Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                var output = environment.GetOutput() as IRedirectable;
+            var output = environment.GetOutput() as IRedirectable;
 
-                if (output == null)
-                    return new OutputRenderingResult(new MemoryStream(), "");
+            if (output == null)
+                return Task.FromResult(new OutputRenderingResult("", ""));
 
-                var redirectTo = output.GetUrl(environment);
+            var redirectTo = output.GetUrl(environment);
 
-                environment.GetResponse().StatusCode = 301;
-                environment.GetResponse().Headers.Location = redirectTo;
+            environment.GetResponse().StatusCode = 301;
+            environment.GetResponse().Headers.Location = redirectTo;
 
-                return new OutputRenderingResult(new MemoryStream(), "");
-            });
+            return Task.FromResult(new OutputRenderingResult("", ""));
         }
     }
 }

@@ -7,25 +7,23 @@ namespace SuperGlue.Web.Output
 {
     public class RenderOutputAsXml : IRenderOutput
     {
-        public Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
+        public async Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                var output = environment.GetOutput();
+            var output = environment.GetOutput();
 
-                if (output == null)
-                    return null;
+            if (output == null)
+                return null;
 
-                var serializer = new XmlSerializer(output.GetType());
+            var serializer = new XmlSerializer(output.GetType());
 
-                var stream = new MemoryStream();
+            var stream = new MemoryStream();
 
-                serializer.Serialize(stream, output);
+            serializer.Serialize(stream, output);
 
-                stream.Position = 0;
+            stream.Position = 0;
+            var content = await new StreamReader(stream).ReadToEndAsync();
 
-                return new OutputRenderingResult(stream, "application/xml");
-            });
+            return new OutputRenderingResult(content, "application/xml");
         }
     }
 }

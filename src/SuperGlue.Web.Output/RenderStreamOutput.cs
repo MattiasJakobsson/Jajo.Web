@@ -7,7 +7,7 @@ namespace SuperGlue.Web.Output
 {
     public class RenderStreamOutput : IRenderOutput
     {
-        public Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
+        public async Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {
             var output = environment.GetOutput() as Stream;
 
@@ -15,8 +15,9 @@ namespace SuperGlue.Web.Output
                 return null;
 
             output.Position = 0;
+            var content = await new StreamReader(output).ReadToEndAsync();
 
-            return Task.FromResult(new OutputRenderingResult(output, environment.GetRequest().Headers.Accept.Split(',').Select(x => x.Trim()).FirstOrDefault()));
+            return new OutputRenderingResult(content, environment.GetRequest().Headers.Accept.Split(',').Select(x => x.Trim()).FirstOrDefault());
         }
     }
 }

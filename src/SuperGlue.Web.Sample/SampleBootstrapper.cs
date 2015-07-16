@@ -36,7 +36,8 @@ namespace SuperGlue.Web.Sample
 
             await AddChain("chains.Web", app =>
             {
-                app.Use<NestedStructureMapContainer>()
+                app.Use<GzipOutput>()
+                    .Use<NestedStructureMapContainer>()
                     .If(x => x.GetRequest().Uri.ToString() != x.GetRequest().Uri.ToString().ToLower(), x => x.Use<RedirectTo>(new RedirectToOptions(y => y.GetRequest().Uri.ToString().ToLower())))
                     .Use<BranchRequest>(new BranchRequestConfiguration()
                         .AddCase(y => y.GetException() != null, app

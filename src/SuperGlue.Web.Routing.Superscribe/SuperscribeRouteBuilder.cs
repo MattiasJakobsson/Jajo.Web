@@ -93,7 +93,7 @@ namespace SuperGlue.Web.Routing.Superscribe
                 {"Pattern", GetPattern()},
                 {"Inputs", string.Join(", ", routedInputs.Select(x => x.Key.Name))},
                 {"RoutedTo", routeTo}
-            }));
+            })).Wait();
         }
 
         private string GetPattern()

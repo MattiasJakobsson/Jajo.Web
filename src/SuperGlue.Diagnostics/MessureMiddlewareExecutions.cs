@@ -6,7 +6,7 @@ using SuperGlue.Configuration;
 
 namespace SuperGlue.Diagnostics
 {
-    public class MessureMiddlewareExecutions : IWrapMiddleware<object>
+    public class MessureMiddlewareExecutions// : IWrapMiddleware<object>
     {
         public Task<IEndThings> Begin(IDictionary<string, object> environment, Type middleWareType)
         {
@@ -36,17 +36,6 @@ namespace SuperGlue.Diagnostics
                 _stopwatch = stopwatch;
                 _environment = environment;
                 _requestId = requestId;
-            }
-
-            public void Dispose()
-            {
-                _stopwatch.Stop();
-
-                _environment.PushDiagnosticsData(_key, new Tuple<string, IDictionary<string, object>>(_requestId, new Dictionary<string, object>
-                {
-                    {"Middleware", _middleWareType},
-                    {"ExecutionTime", _stopwatch.Elapsed}
-                }));
             }
 
             public Task End()

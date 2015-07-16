@@ -53,7 +53,7 @@ namespace SuperGlue.EventStore.Timeouts
                 .StartNew(Poll, token, TaskCreationOptions.LongRunning)
                 .ContinueWith(t =>
                 {
-                    t.Exception.Handle(ex => true);
+                    (t.Exception ?? new AggregateException()).Handle(ex => true);
 
                     StartPoller();
                 }, TaskContinuationOptions.OnlyOnFaulted);
