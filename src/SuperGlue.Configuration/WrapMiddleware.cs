@@ -22,27 +22,23 @@ namespace SuperGlue.Configuration
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var wrappers = new List<IDisposable>();
-
-            foreach (var wrapper in _options.Wrappers)
-                wrappers.Add(await wrapper.Begin(environment, _options.MiddleWareType));
+            var wrapper = await _options.Wrapper.Begin(environment, _options.MiddleWareType);
 
             await _next(environment);
 
-            foreach (var wrapper in wrappers)
-                wrapper.Dispose();
+            wrapper.Dispose();
         }
     }
 
     public class WrapMiddlewareOptions<TMiddleware>
     {
-        public WrapMiddlewareOptions(IEnumerable<IWrapMiddleware<TMiddleware>> wrappers, Type middleWareType)
+        public WrapMiddlewareOptions(IWrapMiddleware<TMiddleware> wrapper, Type middleWareType)
         {
-            Wrappers = wrappers;
             MiddleWareType = middleWareType;
+            Wrapper = wrapper;
         }
 
-        public IEnumerable<IWrapMiddleware<TMiddleware>> Wrappers { get; private set; }
+        public IWrapMiddleware<TMiddleware> Wrapper { get; private set; }
         public Type MiddleWareType { get; private set; }
     }
 }

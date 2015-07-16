@@ -80,13 +80,12 @@ namespace SuperGlue.Configuration
         private IEnumerable<MiddlewareWithArgs> FindWrappersFor(Type middleWareType)
         {
             return from type in FindInheritedTypes(middleWareType)
-                   let wrappers = _environment.ResolveAll(typeof(IWrapMiddleware<>).MakeGenericType(type)).ToList()
-                   where wrappers.Any()
-                   let optionsConstructor = typeof(WrapMiddlewareOptions<>).MakeGenericType(type).GetConstructor(new[] { typeof(IEnumerable<>).MakeGenericType(typeof(IWrapMiddleware<>).MakeGenericType(type)), typeof(Type) })
+                   from wrapper in _environment.ResolveAll(typeof(IWrapMiddleware<>).MakeGenericType(type))
+                   let optionsConstructor = typeof(WrapMiddlewareOptions<>).MakeGenericType(type).GetConstructor(new[] { typeof(IWrapMiddleware<>).MakeGenericType(type), typeof(Type) })
                    where optionsConstructor != null
                    select new MiddlewareWithArgs(typeof(WrapMiddleware<>).MakeGenericType(type), new[]
                         {
-                            optionsConstructor.Invoke(new object[] {wrappers, middleWareType})
+                            optionsConstructor.Invoke(new[] {wrapper, middleWareType})
                         });
         }
 
