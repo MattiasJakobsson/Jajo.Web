@@ -11,5 +11,6 @@ namespace SuperGlue.Hosting.Katana
 
         public ICollection<string> Bindings { get; set; }
         public string ApplicationName { get; set; }
+        public string ApplicationBasePath { get; set; }
     }
 }

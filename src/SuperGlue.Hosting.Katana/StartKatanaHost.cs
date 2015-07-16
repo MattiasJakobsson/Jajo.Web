@@ -37,31 +37,23 @@ namespace SuperGlue.Hosting.Katana
             foreach (var binding in bindings)
                 startOptions.Urls.Add(binding);
 
-            if (!startOptions.Urls.Any())
-            {
-                var optionsPath = settings.ResolvePath("~/.hostingoptions");
+            var optionsPath = settings.ResolvePath("~/.hostingoptions");
 
-                var options = await Files.ReadAsJson<HostingOptions>(optionsPath);
+            var options = await Files.ReadAsJson<HostingOptions>(optionsPath) ?? new HostingOptions();
 
-                var updated = false;
-                if (options == null)
-                {
-                    updated = true;
-                    options = new HostingOptions();
-                }
+            if (startOptions.Urls.Any())
+                options.Bindings = startOptions.Urls;
 
-                if (!options.Bindings.Any())
-                {
-                    updated = true;
-                    options.Bindings.Add(string.Format("http://localhost:{0}", GetRandomUnusedPort()));
-                }
+            if (!options.Bindings.Any())
+                options.Bindings.Add(string.Format("http://localhost:{0}", GetRandomUnusedPort()));
 
-                if (updated)
-                    await Files.WriteJsonTo(optionsPath, options);
+            options.ApplicationName = settings.GetApplicationName();
+            options.ApplicationBasePath = settings.GetWebApplicationRoot();
 
-                foreach (var binding in options.Bindings)
-                    startOptions.Urls.Add(binding);
-            }
+            await Files.WriteJsonTo(optionsPath, options);
+
+            foreach (var binding in options.Bindings)
+                startOptions.Urls.Add(binding);
 
             _webApp = WebApp.Start(startOptions, x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain)));
 
