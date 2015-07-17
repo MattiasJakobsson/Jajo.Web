@@ -72,7 +72,7 @@ namespace SuperGlue.Configuration
                 if (_chains.ContainsKey(item.Key))
                     chain = _chains[item.Key];
 
-                chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(item.Key), environment);
+                chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(item.Key), settings, environment);
 
                 if (chain != null)
                     startTasks.Add(starter.Start(chain, settings, environment));

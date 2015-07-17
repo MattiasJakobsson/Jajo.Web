@@ -108,6 +108,8 @@ namespace SuperGlue.Configuration
             }
             catch (Exception ex)
             {
+                environment.Log(ex, "Error while publishing event: {0}", LogLevel.Error, eventName);
+
                 return ex;
             }
         }

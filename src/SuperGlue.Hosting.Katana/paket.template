@@ -9,4 +9,3 @@ files
 dependencies
 	Microsoft.Owin.SelfHost >= 3.0.1
 	SuperGlue.Configuration
-	SuperGlue.Logging

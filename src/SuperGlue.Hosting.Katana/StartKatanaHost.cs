@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Microsoft.Owin.Hosting;
 using Owin;
 using SuperGlue.Configuration;
-using SuperGlue.Logging;
 
 namespace SuperGlue.Hosting.Katana
 {
@@ -16,18 +15,12 @@ namespace SuperGlue.Hosting.Katana
     public class StartKatanaHost : IStartApplication
     {
         private IDisposable _webApp;
-        private readonly ILog _log;
-
-        public StartKatanaHost(ILog log)
-        {
-            _log = log;
-        }
 
         public string Chain { get { return "chains.Web"; } }
 
         public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            _log.Info("Starting katana host for environment: \"{0}\"", environment);
+            settings.Log("Starting katana host for environment: \"{0}\"", LogLevel.Debug, environment);
 
             var katanaSettings = settings.GetSettings<KatanaSettings>();
             var bindings = katanaSettings.GetBindings();
@@ -57,7 +50,7 @@ namespace SuperGlue.Hosting.Katana
 
             _webApp = WebApp.Start(startOptions, x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain)));
 
-            _log.Info("Katana host started with bindings: {0}", string.Join(", ", startOptions.Urls));
+            settings.Log("Katana host started with bindings: {0}", LogLevel.Debug, string.Join(", ", startOptions.Urls));
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
@@ -68,7 +61,7 @@ namespace SuperGlue.Hosting.Katana
             return Task.CompletedTask;
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
             return null;
         }

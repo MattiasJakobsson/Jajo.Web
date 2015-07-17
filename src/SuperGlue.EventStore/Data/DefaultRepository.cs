@@ -7,7 +7,6 @@ using EventStore.ClientAPI;
 using EventStore.ClientAPI.Exceptions;
 using SuperGlue.EventStore.ConflictManagement;
 using SuperGlue.EventStore.Timeouts;
-using SuperGlue.Logging;
 using SuperGlue.MetaData;
 
 namespace SuperGlue.EventStore.Data
@@ -19,7 +18,6 @@ namespace SuperGlue.EventStore.Data
         private readonly ICheckConflicts _checkConflicts;
         private readonly IEnumerable<IManageChanges> _manageChanges;
         private readonly IManageTimeOuts _timeoutManager;
-        private readonly ILog _log;
         private readonly IDictionary<string, object> _environment;
         private readonly ConcurrentDictionary<string, LoadedAggregate> _loadedAggregates = new ConcurrentDictionary<string, LoadedAggregate>();
 
@@ -27,7 +25,7 @@ namespace SuperGlue.EventStore.Data
         private const int ReadPageSize = 500;
 
         public DefaultRepository(IEventStoreConnection eventStoreConnection, IHandleEventSerialization eventSerialization, ICheckConflicts checkConflicts,
-            IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager, IDictionary<string, object> environment, ILog log)
+            IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager, IDictionary<string, object> environment)
         {
             _eventStoreConnection = eventStoreConnection;
             _eventSerialization = eventSerialization;
@@ -35,7 +33,6 @@ namespace SuperGlue.EventStore.Data
             _manageChanges = manageChanges;
             _timeoutManager = timeoutManager;
             _environment = environment;
-            _log = log;
         }
 
         public async Task<T> Load<T>(string id) where T : IAggregate, new()
@@ -117,14 +114,14 @@ namespace SuperGlue.EventStore.Data
                 }
                 catch (WrongExpectedVersionException ex)
                 {
-                    _log.Debug(ex, "Events where added to aggregate with id: {0} since last load. Checking for conflicts and trying again...", aggregate.Id);
+                    _environment.Log(ex, "Events where added to aggregate with id: {0} since last load. Checking for conflicts and trying again...", LogLevel.Warn, aggregate.Id);
                 }
                 catch (AggregateException ae)
                 {
                     if (!(ae.InnerException is WrongExpectedVersionException))
                         throw;
 
-                    _log.Debug(ae.InnerException, "Events where added to aggregate with id: {0} since last load. Checking for conflicts and trying again...", aggregate.Id);
+                    _environment.Log(ae.InnerException, "Events where added to aggregate with id: {0} since last load. Checking for conflicts and trying again...", LogLevel.Warn, aggregate.Id);
                 }
 
                 var storedEvents = (await LoadEventsFromStream(streamName, versionToExpect < 0 ? 0 : versionToExpect, int.MaxValue)).ToList();
@@ -171,7 +168,7 @@ namespace SuperGlue.EventStore.Data
             if (eventsToSave.Count < WritePageSize)
             {
                 await _eventStoreConnection.AppendToStreamAsync(streamName, expectedVersion, eventsToSave);
-                _log.Debug("Saved {0} events to stream {1}.", eventsToSave.Count, streamName);
+                _environment.Log("Saved {0} events to stream {1}.", LogLevel.Debug, eventsToSave.Count, streamName);
             }
             else
             {
@@ -182,7 +179,7 @@ namespace SuperGlue.EventStore.Data
                 {
                     var pageEvents = eventsToSave.Skip(position).Take(WritePageSize).ToList();
                     await transaction.WriteAsync(pageEvents);
-                    _log.Debug("Saved {0} events to stream {1}.", pageEvents.Count, streamName);
+                    _environment.Log("Saved {0} events to stream {1}.", LogLevel.Debug, pageEvents.Count, streamName);
                     position += WritePageSize;
                 }
 

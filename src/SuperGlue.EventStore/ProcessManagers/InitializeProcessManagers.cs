@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
 using SuperGlue.EventStore.Messages;
-using SuperGlue.Logging;
 
 namespace SuperGlue.EventStore.ProcessManagers
 {
@@ -20,7 +19,6 @@ namespace SuperGlue.EventStore.ProcessManagers
         private readonly IEnumerable<IManageProcess> _processManagers;
         private readonly IEventStoreConnection _eventStoreConnection;
         private readonly IWriteToErrorStream _writeToErrorStream;
-        private readonly ILog _log;
         private static bool running;
         private readonly IDictionary<string, ProcessManagerSubscription> _processManagerSubscriptions = new Dictionary<string, ProcessManagerSubscription>();
 
@@ -28,13 +26,12 @@ namespace SuperGlue.EventStore.ProcessManagers
         private readonly int _numberOfEventsPerBatch;
 
         public InitializeProcessManagers(IHandleEventSerialization eventSerialization, IEnumerable<IManageProcess> processManagers, IWriteToErrorStream writeToErrorStream,
-            IEventStoreConnection eventStoreConnection, ILog log)
+            IEventStoreConnection eventStoreConnection)
         {
             _eventSerialization = eventSerialization;
             _processManagers = processManagers;
             _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
-            _log = log;
 
             _dispatchWaitSeconds = 1;
 
@@ -53,7 +50,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            _log.Info("Starting processmanagers for environment: {0}", environment);
+            settings.Log("Starting processmanagers for environment: {0}", LogLevel.Debug, environment);
 
             running = true;
 
@@ -63,7 +60,8 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
-            _log.Info("Shutting down processmanagers");
+            settings.Log("Shutting down processmanagers", LogLevel.Debug);
+
             running = false;
 
             foreach (var subscription in _processManagerSubscriptions)
@@ -74,16 +72,16 @@ namespace SuperGlue.EventStore.ProcessManagers
             return Task.CompletedTask;
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
-            _log.Info("Building default chain for processmanagers for environment: {0}", environment);
+            settings.Log("Building default chain for processmanagers for environment: {0}", LogLevel.Debug, environment);
             return buildApp.Use<ExecuteProcessManager>().Use<SetLastEvent>().Build();
         }
 
-        protected virtual void OnProcessManagerError(IManageProcess processManager, object message, IDictionary<string, object> metaData, Exception exception)
+        protected virtual void OnProcessManagerError(IManageProcess processManager, object message, IDictionary<string, object> metaData, Exception exception, IDictionary<string, object> environment)
         {
             _writeToErrorStream.Write(new ProcessManagerFailed(processManager.ProcessName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
-            _log.Error(exception, "Error while processing event of type: {0} for processmanager: {1}", message != null ? message.GetType().FullName : "Unknown", processManager.ProcessName);
+            environment.Log(exception, "Error while processing event of type: {0} for processmanager: {1}", LogLevel.Error, message != null ? message.GetType().FullName : "Unknown", processManager.ProcessName);
         }
 
         private async Task SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)
@@ -91,7 +89,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             if (!running)
                 return;
 
-            _log.Info("Subscribing processmanager: {0}", currentProcessManager.ProcessName);
+            environment.Log("Subscribing processmanager: {0}", LogLevel.Debug, currentProcessManager.ProcessName);
 
             while (true)
             {
@@ -124,7 +122,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                     if (!running)
                         return;
 
-                    _log.Error(ex, "Couldn't subscribe processmanager: {0}. Retrying in 500 ms.", currentProcessManager.ProcessName);
+                    environment.Log(ex, "Couldn't subscribe processmanager: {0}. Retrying in 500 ms.", LogLevel.Error, currentProcessManager.ProcessName);
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(500));
                 }
@@ -136,7 +134,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             if (!running)
                 return;
 
-            _log.Warn(exception, "Subscription dropped for processmanager: {0}. Reason: {1}. Retrying...", processManager.ProcessName, reason);
+            environment.Log(exception, "Subscription dropped for processmanager: {0}. Reason: {1}. Retrying...", LogLevel.Warn, processManager.ProcessName, reason);
 
             await SubscribeProcessManager(chain, processManager, environment);
         }
@@ -147,7 +145,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
             var failedEvents = eventsList.Where(x => !x.Successful);
             foreach (var evnt in failedEvents)
-                OnProcessManagerError(processManager, evnt.Data, evnt.Metadata, evnt.Error);
+                OnProcessManagerError(processManager, evnt.Data, evnt.Metadata, evnt.Error, environment);
 
             var successfullEvents = eventsList
                 .Where(x => x.Successful)
@@ -162,7 +160,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "Couldn't push events to processmanager: {0}", processManager.ProcessName);
+                environment.Log(ex, "Couldn't push events to processmanager: {0}", LogLevel.Error, processManager.ProcessName);
             }
         }
 
@@ -176,7 +174,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
             request.ProcessManager = processManager;
             request.Events = events;
-            request.OnException = (exception, evnt) => OnProcessManagerError(processManager, evnt.Data, evnt.Metadata, exception);
+            request.OnException = (exception, evnt) => OnProcessManagerError(processManager, evnt.Data, evnt.Metadata, exception, environment);
 
             chain(requestEnvironment);
         }

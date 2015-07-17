@@ -4,7 +4,6 @@ using EventStore.ClientAPI;
 using SuperGlue.Configuration;
 using SuperGlue.EventStore.ConflictManagement;
 using SuperGlue.EventStore.Timeouts;
-using SuperGlue.Logging;
 
 namespace SuperGlue.EventStore.Data
 {
@@ -21,7 +20,7 @@ namespace SuperGlue.EventStore.Data
                 {
                     y.KeepReconnecting();
                     y.KeepRetrying();
-                    y.UseCustomLogger(new EventStoreLog(environment.Resolve<ILog>()));
+                    y.UseCustomLogger(new EventStoreLog(environment));
                 }));
 
                 environment.RegisterSingleton(typeof(IEventStoreConnection), (x, y) => connection);

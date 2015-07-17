@@ -16,15 +16,17 @@ namespace SuperGlue.CommandSender
 
         public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            return Task.Factory.StartNew(() => { CommandPipeline.Use(chain); });
+            CommandPipeline.Use(chain);
+
+            return Task.CompletedTask;
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
             return buildApp
                 .Use<ExecuteCurrentCommand>()

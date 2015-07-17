@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
 using SuperGlue.EventStore.Messages;
-using SuperGlue.Logging;
 
 namespace SuperGlue.EventStore.Subscribers
 {
@@ -19,19 +18,17 @@ namespace SuperGlue.EventStore.Subscribers
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly IWriteToErrorStream _writeToErrorStream;
         private readonly IEventStoreConnection _eventStoreConnection;
-        private readonly ILog _log;
         private static bool running;
         private readonly IDictionary<string, IServiceSubscription> _serviceSubscriptions = new Dictionary<string, IServiceSubscription>();
 
         private readonly int _dispatchWaitSeconds;
         private readonly int _numberOfEventsPerBatch;
 
-        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection, ILog log)
+        public InitializeSubscribers(IHandleEventSerialization eventSerialization, IWriteToErrorStream writeToErrorStream, IEventStoreConnection eventStoreConnection)
         {
             _eventSerialization = eventSerialization;
             _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
-            _log = log;
 
             _dispatchWaitSeconds = 1;
 
@@ -50,7 +47,7 @@ namespace SuperGlue.EventStore.Subscribers
 
         public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
-            _log.Info("Starting subscribers for environment: {0}", environment);
+            settings.Log("Starting subscribers for environment: {0}", LogLevel.Debug, environment);
 
             running = true;
 
@@ -62,7 +59,7 @@ namespace SuperGlue.EventStore.Subscribers
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
-            _log.Info("Shutting down subscribers");
+            settings.Log("Shutting down subscribers", LogLevel.Debug);
 
             running = false;
 
@@ -74,16 +71,17 @@ namespace SuperGlue.EventStore.Subscribers
             return Task.CompletedTask;
         }
 
-        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, string environment)
+        public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
-            _log.Info("Getting default chain for subscribers for environment: {0}", environment);
+            settings.Log("Getting default chain for subscribers for environment: {0}", LogLevel.Debug, environment);
             return buildApp.Use<ExecuteSubscribers>().Use<SetLastEvent>().Build();
         }
 
-        protected virtual void OnServiceError(string stream, object message, IDictionary<string, object> metaData, Exception exception)
+        protected virtual void OnServiceError(string stream, object message, IDictionary<string, object> metaData, Exception exception, IDictionary<string, object> environment)
         {
             _writeToErrorStream.Write(new ServiceEventProcessingFailed(stream, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
-            _log.Error(exception, "Error while processing event of type: {0} for stream: {1}", message != null ? message.GetType().FullName : "Unknown", stream);
+
+            environment.Log(exception, "Error while processing event of type: {0} for stream: {1}", LogLevel.Error, message != null ? message.GetType().FullName : "Unknown", stream);
         }
 
         private async Task SubscribeService(AppFunc chain, string stream, IDictionary<string, object> environment)
@@ -92,7 +90,7 @@ namespace SuperGlue.EventStore.Subscribers
             if (!running)
                 return;
 
-            _log.Info("Subscribing to stream: {0}", stream);
+            environment.Log("Subscribing to stream: {0}", LogLevel.Debug, stream);
 
             while (true)
             {
@@ -106,7 +104,7 @@ namespace SuperGlue.EventStore.Subscribers
                     if (!running)
                         return;
 
-                    _log.Error(ex, "Couldn't subscribe to stream: {0}. Retrying in 500 ms.", stream);
+                    environment.Log(ex, "Couldn't subscribe to stream: {0}. Retrying in 500 ms.", LogLevel.Warn, stream);
 
                     Thread.Sleep(TimeSpan.FromMilliseconds(500));
                 }
@@ -158,7 +156,7 @@ namespace SuperGlue.EventStore.Subscribers
             if (!running)
                 return;
 
-            _log.Warn(exception, "Subscription dropped for stream: {0}. Reason: {1}. Retrying...", stream, reason);
+            environment.Log(exception, "Subscription dropped for stream: {0}. Reason: {1}. Retrying...", LogLevel.Warn, stream, reason);
 
             await SubscribeService(chain, stream, liveOnlySubscriptions, environment);
         }
@@ -169,7 +167,7 @@ namespace SuperGlue.EventStore.Subscribers
 
             var failedEvents = eventsList.Where(x => !x.Successful);
             foreach (var evnt in failedEvents)
-                OnServiceError(stream, evnt.Data, evnt.Metadata, evnt.Error);
+                OnServiceError(stream, evnt.Data, evnt.Metadata, evnt.Error, environment);
 
             var successfullEvents = eventsList
                 .Where(x => x.Successful)
@@ -184,7 +182,7 @@ namespace SuperGlue.EventStore.Subscribers
             }
             catch (Exception ex)
             {
-                _log.Error(ex, "Couldn't push events from stream: {0}", stream);
+                environment.Log(ex, "Couldn't push events from stream: {0}", LogLevel.Error, stream);
             }
         }
 
@@ -199,7 +197,7 @@ namespace SuperGlue.EventStore.Subscribers
             request.Stream = stream;
             request.Events = events;
             request.IsCatchUp = catchup;
-            request.OnException = (exception, evnt) => OnServiceError(stream, evnt.Data, evnt.Metadata, exception);
+            request.OnException = (exception, evnt) => OnServiceError(stream, evnt.Data, evnt.Metadata, exception, environment);
 
             await chain(requestEnvironment);
         }

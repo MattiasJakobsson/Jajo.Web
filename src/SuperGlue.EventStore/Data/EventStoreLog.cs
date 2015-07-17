@@ -1,46 +1,46 @@
 using System;
+using System.Collections.Generic;
 using EventStore.ClientAPI;
-using SuperGlue.Logging;
 
 namespace SuperGlue.EventStore.Data
 {
     public class EventStoreLog : ILogger
     {
-        private readonly ILog _log;
+        private readonly IDictionary<string, object> _environment;
 
-        public EventStoreLog(ILog log)
+        public EventStoreLog(IDictionary<string, object> environment)
         {
-            _log = log;
+            _environment = environment;
         }
 
         public void Error(string format, params object[] args)
         {
-            _log.Error(format, args);
+            _environment.Log(format, LogLevel.Error, args);
         }
 
         public void Error(Exception ex, string format, params object[] args)
         {
-            _log.Error(ex, format, args);
+            _environment.Log(ex, format, LogLevel.Error, args);
         }
 
         public void Info(string format, params object[] args)
         {
-            _log.Info(format, args);
+            _environment.Log(format, LogLevel.Info, args);
         }
 
         public void Info(Exception ex, string format, params object[] args)
         {
-            _log.Info(ex, format, args);
+            _environment.Log(ex, format, LogLevel.Info, args);
         }
 
         public void Debug(string format, params object[] args)
         {
-            _log.Debug(format, args);
+            _environment.Log(format, LogLevel.Debug, args);
         }
 
         public void Debug(Exception ex, string format, params object[] args)
         {
-            _log.Debug(ex, format, args);
+            _environment.Log(ex, format, LogLevel.Debug, args);
         }
     }
 }
