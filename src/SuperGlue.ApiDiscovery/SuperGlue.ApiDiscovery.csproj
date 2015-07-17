@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml.Linq" />
@@ -61,6 +62,7 @@
     <Compile Include="DefaultApiRegistry.cs" />
     <Compile Include="DefaultApiRequestExecutor.cs" />
     <Compile Include="IApiQuery.cs" />
+    <Compile Include="RegistrationConnectionString.cs" />
     <Compile Include="UriTemplate.cs" />
     <Compile Include="IApiForm.cs" />
     <Compile Include="IApiLink.cs" />

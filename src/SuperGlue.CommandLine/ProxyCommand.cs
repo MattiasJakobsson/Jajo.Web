@@ -215,6 +215,7 @@ namespace SuperGlue
                     fileBuilder.Append("\t\t\tproxy_set_header X-Real-IP $remote_addr;\n");
                     fileBuilder.AppendFormat("\t\t\tproxy_cookie_domain {0} $host;\n", defaultBinding);
                     fileBuilder.Append("\t\t\tproxy_http_version 1.1;\n");
+                    fileBuilder.Append("\t\t\tproxy_connect_timeout 10s;\n");
                     fileBuilder.Append("\t\t}\n\n");
                 }
 

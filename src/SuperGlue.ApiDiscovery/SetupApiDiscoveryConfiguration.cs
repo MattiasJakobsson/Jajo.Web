@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
@@ -15,6 +16,15 @@ namespace SuperGlue.ApiDiscovery
                 environment.RegisterAll(typeof(IParseApiResponse));
                 environment.RegisterTransient(typeof(IExecuteApiRequests), typeof(DefaultApiRequestExecutor));
                 environment.RegisterTransient(typeof(IApiRegistry), typeof(DefaultApiRegistry));
+
+                var registrationApi = ConfigurationManager.ConnectionStrings["Api.Register"].ConnectionString;
+
+                if (!string.IsNullOrEmpty(registrationApi))
+                {
+                    var connectionString = new RegistrationConnectionString(registrationApi);
+
+                    environment.AlterSettings<ApiDiscoverySettings>(x => x.RegisterAt(new ApiDefinition(connectionString.Name, connectionString.Location, connectionString.Accepts)));
+                }
 
                 environment.SubscribeTo(ConfigurationEvents.AfterApplicationStart, async x =>
                 {
