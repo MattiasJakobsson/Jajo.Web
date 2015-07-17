@@ -31,6 +31,8 @@ namespace SuperGlue
 
             var process = Restart(nginxExecutable, null);
 
+            Console.WriteLine("Nginx proxy started at: {0}", AppPath);
+
             var key = Console.ReadKey();
             while (key.Key != ConsoleKey.Q)
             {
@@ -38,7 +40,7 @@ namespace SuperGlue
                     continue;
 
                 Console.WriteLine();
-                Console.WriteLine();
+                Console.WriteLine("Reloading nginx proxy at: {0}", AppPath);
 
                 process = Restart(nginxExecutable, process);
 
@@ -87,6 +89,7 @@ namespace SuperGlue
             process.OutputDataReceived += (x, y) => Console.WriteLine(y.Data);
 
             process.Exited += (x, y) => StartProcess(process);
+            process.ErrorDataReceived += (x, y) => Console.WriteLine("Proxy error: {0}", y.Data);
 
             StartProcess(process);
 
@@ -99,6 +102,7 @@ namespace SuperGlue
                 return;
 
             process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
         }
 
         private static void KillProcessAndChildren(int pid)
@@ -207,6 +211,10 @@ namespace SuperGlue
 
                     fileBuilder.AppendFormat("\t\tlocation {0} {{\n", basePath);
                     fileBuilder.AppendFormat("\t\t\tproxy_pass {0};\n", defaultBinding);
+                    fileBuilder.Append("\t\t\tproxy_set_header Host $host;\n");
+                    fileBuilder.Append("\t\t\tproxy_set_header X-Real-IP $remote_addr;\n");
+                    fileBuilder.AppendFormat("\t\t\tproxy_cookie_domain {0} $host;\n", defaultBinding);
+                    fileBuilder.Append("\t\t\tproxy_http_version 1.1\n");
                     fileBuilder.Append("\t\t}\n\n");
                 }
 

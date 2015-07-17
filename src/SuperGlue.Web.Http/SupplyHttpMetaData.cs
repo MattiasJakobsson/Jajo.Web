@@ -14,9 +14,11 @@ namespace SuperGlue.Web.Http
 
         public Task<IDictionary<string, object>> GetMetaData(IDictionary<string, object> environment)
         {
+            var realIp = environment.GetRequest().Headers.GetHeader("X-Real-IP");
+
             return Task.FromResult<IDictionary<string, object>>(new Dictionary<string, object>
             {
-                {HttpMetaDataKeys.IpAddress, environment.GetRequest().RemoteIpAddress},
+                {HttpMetaDataKeys.IpAddress, string.IsNullOrEmpty(realIp) ? environment.GetRequest().RemoteIpAddress : realIp},
                 {HttpMetaDataKeys.Culture, Thread.CurrentThread.CurrentCulture.Name}
             });
         }
