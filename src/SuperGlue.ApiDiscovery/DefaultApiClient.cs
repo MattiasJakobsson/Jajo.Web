@@ -6,7 +6,7 @@ namespace SuperGlue.ApiDiscovery
 {
     public interface IExecuteApiRequests
     {
-        Task<IApiResource> ExecuteQuery(ApiDefinition definition, IEnumerable<IApiLinkTravelInstruction> instructions, IDictionary<string, object> data);
-        Task<IHttpResponse> ExecuteForm(IApiResource resource, IFormTravelInstruction travelInstruction, IDictionary<string, object> data);
+        Task<ApiResource> ExecuteQuery(ApiDefinition definition, IEnumerable<IApiLinkTravelInstruction> instructions, IDictionary<string, object> data);
+        Task<IHttpResponse> ExecuteForm(ApiResource resource, IFormTravelInstruction travelInstruction, IDictionary<string, object> data);
     }
 }

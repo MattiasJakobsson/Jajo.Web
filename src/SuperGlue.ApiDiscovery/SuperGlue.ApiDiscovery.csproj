@@ -64,11 +64,8 @@
     <Compile Include="IApiQuery.cs" />
     <Compile Include="RegistrationConnectionString.cs" />
     <Compile Include="UriTemplate.cs" />
-    <Compile Include="IApiForm.cs" />
-    <Compile Include="IApiLink.cs" />
     <Compile Include="IApiLinkTravelInstruction.cs" />
     <Compile Include="IApiRegistry.cs" />
-    <Compile Include="IApiResource.cs" />
     <Compile Include="IApiResponse.cs" />
     <Compile Include="IApiSource.cs" />
     <Compile Include="IFormTravelInstruction.cs" />

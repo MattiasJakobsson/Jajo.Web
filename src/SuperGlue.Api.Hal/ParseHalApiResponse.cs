@@ -15,39 +15,39 @@ namespace SuperGlue.Api.Hal
             get { return "application/hal+json"; }
         }
 
-        public async Task<IApiResource> Parse(IHttpResponse response)
+        public async Task<ApiResource> Parse(IHttpResponse response, ApiDefinition definition)
         {
             var obj = JObject.Parse(await response.ReadRawBody());
-            var resource = ParseRootResourceObject(obj);
+            var resource = ParseRootResourceObject(obj, definition);
 
             return resource;
         }
 
-        private static ApiResource ParseRootResourceObject(JObject outer)
+        private static ApiResource ParseRootResourceObject(JObject outer, ApiDefinition definition)
         {
-            var links = new List<IApiLink>();
-            var embedded = new List<IApiResource>();
+            var links = new List<ApiLink>();
+            var embedded = new List<ApiResource>();
             var state = new ExpandoObject();
-            var forms = new List<IApiForm>();
+            var forms = new List<ApiForm>();
 
-            ParseResourceObject(outer, links, forms, embedded, state);
+            ParseResourceObject(outer, links, forms, embedded, state, definition);
 
-            return new ApiResource("root", state, forms, embedded, links);
+            return new ApiResource("root", state, forms, embedded, links, definition);
         }
 
-        private static ApiResource ParseEmbeddedResourceObject(JObject outer, string rel)
+        private static ApiResource ParseEmbeddedResourceObject(JObject outer, string rel, ApiDefinition definition)
         {
-            var links = new List<IApiLink>();
-            var embedded = new List<IApiResource>();
+            var links = new List<ApiLink>();
+            var embedded = new List<ApiResource>();
             var state = new ExpandoObject();
-            var forms = new List<IApiForm>();
+            var forms = new List<ApiForm>();
 
-            ParseResourceObject(outer, links, forms, embedded, state);
+            ParseResourceObject(outer, links, forms, embedded, state, definition);
 
-            return new ApiResource(rel, state, forms, embedded, links);
+            return new ApiResource(rel, state, forms, embedded, links, definition);
         }
 
-        private static ApiForm ParseFormsResourceObject(JObject outer, string name)
+        private static ApiForm ParseFormsResourceObject(JObject outer, string name, ApiDefinition definition)
         {
             var form = new ApiForm { Name = name };
 
@@ -87,7 +87,7 @@ namespace SuperGlue.Api.Hal
             return form;
         }
 
-        private static void ParseResourceObject(JObject outer, List<IApiLink> links, List<IApiForm> forms, List<IApiResource> embedded, IDictionary<string, object> state)
+        private static void ParseResourceObject(JObject outer, List<ApiLink> links, List<ApiForm> forms, List<ApiResource> embedded, IDictionary<string, object> state, ApiDefinition definition)
         {
             foreach (var inner in outer.Properties())
             {
@@ -98,13 +98,13 @@ namespace SuperGlue.Api.Hal
                     switch (inner.Name)
                     {
                         case "_links":
-                            links.AddRange(ParseObjectOrArrayOfObjects(value, ParseLinkObject));
+                            links.AddRange(ParseObjectOrArrayOfObjects(value, definition, ParseLinkObject));
                             break;
                         case "_embedded":
-                            embedded.AddRange(ParseObjectOrArrayOfObjects(value, ParseEmbeddedResourceObject));
+                            embedded.AddRange(ParseObjectOrArrayOfObjects(value, definition, ParseEmbeddedResourceObject));
                             break;
                         case "_forms":
-                            forms.AddRange(ParseObjectOrArrayOfObjects(value, ParseFormsResourceObject));
+                            forms.AddRange(ParseObjectOrArrayOfObjects(value, definition, ParseFormsResourceObject));
                             break;
                         default:
                             state[inner.Name] = value.Value<dynamic>();
@@ -131,7 +131,7 @@ namespace SuperGlue.Api.Hal
             }
         }
 
-        private static ApiLink ParseLinkObject(JObject outer, string rel)
+        private static ApiLink ParseLinkObject(JObject outer, string rel, ApiDefinition definition)
         {
             var link = new ApiLink { Rel = rel };
 
@@ -171,7 +171,7 @@ namespace SuperGlue.Api.Hal
             return link;
         }
 
-        private static IEnumerable<T> ParseObjectOrArrayOfObjects<T>(JObject outer, Func<JObject, string, T> factory)
+        private static IEnumerable<T> ParseObjectOrArrayOfObjects<T>(JObject outer, ApiDefinition definition, Func<JObject, string, ApiDefinition, T> factory)
         {
             foreach (var inner in outer.Properties())
             {
@@ -179,9 +179,9 @@ namespace SuperGlue.Api.Hal
 
                 if (inner.Value.Type == JTokenType.Array)
                     foreach (var child in inner.Value.Children<JObject>())
-                        yield return factory(child, rel);
+                        yield return factory(child, rel, definition);
                 else
-                    yield return factory((JObject)inner.Value, rel);
+                    yield return factory((JObject)inner.Value, rel, definition);
             }
         }
 

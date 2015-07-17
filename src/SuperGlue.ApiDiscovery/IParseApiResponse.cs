@@ -6,6 +6,6 @@ namespace SuperGlue.ApiDiscovery
     public interface IParseApiResponse
     {
         string ContentType { get; }
-        Task<IApiResource> Parse(IHttpResponse response);
+        Task<ApiResource> Parse(IHttpResponse response, ApiDefinition definition);
     }
 }

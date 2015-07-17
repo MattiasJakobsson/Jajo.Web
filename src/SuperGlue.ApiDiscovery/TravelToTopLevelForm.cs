@@ -9,7 +9,7 @@ namespace SuperGlue.ApiDiscovery
             _name = name;
         }
 
-        public IApiForm TravelTo(IApiResource resource)
+        public ApiForm TravelTo(ApiResource resource)
         {
             return !resource.Forms.ContainsKey(_name) ? null : resource.Forms[_name];
         }

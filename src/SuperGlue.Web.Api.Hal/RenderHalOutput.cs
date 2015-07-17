@@ -54,7 +54,7 @@ namespace SuperGlue.Web.Api.Hal
             return response;
         }
 
-        private static IDictionary<string, object> BuildLinks(IEnumerable<IApiLink> apiLinks)
+        private static IDictionary<string, object> BuildLinks(IEnumerable<ApiLink> apiLinks)
         {
             var links = new Dictionary<string, object>();
 
@@ -80,7 +80,7 @@ namespace SuperGlue.Web.Api.Hal
             return links;
         }
 
-        private static IDictionary<string, object> BuildForms(IEnumerable<IApiForm> apiForms)
+        private static IDictionary<string, object> BuildForms(IEnumerable<ApiForm> apiForms)
         {
             var forms = new Dictionary<string, object>();
 

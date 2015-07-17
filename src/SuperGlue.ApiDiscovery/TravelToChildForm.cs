@@ -14,7 +14,7 @@ namespace SuperGlue.ApiDiscovery
             _childSelectors = childSelectors;
         }
 
-        public IApiForm TravelTo(IApiResource resource)
+        public ApiForm TravelTo(ApiResource resource)
         {
             var currentResource = resource;
 

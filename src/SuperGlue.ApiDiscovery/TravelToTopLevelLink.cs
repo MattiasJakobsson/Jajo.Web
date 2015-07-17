@@ -11,7 +11,7 @@ namespace SuperGlue.ApiDiscovery
             _rel = rel;
         }
 
-        public IApiLink TravelTo(IApiResource resource)
+        public ApiLink TravelTo(ApiResource resource)
         {
             return resource.Links.FirstOrDefault(x => x.Rel == _rel);
         }

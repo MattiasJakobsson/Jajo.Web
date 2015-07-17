@@ -2,6 +2,6 @@
 {
     public interface IApiLinkTravelInstruction
     {
-        IApiLink TravelTo(IApiResource resource);
+        ApiLink TravelTo(ApiResource resource);
     }
 }

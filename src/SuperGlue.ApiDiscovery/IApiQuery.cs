@@ -7,7 +7,7 @@ namespace SuperGlue.ApiDiscovery
     public interface IApiQuery
     {
         IApiQuery TravelTo(IApiLinkTravelInstruction travelInstruction);
-        Task<IApiResource> Query(IDictionary<string, object> data);
+        Task<ApiResource> Query(IDictionary<string, object> data);
         Task<IHttpResponse> ExecuteForm(IFormTravelInstruction travelToForm, IDictionary<string, object> data);
     }
 }

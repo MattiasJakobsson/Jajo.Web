@@ -4,8 +4,8 @@ namespace SuperGlue.ApiDiscovery
 {
     public interface IApiResponse
     {
-        IEnumerable<IApiLink> GetLinks();
-        IEnumerable<IApiForm> GetForms();
+        IEnumerable<ApiLink> GetLinks();
+        IEnumerable<ApiForm> GetForms();
         IReadOnlyDictionary<string, IEnumerable<IApiResponse>> GetChildren();
     }
 }

@@ -17,14 +17,14 @@ namespace SuperGlue.ApiDiscovery
             _httpClient = httpClient;
         }
 
-        public async Task<IApiResource> ExecuteQuery(ApiDefinition definition, IEnumerable<IApiLinkTravelInstruction> instructions, IDictionary<string, object> data)
+        public async Task<ApiResource> ExecuteQuery(ApiDefinition definition, IEnumerable<IApiLinkTravelInstruction> instructions, IDictionary<string, object> data)
         {
             var parser = _responseParsers.FirstOrDefault(x => definition.Accepts.Contains(x.ContentType));
 
             if(parser == null)
                 throw new ApiException(string.Format("Can't handle api named: {0}", definition.Name));
 
-            var currentResource = await GetAsync(definition.Location, parser);
+            var currentResource = await GetAsync(definition.Location, parser, definition);
 
             foreach (var instruction in instructions)
             {
@@ -50,15 +50,16 @@ namespace SuperGlue.ApiDiscovery
                         uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri.PathAndQuery);
                 }
 
-                currentResource = await GetAsync(uri, parser);
+                currentResource = await GetAsync(uri, parser, definition);
             }
 
             return currentResource;
         }
 
-        public Task<IHttpResponse> ExecuteForm(IApiResource resource, IFormTravelInstruction travelInstruction, IDictionary<string, object> data)
+        public Task<IHttpResponse> ExecuteForm(ApiResource resource, IFormTravelInstruction travelInstruction, IDictionary<string, object> data)
         {
             var form = travelInstruction.TravelTo(resource);
+            var definition = resource.Definition;
 
             var formData = new Dictionary<string, object>();
 
@@ -87,6 +88,9 @@ namespace SuperGlue.ApiDiscovery
                 }
 
                 uri = new Uri(template.Resolve(), UriKind.RelativeOrAbsolute);
+
+                if (!uri.IsAbsoluteUri)
+                    uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri.PathAndQuery);
             }
 
             var request = _httpClient
@@ -104,14 +108,14 @@ namespace SuperGlue.ApiDiscovery
             return request.Send();
         }
 
-        private async Task<IApiResource> GetAsync(Uri uri, IParseApiResponse parser)
+        private async Task<ApiResource> GetAsync(Uri uri, IParseApiResponse parser, ApiDefinition definition)
         {
             var response = await _httpClient
                 .Start(uri)
                 .ContentType(parser.ContentType)
                 .Send();
 
-            return await parser.Parse(response);
+            return await parser.Parse(response, definition);
         }
     }
 }

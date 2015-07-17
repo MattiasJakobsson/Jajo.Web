@@ -14,7 +14,7 @@ namespace SuperGlue.ApiDiscovery
             _childSelectors = childSelectors;
         }
 
-        public IApiLink TravelTo(IApiResource resource)
+        public ApiLink TravelTo(ApiResource resource)
         {
             var currentResource = resource;
 

@@ -24,7 +24,7 @@ namespace SuperGlue.ApiDiscovery
             return this;
         }
 
-        public async Task<IApiResource> Query(IDictionary<string, object> data)
+        public async Task<ApiResource> Query(IDictionary<string, object> data)
         {
             var definition = await _findDefinition();
 

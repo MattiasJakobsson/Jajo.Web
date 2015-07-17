@@ -2,7 +2,7 @@ using System;
 
 namespace SuperGlue.ApiDiscovery
 {
-    public class ApiLink : IApiLink
+    public class ApiLink
     {
         public string Rel { get; set; }
         public Uri Href { get; set; }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SuperGlue.ApiDiscovery
 {
-    public class ApiForm : IApiForm
+    public class ApiForm
     {
         public string Name { get; set; }
         public Uri Action { get; set; }
