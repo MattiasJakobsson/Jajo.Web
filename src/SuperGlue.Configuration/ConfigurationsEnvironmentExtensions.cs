@@ -90,7 +90,7 @@ namespace SuperGlue.Configuration
                 handlers.Remove(id);
         }
 
-        public static Task Publish(this IDictionary<string, object> environment, string eventName)
+        public static async Task<Exception> Publish(this IDictionary<string, object> environment, string eventName)
         {
             var subsciptions = environment
                 .Get<IDictionary<Guid, Subscription>>(ConfigurationConstants.EventHandlers, new ConcurrentDictionary<Guid, Subscription>())
@@ -100,7 +100,16 @@ namespace SuperGlue.Configuration
 
             var actions = subsciptions.Select(subscription => subscription.Handler(environment));
 
-            return Task.WhenAll(actions);
+            try
+            {
+                await Task.WhenAll(actions);
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return ex;
+            }
         }
 
         private class Subscription

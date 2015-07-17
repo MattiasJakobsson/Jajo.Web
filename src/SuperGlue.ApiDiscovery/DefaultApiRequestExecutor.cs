@@ -45,10 +45,10 @@ namespace SuperGlue.ApiDiscovery
                     }
 
                     uri = new Uri(template.Resolve(), UriKind.RelativeOrAbsolute);
-
-                    if(!uri.IsAbsoluteUri)
-                        uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri.PathAndQuery);
                 }
+
+                if (!uri.IsAbsoluteUri)
+                    uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri);
 
                 currentResource = await GetAsync(uri, parser, definition);
             }
@@ -88,17 +88,17 @@ namespace SuperGlue.ApiDiscovery
                 }
 
                 uri = new Uri(template.Resolve(), UriKind.RelativeOrAbsolute);
-
-                if (!uri.IsAbsoluteUri)
-                    uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri.PathAndQuery);
             }
+
+            if (!uri.IsAbsoluteUri)
+                uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri);
 
             var request = _httpClient
                 .Start(uri)
                 .Method(form.Method)
                 .ModifyHeaders(x =>
                 {
-                    foreach (var header in form.Headers)
+                    foreach (var header in (form.Headers ?? new Dictionary<string, string>()))
                         x.Add(header.Key, header.Value);
                 });
 
