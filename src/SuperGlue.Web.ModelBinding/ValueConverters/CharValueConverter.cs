@@ -5,7 +5,7 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
         protected override char Parse(object value)
         {
             char parsed;
-            char.TryParse(value.ToString(), out parsed);
+            char.TryParse((value ?? "").ToString(), out parsed);
             return parsed;
         }
     }

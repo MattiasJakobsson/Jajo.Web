@@ -5,7 +5,7 @@
         protected override int Parse(object value)
         {
             int parsed;
-            int.TryParse(value.ToString(), out parsed);
+            int.TryParse((value ?? "").ToString(), out parsed);
             return parsed;
         }
     }

@@ -7,7 +7,7 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
         protected override TimeSpan Parse(object value)
         {
             TimeSpan timeSpan;
-            TimeSpan.TryParse(value.ToString(), out timeSpan);
+            TimeSpan.TryParse((value ?? "").ToString(), out timeSpan);
 
             return timeSpan;
         }

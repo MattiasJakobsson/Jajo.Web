@@ -5,7 +5,7 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
         protected override float Parse(object value)
         {
             float parsed;
-            float.TryParse(value.ToString(), out parsed);
+            float.TryParse((value ?? "").ToString(), out parsed);
             return parsed;
         }
     }

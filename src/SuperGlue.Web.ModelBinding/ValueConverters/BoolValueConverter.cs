@@ -6,7 +6,7 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
     {
         protected override bool Parse(object value)
         {
-            var stringValue = value.ToString();
+            var stringValue = (value ?? "").ToString();
 
             if (stringValue.Equals("on", StringComparison.InvariantCultureIgnoreCase))
                 return true;

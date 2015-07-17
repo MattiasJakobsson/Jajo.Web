@@ -11,7 +11,7 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
 
         public object Convert(Type destinationType, object value)
         {
-            return value.ToString();
+            return (value ?? "").ToString();
         }
     }
 }

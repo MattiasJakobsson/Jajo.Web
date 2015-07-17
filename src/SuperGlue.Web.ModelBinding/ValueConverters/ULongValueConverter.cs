@@ -5,7 +5,7 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
         protected override ulong Parse(object value)
         {
             ulong parsed;
-            ulong.TryParse(value.ToString(), out parsed);
+            ulong.TryParse((value ?? "").ToString(), out parsed);
             return parsed;
         }
     }

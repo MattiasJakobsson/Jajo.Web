@@ -7,7 +7,7 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
         protected override DateTime Parse(object value)
         {
             DateTime parsed;
-            DateTime.TryParse(value.ToString(), out parsed);
+            DateTime.TryParse((value ?? "").ToString(), out parsed);
             return parsed;
         }
     }

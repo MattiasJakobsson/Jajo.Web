@@ -5,7 +5,7 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
         protected override ushort Parse(object value)
         {
             ushort parsed;
-            ushort.TryParse(value.ToString(), out parsed);
+            ushort.TryParse((value ?? "").ToString(), out parsed);
             return parsed;
         }
     }
