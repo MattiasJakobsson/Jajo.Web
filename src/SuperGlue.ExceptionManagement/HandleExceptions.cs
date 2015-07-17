@@ -32,7 +32,7 @@ namespace SuperGlue.ExceptionManagement
 
                 var log = environment.Resolve<ILog>();
 
-                log.Error(ex, "Exception while executing chain: {0}", environment.GetCurrentChain());
+                log.Error(ex, "Exception while executing chain: {0}", environment.GetCurrentChain().Name);
             }
         }
     }

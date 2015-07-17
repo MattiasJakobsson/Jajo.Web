@@ -27,7 +27,7 @@ namespace SuperGlue.Diagnostics
                     if (!x.GetSettings<DiagnosticsSettings>().IsKeyAllowed(y))
                         return Task.CompletedTask;
 
-                    var manager = x.Resolve<IManageDiagnosticsInformation>();
+                    var manager = environment.Resolve<IManageDiagnosticsInformation>();
 
                     return manager.AddDiagnostics(y, new DiagnosticsData(z.Item1, z.Item2.ToDictionary(a => a.Key, a => (a.Value as IDiagnosticsValue) ?? new ObjectDiagnosticsValue(a.Value))));
                 });

@@ -23,6 +23,7 @@ namespace SuperGlue.Web.Output
             var response = environment.GetResponse();
 
             response.Headers.ContentType = result.ContentType;
+            response.Headers.ContentLength = result.Body.Length;
 
             await response.Write(result.Body);
         }
