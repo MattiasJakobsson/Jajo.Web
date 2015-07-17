@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
@@ -20,6 +21,8 @@ namespace SuperGlue.ApiDiscovery
 
             if(settings.RegistrationRoot == null)
                 return Task.CompletedTask;
+
+            environment.Log("Going to register services: {0} to {1}", LogLevel.Debug, string.Join(", ", apis.Select(x => x.Location)), settings.RegistrationRoot.Location);
 
             return StartQuery(() => Task.FromResult(settings.RegistrationRoot))
                 .ExecuteForm(new TravelToTopLevelForm("register"), new Dictionary<string, object>

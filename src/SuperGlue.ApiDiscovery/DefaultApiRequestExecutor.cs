@@ -10,11 +10,13 @@ namespace SuperGlue.ApiDiscovery
     {
         private readonly IEnumerable<IParseApiResponse> _responseParsers;
         private readonly IHttpClient _httpClient;
+        private readonly IDictionary<string, object> _environment;
 
-        public DefaultApiRequestExecutor(IEnumerable<IParseApiResponse> responseParsers, IHttpClient httpClient)
+        public DefaultApiRequestExecutor(IEnumerable<IParseApiResponse> responseParsers, IHttpClient httpClient, IDictionary<string, object> environment)
         {
             _responseParsers = responseParsers;
             _httpClient = httpClient;
+            _environment = environment;
         }
 
         public async Task<ApiResource> ExecuteQuery(ApiDefinition definition, IEnumerable<IApiLinkTravelInstruction> instructions, IDictionary<string, object> data)
@@ -25,6 +27,13 @@ namespace SuperGlue.ApiDiscovery
                 throw new ApiException(string.Format("Can't handle api named: {0}", definition.Name));
 
             var currentResource = await GetAsync(definition.Location, parser, definition);
+
+            if (currentResource == null)
+            {
+                _environment.Log("Can't find resource for url: {0}.", LogLevel.Error, definition.Location);
+
+                return null;
+            }
 
             foreach (var instruction in instructions)
             {
@@ -51,12 +60,19 @@ namespace SuperGlue.ApiDiscovery
                     uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri);
 
                 currentResource = await GetAsync(uri, parser, definition);
+
+                if (currentResource == null)
+                {
+                    _environment.Log("Can't find resource for url: {0}.", LogLevel.Error, uri);
+
+                    return null;
+                }
             }
 
             return currentResource;
         }
 
-        public Task<IHttpResponse> ExecuteForm(ApiResource resource, IFormTravelInstruction travelInstruction, IDictionary<string, object> data)
+        public async Task<IHttpResponse> ExecuteForm(ApiResource resource, IFormTravelInstruction travelInstruction, IDictionary<string, object> data)
         {
             var form = travelInstruction.TravelTo(resource);
             var definition = resource.Definition;
@@ -105,7 +121,12 @@ namespace SuperGlue.ApiDiscovery
             request = formData
                 .Aggregate(request, (current, item) => current.Parameter(item.Key, item.Value));
 
-            return request.Send();
+            var response = await request.Send();
+
+            if (!response.IsSuccessStatusCode)
+                _environment.Log("Execution of form at: {0} returned status code: {1}.", LogLevel.Error, uri, response.StatusCode);
+
+            return response;
         }
 
         private async Task<ApiResource> GetAsync(Uri uri, IParseApiResponse parser, ApiDefinition definition)
@@ -114,6 +135,11 @@ namespace SuperGlue.ApiDiscovery
                 .Start(uri)
                 .ContentType(parser.ContentType)
                 .Send();
+
+            _environment.Log("Api request to url: {0} finished with status code: {1}.", LogLevel.Debug, uri, response.StatusCode);
+
+            if (!response.IsSuccessStatusCode)
+                return null;
 
             return await parser.Parse(response, definition);
         }
