@@ -890,6 +890,7 @@ namespace SuperGlue.Web
 
             public virtual Task Write(byte[] data, int offset, int count, CancellationToken token)
             {
+                Headers.ContentLength += count;
                 return Body.WriteAsync(data, offset, count, token);
             }
 
