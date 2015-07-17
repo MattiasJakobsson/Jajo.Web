@@ -89,6 +89,7 @@
     <Compile Include="BindingSources\RouteParametersBindingSource.cs" />
     <Compile Include="PropertyBinders\SimpleTypePropertyBinder.cs" />
     <Compile Include="ValueConverters\TimeSpanValueConverter.cs" />
+    <Compile Include="ValueConverters\UriValueConverter.cs" />
     <Compile Include="ValueConverters\ValueConverterCollection.cs" />
     <Compile Include="ValueConverters\BoolValueConverter.cs" />
     <Compile Include="ValueConverters\ByteValueConverter.cs" />
