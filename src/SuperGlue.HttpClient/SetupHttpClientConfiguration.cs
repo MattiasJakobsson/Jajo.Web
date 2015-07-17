@@ -11,6 +11,7 @@ namespace SuperGlue.HttpClient
             yield return new ConfigurationSetupResult("superglue.HttpClientSetup", environment =>
             {
                 environment.RegisterTransient(typeof(IHttpClient), typeof(DefaultHttpClient));
+                environment.RegisterAll(typeof(IParseContentType));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

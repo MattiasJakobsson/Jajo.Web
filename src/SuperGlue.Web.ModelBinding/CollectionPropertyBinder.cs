@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using SuperGlue.Web.ModelBinding.PropertyBinders;
@@ -62,7 +61,7 @@ namespace SuperGlue.Web.ModelBinding
 
             propertyInfo.SetValue(instance, collection, null);
 
-            return ((IEnumerable)collection).OfType<object>().Any();
+            return true;
         }
     }
 }

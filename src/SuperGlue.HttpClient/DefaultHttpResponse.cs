@@ -1,18 +1,21 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace SuperGlue.HttpClient
 {
     public class DefaultHttpResponse : IHttpResponse
     {
         private readonly HttpResponseMessage _httpResponseMessage;
+        private readonly IEnumerable<IParseContentType> _contentTypeParsers;
 
-        public DefaultHttpResponse(HttpResponseMessage httpResponseMessage)
+        public DefaultHttpResponse(HttpResponseMessage httpResponseMessage, IEnumerable<IParseContentType> contentTypeParsers)
         {
             _httpResponseMessage = httpResponseMessage;
+            _contentTypeParsers = contentTypeParsers;
         }
 
         public Task<string> ReadRawBody()
@@ -22,7 +25,9 @@ namespace SuperGlue.HttpClient
 
         public async Task<T> ReadBodyAs<T>()
         {
-            return JsonConvert.DeserializeObject<T>(await ReadRawBody());
+            var parser = _contentTypeParsers.FirstOrDefault(x => x.Matches(_httpResponseMessage.Content.Headers.ContentType.MediaType));
+
+            return parser != null ? parser.ParseResponse<T>(await ReadRawBody()) : default(T);
         }
 
         public HttpResponseHeaders Headers

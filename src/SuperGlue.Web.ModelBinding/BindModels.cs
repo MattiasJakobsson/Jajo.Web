@@ -26,7 +26,7 @@ namespace SuperGlue.Web.ModelBinding
             {
                 var result = await modelBinderCollection.Bind(x, new BindingContext(modelBinderCollection, environment));
 
-                return result.Success ? result.Instance : null;
+                return result.Instance;
             });
 
             await _next(environment);

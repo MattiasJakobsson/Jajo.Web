@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net.Cache;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -16,14 +18,17 @@ namespace SuperGlue.HttpClient
         });
 
         private readonly Uri _url;
+        private readonly IEnumerable<IParseContentType> _contentTypeParsers;
         private string _method = "GET";
+        private string _contentType = "application/x-www-form-urlencoded";
         private bool _shouldThrow;
-        private readonly IDictionary<string, string> _parameters = new Dictionary<string, string>();
+        private readonly IDictionary<string, object> _parameters = new Dictionary<string, object>();
         private readonly ICollection<Action<HttpRequestHeaders>> _headerModifiers = new List<Action<HttpRequestHeaders>>();
 
-        public DefaultHttpRequest(Uri url)
+        public DefaultHttpRequest(Uri url, IEnumerable<IParseContentType> contentTypeParsers)
         {
             _url = url;
+            _contentTypeParsers = contentTypeParsers;
         }
 
         public IHttpRequest ModifyHeaders(Action<HttpRequestHeaders> modifier)
@@ -40,7 +45,7 @@ namespace SuperGlue.HttpClient
 
         public IHttpRequest ContentType(string contentType)
         {
-            HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(contentType));
+            _contentType = contentType;
             return this;
         }
 
@@ -64,15 +69,21 @@ namespace SuperGlue.HttpClient
             foreach (var modifier in _headerModifiers)
                 modifier(requestMessage.Headers);
 
+            requestMessage.Headers.Add("Content-Type", _contentType);
+
             if (!requestMessage.Method.Method.Equals("GET", StringComparison.OrdinalIgnoreCase) && !requestMessage.Method.Method.Equals("DELETE", StringComparison.OrdinalIgnoreCase))
-                requestMessage.Content = new FormUrlEncodedContent(_parameters);
+            {
+                var parser = _contentTypeParsers.FirstOrDefault(x => x.Matches(_contentType));
+
+                requestMessage.Content = parser != null ? parser.GetContent(new ReadOnlyDictionary<string, object>(_parameters)) : new FormUrlEncodedContent(_parameters.ToDictionary(x => x.Key, x => (x.Value ?? "").ToString()));
+            }
 
             var response = await HttpClient.SendAsync(requestMessage);
 
             if (_shouldThrow)
                 response.EnsureSuccessStatusCode();
 
-            return new DefaultHttpResponse(response);
+            return new DefaultHttpResponse(response, _contentTypeParsers);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using SuperGlue.HttpClient;
 
@@ -118,6 +119,9 @@ namespace SuperGlue.ApiDiscovery
                         x.Add(header.Key, header.Value);
                 });
 
+            if (!string.IsNullOrEmpty(form.Type))
+                request = request.ContentType(form.Type);
+
             request = formData
                 .Aggregate(request, (current, item) => current.Parameter(item.Key, item.Value));
 
@@ -133,7 +137,7 @@ namespace SuperGlue.ApiDiscovery
         {
             var response = await _httpClient
                 .Start(uri)
-                .ContentType(parser.ContentType)
+                .ModifyHeaders(x => x.Accept.Add(new MediaTypeWithQualityHeaderValue(parser.ContentType)))
                 .Send();
 
             _environment.Log("Api request to url: {0} finished with status code: {1}.", LogLevel.Debug, uri, response.StatusCode);
