@@ -102,14 +102,18 @@ namespace SuperGlue
             var command = new ProxyCommand();
 
             parser
-                .Setup<string>('p', "path")
+                .Setup<string>('a', "applicationpath")
                 .Callback(x => command.AppPath = Path.IsPathRooted(x) ? x : Path.Combine(Environment.CurrentDirectory, x))
                 .SetDefault(Environment.CurrentDirectory);
 
             parser
-                .Setup<string>('b', "bindings")
-                .Callback(x => command.Bindings = x.Split(';'))
-                .SetDefault("http://localhost:8800");
+                .Setup<string>('p', "ports")
+                .Callback(x => command.Ports = x.Split(';').Select(int.Parse))
+                .SetDefault("8800");
+
+            parser
+                .Setup<string>('n', "name")
+                .Callback(x => command.Name = x);
 
             parser.Parse(args);
 
