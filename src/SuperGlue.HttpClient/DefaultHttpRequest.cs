@@ -69,8 +69,6 @@ namespace SuperGlue.HttpClient
             foreach (var modifier in _headerModifiers)
                 modifier(requestMessage.Headers);
 
-            requestMessage.Headers.Add("Content-Type", _contentType);
-
             if (!requestMessage.Method.Method.Equals("GET", StringComparison.OrdinalIgnoreCase) && !requestMessage.Method.Method.Equals("DELETE", StringComparison.OrdinalIgnoreCase))
             {
                 var parser = _contentTypeParsers.FirstOrDefault(x => x.Matches(_contentType));

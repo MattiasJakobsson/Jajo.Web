@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using Newtonsoft.Json;
 
 namespace SuperGlue.HttpClient
@@ -13,7 +14,9 @@ namespace SuperGlue.HttpClient
 
         public HttpContent GetContent(IReadOnlyDictionary<string, object> parameters)
         {
-            return new StringContent(JsonConvert.SerializeObject(parameters));
+            var content = new StringContent(JsonConvert.SerializeObject(parameters));
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            return content;
         }
 
         public T ParseResponse<T>(string body)
