@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Net.Cache;
-using System.Net.Http;
 
 namespace SuperGlue.HttpClient
 {
