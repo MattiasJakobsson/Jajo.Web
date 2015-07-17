@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.ApiDiscovery;
@@ -20,7 +21,7 @@ namespace SuperGlue.Web.ApiDiscovery
         {
             var accepts = _outputRenderers.Select(x => x.Type).ToList();
 
-            var result = _apiEndpoints.Select(input => new ApiDefinition(input.GetName(environment), environment.RouteTo(input), accepts)).ToList();
+            var result = _apiEndpoints.Select(input => new ApiDefinition(input.GetName(environment), new Uri(environment.RouteTo(input), UriKind.RelativeOrAbsolute), accepts)).ToList();
 
             return Task.FromResult<IEnumerable<ApiDefinition>>(result);
         }

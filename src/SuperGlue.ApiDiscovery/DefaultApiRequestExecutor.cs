@@ -24,7 +24,7 @@ namespace SuperGlue.ApiDiscovery
             if(parser == null)
                 throw new ApiException(string.Format("Can't handle api named: {0}", definition.Name));
 
-            var currentResource = await GetAsync(new Uri(definition.Location, UriKind.RelativeOrAbsolute), parser);
+            var currentResource = await GetAsync(definition.Location, parser);
 
             foreach (var instruction in instructions)
             {
@@ -45,6 +45,9 @@ namespace SuperGlue.ApiDiscovery
                     }
 
                     uri = new Uri(template.Resolve(), UriKind.RelativeOrAbsolute);
+
+                    if(!uri.IsAbsoluteUri)
+                        uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri.PathAndQuery);
                 }
 
                 currentResource = await GetAsync(uri, parser);

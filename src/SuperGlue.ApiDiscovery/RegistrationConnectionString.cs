@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +17,7 @@ namespace SuperGlue.ApiDiscovery
         }
 
         public string Name { get { return GetOption("name", "registration"); } }
-        public string Location { get { return GetOption("location"); } }
+        public Uri Location { get { return new Uri(GetOption("location")); } }
         public IEnumerable<string> Accepts { get { return GetOption("accepts").Split(','); } }
 
         private string GetOption(string key, string defaultValue = "")
