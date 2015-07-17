@@ -17,7 +17,7 @@ namespace SuperGlue.ApiDiscovery
 
         public string Name { get { return GetOption("name", "registration"); } }
         public string Location { get { return GetOption("location"); } }
-        public IEnumerable<string> Accepts { get { return GetOption("accepts").Split(';'); } }
+        public IEnumerable<string> Accepts { get { return GetOption("accepts").Split(','); } }
 
         private string GetOption(string key, string defaultValue = "")
         {

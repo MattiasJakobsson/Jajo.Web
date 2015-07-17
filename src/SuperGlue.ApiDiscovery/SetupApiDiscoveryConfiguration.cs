@@ -17,11 +17,11 @@ namespace SuperGlue.ApiDiscovery
                 environment.RegisterTransient(typeof(IExecuteApiRequests), typeof(DefaultApiRequestExecutor));
                 environment.RegisterTransient(typeof(IApiRegistry), typeof(DefaultApiRegistry));
 
-                var registrationApi = ConfigurationManager.ConnectionStrings["Api.Register"].ConnectionString;
+                var registrationApi = ConfigurationManager.ConnectionStrings["Api.Register"];
 
-                if (!string.IsNullOrEmpty(registrationApi))
+                if (registrationApi != null && !string.IsNullOrEmpty(registrationApi.ConnectionString))
                 {
-                    var connectionString = new RegistrationConnectionString(registrationApi);
+                    var connectionString = new RegistrationConnectionString(registrationApi.ConnectionString);
 
                     environment.AlterSettings<ApiDiscoverySettings>(x => x.RegisterAt(new ApiDefinition(connectionString.Name, connectionString.Location, connectionString.Accepts)));
                 }
