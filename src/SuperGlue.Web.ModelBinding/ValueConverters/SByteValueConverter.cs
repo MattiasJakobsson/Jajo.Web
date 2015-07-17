@@ -2,10 +2,10 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public class SByteValueConverter : ParseValueConverter<sbyte>
     {
-        protected override sbyte Parse(object value)
+        protected override sbyte Parse(string stringValue, out bool success)
         {
             sbyte parsed;
-            sbyte.TryParse((value ?? "").ToString(), out parsed);
+            success = sbyte.TryParse(stringValue, out parsed);
             return parsed;
         }
     }

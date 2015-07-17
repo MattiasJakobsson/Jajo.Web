@@ -19,7 +19,7 @@ namespace SuperGlue.Web.ModelBinding
             return type.GetConstructors().Count(x => x.GetParameters().Length == 0) == 1;
         }
 
-        public async Task<object> Bind(Type type, IBindingContext bindingContext)
+        public async Task<BindingResult> Bind(Type type, IBindingContext bindingContext)
         {
             var instance = Activator.CreateInstance(type);
 
@@ -31,9 +31,9 @@ namespace SuperGlue.Web.ModelBinding
                 .Select(property => property.Binders.Bind(instance, property.PropertyInfo, bindingContext))
                 .ToList();
 
-            await Task.WhenAll(binderTasks);
+            var success = (await Task.WhenAll(binderTasks)).Any(x => x);
 
-            return instance;
+            return new BindingResult(instance, success);
         }
     }
 }

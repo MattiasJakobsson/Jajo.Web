@@ -31,14 +31,14 @@ namespace SuperGlue.Web.ModelBinding
             return GetEnumerator();
         }
 
-        public async Task<object> Bind(Type type, IBindingContext bindingContext)
+        public async Task<BindingResult> Bind(Type type, IBindingContext bindingContext)
         {
             if(_valueConverterCollection.CanConvert(type))
                 return _valueConverterCollection.Convert(type, await _bindingSourceCollection.Get(bindingContext.GetPrefix(), bindingContext.Environment));
 
             var binder = GetMatchingBinders(type).FirstOrDefault();
 
-            return binder == null ? null : await binder.Bind(type, bindingContext);
+            return binder == null ? new BindingResult(null, false) : await binder.Bind(type, bindingContext);
         }
 
         private IEnumerable<IModelBinder> GetMatchingBinders(Type type)

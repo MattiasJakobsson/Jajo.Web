@@ -22,11 +22,12 @@ namespace SuperGlue.Web.ModelBinding.PropertyBinders
         {
             using (bindingContext.OpenChildContext(string.Format("{0}_", propertyInfo.Name)))
             {
-                var obj = await bindingContext.Bind(propertyInfo.PropertyType);
-                if (obj == null)
+                var result = await bindingContext.Bind(propertyInfo.PropertyType);
+
+                if (!result.Success)
                     return false;
 
-                propertyInfo.SetValue(instance, obj, new object[0]);
+                propertyInfo.SetValue(instance, result.Instance, new object[0]);
 
                 return true;
             }

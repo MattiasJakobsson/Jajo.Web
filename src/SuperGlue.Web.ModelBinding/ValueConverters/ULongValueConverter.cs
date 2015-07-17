@@ -2,10 +2,10 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public class ULongValueConverter : ParseValueConverter<ulong>
     {
-        protected override ulong Parse(object value)
+        protected override ulong Parse(string stringValue, out bool success)
         {
             ulong parsed;
-            ulong.TryParse((value ?? "").ToString(), out parsed);
+            success = ulong.TryParse(stringValue, out parsed);
             return parsed;
         }
     }

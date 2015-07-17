@@ -4,11 +4,10 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public class TimeSpanValueConverter : ParseValueConverter<TimeSpan>
     {
-        protected override TimeSpan Parse(object value)
+        protected override TimeSpan Parse(string stringValue, out bool success)
         {
             TimeSpan timeSpan;
-            TimeSpan.TryParse((value ?? "").ToString(), out timeSpan);
-
+            success = TimeSpan.TryParse(stringValue, out timeSpan);
             return timeSpan;
         }
     }

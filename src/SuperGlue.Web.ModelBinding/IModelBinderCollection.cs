@@ -6,6 +6,6 @@ namespace SuperGlue.Web.ModelBinding
 {
     public interface IModelBinderCollection : IEnumerable<IModelBinder>
     {
-        Task<object> Bind(Type type, IBindingContext bindingContext);
+        Task<BindingResult> Bind(Type type, IBindingContext bindingContext);
     }
 }

@@ -2,10 +2,10 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public class DoubleValueConverter : ParseValueConverter<double>
     {
-        protected override double Parse(object value)
+        protected override double Parse(string stringValue, out bool success)
         {
             double parsed;
-            double.TryParse((value ?? "").ToString(), out parsed);
+            success = double.TryParse(stringValue, out parsed);
             return parsed;
         }
     }

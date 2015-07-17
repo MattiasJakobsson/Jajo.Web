@@ -9,9 +9,16 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
             return destinationType == typeof (Uri);
         }
 
-        public object Convert(Type destinationType, object value)
+        public BindingResult Convert(Type destinationType, object value)
         {
-            return new Uri((value ?? "").ToString(), UriKind.RelativeOrAbsolute);
+            if(value == null)
+                return new BindingResult(null, false);
+
+            Uri result;
+            var success = Uri.TryCreate(value.ToString(), UriKind.RelativeOrAbsolute, out result);
+
+            return new BindingResult(result, success);
+            
         }
     }
 }

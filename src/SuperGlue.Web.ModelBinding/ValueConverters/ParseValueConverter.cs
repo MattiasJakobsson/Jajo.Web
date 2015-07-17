@@ -9,16 +9,20 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
             return destinationType == typeof (T);
         }
 
-        public virtual object Convert(Type destinationType, object value)
+        public virtual BindingResult Convert(Type destinationType, object value)
         {
-            if (value == null) return null;
+            if (value == null) 
+                return new BindingResult(null, false);
 
             if (value is T)
-                return (T) value;
+                return new BindingResult((T)value, true);
 
-            return Parse(value);
+            bool success;
+            var result = Parse(value.ToString(), out success);
+
+            return new BindingResult(success ? result : default(T), success);
         }
 
-        protected abstract T Parse(object value);
+        protected abstract T Parse(string stringValue, out bool success);
     }
 }

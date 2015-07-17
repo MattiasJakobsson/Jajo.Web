@@ -9,9 +9,9 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
             return destinationType == typeof (string);
         }
 
-        public object Convert(Type destinationType, object value)
+        public BindingResult Convert(Type destinationType, object value)
         {
-            return (value ?? "").ToString();
+            return value == null ? new BindingResult(null, false) : new BindingResult(value.ToString(), true);
         }
     }
 }

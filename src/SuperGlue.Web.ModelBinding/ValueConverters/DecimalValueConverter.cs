@@ -2,10 +2,10 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public class DecimalValueConverter : ParseValueConverter<decimal>
     {
-        protected override decimal Parse(object value)
+        protected override decimal Parse(string stringValue, out bool success)
         {
             decimal parsed;
-            decimal.TryParse((value ?? "").ToString(), out parsed);
+            success = decimal.TryParse(stringValue, out parsed);
             return parsed;
         }
     }

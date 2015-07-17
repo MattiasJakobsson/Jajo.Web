@@ -6,7 +6,7 @@ namespace SuperGlue.Web.ModelBinding
 {
     public interface IBindingContext
     {
-        Task<object> Bind(Type type);
+        Task<BindingResult> Bind(Type type);
         void PrefixWith(string prefix);
         string GetKey(string name);
         string GetPrefix();

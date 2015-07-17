@@ -22,7 +22,12 @@ namespace SuperGlue.Web.ModelBinding
         {
             var modelBinderCollection = environment.Resolve<IModelBinderCollection>();
 
-            environment[BindExtensions.BindConstants.ModelBinder] = (Func<Type, Task<object>>)(x => modelBinderCollection.Bind(x, new BindingContext(modelBinderCollection, environment)));
+            environment[BindExtensions.BindConstants.ModelBinder] = (Func<Type, Task<object>>)(async x =>
+            {
+                var result = await modelBinderCollection.Bind(x, new BindingContext(modelBinderCollection, environment));
+
+                return result.Success ? result.Instance : null;
+            });
 
             await _next(environment);
         }

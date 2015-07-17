@@ -29,11 +29,11 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
             return GetMatchingConverters(destinationType).Any();
         }
 
-        public object Convert(Type destinationType, object value)
+        public BindingResult Convert(Type destinationType, object value)
         {
             var converter = GetMatchingConverters(destinationType).FirstOrDefault();
 
-            return converter == null ? null : converter.Convert(destinationType, value);
+            return converter == null ? new BindingResult(null, false) : converter.Convert(destinationType, value);
         }
 
         private IEnumerable<IValueConverter> GetMatchingConverters(Type destinationType)

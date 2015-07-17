@@ -4,10 +4,10 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
 {
     public class DateTimeValueConverter : ParseValueConverter<DateTime>
     {
-        protected override DateTime Parse(object value)
+        protected override DateTime Parse(string stringValue, out bool success)
         {
             DateTime parsed;
-            DateTime.TryParse((value ?? "").ToString(), out parsed);
+            success = DateTime.TryParse(stringValue, out parsed);
             return parsed;
         }
     }

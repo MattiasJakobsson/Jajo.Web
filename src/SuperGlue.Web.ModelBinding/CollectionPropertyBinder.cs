@@ -40,13 +40,13 @@ namespace SuperGlue.Web.ModelBinding
                                                                using (bindingContext.OpenChildContext(prefix))
                                                                {
                                                                    var addMethod = AddMethods[collectionType];
-                                                                   var obj = await bindingContext.Bind(itemType);
-                                                                   if (obj != null)
-                                                                   {
-                                                                       addMethod.Invoke(collection, new[] { obj });
-                                                                       return true;
-                                                                   }
-                                                                   return false;
+                                                                   var result = await bindingContext.Bind(itemType);
+
+                                                                   if (!result.Success) return false;
+                                                                   
+                                                                   addMethod.Invoke(collection, new[] { result.Instance });
+
+                                                                   return true;
                                                                }
                                                            };
 

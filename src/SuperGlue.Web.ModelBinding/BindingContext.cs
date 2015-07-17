@@ -22,7 +22,7 @@ namespace SuperGlue.Web.ModelBinding
             _modelBinderCollection = modelBinderCollection;
         }
 
-        public Task<object> Bind(Type type)
+        public Task<BindingResult> Bind(Type type)
         {
             return _modelBinderCollection.Bind(type, this);
         }
