@@ -3,16 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SuperGlue.Web.ModelBinding.BindingSources;
+using SuperGlue.Web.ModelBinding.ValueConverters;
 
 namespace SuperGlue.Web.ModelBinding
 {
     public class ModelBinderCollection : IModelBinderCollection
     {
         private readonly IEnumerable<IModelBinder> _modelBinders;
+        private readonly IValueConverterCollection _valueConverterCollection;
+        private readonly IBindingSourceCollection _bindingSourceCollection;
 
-        public ModelBinderCollection(IEnumerable<IModelBinder> modelBinders)
+        public ModelBinderCollection(IEnumerable<IModelBinder> modelBinders, IValueConverterCollection valueConverterCollection, IBindingSourceCollection bindingSourceCollection)
         {
             _modelBinders = modelBinders;
+            _valueConverterCollection = valueConverterCollection;
+            _bindingSourceCollection = bindingSourceCollection;
         }
 
         public IEnumerator<IModelBinder> GetEnumerator()
@@ -25,18 +31,14 @@ namespace SuperGlue.Web.ModelBinding
             return GetEnumerator();
         }
 
-        public Task<object> Bind(Type type, IBindingContext bindingContext)
+        public async Task<object> Bind(Type type, IBindingContext bindingContext)
         {
+            if(_valueConverterCollection.CanConvert(type))
+                return _valueConverterCollection.Convert(type, await _bindingSourceCollection.Get(bindingContext.GetPrefix(), bindingContext.Environment));
+
             var binder = GetMatchingBinders(type).FirstOrDefault();
 
-            return binder == null ? null : binder.Bind(type, bindingContext);
-        }
-
-        public async Task<bool> Bind(Type type, IBindingContext bindingContext, object instance)
-        {
-            var binder = GetMatchingBinders(type).FirstOrDefault();
-
-            return binder != null && await binder.Bind(type, bindingContext, instance);
+            return binder == null ? null : await binder.Bind(type, bindingContext);
         }
 
         private IEnumerable<IModelBinder> GetMatchingBinders(Type type)

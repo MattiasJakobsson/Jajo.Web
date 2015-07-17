@@ -27,11 +27,6 @@ namespace SuperGlue.Web.ModelBinding
             return _modelBinderCollection.Bind(type, this);
         }
 
-        public Task Bind(Type type, object instance)
-        {
-            return _modelBinderCollection.Bind(type, this, instance);
-        }
-
         public void PrefixWith(string prefix)
         {
             _currentPrefix = string.Format("{0}{1}", _currentPrefix, prefix);

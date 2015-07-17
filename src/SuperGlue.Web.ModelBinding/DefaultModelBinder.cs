@@ -16,27 +16,24 @@ namespace SuperGlue.Web.ModelBinding
 
         public bool Matches(Type type)
         {
-            return true;
+            return type.GetConstructors().Count(x => x.GetParameters().Length == 0) == 1;
         }
 
         public async Task<object> Bind(Type type, IBindingContext bindingContext)
         {
             var instance = Activator.CreateInstance(type);
-            await Bind(type, bindingContext, instance);
+
+            var binderTasks = type
+                .GetProperties()
+                .Where(x => x.CanWrite)
+                .Select(x => new {PropertyInfo = x, Binders = _propertyBinderCollection.GetMatching(x)})
+                .Where(property => property.Binders != null)
+                .Select(property => property.Binders.Bind(instance, property.PropertyInfo, bindingContext))
+                .ToList();
+
+            await Task.WhenAll(binderTasks);
+
             return instance;
-        }
-
-        public async Task<bool> Bind(Type type, IBindingContext bindingContext, object instance)
-        {
-            var hasBeenBound = false;
-
-            foreach (var property in type.GetProperties().Where(x => x.CanWrite).Select(x => new { PropertyInfo = x, Binders = _propertyBinderCollection.GetMatching(x) }).Where(property => property.Binders != null))
-            {
-                if (await property.Binders.Bind(instance, property.PropertyInfo, bindingContext))
-                    hasBeenBound = true;
-            }
-
-            return hasBeenBound;
         }
     }
 }
