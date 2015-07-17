@@ -56,7 +56,8 @@ namespace SuperGlue.HttpClient
             foreach (var modifier in _headerModifiers)
                 modifier(requestMessage.Headers);
 
-            requestMessage.Content = new FormUrlEncodedContent(_parameters);
+            if (!requestMessage.Method.Method.Equals("GET", StringComparison.OrdinalIgnoreCase) && !requestMessage.Method.Method.Equals("DELETE", StringComparison.OrdinalIgnoreCase))
+                requestMessage.Content = new FormUrlEncodedContent(_parameters);
 
             var response = await HttpClient.SendAsync(requestMessage);
 
