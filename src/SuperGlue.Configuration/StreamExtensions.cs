@@ -15,9 +15,11 @@ namespace SuperGlue.Configuration
                     return default(T);
 
                 stream.Position = 0;
-                var reader = new StreamReader(stream);
-
-                return JsonConvert.DeserializeObject<T>(await reader.ReadToEndAsync());
+                
+                using (var reader = new StreamReader(stream))
+                {
+                    return JsonConvert.DeserializeObject<T>(await reader.ReadToEndAsync());
+                }
             }
             catch (Exception)
             {
