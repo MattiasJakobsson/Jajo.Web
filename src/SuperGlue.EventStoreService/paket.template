@@ -13,3 +13,4 @@ dependencies
 	SuperGlue.EventStore.Timeouts.RavenDb
 	SuperGlue.RavenDb
 	SuperGlue.UnitOfWork
+	SuperGlue.Logging

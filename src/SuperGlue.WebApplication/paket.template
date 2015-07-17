@@ -25,3 +25,4 @@ dependencies
 	SuperGlue.StructureMap
 	SuperGlue.Web.Routing.Superscribe
 	SuperGlue.Web.Security
+	SuperGlue.Logging
