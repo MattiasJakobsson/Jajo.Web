@@ -11,3 +11,4 @@ dependencies
 	SuperGlue.ApiDiscovery
 	SuperGlue.Configuration
 	SuperGlue.Web.ApiDiscovery
+	SuperGlue.Api.Hal
