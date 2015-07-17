@@ -30,13 +30,12 @@ namespace SuperGlue.ApiDiscovery
                 {
                     var sources = x.ResolveAll<IApiSource>();
 
-                    var definitions = new List<ApiDefinition>();
+                    var finders = sources.Select(y => y.Find(x));
 
-                    foreach (var source in sources)
-                        definitions.AddRange(await source.Find(x));
+                    var definitions = (await Task.WhenAll(finders)).SelectMany(y => y.ToList()).ToArray();
 
                     if (definitions.Any())
-                        await environment.Resolve<IApiRegistry>().Register(x, definitions.ToArray());
+                        await environment.Resolve<IApiRegistry>().Register(x, definitions);
                 });
 
                 return Task.CompletedTask;

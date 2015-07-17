@@ -17,6 +17,7 @@ namespace SuperGlue.HttpClient
 
         private readonly Uri _url;
         private string _method = "GET";
+        private bool _shouldThrow;
         private readonly IDictionary<string, string> _parameters = new Dictionary<string, string>();
         private readonly ICollection<Action<HttpRequestHeaders>> _headerModifiers = new List<Action<HttpRequestHeaders>>();
 
@@ -49,6 +50,13 @@ namespace SuperGlue.HttpClient
             return this;
         }
 
+        public IHttpRequest ThrowOnError()
+        {
+            _shouldThrow = true;
+
+            return this;
+        }
+
         public async Task<IHttpResponse> Send()
         {
             var requestMessage = new HttpRequestMessage(new HttpMethod(_method), _url);
@@ -61,7 +69,8 @@ namespace SuperGlue.HttpClient
 
             var response = await HttpClient.SendAsync(requestMessage);
 
-            response.EnsureSuccessStatusCode();
+            if (_shouldThrow)
+                response.EnsureSuccessStatusCode();
 
             return new DefaultHttpResponse(response);
         }

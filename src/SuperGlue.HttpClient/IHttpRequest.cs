@@ -10,6 +10,7 @@ namespace SuperGlue.HttpClient
         IHttpRequest Method(string method);
         IHttpRequest ContentType(string contentType);
         IHttpRequest Parameter(string key, object value);
+        IHttpRequest ThrowOnError();
 
         Task<IHttpResponse> Send();
     }

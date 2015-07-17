@@ -72,7 +72,7 @@ namespace SuperGlue.Web.Routing.Superscribe
                         node = node.Parent;
                     }
 
-                    var missingParameters = endpointRoute.Parameters.Where(x => !appendedParameters.Contains(x.Key));
+                    var missingParameters = endpointRoute.Parameters.Where(x => !IsNullOrDefault(x.Value) && !appendedParameters.Contains(x.Key) && (x.Value.GetType().IsPrimitive || x.Value is string));
 
                     var patternBuilder = new StringBuilder();
                     patternParts.Reverse();
@@ -93,6 +93,21 @@ namespace SuperGlue.Web.Routing.Superscribe
 
                 return Task.CompletedTask;
             }, "superglue.RoutingSetup");
+        }
+
+        private static bool IsNullOrDefault(object value)
+        {
+            if (value == null) return true;
+            
+            var type = value.GetType();
+            
+            if (!type.IsValueType) return false;
+            
+            if (Nullable.GetUnderlyingType(type) != null) return false;
+            
+            var defaultValue = Activator.CreateInstance(type);
+            
+            return value.Equals(defaultValue);
         }
     }
 }
