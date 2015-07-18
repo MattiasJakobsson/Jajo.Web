@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using SuperGlue.Web.ModelBinding.PropertyBinders;
@@ -49,7 +50,7 @@ namespace SuperGlue.Web.ModelBinding
                                                                }
                                                            };
 
-            var formatString = string.Format("{0}{1}", bindingContext.GetPrefix(), propertyInfo.Name) + "[{0}]_";
+            var formatString = string.Concat(propertyInfo.Name, "[{0}]_");
 
             var index = 0;
             string currentPrefix;
@@ -61,7 +62,7 @@ namespace SuperGlue.Web.ModelBinding
 
             propertyInfo.SetValue(instance, collection, null);
 
-            return true;
+            return ((IEnumerable)collection).OfType<object>().Any();
         }
     }
 }

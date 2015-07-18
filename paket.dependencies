@@ -4,6 +4,7 @@ nuget BCrypt.Net
 nuget CSharpTest.Net.Collections
 nuget EasyHttp
 nuget EventStore.Client
+nuget Fixie
 nuget FluentCommandLineParser
 nuget FluentValidation
 nuget FubuCsProjFile
@@ -18,6 +19,7 @@ nuget Owin
 nuget RavenDB.Client
 nuget RavenDB.Client.Authorization
 nuget Rx-Main
+nuget Should
 nuget Spark
 nuget StackExchange.Redis
 nuget Superscribe
