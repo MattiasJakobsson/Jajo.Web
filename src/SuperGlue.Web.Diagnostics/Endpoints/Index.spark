@@ -7,9 +7,9 @@
 <body>
     <h1>Diagnostics</h1>
     <ul>
-        <li each="var type in Model.Types">
-            <a href="!{this.RouteTo(Model.GetDetailsInput(type))}">
-                ${type}
+        <li each="var category in Model.Categories">
+            <a href="!{this.RouteTo(Model.GetDetailsInput(category))}">
+                ${category}
             </a>
         </li>
     </ul>

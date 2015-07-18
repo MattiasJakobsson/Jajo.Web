@@ -12,19 +12,25 @@ namespace SuperGlue
             public static string AddData = "superglue.Diagnostics.AddData";
         }
 
-        public static Task PushDiagnosticsData(this IDictionary<string, object> environment, string type, Tuple<string, IDictionary<string, object>> data)
+        public static Task PushDiagnosticsData(this IDictionary<string, object> environment, string category, string type, string step, Tuple<string, IDictionary<string, object>> data)
         {
-            return environment.Get(DiagnosticsConstants.AddData, (Func<IDictionary<string, object>,  string, Tuple<string, IDictionary<string, object>>, Task>)((x, y, z) => Task.CompletedTask))(environment, type, data);
+            return environment.Get(DiagnosticsConstants.AddData, (Func<IDictionary<string, object>, string, string, string, Tuple<string, IDictionary<string, object>>, Task>)((x, y, z, a, b) => Task.CompletedTask))(environment, category, type, step, data);
         }
     }
 
-    public static class DiagnosticTypes
+    internal static class DiagnosticsCategories
     {
-        public static string MiddleWareExecutionFor(IDictionary<string, object> environment)
-        {
-            return string.Format("{0}-middlewareexecution", environment.GetCurrentChain().Name);
-        }
-
         public const string Setup = "Setup";
+
+        public static string RequestsFor(IDictionary<string, object> environment)
+        {
+            return string.Format("{0}-requests", environment.GetCurrentChain().Name);
+        }
+    }
+
+    internal static class DiagnosticsTypes
+    {
+        public const string RequestExecution = "RequestExecution";
+        public const string Bootstrapping = "Bootstrapping";
     }
 }

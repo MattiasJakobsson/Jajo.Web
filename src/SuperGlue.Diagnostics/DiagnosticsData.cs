@@ -6,7 +6,7 @@ namespace SuperGlue.Diagnostics
     {
         public DiagnosticsData(string key, IReadOnlyDictionary<string, IDiagnosticsValue> data)
         {
-            Key = (key ?? "").ToLower();
+            Key = key ?? "";
             Data = data ?? new Dictionary<string, IDiagnosticsValue>();
         }
 

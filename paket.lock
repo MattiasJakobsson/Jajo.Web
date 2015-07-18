@@ -2,6 +2,7 @@ NUGET
   remote: https://nuget.org/api/v2
   specs:
     BCrypt.Net (0.1.0)
+    CSharpTest.Net.Collections (14.906.1403.1082)
     EasyHttp (1.6.75.0)
       JsonFx (>= 2.0.1209.2802)
     EventStore.Client (3.0.2)

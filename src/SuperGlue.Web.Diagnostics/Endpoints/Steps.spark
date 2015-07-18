@@ -1,0 +1,17 @@
+﻿<viewdata model="SuperGlue.Web.Diagnostics.Endpoints.StepsQueryResult" />
+
+<html>
+<head>
+    <title>${Model.Category} - ${Model.Type}</title>
+</head>
+<body>
+    <h1>${Model.Category} - ${Model.Type}</h1>
+    <ul>
+        <li each="var step in Model.Steps">
+            <a href="!{this.RouteTo(Model.GetDataInput(step))}">
+                ${step}
+            </a>
+        </li>
+    </ul>
+</body>
+</html>

@@ -88,7 +88,7 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             environment.AddRouteToEndpoint(routeTo, routedInputs, _node);
 
-            environment.PushDiagnosticsData(DiagnosticTypes.Setup, new Tuple<string, IDictionary<string, object>>("Routing", new Dictionary<string, object>
+            environment.PushDiagnosticsData(DiagnosticsCategories.Setup, DiagnosticsTypes.Bootstrapping, "Routes", new Tuple<string, IDictionary<string, object>>(string.Format("Route created for {0}", GetPattern()), new Dictionary<string, object>
             {
                 {"Pattern", GetPattern()},
                 {"Inputs", string.Join(", ", routedInputs.Select(x => x.Key.Name))},

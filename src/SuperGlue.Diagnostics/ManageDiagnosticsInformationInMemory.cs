@@ -2,61 +2,89 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SuperGlue.Configuration;
+using CSharpTest.Net.Collections;
 
 namespace SuperGlue.Diagnostics
 {
     public class ManageDiagnosticsInformationInMemory : IManageDiagnosticsInformation
     {
-        private static readonly IDictionary<string, ConcurrentLruLSet<DiagnosticsData>> Messurements = new ConcurrentDictionary<string, ConcurrentLruLSet<DiagnosticsData>>();
-        private readonly IDictionary<string, object> _environment;
+        private static readonly IDictionary<string, ConcurrentDictionary<string, LurchTable<string, ConcurrentBag<DiagnosticsData>>>> Data = new ConcurrentDictionary<string, ConcurrentDictionary<string, LurchTable<string, ConcurrentBag<DiagnosticsData>>>>();
 
-        public ManageDiagnosticsInformationInMemory(IDictionary<string, object> environment)
+        public Task AddDiagnostics(string category, string type, string step, DiagnosticsData data)
         {
-            _environment = environment;
-        }
-
-        public Task AddDiagnostics(string type, DiagnosticsData data)
-        {
+            var loweredCategory = (category ?? "").ToSlug().ToLower();
             var loweredType = (type ?? "").ToSlug().ToLower();
+            var loweredStep = (step ?? "").ToSlug().ToLower();
 
-            if (!Messurements.ContainsKey(loweredType))
-                Messurements[loweredType] = new ConcurrentLruLSet<DiagnosticsData>(100);
+            if (!Data.ContainsKey(loweredCategory))
+                Data[loweredCategory] = new ConcurrentDictionary<string, LurchTable<string, ConcurrentBag<DiagnosticsData>>>();
 
-            Messurements[loweredType].Push(data);
+            if (!Data[loweredCategory].ContainsKey(loweredType))
+                Data[loweredCategory][loweredType] = new LurchTable<string, ConcurrentBag<DiagnosticsData>>(50);
+
+            if (!Data[loweredCategory][loweredType].ContainsKey(loweredStep))
+                Data[loweredCategory][loweredType][loweredStep] = new ConcurrentBag<DiagnosticsData>();
+
+            Data[loweredCategory][loweredType][loweredStep].Add(data);
 
             return Task.CompletedTask;
         }
 
-        public Task<IEnumerable<string>> GetTypes()
+        public Task<IEnumerable<string>> GetCategories()
         {
-            var settings = _environment.GetSettings<DiagnosticsSettings>();
-
-            return Task.FromResult(Messurements.Select(x => x.Key).Where(x => settings.IsKeyAllowed(x)));
+            return Task.FromResult<IEnumerable<string>>(Data.Keys);
         }
 
-        public Task<IEnumerable<string>> GetKeysFor(string type)
+        public Task<IEnumerable<string>> GetTypesFor(string category)
         {
-            var loweredType = (type ?? "").ToLower();
+            var loweredCategory = (category ?? "").ToSlug().ToLower();
 
-            var settings = _environment.GetSettings<DiagnosticsSettings>();
+            ConcurrentDictionary<string, LurchTable<string, ConcurrentBag<DiagnosticsData>>> categoryData;
 
-            return !settings.IsKeyAllowed(loweredType) ? Task.FromResult(Enumerable.Empty<string>()) : Task.FromResult(!Messurements.ContainsKey(loweredType) ? Enumerable.Empty<string>() : Messurements[loweredType].Select(x => x.Key).Distinct());
+            return Task.FromResult(!Data.TryGetValue(loweredCategory, out categoryData) ? Enumerable.Empty<string>() : categoryData.Keys);
         }
 
-        public Task<IEnumerable<KeyValuePair<string, IDiagnosticsValue>>> GetDataFor(string type, string key)
+        public Task<IEnumerable<string>> GetStepsFor(string category, string type, int numberOfSteps = 50)
         {
-            var loweredType = (type ?? "").ToLower();
-            var loweredKey = (key ?? "").ToLower();
+            var loweredCategory = (category ?? "").ToSlug().ToLower();
+            var loweredType = (type ?? "").ToSlug().ToLower();
 
-            var settings = _environment.GetSettings<DiagnosticsSettings>();
+            ConcurrentDictionary<string, LurchTable<string, ConcurrentBag<DiagnosticsData>>> categoryData;
 
-            if (!settings.IsKeyAllowed(loweredType) || !Messurements.ContainsKey(loweredType))
-                return Task.FromResult(Enumerable.Empty<KeyValuePair<string, IDiagnosticsValue>>());
+            if (!Data.TryGetValue(loweredCategory, out categoryData))
+                return Task.FromResult(Enumerable.Empty<string>());
 
-            return Task.FromResult(Messurements[loweredType]
-                .Where(x => x.Key == loweredKey)
-                .SelectMany(x => x.Data));
+            LurchTable<string, ConcurrentBag<DiagnosticsData>> typeData;
+
+            return Task.FromResult(!categoryData.TryGetValue(loweredType, out typeData) ? Enumerable.Empty<string>() : typeData.Keys.Take(numberOfSteps));
+        }
+
+        public Task<IReadOnlyDictionary<string, IEnumerable<KeyValuePair<string, IDiagnosticsValue>>>> GetDataFor(string category, string type, string step)
+        {
+            var loweredCategory = (category ?? "").ToSlug().ToLower();
+            var loweredType = (type ?? "").ToSlug().ToLower();
+            var loweredStep = (step ?? "").ToSlug().ToLower();
+
+            ConcurrentDictionary<string, LurchTable<string, ConcurrentBag<DiagnosticsData>>> categoryData;
+
+            if (!Data.TryGetValue(loweredCategory, out categoryData))
+                return Task.FromResult<IReadOnlyDictionary<string, IEnumerable<KeyValuePair<string, IDiagnosticsValue>>>>(new Dictionary<string, IEnumerable<KeyValuePair<string, IDiagnosticsValue>>>());
+
+            LurchTable<string, ConcurrentBag<DiagnosticsData>> typeData;
+
+            if (!categoryData.TryGetValue(loweredType, out typeData))
+                return Task.FromResult<IReadOnlyDictionary<string, IEnumerable<KeyValuePair<string, IDiagnosticsValue>>>>(new Dictionary<string, IEnumerable<KeyValuePair<string, IDiagnosticsValue>>>());
+
+            ConcurrentBag<DiagnosticsData> stepData;
+
+            if (!typeData.TryGetValue(loweredStep, out stepData))
+                return Task.FromResult<IReadOnlyDictionary<string, IEnumerable<KeyValuePair<string, IDiagnosticsValue>>>>(new Dictionary<string, IEnumerable<KeyValuePair<string, IDiagnosticsValue>>>());
+
+            var result = stepData
+                .GroupBy(x => x.Key, x => x.Data)
+                .ToDictionary(x => x.Key, x => x.SelectMany(y => y));
+
+            return Task.FromResult<IReadOnlyDictionary<string, IEnumerable<KeyValuePair<string, IDiagnosticsValue>>>>(result);
         }
     }
 }

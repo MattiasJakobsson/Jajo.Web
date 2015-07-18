@@ -26,6 +26,8 @@ namespace SuperGlue
             {
                 if (LogMessagesToAdd.Count < 1000)
                     LogMessagesToAdd.Push(new Tuple<Exception, string, string, object[]>(exception, message, logLevel, parameters));
+
+                return;
             }
 
             while (LogMessagesToAdd.Count > 0)

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.Configuration;
 using Superscribe.Engine;
 
 namespace SuperGlue.Web.Routing.Superscribe
@@ -32,14 +33,12 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             var endpoint = environment.GetRouteForEndpoint(data.Response);
 
-            if (endpoint == null)
-                await environment.PushDiagnosticsData(DiagnosticTypes.MiddleWareExecutionFor(environment), new Tuple<string, IDictionary<string, object>>("MissedRoute", new Dictionary<string, object>()));
-            else
-                await environment.PushDiagnosticsData(DiagnosticTypes.MiddleWareExecutionFor(environment), new Tuple<string, IDictionary<string, object>>("FoundRoute", new Dictionary<string, object>
-                {
-                    {"RoutedTo", endpoint},
-                    {"Url", environment.GetRequest().Uri.ToString()}
-                }));
+            await environment.PushDiagnosticsData(DiagnosticsCategories.RequestsFor(environment), DiagnosticsTypes.RequestExecution, environment.GetCurrentChain().RequestId, new Tuple<string, IDictionary<string, object>>("RequestRouted", new Dictionary<string, object>
+            {
+                {"RoutedTo", data.Response ?? ""},
+                {"Url", environment.GetRequest().Uri},
+                {"Found", data.Response != null}
+            }));
 
             environment.SetRouteDestination(data.Response, endpoint != null ? endpoint.InputTypes : new List<Type>(), (IDictionary<string, object>)data.Parameters);
 

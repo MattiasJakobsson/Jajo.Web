@@ -10,7 +10,7 @@ namespace SuperGlue.Diagnostics
     {
         public Task<IEndThings> Begin(IDictionary<string, object> environment, Type middleWareType)
         {
-            var key = DiagnosticTypes.MiddleWareExecutionFor(environment);
+            var key = DiagnosticsCategories.RequestsFor(environment);
             var requestId = environment.GetCurrentChain().RequestId;
 
             if (string.IsNullOrEmpty(requestId) || !environment.GetSettings<DiagnosticsSettings>().IsKeyAllowed(key))
@@ -42,7 +42,7 @@ namespace SuperGlue.Diagnostics
             {
                 _stopwatch.Stop();
 
-                return _environment.PushDiagnosticsData(_key, new Tuple<string, IDictionary<string, object>>(_requestId, new Dictionary<string, object>
+                return _environment.PushDiagnosticsData(_key, DiagnosticsTypes.RequestExecution, _requestId, new Tuple<string, IDictionary<string, object>>(string.Format("MiddleWare-{0}-Executed", _middleWareType.Name), new Dictionary<string, object>
                 {
                     {"Middleware", _middleWareType},
                     {"ExecutionTime", _stopwatch.Elapsed}

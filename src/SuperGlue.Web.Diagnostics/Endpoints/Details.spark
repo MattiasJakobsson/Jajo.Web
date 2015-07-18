@@ -2,14 +2,14 @@
 
 <html>
 <head>
-    <title>${Model.Type}</title>
+    <title>${Model.Category}</title>
 </head>
 <body>
-    <h1>${Model.Type}</h1>
+    <h1>${Model.Category}</h1>
     <ul>
-        <li each="var key in Model.Keys">
-            <a href="!{this.RouteTo(Model.GetInformationInput(key))}">
-                ${key}
+        <li each="var type in Model.Types">
+            <a href="!{this.RouteTo(Model.GetStepsInput(type))}">
+                ${type}
             </a>
         </li>
     </ul>

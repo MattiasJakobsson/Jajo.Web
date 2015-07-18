@@ -15,9 +15,9 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
 
         public async Task<IndexQueryResult> Query(IndexQueryInput input)
         {
-            var types = await _manageDiagnosticsInformation.GetTypes();
+            var categories = await _manageDiagnosticsInformation.GetCategories();
 
-            return new IndexQueryResult(types);
+            return new IndexQueryResult(categories);
         }
     }
 
@@ -28,18 +28,18 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
 
     public class IndexQueryResult
     {
-        public IndexQueryResult(IEnumerable<string> types)
+        public IndexQueryResult(IEnumerable<string> categories)
         {
-            Types = types;
+            Categories = categories;
         }
 
-        public IEnumerable<string> Types { get; private set; }
+        public IEnumerable<string> Categories { get; private set; }
 
-        public DetailsQueryInput GetDetailsInput(string type)
+        public DetailsQueryInput GetDetailsInput(string category)
         {
             return new DetailsQueryInput
             {
-                Slug = type
+                Slug = category
             };
         }
     }

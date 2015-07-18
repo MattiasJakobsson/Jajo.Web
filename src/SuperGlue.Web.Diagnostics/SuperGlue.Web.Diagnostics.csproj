@@ -43,16 +43,18 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="DiagnosticsRoutePolicy.cs" />
+    <Compile Include="Endpoints\Data.cs" />
     <Compile Include="Endpoints\Details.cs" />
     <Compile Include="Endpoints\Index.cs" />
-    <Compile Include="Endpoints\Information.cs" />
+    <Compile Include="Endpoints\Steps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupDiagnosticsInformation.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Endpoints\Information.spark" />
+    <EmbeddedResource Include="Endpoints\Steps.spark" />
     <EmbeddedResource Include="Endpoints\Details.spark" />
     <EmbeddedResource Include="Endpoints\Index.spark" />
+    <EmbeddedResource Include="Endpoints\Data.spark" />
     <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>

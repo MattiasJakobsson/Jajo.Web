@@ -1,0 +1,18 @@
+﻿<viewdata model="SuperGlue.Web.Diagnostics.Endpoints.DataQueryResult" />
+
+<html>
+<head>
+    <title>${Model.Category} - ${Model.Type} - ${Model.Step}</title>
+</head>
+<body>
+    <h1>${Model.Category} - ${Model.Type} - ${Model.Step}</h1>
+    <div each="var item in Model.Data">
+        <h2>${item.Key}</h2>
+        <ul>
+            <li each="var row in item.Value">
+                <strong>${row.Key}</strong>: ${row.Value}
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

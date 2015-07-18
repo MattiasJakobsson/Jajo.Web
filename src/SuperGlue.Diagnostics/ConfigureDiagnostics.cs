@@ -22,14 +22,14 @@ namespace SuperGlue.Diagnostics
                         x.DisllowAll();
                 });
 
-                environment[DiagnosticsExtensions.DiagnosticsConstants.AddData] = (Func<IDictionary<string, object>, string, Tuple<string, IDictionary<string, object>>, Task>)((x, y, z) =>
+                environment[DiagnosticsExtensions.DiagnosticsConstants.AddData] = (Func<IDictionary<string, object>, string, string, string, Tuple<string, IDictionary<string, object>>, Task>)((x, y, z, a, b) =>
                 {
                     if (!x.GetSettings<DiagnosticsSettings>().IsKeyAllowed(y))
                         return Task.CompletedTask;
 
                     var manager = environment.Resolve<IManageDiagnosticsInformation>();
 
-                    return manager.AddDiagnostics(y, new DiagnosticsData(z.Item1, z.Item2.ToDictionary(a => a.Key, a => (a.Value as IDiagnosticsValue) ?? new ObjectDiagnosticsValue(a.Value))));
+                    return manager.AddDiagnostics(y, z, a, new DiagnosticsData(b.Item1, b.Item2.ToDictionary(c => c.Key, c => (c.Value as IDiagnosticsValue) ?? new ObjectDiagnosticsValue(c.Value))));
                 });
 
                 return Task.CompletedTask;

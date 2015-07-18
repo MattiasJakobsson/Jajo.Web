@@ -84,7 +84,9 @@ namespace SuperGlue.Configuration
 
             stopwatch.Stop();
 
-            await _environment.PushDiagnosticsData(DiagnosticTypes.Setup, new Tuple<string, IDictionary<string, object>>("Bootstrapping", new Dictionary<string, object>
+            _environment.Log("Bootstrapping done in {0} ms", LogLevel.Debug, stopwatch.Elapsed.TotalMilliseconds);
+
+            await _environment.PushDiagnosticsData(DiagnosticsCategories.Setup, DiagnosticsTypes.Bootstrapping, "Init", new Tuple<string, IDictionary<string, object>>("ApplicationsStarted", new Dictionary<string, object>
             {
                 {"ExecutionTime", stopwatch.Elapsed},
                 {"Environment", environment},

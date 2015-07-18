@@ -1,6 +1,7 @@
 source https://nuget.org/api/v2
 
 nuget BCrypt.Net
+nuget CSharpTest.Net.Collections
 nuget EasyHttp
 nuget EventStore.Client
 nuget FluentCommandLineParser
