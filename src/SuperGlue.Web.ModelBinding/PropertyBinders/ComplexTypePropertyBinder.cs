@@ -13,9 +13,9 @@ namespace SuperGlue.Web.ModelBinding.PropertyBinders
             _valueConverterCollection = valueConverterCollection;
         }
 
-        public bool Matches(PropertyInfo propertyInfo)
+        public bool Matches(PropertyInfo propertyInfo, IBindingContext bindingContext)
         {
-            return !_valueConverterCollection.CanConvert(propertyInfo.PropertyType);
+            return !_valueConverterCollection.CanConvert(propertyInfo.PropertyType, bindingContext);
         }
 
         public async Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)

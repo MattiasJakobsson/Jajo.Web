@@ -33,12 +33,24 @@ namespace SuperGlue.Web.ModelBinding
 
         public async Task<BindingResult> Bind(Type type, IBindingContext bindingContext)
         {
-            if(_valueConverterCollection.CanConvert(type))
-                return _valueConverterCollection.Convert(type, await _bindingSourceCollection.Get(bindingContext.GetPrefix(), bindingContext.Environment));
+            if(_valueConverterCollection.CanConvert(type, bindingContext))
+                return _valueConverterCollection.Convert(type, await _bindingSourceCollection.Get(bindingContext.GetPrefix(), bindingContext.Environment), bindingContext);
 
             var binder = GetMatchingBinders(type).FirstOrDefault();
 
-            return binder == null ? new BindingResult(null, false) : await binder.Bind(type, bindingContext);
+            if (binder == null)
+            {
+                bindingContext.Environment.Log("Failed to find a matching modelbinder for type: {0}", LogLevel.Info, type);
+                return new BindingResult(null, false);
+            }
+
+            bindingContext.Environment.Log("Going to bind type: {0} using {1}.", LogLevel.Debug, type, binder.GetType().Name);
+
+            var result = await binder.Bind(type, bindingContext);
+
+            bindingContext.Environment.Log("Finished binding type: {0} using {1}. Result: Success = {2}, Instance = {3}.", LogLevel.Debug, type, binder.GetType().Name, result.Success, result.Instance != null ? result.Instance.ToString() : "null");
+
+            return result;
         }
 
         private IEnumerable<IModelBinder> GetMatchingBinders(Type type)

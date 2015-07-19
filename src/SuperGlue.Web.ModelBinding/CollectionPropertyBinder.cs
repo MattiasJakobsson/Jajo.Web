@@ -17,7 +17,7 @@ namespace SuperGlue.Web.ModelBinding
             AddMethods.OnMissing = type => type.GetMethod("Add");
         }
 
-        public bool Matches(PropertyInfo propertyInfo)
+        public bool Matches(PropertyInfo propertyInfo, IBindingContext bindingContext)
         {
             return typeof(IEnumerable).IsAssignableFrom(propertyInfo.PropertyType) && propertyInfo.PropertyType != typeof(string);
         }
