@@ -117,7 +117,7 @@ namespace SuperGlue.Web.Routing
 
         protected virtual IEnumerable<string> GetEndpointNamesToIgnore()
         {
-            return new List<string> { "Index", "Details" };
+            return new List<string> { "Index" };
         }
 
         protected virtual IEnumerable<string> GetParametersToAddBeforeEndpointName()
