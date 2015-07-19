@@ -9,22 +9,23 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
 {
     public class JsonRequestBodyBindingSource : IBindingSource
     {
-        private IDictionary<string, string> _data;
+        private IDictionary<string, object> _data;
 
-        public Task<IDictionary<string, object>> GetValues(IDictionary<string, object> envinronment)
+        public async Task<IDictionary<string, object>> GetValues(IDictionary<string, object> envinronment)
         {
-            SetValues(envinronment);
+            await SetValues(envinronment);
 
-            return Task.FromResult((IDictionary<string, object>)_data.ToDictionary(x => x.Key.ToLower(), x => (object)x.Value));
+            return _data.ToDictionary(x => x.Key.ToLower(), x => x.Value);
         }
 
-        private void SetValues(IDictionary<string, object> envinronment)
+        private async Task SetValues(IDictionary<string, object> envinronment)
         {
-            if (_data != null) 
+            if (_data != null)
                 return;
 
-            using (var streamReader = new StreamReader(envinronment.GetRequest().Body, Encoding.UTF8, true, 4 * 1024, true))
-                _data = JsonConvert.DeserializeObject<Dictionary<string, string>>(streamReader.ReadToEnd()) ?? new Dictionary<string, string>();
+            var streamReader = new StreamReader(envinronment.GetRequest().Body, Encoding.UTF8, true, 4 * 1024, true);
+
+            _data = JsonConvert.DeserializeObject<Dictionary<string, object>>(await streamReader.ReadToEndAsync()) ?? new Dictionary<string, object>();
         }
     }
 }
