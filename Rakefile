@@ -2,6 +2,7 @@ require 'bundler/setup'
 
 require 'albacore'
 require 'albacore/tasks/versionizer'
+require 'fileutils'
 
 Configuration = ENV['CONFIGURATION'] || 'Debug'
 
@@ -20,6 +21,17 @@ build :quick_compile do |b|
   b.prop 'Configuration', Configuration
   b.logging = 'detailed'
   b.sln     = 'src/SuperGlue.sln'
+end
+
+task :test do |b|
+  FileUtils.mkdir_p 'build/tests'
+  FileUtils.rm_rf(Dir.glob('build/tests/*'))
+  testIndex = 0
+  FileList['**/*.Tests/bin/Release/*.Tests.dll'].each do |test|
+	resultFile = 'build/tests/TestResult' + testIndex.to_s + '.xml'
+    system 'packages/Fixie/lib/net45/Fixie.Console.x86.exe', test, '--xUnitXml', resultFile
+	testIndex = testIndex + 1
+  end
 end
 
 task :paket_bootstrap do
@@ -47,4 +59,4 @@ end
 
 task :default => :compile
 
-task :ci => [:default, :create_nugets]
+task :ci => [:default, :test, :create_nugets]
