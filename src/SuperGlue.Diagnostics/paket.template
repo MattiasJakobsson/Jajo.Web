@@ -8,3 +8,4 @@ files
     bin/Release/SuperGlue.Diagnostics.dll ==> lib
 dependencies
 	SuperGlue.Configuration
+	CSharpTest.Net.Collections
