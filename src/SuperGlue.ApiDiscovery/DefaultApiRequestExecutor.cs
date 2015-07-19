@@ -83,7 +83,7 @@ namespace SuperGlue.ApiDiscovery
             foreach (var item in form.Schema)
             {
                 if (data.ContainsKey(item.Key))
-                    formData[item.Key] = item.Value;
+                    formData[item.Key] = data[item.Key];
                 else if (resource.State.ContainsKey(item.Key))
                     formData[item.Key] = resource.State[item.Key];
                 else
