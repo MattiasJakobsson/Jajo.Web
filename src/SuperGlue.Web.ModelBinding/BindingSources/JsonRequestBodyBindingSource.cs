@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SuperGlue.Web.ModelBinding.BindingSources
 {
@@ -25,7 +25,59 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
 
             var streamReader = new StreamReader(envinronment.GetRequest().Body, Encoding.UTF8, true, 4 * 1024, true);
 
-            _data = JsonConvert.DeserializeObject<Dictionary<string, object>>(await streamReader.ReadToEndAsync()) ?? new Dictionary<string, object>();
+            var json = await streamReader.ReadToEndAsync();
+
+            var outer = JObject.Parse(json);
+
+            var result = new Dictionary<string, object>();
+
+            SetEdgeValues(outer, "", result);
+
+            _data = result;
+        }
+
+        private static void SetEdgeValues(JObject outer, string prefix, IDictionary<string, object> data)
+        {
+            foreach (var inner in outer.Properties())
+            {
+                switch (inner.Value.Type)
+                {
+                    case JTokenType.Object:
+                        SetEdgeValues((JObject)inner.Value, string.Format("{0}{1}_", prefix, inner.Name), data);
+                        break;
+                    case JTokenType.Array:
+                        HandleArray((JArray)inner.Value, string.Format("{0}{1}", prefix, inner.Name), data);
+                        break;
+                    default:
+                        data[string.Format("{0}{1}", prefix, inner.Name)] = inner.Value.ToObject<object>();
+                        break;
+                }
+            }
+        }
+
+        private static void HandleArray(JArray array, string prefix, IDictionary<string, object> data)
+        {
+            var index = 0;
+            foreach (var child in array)
+            {
+                switch (child.Type)
+                {
+                    case JTokenType.Object:
+                        SetEdgeValues((JObject)child, string.Format("{0}[{1}]_", prefix, index), data);
+                        break;
+                    case JTokenType.Array:
+                        HandleArray((JArray)child, string.Format("{0}[{1}]", prefix, index), data);
+                        break;
+                    case JTokenType.Property:
+                        data[string.Format("{0}[{1}]_{2}", prefix, index, ((JProperty)child).Name)] = child.ToObject<object>();
+                        break;
+                    default:
+                        data[string.Format("{0}[{1}]_", prefix, index)] = child.ToObject<object>();
+                        break;
+                }
+
+                index++;
+            }
         }
     }
 }

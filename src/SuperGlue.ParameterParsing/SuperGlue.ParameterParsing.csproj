@@ -51,6 +51,7 @@
     <Compile Include="DefaultExpressionParser.cs" />
     <Compile Include="ExpressionParseResult.cs" />
     <Compile Include="DefaultParameterHandler.cs" />
+    <Compile Include="FindParameterValueFromEnvironment.cs" />
     <Compile Include="IFindParameterValue.cs" />
     <Compile Include="IHandleParameters.cs" />
     <Compile Include="IParseExpressionFor.cs" />
