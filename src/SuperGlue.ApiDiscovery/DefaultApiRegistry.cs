@@ -27,7 +27,7 @@ namespace SuperGlue.ApiDiscovery
             return StartQuery(() => Task.FromResult(settings.RegistrationRoot))
                 .ExecuteForm(new TravelToTopLevelForm("register"), new Dictionary<string, object>
                 {
-                    {"Resources", apis.ToList()}
+                    {"Resources", apis}
                 });
         }
 

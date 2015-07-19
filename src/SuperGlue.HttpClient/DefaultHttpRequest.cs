@@ -51,7 +51,7 @@ namespace SuperGlue.HttpClient
 
         public IHttpRequest Parameter(string key, object value)
         {
-            _parameters[key] = (value ?? "").ToString();
+            _parameters[key] = value;
             return this;
         }
 
