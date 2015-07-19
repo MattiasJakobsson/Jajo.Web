@@ -23,11 +23,11 @@ build :quick_compile do |b|
   b.sln     = 'src/SuperGlue.sln'
 end
 
-task :test do |b|
+task :tests do |b|
   FileUtils.mkdir_p 'build/tests'
   FileUtils.rm_rf(Dir.glob('build/tests/*'))
   testIndex = 0
-  FileList['**/*.Tests/bin/Release/*.Tests.dll'].each do |test|
+  FileList['**/*.Tests/bin/' + Configuration + '/*.Tests.dll'].each do |test|
 	resultFile = 'build/tests/TestResult' + testIndex.to_s + '.xml'
     system 'packages/Fixie/lib/net45/Fixie.Console.x86.exe', test, '--xUnitXml', resultFile
 	testIndex = testIndex + 1
@@ -59,4 +59,6 @@ end
 
 task :default => :compile
 
-task :ci => [:default, :test, :create_nugets]
+task :ci => [:default, :tests, :create_nugets]
+
+task :test => [:default, :tests]
