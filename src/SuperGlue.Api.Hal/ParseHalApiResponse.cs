@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using SuperGlue.ApiDiscovery;
@@ -27,24 +26,22 @@ namespace SuperGlue.Api.Hal
         {
             var links = new List<ApiLink>();
             var embedded = new List<ApiResource>();
-            var state = new ExpandoObject();
             var forms = new List<ApiForm>();
 
-            ParseResourceObject(outer, links, forms, embedded, state, definition);
+            ParseResourceObject(outer, links, forms, embedded, definition);
 
-            return new ApiResource("root", state, forms, embedded, links, definition);
+            return new ApiResource("root", forms, embedded, links, definition, outer.ToObject);
         }
 
         private static ApiResource ParseEmbeddedResourceObject(JObject outer, string rel, ApiDefinition definition)
         {
             var links = new List<ApiLink>();
             var embedded = new List<ApiResource>();
-            var state = new ExpandoObject();
             var forms = new List<ApiForm>();
 
-            ParseResourceObject(outer, links, forms, embedded, state, definition);
+            ParseResourceObject(outer, links, forms, embedded, definition);
 
-            return new ApiResource(rel, state, forms, embedded, links, definition);
+            return new ApiResource(rel, forms, embedded, links, definition, outer.ToObject);
         }
 
         private static ApiForm ParseFormsResourceObject(JObject outer, string name, ApiDefinition definition)
@@ -87,7 +84,7 @@ namespace SuperGlue.Api.Hal
             return form;
         }
 
-        private static void ParseResourceObject(JObject outer, List<ApiLink> links, List<ApiForm> forms, List<ApiResource> embedded, IDictionary<string, object> state, ApiDefinition definition)
+        private static void ParseResourceObject(JObject outer, List<ApiLink> links, List<ApiForm> forms, List<ApiResource> embedded, ApiDefinition definition)
         {
             foreach (var inner in outer.Properties())
             {
@@ -106,9 +103,6 @@ namespace SuperGlue.Api.Hal
                         case "_forms":
                             forms.AddRange(ParseObjectOrArrayOfObjects(value, definition, ParseFormsResourceObject));
                             break;
-                        default:
-                            state[inner.Name] = value.Value<dynamic>();
-                            break;
                     }
                 }
                 else
@@ -123,9 +117,6 @@ namespace SuperGlue.Api.Hal
                             throw new FormatException("Invalid value for _embedded: " + value);
                         case "_forms":
                             throw new FormatException("Invalid value for _forms: " + value);
-                        default:
-                            state[inner.Name] = inner.Value.Value<dynamic>();
-                            break;
                     }
                 }
             }

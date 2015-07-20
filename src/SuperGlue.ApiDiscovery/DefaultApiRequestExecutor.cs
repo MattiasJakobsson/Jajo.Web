@@ -46,12 +46,14 @@ namespace SuperGlue.ApiDiscovery
                 {
                     var template = new UriTemplate(uri.ToString());
 
+                    var state = currentResource.StateAs<IDictionary<string, object>>();
+
                     foreach (var parameterName in template.GetParameterNames())
                     {
                         if (data.ContainsKey(parameterName))
                             template.SetParameter(parameterName, data[parameterName]);
-                        else if (currentResource.State.ContainsKey(parameterName))
-                            template.SetParameter(parameterName, currentResource.State[parameterName]);
+                        else if (state.ContainsKey(parameterName))
+                            template.SetParameter(parameterName, state[parameterName]);
                     }
 
                     uri = new Uri(template.Resolve(), UriKind.RelativeOrAbsolute);
@@ -80,12 +82,14 @@ namespace SuperGlue.ApiDiscovery
 
             var formData = new Dictionary<string, object>();
 
+            var state = resource.StateAs<IDictionary<string, object>>();
+
             foreach (var item in form.Schema)
             {
                 if (data.ContainsKey(item.Key))
                     formData[item.Key] = data[item.Key];
-                else if (resource.State.ContainsKey(item.Key))
-                    formData[item.Key] = resource.State[item.Key];
+                else if (state.ContainsKey(item.Key))
+                    formData[item.Key] = state[item.Key];
                 else
                     formData[item.Key] = item.Value;
             }
@@ -100,8 +104,8 @@ namespace SuperGlue.ApiDiscovery
                 {
                     if (data.ContainsKey(parameterName))
                         template.SetParameter(parameterName, data[parameterName]);
-                    else if (resource.State.ContainsKey(parameterName))
-                        template.SetParameter(parameterName, resource.State[parameterName]);
+                    else if (state.ContainsKey(parameterName))
+                        template.SetParameter(parameterName, state[parameterName]);
                 }
 
                 uri = new Uri(template.Resolve(), UriKind.RelativeOrAbsolute);

@@ -50,7 +50,7 @@ namespace SuperGlue.ApiDiscovery
                     {"name", name}
                 });
 
-            return response.State;
+            return response.StateAs<ApiDefinition>();
         }
 
         protected virtual IApiQuery StartQuery(Func<Task<ApiDefinition>> findDefinition)

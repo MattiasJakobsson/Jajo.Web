@@ -5,6 +5,11 @@ namespace SuperGlue.ApiDiscovery
 {
     public class ApiDefinition
     {
+        public ApiDefinition()
+        {
+            Accepts = new List<string>();
+        }
+
         public ApiDefinition(string name, Uri location, IEnumerable<string> accepts)
         {
             Name = name;
@@ -12,8 +17,8 @@ namespace SuperGlue.ApiDiscovery
             Location = location;
         }
 
-        public string Name { get; private set; }
-        public Uri Location { get; private set; }
-        public IEnumerable<string> Accepts { get; private set; }
+        public string Name { get; set; }
+        public Uri Location { get; set; }
+        public IEnumerable<string> Accepts { get; set; }
     }
 }
