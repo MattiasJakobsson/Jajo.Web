@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -27,13 +28,22 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
 
             var json = await streamReader.ReadToEndAsync();
 
-            var outer = JObject.Parse(json);
+            try
+            {
+                var outer = JObject.Parse(json);
 
-            var result = new Dictionary<string, object>();
+                var result = new Dictionary<string, object>();
 
-            SetEdgeValues(outer, "", result);
+                SetEdgeValues(outer, "", result);
 
-            _data = result;
+                _data = result;
+            }
+            catch (Exception ex)
+            {
+                _data = new Dictionary<string, object>();
+
+                envinronment.Log(ex, "Unable to parse body as json.", LogLevel.Debug);
+            }
         }
 
         private static void SetEdgeValues(JObject outer, string prefix, IDictionary<string, object> data)
