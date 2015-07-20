@@ -116,7 +116,7 @@ namespace SuperGlue.Web
             public string Path { get { return _environment.Get<string>(OwinConstants.RequestPath); } }
             public string QueryString { get { return _environment.Get<string>(OwinConstants.RequestQueryString); } }
             public ReadableStringCollection Query { get { return new ReadableStringCollection(GetQuery()); } }
-            public Uri Uri { get { return new Uri(Scheme + Uri.SchemeDelimiter + Host + PathBase + Path + QueryString); } }
+            public Uri Uri { get { return new Uri(Scheme + Uri.SchemeDelimiter + Host + PathBase + Path + (string.IsNullOrEmpty(QueryString) ? "" : "?" + QueryString)); } }
             public string Protocol { get { return _environment.Get<string>(OwinConstants.RequestProtocol); } }
             public RequestHeaders Headers { get { return new RequestHeaders(new ReadOnlyDictionary<string, string[]>(_environment.Get<IDictionary<string, string[]>>(OwinConstants.RequestHeaders, new Dictionary<string, string[]>()))); } }
             public RequestCookieCollection Cookies { get { return new RequestCookieCollection(GetCookies()); } }

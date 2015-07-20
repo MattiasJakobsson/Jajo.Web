@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Output
             return this;
         }
 
-        internal IRenderOutput FindRenderer(IDictionary<string, object> environment)
+        public IRenderOutput FindRenderer(IDictionary<string, object> environment)
         {
             return _renderers.Where(x => x.Item1(environment))
                 .Select(x => x.Item2)

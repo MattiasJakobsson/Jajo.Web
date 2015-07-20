@@ -17,7 +17,14 @@ namespace SuperGlue.Web.Routing
 
         public IEnumerable<EndpointInformation> Build()
         {
-            var possibleEndpoints = _assemblies.SelectMany(x => x.GetTypes()).SelectMany(x => x.GetMethods()).Where(IsValidEndpoint).ToList();
+            var ignoredMethodNames = GetEndpointNamesToIgnore().ToList();
+
+            var possibleEndpoints = _assemblies
+                .SelectMany(x => x.GetTypes())
+                .SelectMany(x => x.GetMethods())
+                .Where(IsValidEndpoint)
+                .OrderBy(x => x.ReflectedType != null && ignoredMethodNames.Contains(x.ReflectedType.Name))
+                .ToList();
 
             return possibleEndpoints.Select(Build);
         }
