@@ -33,7 +33,7 @@ namespace SuperGlue
             {
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
-                WorkingDirectory = Path.GetDirectoryName(path),
+                WorkingDirectory = _applicationPath,
                 UseShellExecute = false,
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
@@ -52,6 +52,9 @@ namespace SuperGlue
             _process.ErrorDataReceived += (x, y) => Console.WriteLine("Application error: {0}", y.Data);
 
             StartProcess();
+
+            _process.BeginOutputReadLine();
+            _process.BeginErrorReadLine();
 
             return Task.CompletedTask;
         }
@@ -74,11 +77,10 @@ namespace SuperGlue
 
         private void StartProcess()
         {
-            if (!_shouldBeStarted || !_process.Start())
+            if (!_shouldBeStarted)
                 return;
 
-            _process.BeginOutputReadLine();
-            _process.BeginErrorReadLine();
+            _process.Start();
         }
 
         private static void KillProcessAndChildren(int pid)

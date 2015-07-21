@@ -12,8 +12,6 @@ namespace SuperGlue.Hosting.Topshelf
             {
                 x.AddCommandLineDefinition("environment", y => settings.Environment = y);
 
-                x.RunAsLocalSystem();
-
                 x.Service<SuperGlueServiceRuntime>(s =>
                 {
                     s.ConstructUsing(name => new SuperGlueServiceRuntime());
@@ -23,8 +21,6 @@ namespace SuperGlue.Hosting.Topshelf
                     s.WhenContinued(r => r.Start(settings.Environment));
                     s.WhenShutdown(r => r.Stop());
                 });
-
-                x.StartAutomatically();
             });
         }
 
@@ -32,7 +28,7 @@ namespace SuperGlue.Hosting.Topshelf
         {
             public ApplicationSettings()
             {
-                Environment = "test";
+                Environment = "local";
             }
 
             public string Environment { get; set; }

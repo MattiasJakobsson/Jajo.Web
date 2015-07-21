@@ -169,7 +169,7 @@ namespace SuperGlue
             parser
                 .Setup<string>('e', "environment")
                 .Callback(x => command.Environment = x)
-                .SetDefault("test");
+                .SetDefault("local");
 
             parser.Parse(args);
 

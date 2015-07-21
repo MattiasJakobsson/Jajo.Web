@@ -24,7 +24,7 @@ namespace SuperGlue.Hosting.SystemWeb
 
             var bootstrapper = SuperGlueBootstrapper.Find();
 
-            bootstrapper.StartApplications(settings, HttpContext.Current.IsDebuggingEnabled ? "test" : "production").Wait();
+            bootstrapper.StartApplications(settings, HttpContext.Current.IsDebuggingEnabled ? "local" : "production").Wait();
 
             isConfigured = true;
         }
