@@ -29,7 +29,7 @@ namespace SuperGlue
 
             var path = Path.Combine(_applicationPath, "SuperGlue.Hosting.Topshelf.exe");
 
-            var startInfo = new ProcessStartInfo(path, string.Format("-e={0}", environment))
+            var startInfo = new ProcessStartInfo(path, string.Format("-environment={0}", environment))
             {
                 CreateNoWindow = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
