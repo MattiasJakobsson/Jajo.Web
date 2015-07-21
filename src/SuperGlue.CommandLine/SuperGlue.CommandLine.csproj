@@ -46,14 +46,20 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="AddApplicationToGroupCommand.cs" />
     <Compile Include="AddProjectFromTemplateCommand.cs" />
+    <Compile Include="ApplicationsConfiguration.cs" />
     <Compile Include="BuildAssetsCommand.cs" />
+    <Compile Include="DirectoryExtensions.cs" />
+    <Compile Include="IApplicationRunner.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ProxyCommand.cs" />
+    <Compile Include="NginxProxy.cs" />
     <Compile Include="RemoteApplication.cs" />
     <Compile Include="RunCommand.cs" />
+    <Compile Include="SetGroupProxyCommand.cs" />
+    <Compile Include="TopshelfHostApplicationRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Binaries\**\*.*">

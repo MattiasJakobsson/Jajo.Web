@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace SuperGlue
 {
     public interface ICommand
     {
-        void Execute();
+        Task Execute();
     }
 }

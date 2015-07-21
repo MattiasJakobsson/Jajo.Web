@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using FubuCsProjFile.Templating.Graph;
 using FubuCsProjFile.Templating.Planning;
 
@@ -11,7 +12,7 @@ namespace SuperGlue
         public string Template { get; set; }
         public string Solution { get; set; }
 
-        public void Execute()
+        public Task Execute()
         {
             var location = Path.GetDirectoryName(Environment.CurrentDirectory);
 
@@ -37,6 +38,8 @@ namespace SuperGlue
 
             var plan = builder.BuildPlan(request);
             plan.Execute();
+
+            return Task.CompletedTask;
         }
     }
 }

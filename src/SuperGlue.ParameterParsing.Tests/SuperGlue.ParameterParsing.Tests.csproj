@@ -50,6 +50,12 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <ProjectReference Include="..\SuperGlue.ParameterParsing\SuperGlue.ParameterParsing.csproj">
+      <Project>{05477077-f5c6-49f3-9037-0ea2f5f107a5}</Project>
+      <Name>SuperGlue.ParameterParsing</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="($(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')) Or ($(TargetFrameworkIdentifier) == 'MonoAndroid') Or ($(TargetFrameworkIdentifier) == 'MonoTouch')">
       <ItemGroup>
@@ -67,11 +73,5 @@
       <Private>True</Private>
       <Paket>True</Paket>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SuperGlue.ParameterParsing\SuperGlue.ParameterParsing.csproj">
-      <Project>{05477077-f5c6-49f3-9037-0ea2f5f107a5}</Project>
-      <Name>SuperGlue.ParameterParsing</Name>
-    </ProjectReference>
   </ItemGroup>
 </Project>

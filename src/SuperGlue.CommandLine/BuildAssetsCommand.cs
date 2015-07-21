@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 using SuperGlue.Web.Assets;
 
 namespace SuperGlue
@@ -8,7 +9,7 @@ namespace SuperGlue
         public string AppPath { get; set; }
         public string Destination { get; set; }
 
-        public void Execute()
+        public Task Execute()
         {
             //HACK:Hard coded path to assets
             var settings = new AssetSettings()
@@ -16,7 +17,7 @@ namespace SuperGlue
                 .UseDestination(Destination)
                 .AddSource(Path.Combine(AppPath, "assets"), 1);
 
-            Assets.CollectAllAssets(settings).Wait();
+            return Assets.CollectAllAssets(settings);
         }
     }
 }

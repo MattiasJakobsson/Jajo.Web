@@ -10,62 +10,53 @@ using SuperGlue.Configuration;
 
 namespace SuperGlue
 {
-    public class ProxyCommand : ICommand
+    public class NginxProxy
     {
         private bool _shouldBeStarted;
+        private readonly IEnumerable<string> _applicationPaths;
+        private readonly int _port;
+        private readonly string _name;
+        private Process _process;
 
-        public string Name { get; set; }
-        public string AppPath { get; set; }
-        public IEnumerable<int> Ports { get; set; }
+        public NginxProxy(IEnumerable<string> applicationPaths, int port, string name)
+        {
+            _applicationPaths = applicationPaths;
+            _port = port;
+            _name = name;
+        }
 
-        public void Execute()
+        public void Start()
         {
             var basePath = new Uri(Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase));
 
             var nginxPath = string.Format("{0}{1}", basePath.AbsolutePath, "/Binaries/nginx");
 
-            if (string.IsNullOrEmpty(Name))
-                Name = Path.GetFileName(AppPath);
-
             var nginxExecutable = string.Format("{0}{1}", nginxPath, "/nginx.exe");
 
-            var process = Restart(nginxExecutable, null);
-
-            Console.WriteLine("Nginx proxy started at: {0}", AppPath);
-
-            var key = Console.ReadKey();
-            while (key.Key != ConsoleKey.Q)
-            {
-                if (key.Key != ConsoleKey.R)
-                    continue;
-
-                Console.WriteLine();
-                Console.WriteLine("Reloading nginx proxy at: {0}", AppPath);
-
-                process = Restart(nginxExecutable, process);
-
-                key = Console.ReadKey();
-            }
-
-            _shouldBeStarted = false;
-
-            if (process != null)
-                KillProcessAndChildren(process.Id);
+            Restart(nginxExecutable);
         }
 
-        private Process Restart(string path, Process process)
+        public void Stop()
         {
             _shouldBeStarted = false;
 
-            if(process != null)
-                KillProcessAndChildren(process.Id);
+            if (_process != null)
+                KillProcessAndChildren(_process.Id);
+        }
+
+        private void Restart(string path)
+        {
+            _shouldBeStarted = false;
+
+            if (_process != null)
+                KillProcessAndChildren(_process.Id);
 
             var config = ReloadConfig(Path.GetDirectoryName(path));
 
-            return StartNginx(path, config);
+            StartNginx(path, config);
         }
 
-        private Process StartNginx(string path, string config)
+        private void StartNginx(string path, string config)
         {
             _shouldBeStarted = true;
 
@@ -80,29 +71,27 @@ namespace SuperGlue
                 RedirectStandardOutput = true
             };
 
-            var process = new Process
+            _process = new Process
             {
                 StartInfo = startInfo,
                 EnableRaisingEvents = true
             };
 
-            process.OutputDataReceived += (x, y) => Console.WriteLine(y.Data);
+            _process.OutputDataReceived += (x, y) => Console.WriteLine(y.Data);
 
-            process.Exited += (x, y) => StartProcess(process);
-            process.ErrorDataReceived += (x, y) => Console.WriteLine("Proxy error: {0}", y.Data);
+            _process.Exited += (x, y) => StartProcess();
+            _process.ErrorDataReceived += (x, y) => Console.WriteLine("Proxy error: {0}", y.Data);
 
-            StartProcess(process);
-
-            return process;
+            StartProcess();
         }
 
-        private void StartProcess(Process process)
+        private void StartProcess()
         {
-            if (!_shouldBeStarted || !process.Start())
+            if (!_shouldBeStarted || !_process.Start())
                 return;
 
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
+            _process.BeginOutputReadLine();
+            _process.BeginErrorReadLine();
         }
 
         private static void KillProcessAndChildren(int pid)
@@ -124,34 +113,24 @@ namespace SuperGlue
 
         private string ReloadConfig(string nginxPath)
         {
-            var applications = FindApplicationsToRun(AppPath);
+            var applications = FindApplicationsToRun().ToList();
 
-            var config = new NginxSettings(Ports, applications);
+            var config = new NginxSettings(_port, applications);
 
-            var configPath = string.Format("{0}\\{1}\\{2}.conf", nginxPath, "config", Name);
+            var configPath = string.Format("{0}\\{1}\\{2}.conf", nginxPath, "config", _name);
 
             config.WriteToLocation(configPath);
 
             return configPath;
         }
 
-        private static IEnumerable<HostingOptions> FindApplicationsToRun(string fromLocation)
+        private IEnumerable<HostingOptions> FindApplicationsToRun()
         {
-            var files = Directory.GetFiles(fromLocation, ".hostingoptions");
-
-            foreach (var file in files)
-            {
-                var options = Files.ReadAsJson<HostingOptions>(file).Result;
-
-                if (options != null)
-                    yield return options;
-            }
-
-            foreach (var child in Directory.GetDirectories(fromLocation))
-            {
-                foreach (var option in FindApplicationsToRun(child))
-                    yield return option;
-            }
+            return _applicationPaths
+                .Select(applicationPath => Path.Combine(applicationPath, ".hostingoptions"))
+                .Where(File.Exists)
+                .Select(file => Files.ReadAsJson<HostingOptions>(file).Result)
+                .Where(options => options != null);
         }
 
         public class HostingOptions
@@ -168,12 +147,12 @@ namespace SuperGlue
 
         public class NginxSettings
         {
-            private readonly IEnumerable<int> _ports;
+            private readonly int _port;
             private readonly IEnumerable<HostingOptions> _hosts;
 
-            public NginxSettings(IEnumerable<int> ports, IEnumerable<HostingOptions> hosts)
+            public NginxSettings(int port, IEnumerable<HostingOptions> hosts)
             {
-                _ports = ports;
+                _port = port;
                 _hosts = hosts;
             }
 
@@ -192,8 +171,7 @@ namespace SuperGlue
 
                 fileBuilder.Append("\tserver {\n");
 
-                foreach (var port in _ports)
-                    fileBuilder.AppendFormat("\t\tlisten {0};\n", port);
+                fileBuilder.AppendFormat("\t\tlisten {0};\n", _port);
 
                 fileBuilder.Append("\t\tserver_name localhost;\n\n");
 
@@ -201,7 +179,7 @@ namespace SuperGlue
                 {
                     var defaultBinding = host.Bindings.FirstOrDefault();
 
-                    if(string.IsNullOrEmpty(defaultBinding))
+                    if (string.IsNullOrEmpty(defaultBinding))
                         continue;
 
                     var basePath = host.ApplicationBasePath;
