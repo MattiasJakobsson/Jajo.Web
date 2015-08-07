@@ -94,7 +94,7 @@ namespace SuperGlue
             {
                 var configuration = Applications.FirstOrDefault(x => x.Path == application);
 
-                return configuration != null ? new ApplicationConfigurationDetails(configuration.Name, configuration.Path, Path.Combine(basePath, "groups", Name)) : null;
+                return configuration != null ? new ApplicationConfigurationDetails(configuration.Name, configuration.Path, Path.Combine(basePath, "groups", Name, configuration.Name)) : null;
             }
         }
 
