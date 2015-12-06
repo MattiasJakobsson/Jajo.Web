@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.XmlTransform;
 
@@ -92,7 +93,7 @@ namespace SuperGlue
             }
         }
 
-        private void TransformConfigurationsIn(string directory, string configExtension, string transformation)
+        private static void TransformConfigurationsIn(string directory, string configExtension, string transformation)
         {
             var configFiles = Directory.GetFiles(directory, string.Format("*{0}", configExtension)).ToList();
 

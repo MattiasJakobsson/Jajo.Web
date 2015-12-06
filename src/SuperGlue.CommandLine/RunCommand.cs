@@ -75,13 +75,14 @@ namespace SuperGlue
 
             await Files.WriteJsonTo(configPath, configuration);
 
-            await Task.WhenAll(runners.Select(x => x.Start(basePath.AbsolutePath)));
+            foreach (var runner in runners)
+                await runner.Start(basePath.AbsolutePath);
 
             NginxProxy proxy = null;
 
             if (shouldStartProxy)
             {
-                proxy = new NginxProxy(runners.Select(x => x.GetApplicationPath()), proxyPort, name);
+                proxy = new NginxProxy(runners.Select(x => x.GetApplicationPath()).ToList(), proxyPort, name);
 
                 proxy.Start();
             }
