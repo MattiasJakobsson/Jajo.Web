@@ -100,11 +100,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.EventStore.Stream
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.RouteInputValidator", "SuperGlue.Web.RouteInputValidator\SuperGlue.Web.RouteInputValidator.csproj", "{7C6DB401-0523-439E-B0A5-766BA4522C72}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SuperGlue.WebSubApplication", "SuperGlue.WebSubApplication", "{F8E73C8A-593F-4198-88DF-E848493116FB}"
-	ProjectSection(SolutionItems) = preProject
-		SuperGlue.WebSubApplication\paket.template = SuperGlue.WebSubApplication\paket.template
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SuperGlue.EventStoreService", "SuperGlue.EventStoreService", "{3325B0F9-0051-40DA-AD5A-68FB23F80EF7}"
 	ProjectSection(SolutionItems) = preProject
 		SuperGlue.EventStoreService\paket.template = SuperGlue.EventStoreService\paket.template
