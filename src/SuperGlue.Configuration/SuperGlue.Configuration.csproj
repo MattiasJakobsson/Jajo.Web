@@ -60,7 +60,6 @@
     </Compile>
     <Compile Include="ApplicationStartersOverrides.cs" />
     <Compile Include="BuildAppFunction.cs" />
-    <Compile Include="AssemblyProxy.cs" />
     <Compile Include="BuildAppFunctionExtensions.cs" />
     <Compile Include="ChainSettings.cs" />
     <Compile Include="ConfigurationEvents.cs" />
