@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.Common.Log;
+using EventStore.ClientAPI.Projections;
 using EventStore.ClientAPI.SystemData;
 
 namespace SuperGlue.EventStore.Data

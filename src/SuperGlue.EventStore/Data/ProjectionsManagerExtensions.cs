@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using EventStore.ClientAPI;
+using EventStore.ClientAPI.Projections;
 using EventStore.ClientAPI.SystemData;
 
 namespace SuperGlue.EventStore.Data
