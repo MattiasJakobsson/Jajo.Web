@@ -1,0 +1,117 @@
+var target = Argument<string>("target", "Default");
+var configuration = Argument<string>("configuration", "Debug");
+var buildNumber = Argument<string>("buildnumber", "0");
+
+var solutions = GetFiles("./**/*.sln");
+var solutionPaths = solutions.Select(solution => solution.GetDirectory());
+
+var version = "1.0.0";
+var packageVersion = string.Format("{0}.{1}", version, buildNumber);
+
+Task("Clean")
+    .Does(() =>
+	{
+		foreach(var path in solutionPaths)
+		{
+			Information("Cleaning {0}", path);
+			CleanDirectories(path + "/**/bin/" + configuration);
+			CleanDirectories(path + "/**/obj/" + configuration);
+		}
+
+		CleanDirectories("./build");
+	});
+
+Task("Version")
+	.Does(() => {
+		CreateAssemblyInfo("./src/CommonAssemblyInfo.cs", new AssemblyInfoSettings {
+			Version = version,
+			FileVersion = version,
+			InformationalVersion = packageVersion
+		});
+	});
+
+Task("BootstrapPaket")
+	.Does(() => {
+		if(!System.IO.File.Exists("./.paket/paket.exe"))
+		{
+			using(var process = StartAndReturnProcess("./.paket/paket.bootstrapper.exe"))
+			{
+				Information("Initializing paket");
+				process.WaitForExit();
+				Information("Exit code: {0}", process.GetExitCode());
+			}
+		}
+	});
+
+Task("Restore")
+	.IsDependentOn("BootstrapPaket")
+    .Does(() =>
+{
+    using(var process = StartAndReturnProcess("./.paket/paket.exe", new ProcessSettings{ Arguments = "restore" }))
+	{
+		Information("Restoring packages");
+		process.WaitForExit();
+		Information("Exit code: {0}", process.GetExitCode());
+	}
+});
+
+Task("Build")
+    .IsDependentOn("Clean")
+    .IsDependentOn("Restore")
+	.IsDependentOn("Version")
+    .Does(() =>
+	{
+		foreach(var solution in solutions)
+		{
+			Information("Building {0}", solution);
+			MSBuild(solution, settings => 
+				settings.SetPlatformTarget(PlatformTarget.MSIL)
+					.WithProperty("TreatWarningsAsErrors","false")
+					.WithTarget("Build")
+					.SetConfiguration(configuration));
+		}
+	});
+
+Task("PaketPack")
+	.IsDependentOn("BootstrapPaket")
+	.Does(() => {
+		using(var process = StartAndReturnProcess("./.paket/paket.exe", new ProcessSettings { Arguments = "pack output build buildconfig " + configuration + " version " + packageVersion }))
+		{
+			Information("Building packages");
+			process.WaitForExit();
+			Information("Exit code: {0}", process.GetExitCode());
+		}
+	});
+
+Task("PaketPush")
+	.IsDependentOn("PaketPack")
+	.Does(() => {
+		var packages = System.IO.Directory.GetFiles("./build", "*.nupkg");
+
+		foreach(var package in packages)
+		{
+			using(var process = StartAndReturnProcess("./.paket/paket.exe", new ProcessSettings { Arguments = "push url https://www.myget.org/F/jakobsson file \"" + package + "\" apikey b0e230b6-1bdb-4321-b6b8-5badc503887f" }))
+			{
+				Information("Pushing packages");
+				process.WaitForExit();
+				Information("Exit code: {0}", process.GetExitCode());
+			}	
+		}
+	});
+
+Task("Test")
+	.IsDependentOn("Build")
+	.Does(() => {
+		Fixie("**/*.Tests/bin/" + configuration + "/*.Tests.dll", new FixieSettings {
+			TeamCity = true
+		});
+	});
+
+Task("Default")
+    .IsDependentOn("Build");
+
+Task("ci")
+	.IsDependentOn("Test")
+	.IsDependentOn("PaketPush");
+
+RunTarget(target);

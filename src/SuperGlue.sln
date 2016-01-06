@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Output.Spark", "SuperGlue.Web.Output.Spark\SuperGlue.Web.Output.Spark.csproj", "{398CB3D5-983E-48B7-8F72-07B2DC735909}"
 EndProject
@@ -70,12 +70,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{03EF3C4D-ED49-4DD9-8B7E-CBABF8EFF080}"
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
-		..\.semver = ..\.semver
-		..\Gemfile = ..\Gemfile
-		..\Gemfile.lock = ..\Gemfile.lock
+		..\build.cake = ..\build.cake
+		..\build.ps1 = ..\build.ps1
 		..\paket.dependencies = ..\paket.dependencies
 		..\paket.lock = ..\paket.lock
-		..\Rakefile = ..\Rakefile
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Diagnostics", "SuperGlue.Diagnostics\SuperGlue.Diagnostics.csproj", "{4BD82DF3-3B6B-4E1E-B5AD-1340D20CEA11}"
