@@ -55,6 +55,7 @@
     <Compile Include="SetupRavenDbMigrationsStorage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>
   <ItemGroup>

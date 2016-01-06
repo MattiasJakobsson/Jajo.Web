@@ -39,6 +39,8 @@ namespace SuperGlue.Configuration
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChainSettings] = (Func<string, ChainSettings>)GetChainSettings;
 
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChain] = (Func<string, Action<IBuildAppFunction>, Task<AppFunc>>)GetChain;
+
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ApplicationName] = ApplicationName;
 
             overrides = overrides ?? ApplicationStartersOverrides.Empty();
@@ -140,6 +142,14 @@ namespace SuperGlue.Configuration
             _chainSettings[chain] = settings;
 
             return settings;
+        }
+
+        protected virtual async Task<AppFunc> GetChain(string name, Action<IBuildAppFunction> buildDefault)
+        {
+            if (!_chains.ContainsKey(name))
+                await AddChain(name, buildDefault);
+
+            return _chains[name];
         }
 
         protected Task AddChain(string name, Action<IBuildAppFunction> configure, Action<ChainSettings> alterSettings = null)

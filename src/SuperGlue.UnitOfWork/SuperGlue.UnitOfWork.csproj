@@ -48,7 +48,9 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
-    <Compile Include="ConfigureUnitOrWork.cs" />
+    <Compile Include="ConfigureUnitOfWork.cs" />
+    <Compile Include="ExecuteShutdown.cs" />
+    <Compile Include="ExecuteStartup.cs" />
     <Compile Include="IApplicationTask.cs" />
     <Compile Include="PushExceptionsToApplicationTasks.cs" />
     <Compile Include="RollbackUnitOfWork.cs" />

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace SuperGlue.Configuration
 {
+    using AppFunc = Func<IDictionary<string, object>, Task>;
+
     public static class ConfigurationsEnvironmentExtensions
     {
         public static class ConfigurationConstants
@@ -14,6 +16,7 @@ namespace SuperGlue.Configuration
             public const string Assemblies = "superglue.Assemblies";
             public const string GetConfigSettings = "superglue.Configuration.GetConfigSettings";
             public const string GetChainSettings = "superglue.Configuration.GetChainSettings";
+            public const string GetChain = "superglue.Configuration.GetChain";
             public const string ResolvePathFunc = "superglue.Configuration.ResolvePath";
             public const string CurrentChainData = "superglue.Configuration.CurrentChainData";
             public const string EventHandlers = "superglue.EventHandlers";
@@ -48,6 +51,11 @@ namespace SuperGlue.Configuration
         public static ChainSettings GetChainSettings(this IDictionary<string, object> environment, string chain)
         {
             return environment.Get<Func<string, ChainSettings>>(ConfigurationConstants.GetChainSettings)(chain);
+        }
+
+        public static Task<AppFunc> GetNamedChain(this IDictionary<string, object> environment, string chain, Action<IBuildAppFunction> buildDefault)
+        {
+            return environment.Get<Func<string, Action<IBuildAppFunction>, Task<AppFunc>>>(ConfigurationConstants.GetChain)(chain, buildDefault);
         }
 
         public static string ResolvePath(this IDictionary<string, object> environment, string relativePath)
