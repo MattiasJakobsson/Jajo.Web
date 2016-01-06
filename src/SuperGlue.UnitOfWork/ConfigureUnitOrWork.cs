@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
@@ -15,10 +17,30 @@ namespace SuperGlue.UnitOfWork
 
                 environment.SubscribeTo(ConfigurationEvents.BeforeApplicationStart, async x =>
                 {
-                    var applicationTasks = x.ResolveAll<IApplicationTask>();
+                    var applicationTasks = x.ResolveAll<IApplicationTask>().ToList();
+                    var unitOfWorks = x.ResolveAll<ISuperGlueUnitOfWork>().ToList();
 
-                    foreach (var applicationTask in applicationTasks)
-                        await applicationTask.Start();
+                    try
+                    {
+                        foreach (var unitOfWork in unitOfWorks)
+                            await unitOfWork.Begin();
+
+                        foreach (var applicationTask in applicationTasks)
+                            await applicationTask.Start();
+
+                        foreach (var unitOfWork in unitOfWorks)
+                            await unitOfWork.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        foreach (var applicationTask in applicationTasks)
+                            await applicationTask.Exception(ex);
+
+                        foreach (var unitOfWork in unitOfWorks)
+                            await unitOfWork.Rollback(ex);
+
+                        throw;
+                    }
                 });
 
                 environment.SubscribeTo(ConfigurationEvents.AfterApplicationShutDown, async x =>

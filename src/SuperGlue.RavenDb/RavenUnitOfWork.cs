@@ -15,17 +15,17 @@ namespace SuperGlue.RavenDb
 
         public Task Begin()
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
 
-        public async Task Commit()
+        public Task Commit()
         {
-            await _ravenSessions.SaveChanges();
+            return _ravenSessions.SaveChanges();
         }
 
         public Task Rollback(Exception exception)
         {
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
     }
 }

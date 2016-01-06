@@ -1,0 +1,12 @@
+﻿type file
+id JaJo.Migrations.Storage.SuperGlue.RavenDb
+version 1.0
+authors Mattias Jakobsson
+description
+	JaJo migrations storage for SuperGlue.RavenDb
+files
+    bin/Release/JaJo.Migrations.Storage.SuperGlue.RavenDb.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.RavenDb
+	JaJo.Migrations
