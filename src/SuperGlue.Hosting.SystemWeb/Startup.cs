@@ -34,7 +34,7 @@ namespace SuperGlue.Hosting.SystemWeb
                 {
                     foreach (var chain in excludedChains)
                         x.Exclude(chain);
-                })).Wait();
+                }), 1).Wait();
 
             isConfigured = true;
         }

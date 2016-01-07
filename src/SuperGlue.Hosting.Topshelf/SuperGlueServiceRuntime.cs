@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
 namespace SuperGlue.Hosting.Topshelf
@@ -7,23 +9,25 @@ namespace SuperGlue.Hosting.Topshelf
     {
         private SuperGlueBootstrapper _bootstrapper;
 
-        public void Start(string environment, params string[] excludedChains)
+        public Task Start(string environment, int retryCount, TimeSpan? retryInterval, params string[] excludedChains)
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, ApplicationStartersOverrides
+            return _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, ApplicationStartersOverrides
                 .Configure()
                 .Chains(x =>
                 {
                     foreach (var chain in excludedChains)
                         x.Exclude(chain);
-                })).Wait();
+                }), retryCount, retryInterval);
         }
 
-        public void Stop()
+        public Task Stop()
         {
             if(_bootstrapper != null)
-                _bootstrapper.ShutDown().Wait();
+                return _bootstrapper.ShutDown();
+
+            return Task.CompletedTask;
         }
     }
 }

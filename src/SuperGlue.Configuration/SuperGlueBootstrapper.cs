@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Configuration
@@ -22,7 +23,51 @@ namespace SuperGlue.Configuration
         private IDictionary<string, object> _environment;
         private string _applicationEnvironment;
 
-        public virtual async Task StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
+        public virtual async Task StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null, int retryCount = 10, TimeSpan? retryInterval = null)
+        {
+            var tries = 0;
+
+            while (tries < retryCount)
+            {
+                try
+                {
+                    await Start(settings, environment, overrides);
+                    break;
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(retryInterval ?? TimeSpan.FromSeconds(5));
+                }
+
+                tries++;
+            }
+        }
+
+        public virtual async Task ShutDown()
+        {
+            var appStarters = _appStarters ?? new List<IStartApplication>();
+
+            await _environment.Publish(ConfigurationEvents.BeforeApplicationShutDown);
+
+            var actions = new ConcurrentBag<Task>();
+
+            Parallel.ForEach(appStarters, x =>
+            {
+                actions.Add(x.ShutDown(_environment));
+            });
+
+            await Task.WhenAll(actions);
+
+            await _environment.Publish(ConfigurationEvents.AfterApplicationShutDown);
+
+            await RunConfigurations(_setups ?? new ReadOnlyCollection<ConfigurationSetupResult>(new Collection<ConfigurationSetupResult>()), _applicationEnvironment, x => x.ShutdownAction(_environment));
+        }
+
+        protected abstract Task Configure(string environment);
+
+        protected abstract string ApplicationName { get; }
+
+        protected virtual async Task Start(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -67,7 +112,7 @@ namespace SuperGlue.Configuration
 
             Parallel.ForEach(_appStarters.GroupBy(x => x.Chain), item =>
             {
-                if(!overrides.ShouldStart(item.Key))
+                if (!overrides.ShouldStart(item.Key))
                     return;
 
                 var starter = item.OrderBy(x => overrides.GetSortOrder(x)).First();
@@ -98,30 +143,6 @@ namespace SuperGlue.Configuration
                 {"ApplicationName", ApplicationName}
             }));
         }
-
-        public virtual async Task ShutDown()
-        {
-            var appStarters = _appStarters ?? new List<IStartApplication>();
-
-            await _environment.Publish(ConfigurationEvents.BeforeApplicationShutDown);
-
-            var actions = new ConcurrentBag<Task>();
-
-            Parallel.ForEach(appStarters, x =>
-            {
-                actions.Add(x.ShutDown(_environment));
-            });
-
-            await Task.WhenAll(actions);
-
-            await _environment.Publish(ConfigurationEvents.AfterApplicationShutDown);
-
-            await RunConfigurations(_setups ?? new ReadOnlyCollection<ConfigurationSetupResult>(new Collection<ConfigurationSetupResult>()), _applicationEnvironment, x => x.ShutdownAction(_environment));
-        }
-
-        protected abstract Task Configure(string environment);
-
-        protected abstract string ApplicationName { get; }
 
         protected virtual object GetSettings(Type settingsType)
         {
