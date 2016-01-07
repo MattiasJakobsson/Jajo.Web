@@ -43,7 +43,7 @@ namespace SuperGlue.Configuration
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ApplicationName] = ApplicationName;
 
-            overrides = overrides ?? ApplicationStartersOverrides.Empty();
+            overrides = overrides ?? ApplicationStartersOverrides.Configure();
 
             var assemblies = LoadApplicationAssemblies().ToList();
 
@@ -67,6 +67,9 @@ namespace SuperGlue.Configuration
 
             Parallel.ForEach(_appStarters.GroupBy(x => x.Chain), item =>
             {
+                if(!overrides.ShouldStart(item.Key))
+                    return;
+
                 var starter = item.OrderBy(x => overrides.GetSortOrder(x)).First();
 
                 AppFunc chain = null;

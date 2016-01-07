@@ -6,25 +6,32 @@ namespace SuperGlue.Configuration
     public class ApplicationStartersOverrides
     {
         private readonly List<Type> _preferedApplicationStarters = new List<Type>();
+        private readonly List<string> _excludedChains = new List<string>();
 
-        private ApplicationStartersOverrides(params Type[] prefered)
+        private ApplicationStartersOverrides()
         {
-            _preferedApplicationStarters.AddRange(prefered);
+            
         }
 
-        public static ApplicationStartersOverrides Empty()
+        public static ApplicationStartersOverrides Configure()
         {
             return new ApplicationStartersOverrides();
         }
 
-        public static ApplicationStartersOverrides Prefer<TApplicationStarter>() where TApplicationStarter : IStartApplication
+        public ApplicationStartersOverrides AppStarters(Action<AppStarterConfiguration> configure)
         {
-            return new ApplicationStartersOverrides(typeof(TApplicationStarter));
+            var config = new AppStarterConfiguration(this);
+
+            configure(config);
+
+            return this;
         }
 
-        public ApplicationStartersOverrides And<TApplicationStarter>() where TApplicationStarter : IStartApplication
+        public ApplicationStartersOverrides Chains(Action<ChainsConfiguration> configure)
         {
-            _preferedApplicationStarters.Add(typeof(TApplicationStarter));
+            var config = new ChainsConfiguration(this);
+
+            configure(config);
 
             return this;
         }
@@ -32,6 +39,45 @@ namespace SuperGlue.Configuration
         internal int GetSortOrder(IStartApplication applicationStarter)
         {
             return _preferedApplicationStarters.Contains(applicationStarter.GetType()) ? 0 : 1;
+        }
+
+        internal bool ShouldStart(string chain)
+        {
+            return !_excludedChains.Contains(chain);
+        }
+
+        public class AppStarterConfiguration
+        {
+            private readonly ApplicationStartersOverrides _applicationStartersOverrides;
+
+            public AppStarterConfiguration(ApplicationStartersOverrides applicationStartersOverrides)
+            {
+                _applicationStartersOverrides = applicationStartersOverrides;
+            }
+
+            public AppStarterConfiguration Prefere<TApplicationStarter>() where TApplicationStarter : IStartApplication
+            {
+                _applicationStartersOverrides._preferedApplicationStarters.Add(typeof(TApplicationStarter));
+
+                return this;
+            }
+        }
+
+        public class ChainsConfiguration
+        {
+            private readonly ApplicationStartersOverrides _applicationStartersOverrides;
+
+            public ChainsConfiguration(ApplicationStartersOverrides applicationStartersOverrides)
+            {
+                _applicationStartersOverrides = applicationStartersOverrides;
+            }
+
+            public ChainsConfiguration Exclude(string chain)
+            {
+                _applicationStartersOverrides._excludedChains.Add(chain);
+
+                return this;
+            }
         }
     }
 }

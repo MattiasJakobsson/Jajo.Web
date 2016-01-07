@@ -7,11 +7,17 @@ namespace SuperGlue.Hosting.Topshelf
     {
         private SuperGlueBootstrapper _bootstrapper;
 
-        public void Start(string environment)
+        public void Start(string environment, params string[] excludedChains)
         {
             _bootstrapper = SuperGlueBootstrapper.Find();
 
-            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment).Wait();
+            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, ApplicationStartersOverrides
+                .Configure()
+                .Chains(x =>
+                {
+                    foreach (var chain in excludedChains)
+                        x.Exclude(chain);
+                })).Wait();
         }
 
         public void Stop()
