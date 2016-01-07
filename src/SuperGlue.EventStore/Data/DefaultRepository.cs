@@ -84,6 +84,11 @@ namespace SuperGlue.EventStore.Data
                 await Save(aggregate.Value.Aggregate);
         }
 
+        public void ThrowAwayChanges()
+        {
+            _loadedAggregates.Clear();
+        }
+
         private async Task Save(IAggregate aggregate)
         {
             var commitHeaders = new Dictionary<string, object>();

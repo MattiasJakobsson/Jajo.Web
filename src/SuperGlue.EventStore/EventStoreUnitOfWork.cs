@@ -42,7 +42,9 @@ namespace SuperGlue.EventStore
 
         public Task Rollback(Exception exception = null)
         {
-            //TODO:Implement
+            _trackEntitiesWithEvents.Clear();
+            _repository.ThrowAwayChanges();
+
             return Task.CompletedTask;
         }
     }

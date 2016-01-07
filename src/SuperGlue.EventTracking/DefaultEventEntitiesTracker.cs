@@ -30,5 +30,13 @@ namespace SuperGlue.EventTracking
                 return _canApplyEvents.Pop();
             }
         }
+
+        public void Clear()
+        {
+            lock (_lockObject)
+            {
+                _canApplyEvents.Clear();
+            }
+        }
     }
 }

@@ -14,11 +14,21 @@ namespace SuperGlue.Caching.Redis
             {
                 environment.RegisterTransient(typeof(ICache), typeof(RedisCacheProvider));
                 environment.RegisterTransient(typeof(IRedisDataSerializer), typeof(DefaultRedisDataSerializer));
-                //HACK:Hard coded connectionstring name
-                environment.RegisterSingleton(typeof(ConnectionMultiplexer), (x, y) => ConnectionMultiplexer.Connect(ConfigurationManager.ConnectionStrings["Redis.Cache"].ConnectionString));
+
+                var connectionString = (environment.GetSettings<RedisCacheSettings>() ?? new RedisCacheSettings()).ConnectionString;
+
+                if(string.IsNullOrEmpty(connectionString))
+                    return Task.CompletedTask;
+
+                environment.RegisterSingleton(typeof(ConnectionMultiplexer), (x, y) => ConnectionMultiplexer.Connect(connectionString));
 
                 return Task.CompletedTask;
-            }, "superglue.CacheSetup");
+            }, "superglue.CacheSetup", configureAction: settings =>
+            {
+                settings.WithSettings<RedisCacheSettings>().UseConnectionString(ConfigurationManager.ConnectionStrings["Redis.Cache"].ConnectionString);
+
+                return Task.CompletedTask;
+            });
         }
     }
 }

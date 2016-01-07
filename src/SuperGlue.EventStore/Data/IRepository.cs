@@ -11,6 +11,7 @@ namespace SuperGlue.EventStore.Data
         Task<IEnumerable<object>> LoadStream(string stream);
         Task RequestTimeOut(string stream, object evnt, IReadOnlyDictionary<string, object> metaData, DateTime at);
         Task SaveChanges();
+        void ThrowAwayChanges();
         Task SaveToStream(string stream, IEnumerable<object> events, IReadOnlyDictionary<string, object> metaData);
         void Attache(IAggregate aggregate);
 

@@ -5,5 +5,6 @@ namespace SuperGlue.EventTracking
         void Track(ICanApplyEvents canApplyEvents);
         int Count { get; }
         TrackedEntity Pop();
+        void Clear();
     }
 }

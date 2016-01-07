@@ -18,7 +18,7 @@ namespace SuperGlue.FeatureToggler
                 throw new ArgumentNullException("next");
 
             if (settings == null)
-                throw new ArgumentNullException("_settings");
+                throw new ArgumentNullException("settings");
 
             _next = next;
             _settings = settings;
