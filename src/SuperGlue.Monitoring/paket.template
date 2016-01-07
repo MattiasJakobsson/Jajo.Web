@@ -1,0 +1,10 @@
+﻿type file
+id SuperGlue.Monitoring
+version 1.0
+authors Mattias Jakobsson
+description
+        Monitoring middleware
+files
+    bin/Release/SuperGlue.Monitoring.dll ==> lib
+dependencies
+	SuperGlue.Configuration

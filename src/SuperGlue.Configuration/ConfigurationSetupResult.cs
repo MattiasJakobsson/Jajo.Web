@@ -6,7 +6,7 @@ namespace SuperGlue.Configuration
 {
     public class ConfigurationSetupResult
     {
-        public ConfigurationSetupResult(string configurationName, Func<IDictionary<string, object>, Task> startupAction, string dependsOn = "superglue.ApplicationSetupStarted",
+        public ConfigurationSetupResult(string configurationName, Func<IDictionary<string, object>, Task> startupAction = null, string dependsOn = "superglue.ApplicationSetupStarted",
             Func<IDictionary<string, object>, Task> shutdownAction = null, Func<SettingsConfiguration, Task> configureAction = null)
         {
             ConfigurationName = configurationName;

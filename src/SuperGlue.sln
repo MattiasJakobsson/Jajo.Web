@@ -142,6 +142,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JaJo.Migrations.SuperGlue",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JaJo.Migrations.Storage.SuperGlue.RavenDb", "JaJo.Migrations.Storage.SuperGlue.RavenDb\JaJo.Migrations.Storage.SuperGlue.RavenDb.csproj", "{40416E6F-C0D9-4857-A21E-29AA19A435A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Monitoring", "SuperGlue.Monitoring\SuperGlue.Monitoring.csproj", "{B579C403-005C-47B3-8E26-1F4A8D228593}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -348,6 +350,10 @@ Global
 		{40416E6F-C0D9-4857-A21E-29AA19A435A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40416E6F-C0D9-4857-A21E-29AA19A435A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{40416E6F-C0D9-4857-A21E-29AA19A435A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B579C403-005C-47B3-8E26-1F4A8D228593}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B579C403-005C-47B3-8E26-1F4A8D228593}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B579C403-005C-47B3-8E26-1F4A8D228593}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B579C403-005C-47B3-8E26-1F4A8D228593}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
