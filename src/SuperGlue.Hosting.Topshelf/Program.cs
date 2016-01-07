@@ -19,10 +19,10 @@ namespace SuperGlue.Hosting.Topshelf
                 x.Service<SuperGlueServiceRuntime>(s =>
                 {
                     s.ConstructUsing(name => new SuperGlueServiceRuntime());
-                    s.WhenStarted(r => r.Start(settings.Environment, settings.GetMaxStartRetrys(), settings.GetRetryInterval(), settings.GetExcludedChains()));
+                    s.WhenStarted(r => r.Start(settings.Environment, settings.GetMaxStartRetries(), settings.GetRetryInterval(), settings.GetExcludedChains()).Wait());
                     s.WhenStopped(r => r.Stop());
                     s.WhenPaused(r => r.Stop());
-                    s.WhenContinued(r => r.Start(settings.Environment, settings.GetMaxStartRetrys(), settings.GetRetryInterval(), settings.GetExcludedChains()));
+                    s.WhenContinued(r => r.Start(settings.Environment, settings.GetMaxStartRetries(), settings.GetRetryInterval(), settings.GetExcludedChains()).Wait());
                     s.WhenShutdown(r => r.Stop());
                 });
             });
@@ -45,7 +45,7 @@ namespace SuperGlue.Hosting.Topshelf
                 return (ExcludedChains ?? "").Split(';');
             }
 
-            public int GetMaxStartRetrys()
+            public int GetMaxStartRetries()
             {
                 int retries;
                 return int.TryParse(MaxStartRetries ?? "", out retries) ? retries : 10;

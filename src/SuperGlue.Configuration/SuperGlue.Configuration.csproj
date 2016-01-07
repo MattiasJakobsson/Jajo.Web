@@ -59,6 +59,7 @@
       <Link>ResolveExtensions.cs</Link>
     </Compile>
     <Compile Include="ApplicationStartersOverrides.cs" />
+    <Compile Include="ApplicationStartupException.cs" />
     <Compile Include="BuildAppFunction.cs" />
     <Compile Include="BuildAppFunctionExtensions.cs" />
     <Compile Include="ChainSettings.cs" />

@@ -26,21 +26,25 @@ namespace SuperGlue.Configuration
         public virtual async Task StartApplications(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null, int retryCount = 10, TimeSpan? retryInterval = null)
         {
             var tries = 0;
+            Exception lastException = null;
 
             while (tries < retryCount)
             {
                 try
                 {
                     await Start(settings, environment, overrides);
-                    break;
+                    return;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    lastException = ex;
                     Thread.Sleep(retryInterval ?? TimeSpan.FromSeconds(5));
                 }
 
                 tries++;
             }
+
+            throw new ApplicationStartupException(tries, lastException);
         }
 
         public virtual async Task ShutDown()
