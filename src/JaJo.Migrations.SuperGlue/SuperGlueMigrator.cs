@@ -15,11 +15,31 @@ namespace JaJo.Migrations.SuperGlue
             _environment = environment;
         }
 
-        protected override Task<IReadOnlyCollection<IMigration<TContext>>> FindMigrationsFor<TContext>(TContext context)
+        protected override Task<IReadOnlyCollection<IMigrationWrapper>> FindMigrationsFor(IMigrationContext context)
         {
-            var migrations = _environment.ResolveAll(typeof(IMigration<>).MakeGenericType(context.GetType())).OfType<IMigration<TContext>>().ToList();
+            var migrations = (IMigrations)_environment.Resolve(typeof(MigrationsList<>).MakeGenericType(context.GetType()));
 
-            return Task.FromResult<IReadOnlyCollection<IMigration<TContext>>>(new ReadOnlyCollection<IMigration<TContext>>(migrations));
+            return Task.FromResult<IReadOnlyCollection<IMigrationWrapper>>(new ReadOnlyCollection<IMigrationWrapper>(migrations.GetMigrations(context).ToList()));
+        }
+
+        private interface IMigrations
+        {
+            IEnumerable<IMigrationWrapper> GetMigrations(IMigrationContext context);
+        }
+
+        private class MigrationsList<TContext> : IMigrations where TContext : IMigrationContext
+        {
+            private readonly IEnumerable<IMigration<TContext>> _migrations;
+
+            public MigrationsList(IEnumerable<IMigration<TContext>> migrations)
+            {
+                _migrations = migrations;
+            }
+
+            public IEnumerable<IMigrationWrapper> GetMigrations(IMigrationContext context)
+            {
+                return _migrations.Select(x => new MigrationWrapper<TContext>(x, (TContext)context));
+            }
         }
     }
 }
