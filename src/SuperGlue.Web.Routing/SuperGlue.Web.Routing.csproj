@@ -52,6 +52,7 @@
       <Link>RouteExtensions.cs</Link>
     </Compile>
     <Compile Include="EndpointInformation.cs" />
+    <Compile Include="IRouteConstraint.cs" />
     <Compile Include="IRoutePolicy.cs" />
     <Compile Include="ICheckIfRouteExists.cs" />
     <Compile Include="IRouteBuilder.cs" />

@@ -26,6 +26,7 @@ namespace SuperGlue.Web.Routing.Superscribe
         };
 
         private GraphNode _node;
+        private readonly ICollection<IRouteConstraint> _constraints = new List<IRouteConstraint>();
 
         private readonly IEnumerable<ICheckIfRouteExists> _checkIfRouteExists;
         private readonly IStringRouteParser _stringRouteParser;
@@ -66,6 +67,11 @@ namespace SuperGlue.Web.Routing.Superscribe
             _node = _node == null ? patternNode : _node.Slash(patternNode);
         }
 
+        public void AddConstraint(IRouteConstraint constraint)
+        {
+            _constraints.Add(constraint);
+        }
+
         public void Build(object routeTo, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, IDictionary<string, object> environment)
         {
             var baseNode = environment.GetRouteEngine().Base;
@@ -83,6 +89,9 @@ namespace SuperGlue.Web.Routing.Superscribe
             }
 
             _node.FinalFunctions.AddRange(finalFunctions);
+
+            var oldActivationFunction = _node.ActivationFunction;
+            _node.ActivationFunction = (routeData, segment) => _constraints.All(x => x.IsValid(routeTo)) && oldActivationFunction(routeData, segment);
 
             baseNode.Zip(_node.Base());
 

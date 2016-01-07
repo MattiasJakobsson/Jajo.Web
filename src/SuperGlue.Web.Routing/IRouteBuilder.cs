@@ -9,6 +9,7 @@ namespace SuperGlue.Web.Routing
         void Append(string segment);
         void AppendParameter(RouteParameter parameter);
         void AppendPattern(string pattern);
+        void AddConstraint(IRouteConstraint constraint);
 
         void Build(object routeTo, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, IDictionary<string, object> environment);
     }
