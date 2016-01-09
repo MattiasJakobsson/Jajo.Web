@@ -11,7 +11,8 @@ namespace SuperGlue.EventStore.ProcessManagers
             yield return new ConfigurationSetupResult("superglue.EventStore.ProcessManagers.Configured",
                 environment =>
                 {
-                    environment.RegisterAll(typeof (IManageProcess));
+                    environment.RegisterAll(typeof(IManageProcess));
+                    environment.RegisterTransient(typeof(IProcessManagerInstaller), typeof(ProcessManagerInstaller));
 
                     return Task.CompletedTask;
                 }, "superglue.ContainerSetup");

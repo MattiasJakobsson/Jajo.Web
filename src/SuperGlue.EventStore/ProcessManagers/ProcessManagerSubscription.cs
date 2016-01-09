@@ -5,12 +5,10 @@ namespace SuperGlue.EventStore.ProcessManagers
 {
     public class ProcessManagerSubscription
     {
-        private readonly IDisposable _observableSubscription;
-        private readonly EventStoreStreamCatchUpSubscription _eventStoreSubscription;
+        private readonly EventStorePersistentSubscriptionBase _eventStoreSubscription;
 
-        public ProcessManagerSubscription(IDisposable observableSubscription, EventStoreStreamCatchUpSubscription eventStoreSubscription)
+        public ProcessManagerSubscription(EventStorePersistentSubscriptionBase eventStoreSubscription)
         {
-            _observableSubscription = observableSubscription;
             _eventStoreSubscription = eventStoreSubscription;
         }
 
@@ -19,7 +17,6 @@ namespace SuperGlue.EventStore.ProcessManagers
             try
             {
                 _eventStoreSubscription.Stop(TimeSpan.FromSeconds(5));
-                _observableSubscription.Dispose();
                 
                 return true;
             }

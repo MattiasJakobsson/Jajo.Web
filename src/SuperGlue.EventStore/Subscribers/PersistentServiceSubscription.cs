@@ -3,14 +3,12 @@ using EventStore.ClientAPI;
 
 namespace SuperGlue.EventStore.Subscribers
 {
-    public class CatchUpServiceSubscription : IServiceSubscription
+    public class PersistentServiceSubscription : IServiceSubscription
     {
-        private readonly IDisposable _observableSubscription;
-        private readonly EventStoreStreamCatchUpSubscription _eventStoreSubscription;
+        private readonly EventStorePersistentSubscriptionBase _eventStoreSubscription;
 
-        public CatchUpServiceSubscription(IDisposable observableSubscription, EventStoreStreamCatchUpSubscription eventStoreSubscription)
+        public PersistentServiceSubscription(EventStorePersistentSubscriptionBase eventStoreSubscription)
         {
-            _observableSubscription = observableSubscription;
             _eventStoreSubscription = eventStoreSubscription;
         }
 
@@ -19,7 +17,6 @@ namespace SuperGlue.EventStore.Subscribers
             try
             {
                 _eventStoreSubscription.Stop(TimeSpan.FromSeconds(5));
-                _observableSubscription.Dispose();
 
                 return true;
             }

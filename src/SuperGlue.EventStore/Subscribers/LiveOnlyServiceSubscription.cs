@@ -5,12 +5,10 @@ namespace SuperGlue.EventStore.Subscribers
 {
     public class LiveOnlyServiceSubscription : IServiceSubscription
     {
-        private readonly IDisposable _observableSubscription;
         private readonly EventStoreSubscription _eventStoreSubscription;
 
-        public LiveOnlyServiceSubscription(IDisposable observableSubscription, EventStoreSubscription eventStoreSubscription)
+        public LiveOnlyServiceSubscription(EventStoreSubscription eventStoreSubscription)
         {
-            _observableSubscription = observableSubscription;
             _eventStoreSubscription = eventStoreSubscription;
         }
 
@@ -19,7 +17,6 @@ namespace SuperGlue.EventStore.Subscribers
             try
             {
                 _eventStoreSubscription.Close();
-                _observableSubscription.Dispose();
 
                 return true;
             }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SuperGlue.EventStore.ProcessManagers;
 using SuperGlue.EventStore.Projections;
 
@@ -14,7 +13,7 @@ namespace SuperGlue.EventStore
             public const string Stream = "superglue.EventStore.Stream";
             public const string IsCatchUp = "superglue.EventStore.IsCatchUp";
             public const string Events = "superglue.EventStore.Events";
-            public const string OnException = "superglue.EventStore.OnException";
+            public const string Event = "superglue.EventStore.Event";
             public const string EventsGroupedBy = "superglue.EventStore.EventsGroupedBy";
         }
 
@@ -55,6 +54,12 @@ namespace SuperGlue.EventStore
                 set { _environment[EventStoreConstants.Events] = value; }
             }
 
+            public DeSerializationResult Event
+            {
+                get { return _environment.Get<DeSerializationResult>(EventStoreConstants.Event); }
+                set { _environment[EventStoreConstants.Event] = value; }
+            }
+
             public string Stream
             {
                 get { return _environment.Get<string>(EventStoreConstants.Stream); }
@@ -65,12 +70,6 @@ namespace SuperGlue.EventStore
             {
                 get { return _environment.Get<bool>(EventStoreConstants.IsCatchUp); }
                 set { _environment[EventStoreConstants.IsCatchUp] = value; }
-            }
-
-            public Action<Exception, DeSerializationResult> OnException
-            {
-                get { return _environment.Get<Action<Exception, DeSerializationResult>>(EventStoreConstants.OnException) ?? ((x, y) => { }); }
-                set { _environment[EventStoreConstants.OnException] = value; }
             }
         }
     }

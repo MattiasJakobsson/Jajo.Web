@@ -15,7 +15,7 @@ namespace SuperGlue.EventStore.ConflictManagement
 
         public bool HasConflicts(IEnumerable<object> newEvents, IEnumerable<ResolvedEvent> storedEvents, IDictionary<string, object> environment)
         {
-            var storedEventsList = storedEvents.Select(x => _eventSerialization.DeSerialize(x.Event.EventId, x.Event.EventNumber, x.OriginalEventNumber, x.Event.Metadata, x.Event.Data)).ToList();
+            var storedEventsList = storedEvents.Select(x => _eventSerialization.DeSerialize(x)).ToList();
 
             foreach (var newEvent in newEvents)
             {

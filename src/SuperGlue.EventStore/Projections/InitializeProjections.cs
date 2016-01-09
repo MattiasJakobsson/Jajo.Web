@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
-using SuperGlue.EventStore.Messages;
 
 namespace SuperGlue.EventStore.Projections
 {
@@ -18,32 +16,14 @@ namespace SuperGlue.EventStore.Projections
         private readonly IHandleEventSerialization _eventSerialization;
         private readonly IEnumerable<IEventStoreProjection> _projections;
         private readonly IEventStoreConnection _eventStoreConnection;
-        private readonly IWriteToErrorStream _writeToErrorStream;
         private static bool running;
         private readonly IDictionary<string, ProjectionSubscription> _projectionSubscriptions = new Dictionary<string, ProjectionSubscription>();
 
-        private readonly int _dispatchWaitSeconds;
-        private readonly int _numberOfEventsPerBatch;
-
-        public InitializeProjections(IHandleEventSerialization eventSerialization, IEnumerable<IEventStoreProjection> projections, IWriteToErrorStream writeToErrorStream,
-            IEventStoreConnection eventStoreConnection)
+        public InitializeProjections(IHandleEventSerialization eventSerialization, IEnumerable<IEventStoreProjection> projections, IEventStoreConnection eventStoreConnection)
         {
             _eventSerialization = eventSerialization;
             _projections = projections;
-            _writeToErrorStream = writeToErrorStream;
             _eventStoreConnection = eventStoreConnection;
-
-            _dispatchWaitSeconds = 1;
-
-            int dispatchWaitSeconds;
-            if (int.TryParse(ConfigurationManager.AppSettings["BatchDispatcher.WaitSeconds"] ?? "", out dispatchWaitSeconds))
-                _dispatchWaitSeconds = dispatchWaitSeconds;
-
-            _numberOfEventsPerBatch = 256;
-
-            int numberOfEventsPerBatch;
-            if (int.TryParse(ConfigurationManager.AppSettings["BatchDispatcher.NumberOfEventsPerBatch"] ?? "", out numberOfEventsPerBatch))
-                _numberOfEventsPerBatch = numberOfEventsPerBatch;
         }
 
         public string Chain { get { return "chains.Projections"; } }
@@ -80,7 +60,6 @@ namespace SuperGlue.EventStore.Projections
 
         protected virtual void OnProjectionError(IEventStoreProjection projection, object message, IDictionary<string, object> metaData, Exception exception, IDictionary<string, object> environment)
         {
-            _writeToErrorStream.Write(new ProjectionFailed(projection.ProjectionName, exception, message, metaData), _eventStoreConnection, ConfigurationManager.AppSettings["Error.Stream"]);
             environment.Log(exception, "Error while processing event of type: {0} for projection: {1}", LogLevel.Error, message != null ? message.GetType().FullName : "Unknown", projection.ProjectionName);
         }
 
@@ -91,10 +70,15 @@ namespace SuperGlue.EventStore.Projections
 
             environment.Log("Subscribing projection: {0}", LogLevel.Debug, currentEventStoreProjection.ProjectionName);
 
+            var bufferSettings = environment.GetSettings<ProjectionSettings>().GetBufferSettings();
+
             while (true)
             {
                 if (_projectionSubscriptions.ContainsKey(currentEventStoreProjection.ProjectionName))
+                {
+                    _projectionSubscriptions[currentEventStoreProjection.ProjectionName].Close();
                     _projectionSubscriptions.Remove(currentEventStoreProjection.ProjectionName);
+                }
 
                 try
                 {
@@ -103,11 +87,11 @@ namespace SuperGlue.EventStore.Projections
                     var messageProcessor = new MessageProcessor();
                     var messageSubscription = Observable
                         .FromEvent<DeSerializationResult>(x => messageProcessor.MessageArrived += x, x => messageProcessor.MessageArrived -= x)
-                        .Buffer(TimeSpan.FromSeconds(_dispatchWaitSeconds), _numberOfEventsPerBatch)
+                        .Buffer(TimeSpan.FromSeconds(bufferSettings.Seconds), bufferSettings.NumberOfEvents)
                         .Subscribe(async x => await PushEventsToProjections(chain, currentEventStoreProjection, x, environment));
 
                     var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentEventStoreProjection.ProjectionName, await eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName, environment), true,
-                        (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data)),
+                        (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt)),
                         subscriptionDropped: async (subscription, reason, exception) => await SubscriptionDropped(chain, currentEventStoreProjection, reason, exception, environment));
 
                     _projectionSubscriptions[currentEventStoreProjection.ProjectionName] = new ProjectionSubscription(messageSubscription, eventStoreSubscription);
@@ -119,9 +103,9 @@ namespace SuperGlue.EventStore.Projections
                     if (!running)
                         return;
 
-                    environment.Log(ex, "Couldn't subscribe projection: {0}. Retrying in 500 ms.", LogLevel.Warn, currentEventStoreProjection.ProjectionName);
+                    environment.Log(ex, "Couldn't subscribe projection: {0}. Retrying in 5 seconds.", LogLevel.Warn, currentEventStoreProjection.ProjectionName);
 
-                    Thread.Sleep(TimeSpan.FromMilliseconds(500));
+                    Thread.Sleep(TimeSpan.FromSeconds(5));
                 }
             }
         }
@@ -133,7 +117,8 @@ namespace SuperGlue.EventStore.Projections
 
             environment.Log(exception, "Subscription dropped for projection: {0}. Reason: {1}. Retrying...", LogLevel.Warn, projection.ProjectionName, reason);
 
-            await SubscribeProjection(projection, chain, environment);
+            if (reason != SubscriptionDropReason.UserInitiated)
+                await SubscribeProjection(projection, chain, environment);
         }
 
         private async Task PushEventsToProjections(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, IDictionary<string, object> environment)
@@ -153,27 +138,21 @@ namespace SuperGlue.EventStore.Projections
 
             try
             {
-                await PushEvents(chain, projection, successfullEvents, environment);
+                var requestEnvironment = new Dictionary<string, object>();
+                foreach (var item in environment)
+                    requestEnvironment[item.Key] = item.Value;
+
+                var request = requestEnvironment.GetEventStoreRequest();
+
+                request.Projection = projection;
+                request.Events = eventsList;
+
+                await chain(requestEnvironment);
             }
             catch (Exception ex)
             {
                 environment.Log(ex, "Couldn't push events to projection: {0}", LogLevel.Error, projection.ProjectionName);
             }
-        }
-
-        private async Task PushEvents(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, IDictionary<string, object> environment)
-        {
-            var requestEnvironment = new Dictionary<string, object>();
-            foreach (var item in environment)
-                requestEnvironment[item.Key] = item.Value;
-
-            var request = requestEnvironment.GetEventStoreRequest();
-
-            request.Projection = projection;
-            request.Events = events;
-            request.OnException = (exception, evnt) => OnProjectionError(projection, evnt.Data, evnt.Metadata, exception, environment);
-
-            await chain(requestEnvironment);
         }
     }
 }

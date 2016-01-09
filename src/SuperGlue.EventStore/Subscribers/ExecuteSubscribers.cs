@@ -21,32 +21,9 @@ namespace SuperGlue.EventStore.Subscribers
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var events = environment.GetEventStoreRequest().Events;
-            var onError = environment.GetEventStoreRequest().OnException;
+            var evnt = environment.GetEventStoreRequest().Event;
 
-            foreach (var evnt in events)
-            {
-                Exception lastException = null;
-                var retryCount = 0;
-
-                while (retryCount < 5)
-                {
-                    try
-                    {
-                        await Execute(evnt, environment);
-                        lastException = null;
-                        break;
-                    }
-                    catch (Exception exception)
-                    {
-                        lastException = exception;
-                        retryCount++;
-                    }
-                }
-
-                if (lastException != null)
-                    onError(lastException, evnt);
-            }
+            await Execute(evnt, environment);
 
             await _next(environment);
         }

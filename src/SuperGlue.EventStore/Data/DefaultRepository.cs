@@ -242,7 +242,7 @@ namespace SuperGlue.EventStore.Data
 
         private object DeserializeEvent(ResolvedEvent evnt)
         {
-            return _eventSerialization.DeSerialize(evnt.Event.EventId, evnt.Event.EventNumber, evnt.OriginalEventNumber, evnt.Event.Metadata, evnt.Event.Data).Data;
+            return _eventSerialization.DeSerialize(evnt).Data;
         }
 
         private class LoadedAggregate

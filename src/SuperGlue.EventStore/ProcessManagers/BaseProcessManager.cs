@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.EventStore.Data;
 
@@ -11,7 +12,7 @@ namespace SuperGlue.EventStore.ProcessManagers
         private readonly IRepository _repository;
 
         private readonly IDictionary<string, TState> _instances = new Dictionary<string, TState>();
-        private IReadOnlyDictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>>> _eventMappings;
+        private IReadOnlyDictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>, string>> _eventMappings;
 
         protected BaseProcessManager(IRepository repository)
         {
@@ -28,14 +29,24 @@ namespace SuperGlue.EventStore.ProcessManagers
                 yield return stream;
         }
 
-        public void Start()
+        public IReadOnlyDictionary<Type, string> GetEventMappings()
         {
-            var eventMappings = new Dictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>>>();
+            var eventMappings = new Dictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>, string>>();
             var mappingContext = new ProcessManagerEventMappingContext<TState>(eventMappings);
 
             MapEvents(mappingContext);
 
-            _eventMappings = new ReadOnlyDictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>>>(eventMappings);
+            return new ReadOnlyDictionary<Type, string>(eventMappings.ToDictionary(x => x.Key, x => x.Value.Item3));
+        }
+
+        public void Start()
+        {
+            var eventMappings = new Dictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>, string>>();
+            var mappingContext = new ProcessManagerEventMappingContext<TState>(eventMappings);
+
+            MapEvents(mappingContext);
+
+            _eventMappings = new ReadOnlyDictionary<Type, Tuple<Func<object, TState, IDictionary<string, object>, Task>, Func<object, string>, string>>(eventMappings);
 
             OnStarted();
         }

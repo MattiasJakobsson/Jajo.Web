@@ -15,7 +15,12 @@ namespace SuperGlue.EventStore.Projections
 
                     return Task.CompletedTask;
                 }, 
-                "superglue.ContainerSetup");
+                "superglue.ContainerSetup", configureAction: x =>
+                {
+                    x.InitializeSettings<ProjectionSettings>();
+
+                    return Task.CompletedTask;
+                });
         }
     }
 }

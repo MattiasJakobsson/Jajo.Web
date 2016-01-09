@@ -62,7 +62,6 @@
     <Compile Include="EventStoreUnitOfWork.cs" />
     <Compile Include="GroupEvents.cs" />
     <Compile Include="MessageProcessor.cs" />
-    <Compile Include="IWriteToErrorStream.cs" />
     <Compile Include="ConflictManagement\DefaultConflictChecker.cs" />
     <Compile Include="ConflictManagement\ConflictingEventException.cs" />
     <Compile Include="ConflictManagement\ICheckConflict.cs" />
@@ -80,20 +79,17 @@
     <Compile Include="IEventStream.cs" />
     <Compile Include="IManageChanges.cs" />
     <Compile Include="Data\DefaultRepository.cs" />
-    <Compile Include="Messages\ProcessManagerFailed.cs" />
-    <Compile Include="Messages\ServiceEventProcessingFailed.cs" />
-    <Compile Include="Messages\ProjectionFailed.cs" />
     <Compile Include="ProcessManagers\BaseProcessManager.cs" />
     <Compile Include="ProcessManagers\BaseProcessManagerState.cs" />
     <Compile Include="ProcessManagers\ConfigureProcessManagers.cs" />
     <Compile Include="ProcessManagers\ExecuteProcessManager.cs" />
     <Compile Include="ProcessManagers\InitializeProcessManagers.cs" />
+    <Compile Include="ProcessManagers\IProcessManagerInstaller.cs" />
+    <Compile Include="ProcessManagers\ProcessManagerInstaller.cs" />
     <Compile Include="ProcessManagers\ProcessManagerSubscription.cs" />
-    <Compile Include="ProcessManagers\IManageProcessManagerStreamEventNumbers.cs" />
     <Compile Include="ProcessManagers\ProcessManagerEventMappingContext.cs" />
     <Compile Include="ProcessManagers\IProcessManagerState.cs" />
     <Compile Include="ProcessManagers\IManageProcess.cs" />
-    <Compile Include="ProcessManagers\SetLastEvent.cs" />
     <Compile Include="Projections\ApplyStateChangesTo.cs" />
     <Compile Include="Projections\ConfigureProjections.cs" />
     <Compile Include="Projections\CreateEventStoreProjections.cs" />
@@ -105,17 +101,17 @@
     <Compile Include="Projections\IEventStoreProjection.cs" />
     <Compile Include="Projections\InitializeProjections.cs" />
     <Compile Include="Projections\ProjectionEventMappingContext.cs" />
+    <Compile Include="Projections\ProjectionSettings.cs" />
     <Compile Include="Projections\ProjectionSubscription.cs" />
     <Compile Include="Projections\SetLastEvent.cs" />
-    <Compile Include="Subscribers\CatchUpServiceSubscription.cs" />
+    <Compile Include="Subscribers\PersistentServiceSubscription.cs" />
     <Compile Include="Subscribers\ConfigureSubscribers.cs" />
     <Compile Include="Subscribers\ISubscribeTo.cs" />
     <Compile Include="Subscribers\ExecuteSubscribers.cs" />
     <Compile Include="Subscribers\InitializeSubscribers.cs" />
     <Compile Include="Subscribers\LiveOnlyServiceSubscription.cs" />
-    <Compile Include="Subscribers\IManageEventNumbersForSubscriber.cs" />
     <Compile Include="Subscribers\IServiceSubscription.cs" />
-    <Compile Include="Subscribers\SetLastEvent.cs" />
+    <Compile Include="Subscribers\SubscribersSettings.cs" />
     <Compile Include="Timeouts\DefaultTimeOutManager.cs" />
     <Compile Include="Timeouts\IManageTimeOuts.cs" />
     <Compile Include="Data\InvalidEventstoreConnectionStringException.cs" />
@@ -128,7 +124,6 @@
     <Compile Include="Timeouts\TimeoutData.cs" />
     <Compile Include="Timeouts\TimeOutManager.cs" />
     <Compile Include="TypeThresholdedActionBasedDomainEventHandler.cs" />
-    <Compile Include="DefaultErrorStreamWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />

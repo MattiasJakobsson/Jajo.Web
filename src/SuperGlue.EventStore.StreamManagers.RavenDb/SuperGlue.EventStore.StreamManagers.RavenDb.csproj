@@ -50,11 +50,7 @@
       <Link>ResolveExtensions.cs</Link>
     </Compile>
     <Compile Include="ManageEventNumbersForProjectionsInRavenDb.cs" />
-    <Compile Include="ManageEventNumbersForSubscriberInRavenDb.cs" />
-    <Compile Include="ProcessManagerEventNumber.cs" />
     <Compile Include="ProjectionEventNumber.cs" />
-    <Compile Include="ServiceEventNumber.cs" />
-    <Compile Include="ManageProcessManagerStreamEventNumbersInRavenDb.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupRavenDbStreamManagerConfiguration.cs" />
   </ItemGroup>

@@ -27,7 +27,6 @@ namespace SuperGlue.EventStore.Data
                 environment.RegisterSingleton(typeof(EventStoreConnectionString), (x, y) => connectionString);
                 environment.RegisterAll(typeof(IManageChanges));
                 environment.RegisterTransient(typeof(IHandleEventSerialization), typeof(DefaultEventSerializer));
-                environment.RegisterTransient(typeof(IWriteToErrorStream), typeof(DefaultErrorStreamWriter));
                 environment.RegisterTransient(typeof(IRepository), typeof(DefaultRepository));
                 environment.RegisterTransient(typeof(ICheckConflicts), typeof(DefaultConflictChecker));
                 environment.RegisterAllClosing(typeof(ICheckConflict<,>));
