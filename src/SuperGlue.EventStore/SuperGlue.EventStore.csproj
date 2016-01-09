@@ -141,6 +141,10 @@
       <Project>{ddc9a27c-73ab-48fd-91f0-46bc689bef6f}</Project>
       <Name>SuperGlue.EventTracking</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.ExceptionManagement\SuperGlue.ExceptionManagement.csproj">
+      <Project>{cf7ca649-d8d8-41e1-8adc-19b95d4ea94d}</Project>
+      <Name>SuperGlue.ExceptionManagement</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.MetaData\SuperGlue.MetaData.csproj">
       <Project>{8f59591f-320e-468f-af32-4e47a5aaa432}</Project>
       <Name>SuperGlue.MetaData</Name>

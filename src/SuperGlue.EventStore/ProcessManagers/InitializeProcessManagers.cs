@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
+using SuperGlue.UnitOfWork;
 
 namespace SuperGlue.EventStore.ProcessManagers
 {
@@ -56,7 +57,7 @@ namespace SuperGlue.EventStore.ProcessManagers
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
             settings.Log("Building default chain for processmanagers for environment: {0}", LogLevel.Debug, environment);
-            return buildApp.Use<ExecuteProcessManager>().Build();
+            return buildApp.Use<HandleUnitOfWork>(true).Use<ExecuteProcessManager>().Build();
         }
 
         private void SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)

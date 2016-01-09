@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
+using SuperGlue.UnitOfWork;
 
 namespace SuperGlue.EventStore.Subscribers
 {
@@ -55,7 +56,7 @@ namespace SuperGlue.EventStore.Subscribers
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
             settings.Log("Getting default chain for subscribers for environment: {0}", LogLevel.Debug, environment);
-            return buildApp.Use<ExecuteSubscribers>().Build();
+            return buildApp.Use<HandleUnitOfWork>(true).Use<ExecuteSubscribers>().Build();
         }
 
         private async Task SubscribeService(AppFunc chain, string stream, bool liveOnlySubscriptions, string subscriptionKey, IDictionary<string, object> environment)

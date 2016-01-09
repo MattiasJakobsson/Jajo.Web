@@ -51,9 +51,11 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
+    <Compile Include="Retry.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="HandleExceptions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RetryException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.template" />
