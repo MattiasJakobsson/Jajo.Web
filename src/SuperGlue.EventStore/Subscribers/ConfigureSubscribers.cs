@@ -13,6 +13,7 @@ namespace SuperGlue.EventStore.Subscribers
             yield return new ConfigurationSetupResult("superglue.EventStoreSubscribersSetup", environment =>
             {
                 environment.RegisterAllClosing(typeof (ISubscribeTo<>));
+                environment.RegisterTransient(typeof(ISubscriberInstaller), typeof(DefaultSubscriberInstaller));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup", configureAction: x =>

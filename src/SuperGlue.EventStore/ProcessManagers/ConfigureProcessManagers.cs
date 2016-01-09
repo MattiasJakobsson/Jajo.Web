@@ -12,7 +12,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                 environment =>
                 {
                     environment.RegisterAll(typeof(IManageProcess));
-                    environment.RegisterTransient(typeof(IProcessManagerInstaller), typeof(ProcessManagerInstaller));
+                    environment.RegisterTransient(typeof(IProcessManagerInstaller), typeof(DefaultProcessManagerInstaller));
 
                     return Task.CompletedTask;
                 }, "superglue.ContainerSetup");

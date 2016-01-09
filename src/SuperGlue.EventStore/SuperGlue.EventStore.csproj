@@ -85,7 +85,7 @@
     <Compile Include="ProcessManagers\ExecuteProcessManager.cs" />
     <Compile Include="ProcessManagers\InitializeProcessManagers.cs" />
     <Compile Include="ProcessManagers\IProcessManagerInstaller.cs" />
-    <Compile Include="ProcessManagers\ProcessManagerInstaller.cs" />
+    <Compile Include="ProcessManagers\DefaultProcessManagerInstaller.cs" />
     <Compile Include="ProcessManagers\ProcessManagerSubscription.cs" />
     <Compile Include="ProcessManagers\ProcessManagerEventMappingContext.cs" />
     <Compile Include="ProcessManagers\IProcessManagerState.cs" />
@@ -104,6 +104,8 @@
     <Compile Include="Projections\ProjectionSettings.cs" />
     <Compile Include="Projections\ProjectionSubscription.cs" />
     <Compile Include="Projections\SetLastEvent.cs" />
+    <Compile Include="Subscribers\DefaultSubscriberInstaller.cs" />
+    <Compile Include="Subscribers\ISubscriberInstaller.cs" />
     <Compile Include="Subscribers\PersistentServiceSubscription.cs" />
     <Compile Include="Subscribers\ConfigureSubscribers.cs" />
     <Compile Include="Subscribers\ISubscribeTo.cs" />
