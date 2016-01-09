@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
@@ -18,7 +17,17 @@ namespace SuperGlue.Notifications
                 {
                     var notifiers = environment.ResolveAll<IRecieveNotifications>();
 
-                    await Task.WhenAll(notifiers.Select(x => x.ErrorNotification(from, message, environment, exception)));
+                    foreach (var notifier in notifiers)
+                    {
+                        try
+                        {
+                            await notifier.ErrorNotification(from, message, environment, exception);
+                        }
+                        catch (Exception ex)
+                        {
+                            environment.Log(ex, "Failed to notify reciever: {0}", LogLevel.Error, notifier.GetType().Name);
+                        }
+                    }
                 });
 
                 return Task.CompletedTask;
