@@ -62,13 +62,13 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         private void SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)
         {
-            if (!running)
-                return;
-
             environment.Log("Subscribing processmanager: {0}", LogLevel.Debug, currentProcessManager.ProcessName);
 
             while (true)
             {
+                if (!running)
+                    return;
+
                 if (_processManagerSubscriptions.ContainsKey(currentProcessManager.ProcessName))
                 {
                     _processManagerSubscriptions[currentProcessManager.ProcessName].Close();
@@ -111,6 +111,9 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         private static async Task PushEventToProcessManager(AppFunc chain, IManageProcess processManager, DeSerializationResult evnt, IDictionary<string, object> environment, EventStorePersistentSubscriptionBase subscription)
         {
+            if (!running)
+                return;
+
             if (!evnt.Successful)
             {
                 subscription.Fail(evnt.OriginalEvent, PersistentSubscriptionNakEventAction.Unknown, evnt.Error.Message);

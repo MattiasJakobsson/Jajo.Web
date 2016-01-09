@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 
@@ -22,7 +23,7 @@ namespace SuperGlue.EventStore.Subscribers
 
                 settings
                     .FindPersistentSubscriptionNameUsing((serviceName, stream) => string.Format("{0}-{1}", serviceName, stream))
-                    .ServiceName(ConfigurationManager.AppSettings["Service.Name"]);
+                    .ServiceName(Assembly.GetExecutingAssembly().FullName.Replace(".", ""));
 
                 var streams = (ConfigurationManager.AppSettings["EventStore.Streams"] ?? "").Split(';').Where(y => !string.IsNullOrWhiteSpace(y)).ToList();
 

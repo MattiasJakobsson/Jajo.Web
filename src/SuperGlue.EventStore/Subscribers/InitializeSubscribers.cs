@@ -61,13 +61,13 @@ namespace SuperGlue.EventStore.Subscribers
 
         private async Task SubscribeService(AppFunc chain, string stream, bool liveOnlySubscriptions, string subscriptionKey, IDictionary<string, object> environment)
         {
-            if (!running)
-                return;
-
             environment.Log("Subscribing to stream: {0}", LogLevel.Debug, stream);
 
             while (true)
             {
+                if (!running)
+                    return;
+
                 try
                 {
                     if (_serviceSubscriptions.ContainsKey(subscriptionKey))
@@ -133,6 +133,9 @@ namespace SuperGlue.EventStore.Subscribers
 
         private static async Task PushEventToService(AppFunc chain, string stream, DeSerializationResult evnt, bool catchup, IDictionary<string, object> environment, Action<DeSerializationResult> done, Action<DeSerializationResult, Exception> error)
         {
+            if (!running)
+                return;
+
             if (!evnt.Successful)
             {
                 error(evnt, evnt.Error);

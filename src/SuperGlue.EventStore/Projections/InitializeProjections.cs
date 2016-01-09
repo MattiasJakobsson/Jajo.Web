@@ -68,15 +68,15 @@ namespace SuperGlue.EventStore.Projections
 
         private async Task SubscribeProjection(IEventStoreProjection currentEventStoreProjection, AppFunc chain, IDictionary<string, object> environment)
         {
-            if (!running)
-                return;
-
             environment.Log("Subscribing projection: {0}", LogLevel.Debug, currentEventStoreProjection.ProjectionName);
 
             var bufferSettings = environment.GetSettings<ProjectionSettings>().GetBufferSettings();
 
             while (true)
             {
+                if (!running)
+                    return;
+
                 if (_projectionSubscriptions.ContainsKey(currentEventStoreProjection.ProjectionName))
                 {
                     _projectionSubscriptions[currentEventStoreProjection.ProjectionName].Close();
@@ -135,6 +135,9 @@ namespace SuperGlue.EventStore.Projections
 
         private async Task PushEventsToProjections(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, IDictionary<string, object> environment)
         {
+            if (!running)
+                return;
+
             var eventsList = events.ToList();
 
             var successfullEvents = eventsList
