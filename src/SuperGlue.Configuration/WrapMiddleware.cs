@@ -14,7 +14,7 @@ namespace SuperGlue.Configuration
         public WrapMiddleware(AppFunc next, WrapMiddlewareOptions<TMiddleware> options)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
             _options = options;
@@ -38,7 +38,7 @@ namespace SuperGlue.Configuration
             Wrapper = wrapper;
         }
 
-        public IWrapMiddleware<TMiddleware> Wrapper { get; private set; }
-        public Type MiddleWareType { get; private set; }
+        public IWrapMiddleware<TMiddleware> Wrapper { get; }
+        public Type MiddleWareType { get; }
     }
 }

@@ -28,7 +28,7 @@ namespace SuperGlue.EventStore.Projections
             _eventStoreConnection = eventStoreConnection;
         }
 
-        public string Chain { get { return "chains.Projections"; } }
+        public string Chain => "chains.Projections";
 
         public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
@@ -60,7 +60,7 @@ namespace SuperGlue.EventStore.Projections
 
             return buildApp
                 .Use<Retry>(5, TimeSpan.FromSeconds(1), "projection")
-                .Use<HandleUnitOfWork>(true)
+                .Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions(true))
                 .Use<ExecuteProjection>()
                 .Use<SetLastEvent>()
                 .Build();
@@ -166,7 +166,7 @@ namespace SuperGlue.EventStore.Projections
 
                 StopProjection(projection);
 
-                await environment.Notifications().Error("projections", string.Format("Projection: {0} failed!", projection.ProjectionName), ex);
+                await environment.Notifications().Error("projections", $"Projection: {projection.ProjectionName} failed!", ex);
             }
         }
     }

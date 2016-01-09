@@ -26,7 +26,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             _eventStoreConnection = eventStoreConnection;
         }
 
-        public string Chain { get { return "chains.ProcessManagers"; } }
+        public string Chain => "chains.ProcessManagers";
 
         public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
@@ -57,7 +57,7 @@ namespace SuperGlue.EventStore.ProcessManagers
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
             settings.Log("Building default chain for processmanagers for environment: {0}", LogLevel.Debug, environment);
-            return buildApp.Use<HandleUnitOfWork>(true).Use<ExecuteProcessManager>().Build();
+            return buildApp.Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions(true)).Use<ExecuteProcessManager>().Build();
         }
 
         private void SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)

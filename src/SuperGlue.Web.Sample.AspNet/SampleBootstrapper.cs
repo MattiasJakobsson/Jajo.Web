@@ -57,7 +57,7 @@ namespace SuperGlue.Web.Sample.AspNet
                     .Use<HandleExceptions>()
                     .Use<BindModels>()
                     .Use<RouteUsingSuperscribe>()
-                    .Use<HandleUnitOfWork>()
+                    .Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions())
                     .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(x => x.GetRouteInformation().InputTypes))
                     .Use<AuthorizeRequest>()
                     .Use<ValidateRequest>()

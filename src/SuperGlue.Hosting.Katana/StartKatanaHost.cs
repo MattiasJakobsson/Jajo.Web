@@ -16,7 +16,7 @@ namespace SuperGlue.Hosting.Katana
     {
         private IDisposable _webApp;
 
-        public string Chain { get { return "chains.Web"; } }
+        public string Chain => "chains.Web";
 
         public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
@@ -38,7 +38,7 @@ namespace SuperGlue.Hosting.Katana
                 options.Bindings = startOptions.Urls;
 
             if (!options.Bindings.Any())
-                options.Bindings.Add(string.Format("http://localhost:{0}", GetRandomUnusedPort()));
+                options.Bindings.Add($"http://localhost:{GetRandomUnusedPort()}");
 
             options.ApplicationName = settings.GetApplicationName();
             options.ApplicationBasePath = settings.GetWebApplicationRoot();
@@ -55,8 +55,7 @@ namespace SuperGlue.Hosting.Katana
 
         public Task ShutDown(IDictionary<string, object> settings)
         {
-            if (_webApp != null)
-                _webApp.Dispose();
+            _webApp?.Dispose();
 
             return Task.CompletedTask;
         }

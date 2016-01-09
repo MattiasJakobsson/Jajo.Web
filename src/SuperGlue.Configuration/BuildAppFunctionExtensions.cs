@@ -11,7 +11,7 @@ namespace SuperGlue.Configuration
 
             chainBuilder(childChainBuilder);
 
-            var shouldContinueKey = string.Format("superglue.ShouldContinue.{0}", Guid.NewGuid());
+            var shouldContinueKey = $"superglue.ShouldContinue.{Guid.NewGuid()}";
 
             childChainBuilder.Use<Continue>(new ContinueOptions(x => x[shouldContinueKey] = true));
 

@@ -53,13 +53,13 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
                 switch (inner.Value.Type)
                 {
                     case JTokenType.Object:
-                        SetEdgeValues((JObject)inner.Value, string.Format("{0}{1}_", prefix, inner.Name), data);
+                        SetEdgeValues((JObject)inner.Value, $"{prefix}{inner.Name}_", data);
                         break;
                     case JTokenType.Array:
-                        HandleArray((JArray)inner.Value, string.Format("{0}{1}", prefix, inner.Name), data);
+                        HandleArray((JArray)inner.Value, $"{prefix}{inner.Name}", data);
                         break;
                     default:
-                        data[string.Format("{0}{1}", prefix, inner.Name)] = inner.Value.ToObject<object>();
+                        data[$"{prefix}{inner.Name}"] = inner.Value.ToObject<object>();
                         break;
                 }
             }
@@ -73,16 +73,16 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
                 switch (child.Type)
                 {
                     case JTokenType.Object:
-                        SetEdgeValues((JObject)child, string.Format("{0}[{1}]_", prefix, index), data);
+                        SetEdgeValues((JObject)child, $"{prefix}[{index}]_", data);
                         break;
                     case JTokenType.Array:
-                        HandleArray((JArray)child, string.Format("{0}[{1}]", prefix, index), data);
+                        HandleArray((JArray)child, $"{prefix}[{index}]", data);
                         break;
                     case JTokenType.Property:
-                        data[string.Format("{0}[{1}]_{2}", prefix, index, ((JProperty)child).Name)] = child.ToObject<object>();
+                        data[$"{prefix}[{index}]_{((JProperty) child).Name}"] = child.ToObject<object>();
                         break;
                     default:
-                        data[string.Format("{0}[{1}]_", prefix, index)] = child.ToObject<object>();
+                        data[$"{prefix}[{index}]_"] = child.ToObject<object>();
                         break;
                 }
 

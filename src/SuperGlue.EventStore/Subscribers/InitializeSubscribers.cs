@@ -23,7 +23,7 @@ namespace SuperGlue.EventStore.Subscribers
             _eventStoreConnection = eventStoreConnection;
         }
 
-        public string Chain { get { return "chains.Subscribers"; } }
+        public string Chain => "chains.Subscribers";
 
         public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
@@ -56,7 +56,7 @@ namespace SuperGlue.EventStore.Subscribers
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
             settings.Log("Getting default chain for subscribers for environment: {0}", LogLevel.Debug, environment);
-            return buildApp.Use<HandleUnitOfWork>(true).Use<ExecuteSubscribers>().Build();
+            return buildApp.Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions(true)).Use<ExecuteSubscribers>().Build();
         }
 
         private async Task SubscribeService(AppFunc chain, string stream, bool liveOnlySubscriptions, string subscriptionKey, IDictionary<string, object> environment)

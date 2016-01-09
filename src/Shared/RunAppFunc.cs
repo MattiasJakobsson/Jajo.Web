@@ -14,10 +14,10 @@ namespace SuperGlue.Hosting
         public RunAppFunc(AppFunc next, RunAppFuncOptions options)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             if (options == null)
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException(nameof(options));
 
             _next = next;
             _options = options;
@@ -38,6 +38,6 @@ namespace SuperGlue.Hosting
             Func = func;
         }
 
-        public AppFunc Func { get; private set; }
+        public AppFunc Func { get; }
     }
 }

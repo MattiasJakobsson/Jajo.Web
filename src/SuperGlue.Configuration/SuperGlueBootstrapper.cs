@@ -80,7 +80,7 @@ namespace SuperGlue.Configuration
 
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
             if (!basePath.EndsWith("\\"))
-                basePath = string.Format("{0}\\", basePath);
+                basePath = $"{basePath}\\";
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ResolvePathFunc] = (Func<string, string>)(x => x.Replace("~", basePath));
 
@@ -188,8 +188,7 @@ namespace SuperGlue.Configuration
 
             _chains[name] = appFuncBuilder.Build();
 
-            if (alterSettings != null)
-                alterSettings(GetChainSettings(name));
+            alterSettings?.Invoke(GetChainSettings(name));
 
             return Task.CompletedTask;
         }

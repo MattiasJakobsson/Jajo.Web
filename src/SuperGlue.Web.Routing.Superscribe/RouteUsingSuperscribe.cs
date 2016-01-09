@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Routing.Superscribe
         public RouteUsingSuperscribe(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }

@@ -12,13 +12,16 @@ namespace SuperGlue.UnitOfWork
         private readonly AppFunc _next;
         private readonly bool _handleRollback;
 
-        public HandleUnitOfWork(AppFunc next, bool handleRollback = false)
+        public HandleUnitOfWork(AppFunc next, HandleUnitOfWorkOptions options)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
+
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
 
             _next = next;
-            _handleRollback = handleRollback;
+            _handleRollback = options.HandleRollback;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
@@ -50,5 +53,15 @@ namespace SuperGlue.UnitOfWork
             foreach (var unitOfWork in unitOfWorks)
                 await unitOfWork.Commit();
         }
+    }
+
+    public class HandleUnitOfWorkOptions
+    {
+        public HandleUnitOfWorkOptions(bool handleRollback = false)
+        {
+            HandleRollback = handleRollback;
+        }
+
+        public bool HandleRollback { get; } 
     }
 }

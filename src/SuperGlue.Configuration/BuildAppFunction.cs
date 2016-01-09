@@ -58,7 +58,10 @@ namespace SuperGlue.Configuration
                 var constructor = item.Type.GetConstructor(args.Select(x => x.GetType()).ToArray());
 
                 if (constructor == null)
-                    break;
+                {
+                    _environment.Log("Can't find constructor with {0} args for type: {1}. Arguments: {2}", LogLevel.Error, args.Count, item.Type.FullName, string.Join(", ", args.Select(x => x.GetType().FullName)));
+                    continue;
+                }
 
                 var instance = constructor.Invoke(args.ToArray());
 
@@ -113,8 +116,8 @@ namespace SuperGlue.Configuration
                 Args = args;
             }
 
-            public Type Type { get; private set; }
-            public object[] Args { get; private set; }
+            public Type Type { get; }
+            public object[] Args { get; }
         }
     }
 }

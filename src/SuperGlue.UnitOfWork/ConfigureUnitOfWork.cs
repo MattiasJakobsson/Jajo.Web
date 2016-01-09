@@ -46,12 +46,12 @@ namespace SuperGlue.UnitOfWork
 
         private static Task<AppFunc> GetApplicationStartupChain(IDictionary<string, object> environment)
         {
-            return environment.GetNamedChain("chains.StartupApplication", x => x.Use<HandleUnitOfWork>().Use<ExecuteStartup>());
+            return environment.GetNamedChain("chains.StartupApplication", x => x.Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions(true)).Use<ExecuteStartup>());
         }
 
         private static Task<AppFunc> GetApplicationShutdownChain(IDictionary<string, object> environment)
         {
-            return environment.GetNamedChain("chains.ShutdownApplication", x => x.Use<HandleUnitOfWork>().Use<ExecuteShutdown>());
+            return environment.GetNamedChain("chains.ShutdownApplication", x => x.Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions(true)).Use<ExecuteShutdown>());
         }
     }
 }

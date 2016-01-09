@@ -17,7 +17,7 @@ namespace SuperGlue.Web.Http
         public GzipOutput(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -30,9 +30,10 @@ namespace SuperGlue.Web.Http
 
             request.Headers.RawHeaders.TryGetValue("Accept-Encoding", out acceptedEncodings);
 
-            if (!(from encoding in (acceptedEncodings ?? new string[0]).SelectMany(x => x.Split(',')).Select(x => x.Trim())
-                  where String.Equals(encoding, "gzip", StringComparison.Ordinal)
-                  select encoding).Any())
+            if (!(acceptedEncodings ?? new string[0])
+                .SelectMany(x => x.Split(','))
+                .Select(x => x.Trim())
+                .Any(encoding => string.Equals(encoding, "gzip", StringComparison.Ordinal)))
             {
                 await _next(environment);
                 return;
