@@ -162,6 +162,8 @@ namespace SuperGlue.EventStore.Projections
                 environment.Log(ex, "Couldn't push events to projection: {0}", LogLevel.Error, projection.ProjectionName);
 
                 StopProjection(projection);
+
+                await environment.Notifications().Error("projections", string.Format("Projection: {0} failed!", projection.ProjectionName), ex);
             }
         }
     }
