@@ -1,45 +1,36 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.EventStore.Data;
-using SuperGlue.UnitOfWork;
 
 namespace SuperGlue.EventStore.Projections
 {
-    public class CreateEventStoreProjections : IApplicationTask
+    public class DefaultProjectionsInstaller : IProjectionsInstaller
     {
-        private readonly EventStoreConnectionString _eventStoreConnectionString;
         private readonly IEnumerable<IEventStoreProjection> _projections;
+        private readonly EventStoreConnectionString _eventStoreConnectionString;
 
-        public CreateEventStoreProjections(EventStoreConnectionString eventStoreConnectionString, IEnumerable<IEventStoreProjection> projections)
+        public DefaultProjectionsInstaller(IEnumerable<IEventStoreProjection> projections, EventStoreConnectionString eventStoreConnectionString)
         {
-            _eventStoreConnectionString = eventStoreConnectionString;
             _projections = projections;
+            _eventStoreConnectionString = eventStoreConnectionString;
         }
 
-        public async Task Start()
+        public async Task InstallProjectionFor<TProjection>() where TProjection : IEventStoreProjection
         {
+            var matchingProjections = _projections.OfType<TProjection>().ToList();
+
             var projectionBuilder = new ProjectionBuilder();
             var projectionManager = _eventStoreConnectionString.CreateProjectionsManager();
             var credentials = _eventStoreConnectionString.GetUserCredentials();
 
-            foreach (var projection in _projections)
+            foreach (var projection in matchingProjections)
             {
                 var name = string.Format("project-to-{0}", projection.ProjectionName);
                 var query = projectionBuilder.BuildStreamProjection(projection.GetInterestingStreams(), projection.ProjectionName);
 
                 await projectionManager.CreateOrUpdateContinuousQueryAsync(name, query, credentials);
             }
-        }
-
-        public Task ShutDown()
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Exception(Exception exception)
-        {
-            return Task.CompletedTask;
         }
     }
 }

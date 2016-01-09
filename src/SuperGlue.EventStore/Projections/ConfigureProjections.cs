@@ -12,6 +12,7 @@ namespace SuperGlue.EventStore.Projections
                 environment =>
                 {
                     environment.RegisterAll(typeof (IEventStoreProjection));
+                    environment.RegisterTransient(typeof(IProjectionsInstaller), typeof(DefaultProjectionsInstaller));
 
                     return Task.CompletedTask;
                 }, 

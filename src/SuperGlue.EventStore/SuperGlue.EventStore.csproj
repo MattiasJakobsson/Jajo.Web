@@ -92,7 +92,7 @@
     <Compile Include="ProcessManagers\IManageProcess.cs" />
     <Compile Include="Projections\ApplyStateChangesTo.cs" />
     <Compile Include="Projections\ConfigureProjections.cs" />
-    <Compile Include="Projections\CreateEventStoreProjections.cs" />
+    <Compile Include="Projections\DefaultProjectionsInstaller.cs" />
     <Compile Include="Projections\ExecuteProjection.cs" />
     <Compile Include="Projections\IManageEventNumbersForProjections.cs" />
     <Compile Include="Projections\EventStoreProjection.cs" />
@@ -100,6 +100,7 @@
     <Compile Include="Projections\EventContext.cs" />
     <Compile Include="Projections\IEventStoreProjection.cs" />
     <Compile Include="Projections\InitializeProjections.cs" />
+    <Compile Include="Projections\IProjectionsInstaller.cs" />
     <Compile Include="Projections\ProjectionEventMappingContext.cs" />
     <Compile Include="Projections\ProjectionSettings.cs" />
     <Compile Include="Projections\ProjectionSubscription.cs" />
