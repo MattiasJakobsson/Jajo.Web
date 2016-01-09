@@ -69,7 +69,7 @@ namespace SuperGlue.Configuration
 
         protected abstract Task Configure(string environment);
 
-        protected abstract string ApplicationName { get; }
+        protected virtual string ApplicationName => GetType().Assembly.FullName.Replace(".", "");
 
         protected virtual async Task Start(IDictionary<string, object> settings, string environment, ApplicationStartersOverrides overrides = null)
         {

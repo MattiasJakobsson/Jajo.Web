@@ -2,21 +2,14 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.Subscribers
 {
     public class SubscribersSettings
     {
         private readonly ICollection<Tuple<string, bool>> _streams = new List<Tuple<string, bool>>();
-        private string _serviceName;
         private Func<string, string, string> _getPersistentSubscriptionGroupNameFor;
-
-        public SubscribersSettings ServiceName(string name)
-        {
-            _serviceName = name;
-
-            return this;
-        }
 
         public SubscribersSettings SubscribeToStream(string stream, bool liveOnly = false)
         {
@@ -32,19 +25,14 @@ namespace SuperGlue.EventStore.Subscribers
             return this;
         }
 
-        public string GetName()
-        {
-            return _serviceName;
-        }
-
         public IReadOnlyCollection<Tuple<string, bool>> GetSubscribedStreams()
         {
             return new ReadOnlyCollection<Tuple<string, bool>>(_streams.ToList());
         }
 
-        public string GetPersistentSubscriptionGroupNameFor(string stream)
+        public string GetPersistentSubscriptionGroupNameFor(string stream, IDictionary<string, object> environment)
         {
-            return _getPersistentSubscriptionGroupNameFor(GetName(), stream);
+            return _getPersistentSubscriptionGroupNameFor(environment.GetApplicationName(), stream);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace SuperGlue.EventStore.Subscribers
             settings = alterSettings(settings);
 
             var subscriberSettings = _environment.GetSettings<SubscribersSettings>();
-            var groupName = subscriberSettings.GetPersistentSubscriptionGroupNameFor(stream);
+            var groupName = subscriberSettings.GetPersistentSubscriptionGroupNameFor(stream, _environment);
 
             try
             {

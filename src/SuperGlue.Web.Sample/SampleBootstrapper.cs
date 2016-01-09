@@ -71,10 +71,5 @@ namespace SuperGlue.Web.Sample
                     .Use<RenderOutput>();
             }, x => x.SetWebApplicationRoot("/test/"));
         }
-
-        protected override string ApplicationName
-        {
-            get { return "KatanaSample"; }
-        }
     }
 }

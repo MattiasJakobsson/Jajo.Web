@@ -36,7 +36,7 @@ namespace SuperGlue.EventStore.Subscribers
             var streams = subscriptionSettings.GetSubscribedStreams();
 
             foreach (var stream in streams)
-                await SubscribeService(chain, stream.Item1, stream.Item2, subscriptionSettings.GetPersistentSubscriptionGroupNameFor(stream.Item1), settings);
+                await SubscribeService(chain, stream.Item1, stream.Item2, subscriptionSettings.GetPersistentSubscriptionGroupNameFor(stream.Item1, settings), settings);
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
