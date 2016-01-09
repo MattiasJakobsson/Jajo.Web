@@ -163,7 +163,7 @@ namespace SuperGlue.EventStore.Projections
 
                 StopProjection(projection);
 
-                await environment.Notifications().Error("projections", string.Format("Projection: {0} failed!", projection.ProjectionName), ex);
+                environment.Notifications().Error("projections", string.Format("Projection: {0} failed!", projection.ProjectionName), ex).Wait();
             }
         }
     }
