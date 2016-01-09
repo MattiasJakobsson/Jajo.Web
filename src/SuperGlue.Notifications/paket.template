@@ -1,17 +1,10 @@
 ﻿type file
-id SuperGlue.EventStore
+id SuperGlue.Notifications
 version 1.0
 authors Mattias Jakobsson
 description
-        Authorization middleware
+        Notifications middleware
 files
-    bin/Release/SuperGlue.EventStore.dll ==> lib
+    bin/Release/SuperGlue.Notifications.dll ==> lib
 dependencies
-	EventStore.Client
-	Newtonsoft.Json
-	Rx-Main
 	SuperGlue.Configuration
-	SuperGlue.UnitOfWork
-	SuperGlue.EventTracking
-	SuperGlue.MetaData
-	SuperGlue.ExceptionManagement
