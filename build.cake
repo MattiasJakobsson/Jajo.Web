@@ -2,7 +2,7 @@ var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Debug");
 var buildNumber = Argument<string>("buildnumber", "0");
 
-var solutions = GetFiles("./**/*.sln");
+var solutions = GetFiles("./src/*.sln");
 var solutionPaths = solutions.Select(solution => solution.GetDirectory());
 
 var version = "1.0.0";
@@ -11,13 +11,8 @@ var packageVersion = string.Format("{0}.{1}", version, buildNumber);
 Task("Clean")
     .Does(() =>
 	{
-		foreach(var path in solutionPaths)
-		{
-			Information("Cleaning {0}", path);
-			CleanDirectories(path + "/**/bin/" + configuration);
-			CleanDirectories(path + "/**/obj/" + configuration);
-		}
-
+		CleanDirectories("./**/bin");
+		CleanDirectories("./**/obj");
 		CleanDirectories("./build");
 	});
 
