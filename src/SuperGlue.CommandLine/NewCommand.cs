@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -10,6 +9,11 @@ namespace SuperGlue
 {
     public class NewCommand : ICommand
     {
+        public NewCommand()
+        {
+            TemplatePaths = new List<string>();
+        }
+
         public string Name { get; set; }
         public string Template { get; set; }
         public ICollection<string> TemplatePaths { get; set; }
