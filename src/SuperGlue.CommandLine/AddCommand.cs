@@ -33,7 +33,7 @@ namespace SuperGlue
 
             if (!string.IsNullOrEmpty(projectDirectory))
             {
-                await engine.RunTemplate(new ProjectTemplateType(Name, Location, Solution, Path.Combine(Location, $"src\\{Name}"), ProjectGuid, substitutions), projectDirectory);
+                await engine.RunTemplate(new ProjectTemplateType(Name, Solution, Location, Path.Combine(Location, $"src\\{Name}"), ProjectGuid, substitutions), projectDirectory);
 
                 var alterationDirectories = TemplatePaths
                     .Select(x => Path.Combine(x, $"alterations\\{Template}"))
