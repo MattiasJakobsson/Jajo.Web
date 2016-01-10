@@ -53,7 +53,7 @@ namespace JaJo.Migrations.Storage.SuperGlue.RavenDb
 
             public static string BuildId(string migration)
             {
-                return string.Format("Migrations/{0}/Version", migration);
+                return $"Migrations/{migration}/Version";
             }
         }
     }

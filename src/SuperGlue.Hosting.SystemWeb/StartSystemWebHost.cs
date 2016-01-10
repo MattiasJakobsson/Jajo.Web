@@ -10,7 +10,7 @@ namespace SuperGlue.Hosting.SystemWeb
 
     public class StartSystemWebHost : IStartApplication
     {
-        public string Chain { get { return "chains.Web"; } }
+        public string Chain => "chains.Web";
 
         public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {

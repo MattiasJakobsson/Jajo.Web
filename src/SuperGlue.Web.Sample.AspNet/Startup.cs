@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Sample.AspNet
         public TestMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -37,7 +37,7 @@ namespace SuperGlue.Web.Sample.AspNet
         public HandledExceptionMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -61,7 +61,7 @@ namespace SuperGlue.Web.Sample.AspNet
         public HandleNotFoundMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -83,7 +83,7 @@ namespace SuperGlue.Web.Sample.AspNet
         public HandleValidationErrorMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -111,7 +111,7 @@ namespace SuperGlue.Web.Sample.AspNet
         public HandleUnauthorizedMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }

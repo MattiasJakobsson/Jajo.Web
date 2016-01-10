@@ -94,7 +94,7 @@ namespace SuperGlue
 
         private static void TransformConfigurationsIn(string directory, string configExtension, string transformation)
         {
-            var configFiles = Directory.GetFiles(directory, string.Format("*{0}", configExtension)).ToList();
+            var configFiles = Directory.GetFiles(directory, $"*{configExtension}").ToList();
 
             var transformationFiles = new List<string>();
 
@@ -112,10 +112,10 @@ namespace SuperGlue
 
             foreach (var file in filesToTransform)
             {
-                var transformationFile = string.Format("{0}.{1}{2}", file, transformation, configExtension);
+                var transformationFile = $"{file}.{transformation}{configExtension}";
 
                 if (File.Exists(transformationFile))
-                    TransformConfig(string.Format("{0}{1}", file, configExtension), transformationFile);
+                    TransformConfig($"{file}{configExtension}", transformationFile);
             }
 
             foreach (var child in Directory.GetDirectories(directory))
