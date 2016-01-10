@@ -6,6 +6,7 @@ description
         Command line for SuperGlue
 files
     bin/Release/superglue.exe ==> tools
+	bin/Release/*.dll ==> tools
 	bin/Release/Binaries/**/*.* ==> tools
 	bin/Release/Templates/**/*.* ==> tools
 	bin/Release/*.config ==> tools
