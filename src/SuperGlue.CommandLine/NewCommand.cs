@@ -1,0 +1,48 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using JaJo.Projects.Templating;
+
+namespace SuperGlue
+{
+    public class NewCommand : ICommand
+    {
+        public string Name { get; set; }
+        public string Template { get; set; }
+        public ICollection<string> TemplatePaths { get; set; }
+        public bool CreateTestProject { get; set; }
+        public string Location { get; set; }
+
+        public async Task Execute()
+        {
+            var engine = TemplatingEngine.Init();
+
+            var baseDirectory = TemplatePaths
+                .Select(x => Path.Combine(x, "solutions\\base"))
+                .FirstOrDefault(Directory.Exists);
+
+            if (string.IsNullOrEmpty(baseDirectory))
+                return;
+
+            var substitutions = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
+            {
+                {"PROJECT_NAME", Name},
+                {"SOLUTION_NAME", Name}
+            });
+
+            await engine.RunTemplate(new SolutionTemplateType(Name, Location, substitutions), baseDirectory);
+
+            await new AddCommand
+            {
+                Name = Name,
+                Location = Location,
+                TemplatePaths = TemplatePaths,
+                CreateTestProject = CreateTestProject,
+                Template = Template,
+                Solution = Name
+            }.Execute();
+        }
+    }
+}

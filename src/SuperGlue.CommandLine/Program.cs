@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Fclp;
 
 namespace SuperGlue
@@ -12,7 +13,9 @@ namespace SuperGlue
         {
             {"buildassets", BuildBuildAssetsCommand},
             {"group", BuildGroupCommand},
-            {"app", BuildAppCommand}
+            {"run", BuildRunCommand},
+            {"new", BuildNewCommand},
+            {"add", BuildAddCommand}
         };
 
         static void Main(string[] args)
@@ -112,30 +115,9 @@ namespace SuperGlue
             return command;
         }
 
-        private static ICommand BuildAppCommand(FluentCommandLineParser parser, string[] args)
+        private static NewCommand BuildNewCommand(FluentCommandLineParser parser, string[] args)
         {
-            var appCommands = new Dictionary<string, Func<FluentCommandLineParser, string[], ICommand>>
-            {
-                {"add", BuildAddProjectFromTemplateCommand},
-                {"run", BuildRunCommand}
-            };
-
-            var commandName = args.FirstOrDefault() ?? "";
-
-            if (!appCommands.ContainsKey(commandName))
-            {
-                Console.WriteLine("{0} isn't a valid command for group. Available commands: {1}.", commandName, string.Join(", ", appCommands.Select(x => x.Key)));
-                return null;
-            }
-
-            var commandArgs = args.Skip(1).ToArray();
-
-            return appCommands[commandName](parser, commandArgs);
-        }
-
-        private static AddProjectFromTemplateCommand BuildAddProjectFromTemplateCommand(FluentCommandLineParser parser, string[] args)
-        {
-            var command = new AddProjectFromTemplateCommand();
+            var command = new NewCommand();
 
             parser
                 .Setup<string>('n', "name")
@@ -148,11 +130,59 @@ namespace SuperGlue
                 .Required();
 
             parser
-                .Setup<string>('s', "solution")
-                .Callback(x => command.Solution = x)
-                .Required();
+                .Setup<bool>('t', "tests")
+                .Callback(x => command.CreateTestProject = x);
+
+            parser
+                .Setup<string>('l', "location")
+                .Callback(x => command.Location = x)
+                .SetDefault(Environment.CurrentDirectory);
+
+            parser
+                .Setup<string>('p', "templatepath")
+                .Callback(x => command.TemplatePaths.Add(x));
 
             parser.Parse(args);
+
+            command.TemplatePaths.Add(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", "Templates"));
+
+            return command;
+        }
+
+        private static AddCommand BuildAddCommand(FluentCommandLineParser parser, string[] args)
+        {
+            var command = new AddCommand();
+
+            parser
+                .Setup<string>('n', "name")
+                .Callback(x => command.Name = x)
+                .Required();
+
+            parser
+                .Setup<string>('s', "solution")
+                .Callback(x => command.Solution = x);
+
+            parser
+                .Setup<string>('t', "template")
+                .Callback(x => command.Template = x)
+                .Required();
+
+            parser
+                .Setup<bool>('t', "tests")
+                .Callback(x => command.CreateTestProject = x);
+
+            parser
+                .Setup<string>('l', "location")
+                .Callback(x => command.Location = x)
+                .SetDefault(Environment.CurrentDirectory);
+
+            parser
+                .Setup<string>('p', "templatepath")
+                .Callback(x => command.TemplatePaths.Add(x));
+
+            parser.Parse(args);
+
+            command.TemplatePaths.Add(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", "Templates"));
 
             return command;
         }

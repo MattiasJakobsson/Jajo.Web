@@ -3,7 +3,7 @@ NUGET
   specs:
     BCrypt.Net (0.1.0)
     CSharpTest.Net.Collections (14.906.1403.1082)
-    EasyHttp (1.6.80)
+    EasyHttp (1.6.80.0)
       JsonFx (>= 2.0.1209.2802)
     EventStore.Client (3.4.0)
     Fixie (1.0.0.41)
@@ -54,12 +54,12 @@ NUGET
       Microsoft.Owin.Host.HttpListener (>= 3.0.1)
       Microsoft.Owin.Hosting (>= 3.0.1)
       Owin (>= 1.0)
-    Newtonsoft.Json (8.0.1)
+    Newtonsoft.Json (8.0.2)
     NLog (4.2.3)
     Owin (1.0.0)
-    RavenDB.Client (3.0.30000)
-    RavenDB.Client.Authorization (3.0.30000)
-      RavenDB.Client (3.0.30000)
+    RavenDB.Client (3.0.30037)
+    RavenDB.Client.Authorization (3.0.30037)
+      RavenDB.Client (>= 3.0.30037 <= 3.0.30037)
     Rx-Core (2.2.5)
       Rx-Interfaces (>= 2.2.5)
     Rx-Interfaces (2.2.5)
@@ -276,4 +276,5 @@ NUGET
     Topshelf (3.3.1)
   remote: https://www.myget.org/F/jakobsson/auth/b0e230b6-1bdb-4321-b6b8-5badc503887f/api/v2
   specs:
-    JaJo.Migrations (1.0.0.4)
+    JaJo.Migrations (1.0.0.6)
+    JaJo.Projects.Templating (1.0.0.3)

@@ -50,7 +50,8 @@
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="AddApplicationToGroupCommand.cs" />
-    <Compile Include="AddProjectFromTemplateCommand.cs" />
+    <Compile Include="AddCommand.cs" />
+    <Compile Include="NewCommand.cs" />
     <Compile Include="ApplicationsConfiguration.cs" />
     <Compile Include="BuildAssetsCommand.cs" />
     <Compile Include="DirectoryExtensions.cs" />
@@ -108,23 +109,17 @@
     </When>
   </Choose>
   <ItemGroup>
-    <Reference Include="FubuCore">
-      <HintPath>..\..\packages\FubuCore\lib\FubuCore.dll</HintPath>
+    <Reference Include="JaJo.Projects.Templating">
+      <HintPath>..\..\packages\JaJo.Projects.Templating\lib\JaJo.Projects.Templating.dll</HintPath>
+      <Private>True</Private>
+      <Paket>True</Paket>
+    </Reference>
+    <Reference Include="paket">
+      <HintPath>..\..\packages\JaJo.Projects.Templating\lib\paket.exe</HintPath>
       <Private>True</Private>
       <Paket>True</Paket>
     </Reference>
   </ItemGroup>
-  <Choose>
-    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
-      <ItemGroup>
-        <Reference Include="FubuCsProjFile">
-          <HintPath>..\..\packages\FubuCsProjFile\lib\net40\FubuCsProjFile.dll</HintPath>
-          <Private>True</Private>
-          <Paket>True</Paket>
-        </Reference>
-      </ItemGroup>
-    </When>
-  </Choose>
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
       <ItemGroup>

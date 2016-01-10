@@ -12,6 +12,7 @@ nuget FubuCsProjFile
 nuget HalClient.Net
 nuget HtmlTags
 nuget JaJo.Migrations
+nuget JaJo.Projects.Templating
 nuget Microsoft.CodeAnalysis.CSharp
 nuget Microsoft.Owin.Host.SystemWeb
 nuget Microsoft.Owin.SelfHost
