@@ -107,6 +107,12 @@ Task("Default")
 
 Task("ci")
 	.IsDependentOn("Test")
-	.IsDependentOn("PaketPush");
+	.IsDependentOn("PaketPush")
+	.Does(() => {
+		if(TeamCity.IsRunningOnTeamCity)
+		{
+			TeamCity.SetBuildNumber(packageVersion);
+		}
+	});
 
 RunTarget(target);
