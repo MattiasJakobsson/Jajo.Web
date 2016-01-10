@@ -13,8 +13,8 @@ namespace SuperGlue
         public string Solution { get; set; }
         public string Template { get; set; }
         public ICollection<string> TemplatePaths { get; set; }
-        public bool CreateTestProject { get; set; }
         public string Location { get; set; }
+        public string ProjectGuid { get; set; }
 
         public async Task Execute()
         {
@@ -27,7 +27,8 @@ namespace SuperGlue
             var substitutions = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
             {
                 {"PROJECT_NAME", Name},
-                {"SOLUTION_NAME", Name}
+                {"SOLUTION_NAME", Name},
+                {"PROJECT_GUID", ProjectGuid}
             });
 
             if (!string.IsNullOrEmpty(projectDirectory))
@@ -41,33 +42,6 @@ namespace SuperGlue
 
                 foreach (var alterationDirectory in alterationDirectories)
                     await engine.RunTemplate(new AlterationTemplateType(Name, Location, Path.Combine($"src\\{Name}"), substitutions), alterationDirectory);
-            }
-
-            if (!CreateTestProject)
-                return;
-
-            var testSubstitutions = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
-            {
-                {"PROJECT_NAME", $"{Name}.Tests"},
-                {"SOLUTION_NAME", Name},
-                {"FOR_PROJECT", Name}
-            });
-
-            var testDirectory = TemplatePaths
-                .Select(x => Path.Combine(x, $"projects\\{Template}Test"))
-                .FirstOrDefault(Directory.Exists);
-
-            if (!string.IsNullOrEmpty(testDirectory))
-            {
-                await engine.RunTemplate(new ProjectTemplateType($"{Name}.Tests", Location, Path.Combine(Location, $"src\\{Name}.Tests"), testSubstitutions), testDirectory);
-
-                var alterationDirectories = TemplatePaths
-                    .Select(x => Path.Combine(x, $"alterations\\{Template}Test"))
-                    .Where(Directory.Exists)
-                    .ToList();
-
-                foreach (var alterationDirectory in alterationDirectories)
-                    await engine.RunTemplate(new AlterationTemplateType($"{Name}.Tests", Location, Path.Combine($"src\\{Name}.Tests"), testSubstitutions), alterationDirectory);
             }
         }
     }

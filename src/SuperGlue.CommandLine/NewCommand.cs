@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -12,8 +13,8 @@ namespace SuperGlue
         public string Name { get; set; }
         public string Template { get; set; }
         public ICollection<string> TemplatePaths { get; set; }
-        public bool CreateTestProject { get; set; }
         public string Location { get; set; }
+        public string ProjectGuid { get; set; }
 
         public async Task Execute()
         {
@@ -29,7 +30,8 @@ namespace SuperGlue
             var substitutions = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
             {
                 {"PROJECT_NAME", Name},
-                {"SOLUTION_NAME", Name}
+                {"SOLUTION_NAME", Name},
+                {"PROJECT_GUID", ProjectGuid}
             });
 
             await engine.RunTemplate(new SolutionTemplateType(Name, Location, substitutions), baseDirectory);
@@ -39,7 +41,6 @@ namespace SuperGlue
                 Name = Name,
                 Location = Location,
                 TemplatePaths = TemplatePaths,
-                CreateTestProject = CreateTestProject,
                 Template = Template,
                 Solution = Name
             }.Execute();

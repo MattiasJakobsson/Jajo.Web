@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue
+version 1.0
+authors Mattias Jakobsson
+description
+        Command line for SuperGlue
+files
+    bin/Release/superglue.exe ==> tools
+	bin/Release/Binaries/**/*.* ==> tools
+	bin/Release/Templates/**/*.* ==> tools
+	bin/Release/*.config ==> tools

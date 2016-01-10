@@ -130,10 +130,6 @@ namespace SuperGlue
                 .Required();
 
             parser
-                .Setup<bool>('t', "tests")
-                .Callback(x => command.CreateTestProject = x);
-
-            parser
                 .Setup<string>('l', "location")
                 .Callback(x => command.Location = x)
                 .SetDefault(Environment.CurrentDirectory);
@@ -141,6 +137,11 @@ namespace SuperGlue
             parser
                 .Setup<string>('p', "templatepath")
                 .Callback(x => command.TemplatePaths.Add(x));
+
+            parser
+                .Setup<string>('g', "guid")
+                .Callback(x => command.ProjectGuid = x)
+                .SetDefault(Guid.NewGuid().ToString());
 
             parser.Parse(args);
 
@@ -168,10 +169,6 @@ namespace SuperGlue
                 .Required();
 
             parser
-                .Setup<bool>('t', "tests")
-                .Callback(x => command.CreateTestProject = x);
-
-            parser
                 .Setup<string>('l', "location")
                 .Callback(x => command.Location = x)
                 .SetDefault(Environment.CurrentDirectory);
@@ -179,6 +176,11 @@ namespace SuperGlue
             parser
                 .Setup<string>('p', "templatepath")
                 .Callback(x => command.TemplatePaths.Add(x));
+
+            parser
+                .Setup<string>('g', "guid")
+                .Callback(x => command.ProjectGuid = x)
+                .SetDefault(Guid.NewGuid().ToString());
 
             parser.Parse(args);
 

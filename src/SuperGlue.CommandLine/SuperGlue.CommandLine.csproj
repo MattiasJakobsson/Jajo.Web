@@ -33,6 +33,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="paket.template" />
+    <None Include="Templates\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.Web.XmlTransform">
       <HintPath>..\..\libs\Microsoft.Web.XmlTransform.dll</HintPath>
     </Reference>
@@ -97,6 +103,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup />
   <Choose>
     <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v3.5' Or $(TargetFrameworkVersion) == 'v4.0' Or $(TargetFrameworkVersion) == 'v4.5' Or $(TargetFrameworkVersion) == 'v4.5.1' Or $(TargetFrameworkVersion) == 'v4.5.2' Or $(TargetFrameworkVersion) == 'v4.5.3' Or $(TargetFrameworkVersion) == 'v4.6')">
       <ItemGroup>
@@ -111,11 +118,6 @@
   <ItemGroup>
     <Reference Include="JaJo.Projects.Templating">
       <HintPath>..\..\packages\JaJo.Projects.Templating\lib\JaJo.Projects.Templating.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
-    <Reference Include="paket">
-      <HintPath>..\..\packages\JaJo.Projects.Templating\lib\paket.exe</HintPath>
       <Private>True</Private>
       <Paket>True</Paket>
     </Reference>
