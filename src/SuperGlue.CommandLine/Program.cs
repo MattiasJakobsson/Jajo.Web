@@ -15,7 +15,8 @@ namespace SuperGlue
             {"group", BuildGroupCommand},
             {"run", BuildRunCommand},
             {"new", BuildNewCommand},
-            {"add", BuildAddCommand}
+            {"add", BuildAddCommand},
+            {"alter", BuildAlterCommand}
         };
 
         static void Main(string[] args)
@@ -181,6 +182,40 @@ namespace SuperGlue
                 .Setup<string>('g', "guid")
                 .Callback(x => command.ProjectGuid = x)
                 .SetDefault(Guid.NewGuid().ToString());
+
+            parser.Parse(args);
+
+            command.TemplatePaths.Add(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", "Templates"));
+
+            return command;
+        }
+
+        private static AlterCommand BuildAlterCommand(FluentCommandLineParser parser, string[] args)
+        {
+            var command = new AlterCommand();
+
+            parser
+                .Setup<string>('n', "name")
+                .Callback(x => command.Name = x)
+                .Required();
+
+            parser
+                .Setup<string>('s', "solution")
+                .Callback(x => command.Solution = x);
+
+            parser
+                .Setup<string>('t', "template")
+                .Callback(x => command.Template = x)
+                .Required();
+
+            parser
+                .Setup<string>('l', "location")
+                .Callback(x => command.Location = x)
+                .SetDefault(Environment.CurrentDirectory);
+
+            parser
+                .Setup<string>('p', "templatepath")
+                .Callback(x => command.TemplatePaths.Add(x));
 
             parser.Parse(args);
 
