@@ -38,12 +38,12 @@ namespace SuperGlue
                 {"PROJECT_GUID", ProjectGuid}
             });
 
-            await engine.RunTemplate(new SolutionTemplateType(Name, Location, substitutions), baseDirectory);
+            await engine.RunTemplate(new SolutionTemplateType(Name, Path.Combine(Location, Name), substitutions), baseDirectory);
 
             await new AddCommand
             {
                 Name = Name,
-                Location = Location,
+                Location = Path.Combine(Location, Name),
                 TemplatePaths = TemplatePaths,
                 Template = Template,
                 Solution = Name
