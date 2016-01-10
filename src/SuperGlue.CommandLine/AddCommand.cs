@@ -27,13 +27,13 @@ namespace SuperGlue
             var substitutions = new ReadOnlyDictionary<string, string>(new Dictionary<string, string>
             {
                 {"PROJECT_NAME", Name},
-                {"SOLUTION_NAME", Name},
+                {"SOLUTION", Solution},
                 {"PROJECT_GUID", ProjectGuid}
             });
 
             if (!string.IsNullOrEmpty(projectDirectory))
             {
-                await engine.RunTemplate(new ProjectTemplateType(Name, Location, Path.Combine(Location, $"src\\{Name}"), substitutions), projectDirectory);
+                await engine.RunTemplate(new ProjectTemplateType(Name, Location, Solution, Path.Combine(Location, $"src\\{Name}"), ProjectGuid, substitutions), projectDirectory);
 
                 var alterationDirectories = TemplatePaths
                     .Select(x => Path.Combine(x, $"alterations\\{Template}"))

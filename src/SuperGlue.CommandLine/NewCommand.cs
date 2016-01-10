@@ -46,7 +46,7 @@ namespace SuperGlue
                 Location = Path.Combine(Location, Name),
                 TemplatePaths = TemplatePaths,
                 Template = Template,
-                Solution = Name
+                Solution = $"src\\{Name}.sln"
             }.Execute();
         }
     }
