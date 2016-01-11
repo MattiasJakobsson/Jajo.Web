@@ -7,6 +7,5 @@ description
 files
     bin/Release/superglue.exe ==> tools
 	bin/Release/*.dll ==> tools
-	bin/Release/Binaries/**/*.* ==> tools/Binaries
 	bin/Release/Templates/**/*.* ==> tools/Templates
 	bin/Release/*.config ==> tools

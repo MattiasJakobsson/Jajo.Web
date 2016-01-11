@@ -4,45 +4,58 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Web.XmlTransform;
+using SuperGlue.Configuration;
 
 namespace SuperGlue
 {
     public class RunnableApplication
     {
-        private readonly IApplicationRunner _runner;
-        private readonly ApplicationsConfiguration.ApplicationConfigurationDetails _application;
         private readonly string _environment;
+        private readonly string _source;
+        private readonly string _destination;
         private readonly ICollection<FileListener> _fileListeners = new List<FileListener>();
+        private AppDomain _appDomain;
 
-        public RunnableApplication(IApplicationRunner runner, ApplicationsConfiguration.ApplicationConfigurationDetails application, string environment)
+        public RunnableApplication(string environment, string source, string destination)
         {
-            _runner = runner;
-            _application = application;
             _environment = environment;
+            _source = source;
+            _destination = destination;
         }
 
-        public string GetApplicationPath()
+        public async Task Start()
         {
-            return _application.Destination;
-        }
+            if (_appDomain != null)
+                await Stop();
 
-        public async Task Start(string basePath)
-        {
             StopListeners();
 
-            if (Directory.Exists(_application.Destination))
-                new DirectoryInfo(_application.Destination).DeleteDirectoryAndChildren();
+            if (Directory.Exists(_destination))
+                new DirectoryInfo(_destination).DeleteDirectoryAndChildren();
 
-            DirectoryCopy(_application.Path, _application.Destination);
+            DirectoryCopy(_source, _destination);
 
-            TransformConfigurationsIn(_application.Destination, ".config", _environment);
-            TransformConfigurationsIn(_application.Destination, ".xml", _environment);
+            TransformConfigurationsIn(_destination, ".config", _environment);
+            TransformConfigurationsIn(_destination, ".xml", _environment);
 
-            await _runner.Start(_environment);
+            _appDomain = AppDomain.CreateDomain(Guid.NewGuid().ToString(), null, new AppDomainSetup
+            {
+                ConfigurationFile = "App.config",
+                PrivateBinPath = _destination,
+                ApplicationBase = _destination
+            });
+
+            var bootstrapper = (RemoteBootstrapper)_appDomain
+                .CreateInstanceAndUnwrap(typeof(RemoteBootstrapper).Assembly.FullName, typeof(RemoteBootstrapper).FullName);
+
+            bootstrapper.Initialize(_destination);
+            bootstrapper.Start(_environment);
+
+            _appDomain.DomainUnload += (sender, args) => bootstrapper.Stop();
 
             var listener = new FileListener();
 
-            listener.StartListening(_application.Path, "*", x => Recycle().Wait());
+            listener.StartListening(_source, "*", x => Recycle().Wait());
 
             _fileListeners.Add(listener);
         }
@@ -51,12 +64,19 @@ namespace SuperGlue
         {
             StopListeners();
 
-            return _runner.Stop();
+            if (_appDomain != null)
+            {
+                AppDomain.Unload(_appDomain);
+                _appDomain = null;
+            }
+
+            return Task.CompletedTask;
         }
 
-        public Task Recycle()
+        public async Task Recycle()
         {
-            return _runner.Recycle(_environment);
+            await Stop();
+            await Start();
         }
 
         private void StopListeners()
@@ -102,7 +122,7 @@ namespace SuperGlue
             {
                 var fileName = Path.GetFileNameWithoutExtension(configFile);
 
-                if(string.IsNullOrEmpty(fileName))
+                if (string.IsNullOrEmpty(fileName))
                     continue;
 
                 transformationFiles.AddRange(configFiles.Where(x => x.StartsWith(fileName) && Path.GetFileNameWithoutExtension(x) != fileName));
