@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SuperGlue
@@ -12,7 +14,7 @@ namespace SuperGlue
 
         public async Task Execute()
         {
-            var application = new RunnableApplication(Environment, Application, Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", $"Applications\\{Guid.NewGuid()}"));
+            var application = new RunnableApplication(Environment, Application, Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", $"Applications\\{HashUsingSha1(Application)}"));
 
             await application.Start();
 
@@ -31,6 +33,14 @@ namespace SuperGlue
             }
 
             await application.Stop();
+        }
+
+        private static string HashUsingSha1(string input)
+        {
+            var hasher = new SHA1Managed();
+            var passwordBytes = Encoding.ASCII.GetBytes(input);
+            var passwordHash = hasher.ComputeHash(passwordBytes);
+            return Convert.ToBase64String(passwordHash);
         }
     }
 }
