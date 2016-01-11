@@ -5,7 +5,6 @@ authors Mattias Jakobsson
 description
         Middleware
 dependencies
-	SuperGlue.Hosting.TopShelf
 	SuperGlue.CommandSender
 	SuperGlue.Configuration
 	SuperGlue.EventStore

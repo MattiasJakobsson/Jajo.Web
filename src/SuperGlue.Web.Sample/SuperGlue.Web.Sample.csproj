@@ -91,10 +91,6 @@
       <Project>{d8a867d8-46ec-4334-936b-f09b8e930511}</Project>
       <Name>SuperGlue.Hosting.Katana</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SuperGlue.Hosting.Topshelf\SuperGlue.Hosting.Topshelf.csproj">
-      <Project>{fbf69d60-f8a1-40be-90ff-fe82d33aec7a}</Project>
-      <Name>SuperGlue.Hosting.Topshelf</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Logging\SuperGlue.Logging.csproj">
       <Project>{54d633a5-a7df-48d4-98af-7b39bca91ad5}</Project>
       <Name>SuperGlue.Logging</Name>
