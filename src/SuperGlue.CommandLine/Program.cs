@@ -7,7 +7,7 @@ using Fclp;
 
 namespace SuperGlue
 {
-    class Program
+    public class Program
     {
         private static readonly IDictionary<string, Func<FluentCommandLineParser, string[], ICommand>> CommandBuilders = new Dictionary<string, Func<FluentCommandLineParser, string[], ICommand>>
         {
@@ -18,7 +18,7 @@ namespace SuperGlue
             {"alter", BuildAlterCommand}
         };
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             var parser = new FluentCommandLineParser();
 

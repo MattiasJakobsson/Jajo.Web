@@ -15,6 +15,7 @@ namespace SuperGlue
         private readonly string _destination;
         private readonly ICollection<FileListener> _fileListeners = new List<FileListener>();
         private AppDomain _appDomain;
+        private RemoteBootstrapper _bootstrapper;
 
         public RunnableApplication(string environment, string source, string destination)
         {
@@ -25,7 +26,7 @@ namespace SuperGlue
 
         public async Task Start()
         {
-            if (_appDomain != null)
+            if (_appDomain != null || _bootstrapper != null)
                 await Stop();
 
             StopListeners();
@@ -45,13 +46,11 @@ namespace SuperGlue
                 ApplicationBase = _destination
             });
 
-            var bootstrapper = (RemoteBootstrapper)_appDomain
+            _bootstrapper = (RemoteBootstrapper)_appDomain
                 .CreateInstanceAndUnwrap(typeof(RemoteBootstrapper).Assembly.FullName, typeof(RemoteBootstrapper).FullName);
 
-            bootstrapper.Initialize(_destination);
-            bootstrapper.Start(_environment);
-
-            _appDomain.DomainUnload += (sender, args) => bootstrapper.Stop();
+            _bootstrapper.Initialize(_destination);
+            _bootstrapper.Start(_environment);
 
             var listener = new FileListener();
 
@@ -64,11 +63,20 @@ namespace SuperGlue
         {
             StopListeners();
 
+            if (_bootstrapper != null)
+            {
+                _bootstrapper.Stop();
+                _bootstrapper = null;
+            }
+
             if (_appDomain != null)
             {
                 AppDomain.Unload(_appDomain);
                 _appDomain = null;
             }
+
+            if (Directory.Exists(_destination))
+                new DirectoryInfo(_destination).DeleteDirectoryAndChildren();
 
             return Task.CompletedTask;
         }

@@ -12,7 +12,7 @@ namespace SuperGlue
 
         public async Task Execute()
         {
-            var application = new RunnableApplication(Environment, Application, Path.Combine(Assembly.GetExecutingAssembly().Location, $"Applications\\{Path.GetFileName(Application)}"));
+            var application = new RunnableApplication(Environment, Application, Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", $"Applications\\{Guid.NewGuid()}"));
 
             await application.Start();
 

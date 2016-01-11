@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 
 namespace SuperGlue.Configuration
@@ -11,7 +12,8 @@ namespace SuperGlue.Configuration
 
         public void Initialize(string path)
         {
-            Assembly.LoadFrom(path);
+            foreach (var dll in Directory.GetFiles(path, "*.dll"))
+                Assembly.LoadFile(dll);
 
             _bootstrapper = SuperGlueBootstrapper.Find();
         }
@@ -29,6 +31,11 @@ namespace SuperGlue.Configuration
         public string GetApplicationName()
         {
             return _bootstrapper.ApplicationName;
+        }
+
+        public override object InitializeLifetimeService()
+        {
+            return null;
         }
     }
 }
