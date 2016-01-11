@@ -146,6 +146,7 @@ namespace SuperGlue
 
             parser.Parse(args);
 
+            command.TemplatePaths.Add(Path.Combine(command.Location, "Templates"));
             command.TemplatePaths.Add(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", "Templates"));
 
             return command;
@@ -185,6 +186,7 @@ namespace SuperGlue
 
             parser.Parse(args);
 
+            command.TemplatePaths.Add(Path.Combine(command.Location, "Templates"));
             command.TemplatePaths.Add(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", "Templates"));
 
             return command;
@@ -219,6 +221,7 @@ namespace SuperGlue
 
             parser.Parse(args);
 
+            command.TemplatePaths.Add(Path.Combine(command.Location, "Templates"));
             command.TemplatePaths.Add(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "", "Templates"));
 
             return command;
