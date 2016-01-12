@@ -18,7 +18,7 @@ namespace SuperGlue.Hosting.Katana
 
         public string Chain => "chains.Web";
 
-        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
             settings.Log("Starting katana host for environment: \"{0}\"", LogLevel.Debug, environment);
 
@@ -30,27 +30,11 @@ namespace SuperGlue.Hosting.Katana
             foreach (var binding in bindings)
                 startOptions.Urls.Add(binding);
 
-            var optionsPath = settings.ResolvePath("~/.hostingoptions");
-
-            var options = await Files.ReadAsJson<HostingOptions>(optionsPath) ?? new HostingOptions();
-
-            if (startOptions.Urls.Any())
-                options.Bindings = startOptions.Urls;
-
-            if (!options.Bindings.Any())
-                options.Bindings.Add($"http://localhost:{GetRandomUnusedPort()}");
-
-            options.ApplicationName = settings.GetApplicationName();
-            options.ApplicationBasePath = settings.GetWebApplicationRoot();
-
-            await Files.WriteJsonTo(optionsPath, options);
-
-            foreach (var binding in options.Bindings)
-                startOptions.Urls.Add(binding);
-
             _webApp = WebApp.Start(startOptions, x => x.Use<RunAppFunc>(new RunAppFuncOptions(chain)));
 
             settings.Log("Katana host started with bindings: {0}", LogLevel.Debug, string.Join(", ", startOptions.Urls));
+
+            return Task.CompletedTask;
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
@@ -63,15 +47,6 @@ namespace SuperGlue.Hosting.Katana
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
             return null;
-        }
-
-        private static int GetRandomUnusedPort()
-        {
-            var listener = new TcpListener(IPAddress.Any, 0);
-            listener.Start();
-            var port = ((IPEndPoint)listener.LocalEndpoint).Port;
-            listener.Stop();
-            return port;
         }
     }
 }

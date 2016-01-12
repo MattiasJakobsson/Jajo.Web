@@ -1,0 +1,13 @@
+﻿type file
+id SuperGlue.Discovery.Consul.Checks.Http
+version 1.0
+authors Mattias Jakobsson
+description
+        Consul http check integration for SuperGlue
+files
+    bin/Release/SuperGlue.Discovery.Consul.Checks.Http.dll ==> lib
+dependencies
+	SuperGlue.Discovery.Consul
+	SuperGlue.Configuration
+	SuperGlue.Web.Routing
+	Consul

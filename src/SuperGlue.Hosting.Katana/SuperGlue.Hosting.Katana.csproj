@@ -54,9 +54,12 @@
     <Compile Include="..\Shared\WebChainExtensions.cs">
       <Link>WebChainExtensions.cs</Link>
     </Compile>
-    <Compile Include="HostingOptions.cs" />
+    <Compile Include="..\Shared\WebHostExtensions.cs">
+      <Link>WebHostExtensions.cs</Link>
+    </Compile>
     <Compile Include="KatanaSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetupKatanaConfiguration.cs" />
     <Compile Include="StartKatanaHost.cs" />
   </ItemGroup>
   <ItemGroup>

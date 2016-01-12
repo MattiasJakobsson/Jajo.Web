@@ -144,6 +144,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Discovery.Consul"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Discovery.Consul.Checks.Ttl", "SuperGlue.Discovery.Consul.Checks.Ttl\SuperGlue.Discovery.Consul.Checks.Ttl.csproj", "{B4720206-F519-415C-9A11-8C2C9F66CAD0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Discovery.Consul.Checks.Http", "SuperGlue.Discovery.Consul.Checks.Http\SuperGlue.Discovery.Consul.Checks.Http.csproj", "{A06FA451-BE83-4B59-ADCC-24E310340374}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -354,6 +356,10 @@ Global
 		{B4720206-F519-415C-9A11-8C2C9F66CAD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4720206-F519-415C-9A11-8C2C9F66CAD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B4720206-F519-415C-9A11-8C2C9F66CAD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A06FA451-BE83-4B59-ADCC-24E310340374}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A06FA451-BE83-4B59-ADCC-24E310340374}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A06FA451-BE83-4B59-ADCC-24E310340374}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A06FA451-BE83-4B59-ADCC-24E310340374}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
