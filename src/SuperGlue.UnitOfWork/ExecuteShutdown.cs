@@ -12,7 +12,7 @@ namespace SuperGlue.UnitOfWork
         public ExecuteShutdown(Func<IDictionary<string, object>, Task> next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -22,7 +22,7 @@ namespace SuperGlue.UnitOfWork
             var applicationTasks = environment.ResolveAll<IApplicationTask>().ToList();
 
             foreach (var applicationTask in applicationTasks)
-                await applicationTask.ShutDown();
+                await applicationTask.ShutDown(environment);
 
             await _next(environment);
         }

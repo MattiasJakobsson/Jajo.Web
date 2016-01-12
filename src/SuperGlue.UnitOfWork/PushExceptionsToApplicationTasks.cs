@@ -32,7 +32,7 @@ namespace SuperGlue.UnitOfWork
 
                 var applicationTasks = _environment.ResolveAll<IApplicationTask>();
 
-                var actions = applicationTasks.Select(applicationTask => applicationTask.Exception(exception)).ToList();
+                var actions = applicationTasks.Select(applicationTask => applicationTask.Exception(_environment, exception)).ToList();
 
                 return Task.WhenAll(actions);
             }

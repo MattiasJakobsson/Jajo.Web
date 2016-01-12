@@ -1,0 +1,12 @@
+﻿type file
+id SuperGlue.Discovery.Consul
+version 1.0
+authors Mattias Jakobsson
+description
+        Consul integration for SuperGlue
+files
+    bin/Release/SuperGlue.Discovery.Consul.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	Consul
+	SuperGlue.UnitOfWork
