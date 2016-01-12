@@ -11,33 +11,34 @@ namespace SuperGlue.Monitoring
     {
         public IEnumerable<ConfigurationSetupResult> Setup(string applicationEnvironment)
         {
-            yield return new ConfigurationSetupResult("superglue.Monitoring", configureAction: settings =>
+            yield return new ConfigurationSetupResult("superglue.Monitoring", environment =>
             {
-                var heartbeatSettings = settings.WithSettings<HeartBeatSettings>();
-
-                int interval;
-                if (int.TryParse(ConfigurationManager.AppSettings["SuperGlue.Monitoring.DefaultInterval"] ?? "", out interval))
-                    heartbeatSettings.SetDefaultInterval(TimeSpan.FromMinutes(interval));
-
-                var urlKeys = ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith("SuperGlue.Monitoring.HeartBeatUrls.") && !x.EndsWith(".Interval") && !x.EndsWith(".Message")).ToList();
-
-                foreach (var urlKey in urlKeys)
+                environment.AlterSettings<HeartBeatSettings>(heartbeatSettings =>
                 {
-                    var url = ConfigurationManager.AppSettings[urlKey];
+                    int interval;
+                    if (int.TryParse(ConfigurationManager.AppSettings["SuperGlue.Monitoring.DefaultInterval"] ?? "", out interval))
+                        heartbeatSettings.SetDefaultInterval(TimeSpan.FromMinutes(interval));
 
-                    if (string.IsNullOrEmpty(url))
-                        continue;
+                    var urlKeys = ConfigurationManager.AppSettings.AllKeys.Where(x => x.StartsWith("SuperGlue.Monitoring.HeartBeatUrls.") && !x.EndsWith(".Interval") && !x.EndsWith(".Message")).ToList();
 
-                    int urlIntervalMinutes;
-                    TimeSpan? urlInterval = null;
+                    foreach (var urlKey in urlKeys)
+                    {
+                        var url = ConfigurationManager.AppSettings[urlKey];
 
-                    if (int.TryParse(ConfigurationManager.AppSettings[string.Format("{0}.Interval", urlKey)] ?? "", out urlIntervalMinutes))
-                        urlInterval = TimeSpan.FromMinutes(urlIntervalMinutes);
+                        if (string.IsNullOrEmpty(url))
+                            continue;
 
-                    var message = ConfigurationManager.AppSettings[string.Format("{0}.Message", urlKey)];
+                        int urlIntervalMinutes;
+                        TimeSpan? urlInterval = null;
 
-                    heartbeatSettings.HeartBeatTo(url, urlInterval, message);
-                }
+                        if (int.TryParse(ConfigurationManager.AppSettings[$"{urlKey}.Interval"] ?? "", out urlIntervalMinutes))
+                            urlInterval = TimeSpan.FromMinutes(urlIntervalMinutes);
+
+                        var message = ConfigurationManager.AppSettings[$"{urlKey}.Message"];
+
+                        heartbeatSettings.HeartBeatTo(new PostHeartBeatToUrl(url, message), urlInterval);
+                    }
+                });
 
                 return Task.CompletedTask;
             });

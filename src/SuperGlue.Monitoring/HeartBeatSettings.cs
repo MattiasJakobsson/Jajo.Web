@@ -9,9 +9,11 @@ namespace SuperGlue.Monitoring
         private readonly ICollection<Tuple<IMonitorHeartBeats, TimeSpan?>> _heartBeats = new List<Tuple<IMonitorHeartBeats, TimeSpan?>>();
         private TimeSpan _defaultInterval = TimeSpan.FromMinutes(10);
 
-        public void HeartBeatTo(string url, TimeSpan? interval, string message = null)
+        public HeartBeatSettings HeartBeatTo(IMonitorHeartBeats monitorHeartBeats, TimeSpan? interval)
         {
-            _heartBeats.Add(new Tuple<IMonitorHeartBeats, TimeSpan?>(new PostHeartBeatToUrl(url, message), interval));
+            _heartBeats.Add(new Tuple<IMonitorHeartBeats, TimeSpan?>(monitorHeartBeats, interval));
+
+            return this;
         }
 
         public void SetDefaultInterval(TimeSpan interval)

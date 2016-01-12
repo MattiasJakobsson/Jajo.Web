@@ -29,8 +29,7 @@ namespace SuperGlue.Monitoring
 
         public void Stop()
         {
-            if (_tokenSource != null)
-                _tokenSource.Cancel();
+            _tokenSource?.Cancel();
         }
 
         private void StartBeating(IDictionary<string, object> environment)
