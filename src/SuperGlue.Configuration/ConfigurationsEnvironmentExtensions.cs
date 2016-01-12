@@ -21,6 +21,7 @@ namespace SuperGlue.Configuration
             public const string CurrentChainData = "superglue.Configuration.CurrentChainData";
             public const string EventHandlers = "superglue.EventHandlers";
             public const string ApplicationName = "superglue.ApplicationName";
+            public const string GetTags = "superglue.Configuration.GetTags";
         }
 
         public static IEnumerable<Assembly> GetAssemblies(this IDictionary<string, object> environment)
@@ -66,6 +67,11 @@ namespace SuperGlue.Configuration
         public static ChainData GetCurrentChain(this IDictionary<string, object> environment)
         {
             return environment.Get(ConfigurationConstants.CurrentChainData, new ChainData("", ""));
+        }
+
+        public static IEnumerable<string> GetTags(this IDictionary<string, object> environment)
+        {
+            return environment.Get<Func<IEnumerable<string>>>(ConfigurationConstants.GetTags, Enumerable.Empty<string>)();
         }
 
         public static string GetApplicationName(this IDictionary<string, object> environment)

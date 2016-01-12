@@ -92,6 +92,8 @@ namespace SuperGlue.Configuration
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ApplicationName] = ApplicationName;
 
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetTags] = (Func<IEnumerable<string>>)GetTags;
+
             overrides = overrides ?? ApplicationStartersOverrides.Configure();
 
             var assemblies = LoadApplicationAssemblies().ToList();
@@ -170,6 +172,14 @@ namespace SuperGlue.Configuration
             _chainSettings[chain] = settings;
 
             return settings;
+        }
+
+        protected virtual IEnumerable<string> GetTags()
+        {
+            if (_setups == null)
+                return Enumerable.Empty<string>();
+
+            return _setups.SelectMany(x => x.ApplicationTags).Distinct();
         }
 
         protected virtual async Task<AppFunc> GetChain(string name, Action<IBuildAppFunction> buildDefault)

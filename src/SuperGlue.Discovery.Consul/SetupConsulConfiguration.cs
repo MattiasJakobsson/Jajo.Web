@@ -13,9 +13,12 @@ namespace SuperGlue.Discovery.Consul
             {
                 environment.AlterSettings<ConsulServiceSettings>(x =>
                 {
-                    x
+                    var settings = x
                         .WithId(Guid.NewGuid().ToString())
                         .WithName(environment.GetApplicationName());
+
+                    foreach (var tag in environment.GetTags())
+                        settings.WithTag(tag);
                 });
 
                 return Task.CompletedTask;
