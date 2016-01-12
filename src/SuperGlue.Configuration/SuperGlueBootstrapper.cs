@@ -155,7 +155,7 @@ namespace SuperGlue.Configuration
             if (_settings.ContainsKey(settingsType))
                 return _settings[settingsType];
 
-            var settings = _environment.Resolve(settingsType);
+            var settings = Activator.CreateInstance(settingsType);
 
             _settings[settingsType] = settings;
 

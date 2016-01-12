@@ -13,7 +13,7 @@ namespace SuperGlue.Monitoring
         public InvokeHeartBeat(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }

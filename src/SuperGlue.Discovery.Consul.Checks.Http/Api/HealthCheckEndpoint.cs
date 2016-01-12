@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+using SuperGlue.Configuration;
 using SuperGlue.Web;
 
 namespace SuperGlue.Discovery.Consul.Checks.Http.Api
@@ -9,10 +9,10 @@ namespace SuperGlue.Discovery.Consul.Checks.Http.Api
         private readonly IDictionary<string, object> _environment;
         private readonly ConsulHttpCheckSettings _consulHttpCheckSettings;
 
-        public HealthCheckEndpoint(IDictionary<string, object> environment, ConsulHttpCheckSettings consulHttpCheckSettings)
+        public HealthCheckEndpoint(IDictionary<string, object> environment)
         {
             _environment = environment;
-            _consulHttpCheckSettings = consulHttpCheckSettings;
+            _consulHttpCheckSettings = environment.GetSettings<ConsulHttpCheckSettings>();
         }
 
         public string Check()

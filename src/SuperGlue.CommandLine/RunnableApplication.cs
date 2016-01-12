@@ -13,15 +13,17 @@ namespace SuperGlue
         private readonly string _environment;
         private readonly string _source;
         private readonly string _destination;
+        private readonly IEnumerable<IApplicationHost> _hosts;
         private readonly ICollection<FileListener> _fileListeners = new List<FileListener>();
         private AppDomain _appDomain;
         private RemoteBootstrapper _bootstrapper;
 
-        public RunnableApplication(string environment, string source, string destination)
+        public RunnableApplication(string environment, string source, string destination, IEnumerable<IApplicationHost> hosts)
         {
             _environment = environment;
             _source = source;
             _destination = destination;
+            _hosts = hosts;
         }
 
         public async Task Start()
@@ -35,6 +37,9 @@ namespace SuperGlue
                 new DirectoryInfo(_destination).DeleteDirectoryAndChildren();
 
             DirectoryCopy(_source, _destination);
+
+            foreach (var host in _hosts)
+                await host.Prepare(_destination);
 
             TransformConfigurationsIn(_destination, ".config", _environment);
             TransformConfigurationsIn(_destination, ".xml", _environment);
@@ -59,7 +64,7 @@ namespace SuperGlue
             _fileListeners.Add(listener);
         }
 
-        public Task Stop()
+        public async Task Stop()
         {
             StopListeners();
 
@@ -75,10 +80,11 @@ namespace SuperGlue
                 _appDomain = null;
             }
 
+            foreach (var host in _hosts)
+                await host.TearDown(_destination);
+
             if (Directory.Exists(_destination))
                 new DirectoryInfo(_destination).DeleteDirectoryAndChildren();
-
-            return Task.CompletedTask;
         }
 
         public async Task Recycle()

@@ -181,6 +181,10 @@ namespace SuperGlue
                 .Callback(x => command.Environment = x)
                 .SetDefault("local");
 
+            parser
+                .Setup<string>('h', "hosts")
+                .Callback(x => command.Hosts = x.Split(',').Where(y => !string.IsNullOrWhiteSpace(y)).ToList());
+
             parser.Parse(args);
 
             return command;

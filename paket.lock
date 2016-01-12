@@ -10,7 +10,7 @@ NUGET
     EventStore.Client (3.4.0)
     Fixie (1.0.0.41)
     FluentCommandLineParser (1.4.3)
-    FluentValidation (6.0.2.0)
+    FluentValidation (6.0.2)
     FubuCore (2.0.0.311)
     FubuCsProjFile (1.9.0.229)
       FubuCore (>= 1.0)
@@ -58,7 +58,7 @@ NUGET
       Owin (>= 1.0)
     Newtonsoft.Json (8.0.2)
     NLog (4.2.3)
-    Owin (1.0)
+    Owin (1.0.0)
     RavenDB.Client (3.0.30037)
     RavenDB.Client.Authorization (3.0.30037)
       RavenDB.Client (>= 3.0.30037 <= 3.0.30037)
@@ -279,4 +279,4 @@ NUGET
   remote: https://www.myget.org/F/jakobsson/auth/b0e230b6-1bdb-4321-b6b8-5badc503887f/api/v2
   specs:
     JaJo.Migrations (1.0.0.7)
-    JaJo.Projects.Templating (1.0.0.18)
+    JaJo.Projects.Templating (1.0.0.19)

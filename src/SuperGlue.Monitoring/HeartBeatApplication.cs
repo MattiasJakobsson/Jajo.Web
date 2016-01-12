@@ -11,7 +11,7 @@ namespace SuperGlue.Monitoring
     {
         private readonly ICollection<HandleHeartBeat> _handleHeartBeats = new List<HandleHeartBeat>();
 
-        public string Chain { get { return "chains.Monitoring.HeartBeat"; } }
+        public string Chain => "chains.Monitoring.HeartBeat";
 
         public Task Start(Func<IDictionary<string, object>, Task> chain, IDictionary<string, object> settings, string environment)
         {
