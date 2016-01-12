@@ -19,12 +19,6 @@ namespace SuperGlue.Discovery.Consul
         {
             var client = _settings.CreateClient();
 
-            client.Session.Create(new SessionEntry
-            {
-                Name = _settings.Name,
-                ID = _settings.Id
-            });
-
             client.Agent.ServiceRegister(new AgentServiceRegistration
             {
                 Name = _settings.Name,
@@ -32,7 +26,7 @@ namespace SuperGlue.Discovery.Consul
                 Address = _settings.Address,
                 Port = _settings.Port,
                 Tags = _settings.GetTags(),
-                Checks = _settings.GetChecks()
+                Checks = _settings.GetChecks(),
             });
 
             return Task.CompletedTask;
