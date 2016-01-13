@@ -5,7 +5,7 @@ authors Mattias Jakobsson
 description
         SuperGlue katana host
 files
-    bin/Release/SuperGlue.Hosting.Katana.dll ==> lib
+    bin/Release/**/*.dll ==> Hosts/katana
 dependencies
 	Microsoft.Owin.SelfHost >= 3.0.1
 	SuperGlue.Configuration
