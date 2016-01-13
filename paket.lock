@@ -10,7 +10,7 @@ NUGET
     EventStore.Client (3.4.0)
     Fixie (1.0.0.41)
     FluentCommandLineParser (1.4.3)
-    FluentValidation (6.0.2)
+    FluentValidation (6.0.2.0)
     FubuCore (2.0.0.311)
     FubuCsProjFile (1.9.0.229)
       FubuCore (>= 1.0)
@@ -278,5 +278,5 @@ NUGET
     Topshelf (3.3.1)
   remote: https://www.myget.org/F/jajo/api/v2
   specs:
-    JaJo.Migrations (1.0.0.9)
-    JaJo.Projects.Templating (1.0.0.22)
+    JaJo.Migrations (1.0.0.10)
+    JaJo.Projects.Templating (1.0.0.23)
