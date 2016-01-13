@@ -1,6 +1,7 @@
 var target = Argument<string>("target", "Default");
 var configuration = Argument<string>("configuration", "Debug");
 var buildNumber = Argument<string>("buildnumber", "0");
+var nugetApiKey = Argument<string>("nugetApiKey", "");
 
 var solutions = GetFiles("./src/*.sln");
 var solutionPaths = solutions.Select(solution => solution.GetDirectory());
@@ -85,7 +86,7 @@ Task("PaketPush")
 
 		foreach(var package in packages)
 		{
-			using(var process = StartAndReturnProcess("./.paket/paket.exe", new ProcessSettings { Arguments = "push url https://www.myget.org/F/jakobsson file \"" + package + "\" apikey b0e230b6-1bdb-4321-b6b8-5badc503887f" }))
+			using(var process = StartAndReturnProcess("./.paket/paket.exe", new ProcessSettings { Arguments = "push url https://www.myget.org/F/jajo file \"" + package + "\" apikey " + nugetApiKey }))
 			{
 				Information("Pushing packages");
 				process.WaitForExit();
