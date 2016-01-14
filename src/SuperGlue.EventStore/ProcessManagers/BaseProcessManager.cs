@@ -60,9 +60,14 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         protected abstract void MapEvents(ProcessManagerEventMappingContext<TState> mappingContext);
 
-        protected Task RequestTimeOut(object evnt, IDictionary<string, object> metaData, DateTime at)
+        protected Task RequestTimeOut(object evnt, DateTime at)
         {
-            return _repository.RequestTimeOut(GetTimeOutsStreamName(), evnt, new ReadOnlyDictionary<string, object>(metaData), at);
+            return _repository.RequestTimeOut(GetTimeOutsStreamName(), evnt, at);
+        }
+
+        protected Task RequestTimeOut(object evnt, TimeSpan @in)
+        {
+            return _repository.RequestTimeOut(GetTimeOutsStreamName(), evnt, @in);
         }
 
         protected virtual string GetStreamName(string id)

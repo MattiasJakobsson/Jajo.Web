@@ -8,6 +8,7 @@ namespace SuperGlue.EventStore.Data
     public class EventStoreSettings
     {
         private readonly ICollection<Action<ConnectionSettingsBuilder>> _settingsModifiers = new Collection<Action<ConnectionSettingsBuilder>>();
+        private readonly ICollection<Action<IDictionary<string, object>>> _commitHeadersModifiers = new Collection<Action<IDictionary<string, object>>>();
 
         public EventStoreSettings()
         {
@@ -43,6 +44,13 @@ namespace SuperGlue.EventStore.Data
             return this;
         }
 
+        public EventStoreSettings ModifyHeadersUsing(Action<IDictionary<string, object>> modifier)
+        {
+            _commitHeadersModifiers.Add(modifier);
+
+            return this;
+        }
+
         internal Tuple<EventStoreConnectionString, IEventStoreConnection> CreateConnection()
         {
             var connectionString = new EventStoreConnectionString(ConnectionStringName);
@@ -54,6 +62,12 @@ namespace SuperGlue.EventStore.Data
             });
 
             return new Tuple<EventStoreConnectionString, IEventStoreConnection>(connectionString, connection);
+        }
+
+        internal void ModifyHeaders(IDictionary<string, object> headers)
+        {
+            foreach (var commitHeadersModifier in _commitHeadersModifiers)
+                commitHeadersModifier(headers);
         }
     }
 }

@@ -29,9 +29,14 @@ namespace SuperGlue.EventStore.Data
 
         private const int WritePageSize = 500;
         private const int ReadPageSize = 500;
+
         public const string CorrelationIdKey = "CorrelationId";
         public const string CausationIdKey = "CausationId";
         public const string CommitIdHeader = "CommitId";
+        public const string AggregateClrTypeHeader = "AggregateClrTypeName";
+        public const string AggregateIdHeader = "AggregateId";
+        public const string EntityClrTypeHeader = "EntityClrTypeName";
+        public const string EntityIdHeader = "EntityId";
 
         public DefaultRepository(IEventStoreConnection eventStoreConnection, IHandleEventSerialization eventSerialization, ICheckConflicts checkConflicts,
             IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager, IDictionary<string, object> environment)
@@ -92,11 +97,30 @@ namespace SuperGlue.EventStore.Data
             return (await LoadEventsFromStream(stream, 0, int.MaxValue)).Select(DeserializeEvent);
         }
 
-        public async Task RequestTimeOut(string stream, object evnt, IReadOnlyDictionary<string, object> metaData, DateTime at)
+        public async Task RequestTimeOut(string stream, object evnt, DateTime at)
         {
-            var commitHeaders = metaData.ToDictionary(x => x.Key, x => x.Value);
+            var commitHeaders = new Dictionary<string, object>();
+
+            var metaData = _environment.GetMetaData().MetaData;
+
+            foreach (var item in metaData)
+                commitHeaders[item.Key] = item.Value;
+
+            var correlationId = _environment.GetCorrelationId();
+            var causationId = _environment.GetCausationId();
+
+            if (!string.IsNullOrEmpty(correlationId))
+                commitHeaders[CorrelationIdKey] = correlationId;
+
+            if (!string.IsNullOrEmpty(causationId))
+                commitHeaders[CausationIdKey] = causationId;
 
             await _timeoutManager.RequestTimeOut(stream, Guid.NewGuid(), evnt, at, commitHeaders);
+        }
+
+        public Task RequestTimeOut(string stream, object evnt, TimeSpan @in)
+        {
+            return RequestTimeOut(stream, evnt, DateTime.UtcNow + @in);
         }
 
         public async Task SaveChanges()
@@ -130,16 +154,16 @@ namespace SuperGlue.EventStore.Data
             foreach (var item in metaData)
                 commitHeaders[item.Key] = item.Value;
 
-            var aggregateMetaData = aggregate.GetMetaData(_environment);
-
-            foreach (var item in aggregateMetaData)
-                commitHeaders[item.Key] = item.Value;
-
             if (!string.IsNullOrEmpty(correlationId))
                 commitHeaders[CorrelationIdKey] = correlationId;
 
             if (!string.IsNullOrEmpty(causationId))
                 commitHeaders[CausationIdKey] = causationId;
+
+            commitHeaders[AggregateClrTypeHeader] = aggregate.GetType().AssemblyQualifiedName;
+            commitHeaders[AggregateIdHeader] = aggregate.Id;
+
+            _environment.GetSettings<EventStoreSettings>().ModifyHeaders(commitHeaders);
 
             var streamName = aggregate.GetStreamName(_environment);
             var eventStream = aggregate.GetUncommittedChanges();
@@ -189,16 +213,16 @@ namespace SuperGlue.EventStore.Data
             foreach (var item in metaData)
                 commitHeaders[item.Key] = item.Value;
 
-            var itemMetaData = canApplyEvents.GetMetaData(_environment);
-
-            foreach (var item in itemMetaData)
-                commitHeaders[item.Key] = item.Value;
-
             if (!string.IsNullOrEmpty(correlationId))
                 commitHeaders[CorrelationIdKey] = correlationId;
 
             if (!string.IsNullOrEmpty(causationId))
                 commitHeaders[CausationIdKey] = causationId;
+
+            commitHeaders[EntityClrTypeHeader] = canApplyEvents.GetType().AssemblyQualifiedName;
+            commitHeaders[EntityIdHeader] = canApplyEvents.Id;
+
+            _environment.GetSettings<EventStoreSettings>().ModifyHeaders(commitHeaders);
 
             var streamName = canApplyEvents.GetStreamName(_environment);
             var events = canApplyEvents.GetAppliedEvents().ToList();
@@ -217,16 +241,16 @@ namespace SuperGlue.EventStore.Data
             foreach (var item in metaData)
                 commitHeaders[item.Key] = item.Value;
 
-            var itemMetaData = state.GetMetaData(_environment);
-
-            foreach (var item in itemMetaData)
-                commitHeaders[item.Key] = item.Value;
-
             if (!string.IsNullOrEmpty(correlationId))
                 commitHeaders[CorrelationIdKey] = correlationId;
 
             if (!string.IsNullOrEmpty(causationId))
                 commitHeaders[CausationIdKey] = causationId;
+
+            commitHeaders[AggregateClrTypeHeader] = state.GetType().AssemblyQualifiedName;
+            commitHeaders[AggregateIdHeader] = state.Id;
+
+            _environment.GetSettings<EventStoreSettings>().ModifyHeaders(commitHeaders);
 
             var eventStream = state.GetUncommittedChanges();
 

@@ -7,10 +7,6 @@ namespace SuperGlue.EventStore.ProcessManagers
 {
     public abstract class BaseProcessManagerState : IProcessManagerState
     {
-        private const string AggregateClrTypeHeader = "AggregateClrTypeName";
-        private const string CommitIdHeader = "CommitId";
-        private const string AggregateIdHeader = "AggregateId";
-
         private readonly ICollection<Event> _uncommittedChanges = new Collection<Event>();
         private readonly IList<IEventHandler> _eventHandlers = new List<IEventHandler>();
 
@@ -41,16 +37,6 @@ namespace SuperGlue.EventStore.ProcessManagers
         public void ClearUncommittedChanges()
         {
             _uncommittedChanges.Clear();
-        }
-
-        public IDictionary<string, object> GetMetaData(IDictionary<string, object> environment)
-        {
-            return new Dictionary<string, object>
-            {
-                {AggregateClrTypeHeader, GetType().AssemblyQualifiedName},
-                {CommitIdHeader, Guid.NewGuid()},
-                {AggregateIdHeader, Id}
-            };
         }
 
         public void TransferState(object evnt)

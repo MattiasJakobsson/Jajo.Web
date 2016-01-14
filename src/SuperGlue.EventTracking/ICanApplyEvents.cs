@@ -7,7 +7,6 @@ namespace SuperGlue.EventTracking
         string Id { get; }
         IEnumerable<TrackedEvent> GetAppliedEvents();
         void ClearAppliedEvents();
-        IDictionary<string, object> GetMetaData(IDictionary<string, object> environment);
         string GetStreamName(IDictionary<string, object> environment);
     }
 }

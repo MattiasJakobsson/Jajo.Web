@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.EventStore.ProcessManagers;
 using SuperGlue.EventTracking;
@@ -10,7 +9,8 @@ namespace SuperGlue.EventStore.Data
     {
         Task<T> Load<T>(string id) where T : IAggregate, new();
         Task<T> Load<T>(string streamName, string id) where T : IProcessManagerState, new();
-        Task RequestTimeOut(string stream, object evnt, IReadOnlyDictionary<string, object> metaData, DateTime at);
+        Task RequestTimeOut(string stream, object evnt, DateTime at);
+        Task RequestTimeOut(string stream, object evnt, TimeSpan @in);
         Task SaveChanges();
         void ThrowAwayChanges();
         void Attach(IAggregate aggregate);
