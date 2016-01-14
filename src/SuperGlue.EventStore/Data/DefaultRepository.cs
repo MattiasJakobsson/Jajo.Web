@@ -67,7 +67,7 @@ namespace SuperGlue.EventStore.Data
             return aggregate;
         }
 
-        public async Task<T> LoadProcessState<T>(string streamName, string id) where T : IProcessManagerState, new()
+        public async Task<T> Load<T>(string streamName, string id) where T : IProcessManagerState, new()
         {
             LoadedProcessState loadedState;
             if (_loadedProcessStates.TryGetValue(streamName, out loadedState))
