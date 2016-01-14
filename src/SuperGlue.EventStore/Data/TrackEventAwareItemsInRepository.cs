@@ -13,7 +13,7 @@ namespace SuperGlue.EventStore.Data
 
         public void Track(ICanApplyEvents canApplyEvents)
         {
-            _repository.Attache(canApplyEvents);
+            _repository.Attach(canApplyEvents);
         }
     }
 }

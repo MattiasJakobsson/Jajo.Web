@@ -19,15 +19,15 @@ namespace SuperGlue.EventStore.Data
         {
             var command = environment.GetCurrentCommand();
 
-            return command?.CommandObject == null ? Task.FromResult<IEndThings>(new EmptyEnd()) : Task.FromResult<IEndThings>(new AttacheCommandToRepository(_repository, command));
+            return command?.CommandObject == null ? Task.FromResult<IEndThings>(new EmptyEnd()) : Task.FromResult<IEndThings>(new AttachCommandToRepository(_repository, command));
         }
 
-        private class AttacheCommandToRepository : IEndThings
+        private class AttachCommandToRepository : IEndThings
         {
             private readonly IRepository _repository;
             private readonly EnvironmentCommandExtensions.Command _command;
 
-            public AttacheCommandToRepository(IRepository repository, EnvironmentCommandExtensions.Command command)
+            public AttachCommandToRepository(IRepository repository, EnvironmentCommandExtensions.Command command)
             {
                 _repository = repository;
                 _command = command;
@@ -35,7 +35,7 @@ namespace SuperGlue.EventStore.Data
 
             public Task End()
             {
-                _repository.Attache(_command.CommandObject, _command.CommandId, _command.CausedBy);
+                _repository.Attach(_command.CommandObject, _command.CommandId, _command.CausedBy);
 
                 return Task.CompletedTask;
             }

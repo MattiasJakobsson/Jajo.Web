@@ -265,17 +265,17 @@ namespace SuperGlue.EventStore.Data
             await SaveEventsToStream(streamName, ExpectedVersion.Any, new List<Event> { new Event(id, command) }, commitHeaders);
         }
 
-        public void Attache(IAggregate aggregate)
+        public void Attach(IAggregate aggregate)
         {
             OnAggregateLoaded(aggregate);
         }
 
-        public void Attache(ICanApplyEvents canApplyEvents)
+        public void Attach(ICanApplyEvents canApplyEvents)
         {
             _loadedEventAwareItems.Push(new LoadedEventAwareItem(canApplyEvents, _environment.GetCorrelationId(), _environment.GetCausationId()));
         }
 
-        public void Attache(object command, Guid id, string causedBy)
+        public void Attach(object command, Guid id, string causedBy)
         {
             _attachedCommands.Push(new AttachedCommand(command, id, _environment.GetCorrelationId(), causedBy));
         }

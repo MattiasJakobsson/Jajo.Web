@@ -13,8 +13,8 @@ namespace SuperGlue.EventStore.Data
         Task RequestTimeOut(string stream, object evnt, IReadOnlyDictionary<string, object> metaData, DateTime at);
         Task SaveChanges();
         void ThrowAwayChanges();
-        void Attache(IAggregate aggregate);
-        void Attache(ICanApplyEvents canApplyEvents);
-        void Attache(object command, Guid id, string causedBy);
+        void Attach(IAggregate aggregate);
+        void Attach(ICanApplyEvents canApplyEvents);
+        void Attach(object command, Guid id, string causedBy);
     }
 }
