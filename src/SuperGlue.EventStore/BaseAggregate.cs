@@ -8,10 +8,9 @@ namespace SuperGlue.EventStore
     public abstract class BaseAggregate : IAggregate
     {
         private const string AggregateClrTypeHeader = "AggregateClrTypeName";
-        private const string CommitIdHeader = "CommitId";
         private const string AggregateIdHeader = "AggregateId";
 
-        private readonly ICollection<object> _uncommittedChanges = new Collection<object>();
+        private readonly ICollection<Event> _uncommittedChanges = new Collection<Event>();
         private readonly IList<IEventHandler> _eventHandlers = new List<IEventHandler>();
 
         protected BaseAggregate(IEventHandlerMappingStrategy eventHandlerMappingStrategy)
@@ -34,7 +33,7 @@ namespace SuperGlue.EventStore
 
         public IEventStream GetUncommittedChanges()
         {
-            var changes = new List<object>(_uncommittedChanges);
+            var changes = new List<Event>(_uncommittedChanges);
             return new EventStream(changes);
         }
 
@@ -48,14 +47,13 @@ namespace SuperGlue.EventStore
             return new Dictionary<string, object>
             {
                 {AggregateClrTypeHeader, GetType().AssemblyQualifiedName},
-                {CommitIdHeader, Guid.NewGuid()},
                 {AggregateIdHeader, Id}
             };
         }
 
         public virtual string GetStreamName(IDictionary<string, object> environment)
         {
-            return string.Format("aggregate-{0}-{1}", GetType().Name, Id);
+            return $"aggregate-{GetType().Name}-{Id}";
         }
 
         public event Action<IAggregate> AggregateAttached;
@@ -63,7 +61,7 @@ namespace SuperGlue.EventStore
         protected virtual void OnAggregateAttached(IAggregate aggregate)
         {
             var handler = AggregateAttached;
-            if (handler != null) handler(aggregate);
+            handler?.Invoke(aggregate);
         }
 
         protected void AttachAggregate(IAggregate aggregate, string id)
@@ -75,7 +73,7 @@ namespace SuperGlue.EventStore
 
         protected void ApplyEvent(object evnt)
         {
-            _uncommittedChanges.Add(evnt);
+            _uncommittedChanges.Add(new Event(Guid.NewGuid(), evnt));
             HandleEvent(evnt);
         }
 

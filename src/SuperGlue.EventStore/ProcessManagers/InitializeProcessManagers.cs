@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
+using SuperGlue.EventStore.Data;
 using SuperGlue.UnitOfWork;
 
 namespace SuperGlue.EventStore.ProcessManagers
@@ -131,7 +132,13 @@ namespace SuperGlue.EventStore.ProcessManagers
                 request.ProcessManager = processManager;
                 request.Event = evnt;
 
-                await chain(requestEnvironment);
+                var correlationId = evnt.Metadata.Get(DefaultRepository.CorrelationIdKey, Guid.NewGuid().ToString());
+
+                using (requestEnvironment.OpenCorrelationContext(correlationId))
+                using (requestEnvironment.OpenCausationContext(evnt.EventId.ToString()))
+                {
+                    await chain(requestEnvironment);
+                }
 
                 subscription.Acknowledge(evnt.OriginalEvent);
             }

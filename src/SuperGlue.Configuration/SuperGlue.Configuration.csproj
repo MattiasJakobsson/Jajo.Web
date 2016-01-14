@@ -46,6 +46,9 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\CorrelationExtensions.cs">
+      <Link>CorrelationExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\DiagnosticsExtensions.cs">
       <Link>DiagnosticsExtensions.cs</Link>
     </Compile>

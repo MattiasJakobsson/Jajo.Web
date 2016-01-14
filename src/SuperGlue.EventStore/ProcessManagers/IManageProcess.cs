@@ -10,8 +10,6 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         IEnumerable<string> GetStreamsToProcess();
         IReadOnlyDictionary<Type, string> GetEventMappings();
-        void Start();
-        Task Apply(object evnt, int version, IDictionary<string, object> metaData);
-        Task Commit(IDictionary<string, object> environment);
+        Task Apply(object evnt, IDictionary<string, object> metaData);
     }
 }

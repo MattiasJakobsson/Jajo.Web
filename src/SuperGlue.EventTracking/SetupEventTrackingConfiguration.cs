@@ -10,7 +10,7 @@ namespace SuperGlue.EventTracking
         {
             yield return new ConfigurationSetupResult("superglue.EventTrackingSetup", environment =>
             {
-                environment.RegisterTransient(typeof(ITrackEntitiesWithEvents), typeof(DefaultEventEntitiesTracker));
+                environment.RegisterAll(typeof(IAmInterestedInEventAwareItems));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

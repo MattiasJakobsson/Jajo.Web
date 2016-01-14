@@ -11,7 +11,7 @@ namespace SuperGlue.EventStore.ProcessManagers
         private const string CommitIdHeader = "CommitId";
         private const string AggregateIdHeader = "AggregateId";
 
-        private readonly ICollection<object> _uncommittedChanges = new Collection<object>();
+        private readonly ICollection<Event> _uncommittedChanges = new Collection<Event>();
         private readonly IList<IEventHandler> _eventHandlers = new List<IEventHandler>();
 
         protected BaseProcessManagerState(IEventHandlerMappingStrategy eventHandlerMappingStrategy)
@@ -34,7 +34,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public IEventStream GetUncommittedChanges()
         {
-            var changes = new List<object>(_uncommittedChanges);
+            var changes = new List<Event>(_uncommittedChanges);
             return new EventStream(changes);
         }
 
@@ -55,7 +55,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public void TransferState(object evnt)
         {
-            _uncommittedChanges.Add(evnt);
+            _uncommittedChanges.Add(new Event(Guid.NewGuid(), evnt));
             HandleEvent(evnt);
         }
 

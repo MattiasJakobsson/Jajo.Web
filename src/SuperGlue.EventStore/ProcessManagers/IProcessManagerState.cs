@@ -4,7 +4,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 {
     public interface IProcessManagerState
     {
-        string Id { get; }
+        string Id { get; set; }
         int Version { get; }
 
         void BuildFromHistory(IEventStream eventStream);

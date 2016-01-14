@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.EventStore.Data;
 
 namespace SuperGlue.EventStore.Projections
 {
@@ -13,7 +14,7 @@ namespace SuperGlue.EventStore.Projections
         public ExecuteProjection(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -27,7 +28,13 @@ namespace SuperGlue.EventStore.Projections
             {
                 foreach (var evnt in events)
                 {
-                    await stateApplier.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
+                    var correlationId = evnt.Metadata.Get(DefaultRepository.CorrelationIdKey, Guid.NewGuid().ToString());
+
+                    using (environment.OpenCorrelationContext(correlationId))
+                    using (environment.OpenCausationContext(evnt.EventId.ToString()))
+                    {
+                        await stateApplier.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
+                    }
                 }
             }
 

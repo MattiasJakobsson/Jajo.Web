@@ -13,7 +13,7 @@ namespace SuperGlue.EventStore.ProcessManagers
         public ExecuteProcessManager(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -23,11 +23,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             var processManager = environment.GetEventStoreRequest().ProcessManager;
             var evnt = environment.GetEventStoreRequest().Event;
 
-            processManager.Start();
-
-            await processManager.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
-
-            await processManager.Commit(environment);
+            await processManager.Apply(evnt.Data, evnt.Metadata);
 
             await _next(environment);
         }

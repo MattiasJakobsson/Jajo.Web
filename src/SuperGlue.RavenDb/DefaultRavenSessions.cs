@@ -14,20 +14,16 @@ namespace SuperGlue.RavenDb
         private readonly ConcurrentDictionary<string, IDocumentSession> _openedSyncSessions = new ConcurrentDictionary<string, IDocumentSession>();
 
         private readonly IDocumentStore _documentStore;
-        private readonly IDictionary<string, object> _environment;
-        private readonly ITrackEntitiesWithEvents _trackEntitiesWithEvents;
+        private readonly IEnumerable<IAmInterestedInEventAwareItems> _amInterestedInEventAwareItems;
 
-        public DefaultRavenSessions(IDocumentStore documentStore, IDictionary<string, object> environment, ITrackEntitiesWithEvents trackEntitiesWithEvents)
+        public DefaultRavenSessions(IDocumentStore documentStore, IDictionary<string, object> environment, IEnumerable<IAmInterestedInEventAwareItems> amInterestedInEventAwareItems)
         {
             _documentStore = documentStore;
-            _environment = environment;
-            _trackEntitiesWithEvents = trackEntitiesWithEvents;
+            Environment = environment;
+            _amInterestedInEventAwareItems = amInterestedInEventAwareItems;
         }
 
-        public IDictionary<string, object> Environment
-        {
-            get { return _environment; }
-        }
+        public IDictionary<string, object> Environment { get; }
 
         public virtual IAsyncDocumentSession GetFor(string database)
         {
@@ -36,7 +32,7 @@ namespace SuperGlue.RavenDb
             if (_openedSessions.TryGetValue(database, out session))
                 return session;
 
-            session = new TrackingSession(_documentStore.OpenAsyncSession(database), _trackEntitiesWithEvents);
+            session = new TrackingSession(_documentStore.OpenAsyncSession(database), _amInterestedInEventAwareItems);
             _openedSessions[database] = session;
 
             return session;
@@ -49,7 +45,7 @@ namespace SuperGlue.RavenDb
             if (_openedSyncSessions.TryGetValue(database, out session))
                 return session;
 
-            session = new TrackingSyncSession(_documentStore.OpenSession(database), _trackEntitiesWithEvents);
+            session = new TrackingSyncSession(_documentStore.OpenSession(database), _amInterestedInEventAwareItems);
             _openedSyncSessions[database] = session;
 
             return session;
@@ -74,7 +70,7 @@ namespace SuperGlue.RavenDb
 
         public Task CreateIndexes(Assembly assembly, string database)
         {
-            var documentStore = RavenDocumentStore.Create(_environment, database);
+            var documentStore = RavenDocumentStore.Create(Environment, database);
 
             return IndexCreation.CreateIndexesAsync(assembly, documentStore);
         }

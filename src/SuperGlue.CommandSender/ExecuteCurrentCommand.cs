@@ -16,14 +16,14 @@ namespace SuperGlue.CommandSender
         public ExecuteCurrentCommand(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var command = environment.GetCurrentCommand();
+            var command = environment.GetCurrentCommand()?.CommandObject;
 
             if (command != null)
             {
@@ -62,7 +62,7 @@ namespace SuperGlue.CommandSender
                 .Lambda<Func<TExecutor, TCommand, Task>>(Expression.Call(executorParameter, method, commandParameter), executorParameter, commandParameter)
                 .Compile();
 
-            return ((executor, command) => execute((TExecutor)executor, (TCommand)command));
+            return (executor, command) => execute((TExecutor)executor, (TCommand)command);
         }
     }
 }

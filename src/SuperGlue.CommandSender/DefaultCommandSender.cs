@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SuperGlue.CommandSender
@@ -13,12 +13,15 @@ namespace SuperGlue.CommandSender
             _environment = environment;
         }
 
-        public Task Send<TCommand>(TCommand command)
+        public async Task Send<TCommand>(TCommand command)
         {
-            var environment = _environment.ToDictionary(x => x.Key, x => x.Value);
-            environment[EnvironmentCommandExtensions.CommandConstants.CurrentCommand] = command;
+            var commandId = Guid.NewGuid().ToString();
 
-            return CommandPipeline.CurrentPipeline(environment);
+            using (_environment.OpenCommandContext(command, commandId))
+            using (_environment.OpenCausationContext(commandId))
+            {
+                await CommandPipeline.CurrentPipeline(_environment);
+            }
         }
     }
 }

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.EventStore.Data;
-using SuperGlue.EventTracking;
 using SuperGlue.UnitOfWork;
 
 namespace SuperGlue.EventStore
@@ -12,14 +8,10 @@ namespace SuperGlue.EventStore
     public class EventStoreUnitOfWork : ISuperGlueUnitOfWork
     {
         private readonly IRepository _repository;
-        private readonly ITrackEntitiesWithEvents _trackEntitiesWithEvents;
-        private readonly IDictionary<string, object> _environment;
 
-        public EventStoreUnitOfWork(IRepository repository, ITrackEntitiesWithEvents trackEntitiesWithEvents, IDictionary<string, object> environment)
+        public EventStoreUnitOfWork(IRepository repository)
         {
             _repository = repository;
-            _trackEntitiesWithEvents = trackEntitiesWithEvents;
-            _environment = environment;
         }
 
         public Task Begin()
@@ -29,20 +21,11 @@ namespace SuperGlue.EventStore
 
         public async Task Commit()
         {
-            while (_trackEntitiesWithEvents.Count > 0)
-            {
-                var entity = _trackEntitiesWithEvents.Pop();
-                var changes = entity.Entity.GetAppliedEvents().ToList();
-
-                await _repository.SaveToStream(entity.Entity.GetStreamName(_environment), changes, new ReadOnlyDictionary<string, object>(entity.Entity.GetMetaData(_environment)));
-            }
-
             await _repository.SaveChanges();
         }
 
         public Task Rollback(Exception exception = null)
         {
-            _trackEntitiesWithEvents.Clear();
             _repository.ThrowAwayChanges();
 
             return Task.CompletedTask;

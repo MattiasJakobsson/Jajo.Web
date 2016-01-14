@@ -49,12 +49,11 @@
       <Link>ResolveExtensions.cs</Link>
     </Compile>
     <Compile Include="CanApplyEvents.cs" />
-    <Compile Include="DefaultEventEntitiesTracker.cs" />
+    <Compile Include="IAmInterestedInEventAwareItems.cs" />
     <Compile Include="ICanApplyEvents.cs" />
-    <Compile Include="ITrackEntitiesWithEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SetupEventTrackingConfiguration.cs" />
-    <Compile Include="TrackedEntity.cs" />
+    <Compile Include="TrackedEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.template" />

@@ -5,8 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.Exceptions;
+using SuperGlue.Configuration;
 using SuperGlue.EventStore.ConflictManagement;
+using SuperGlue.EventStore.ProcessManagers;
 using SuperGlue.EventStore.Timeouts;
+using SuperGlue.EventTracking;
 using SuperGlue.MetaData;
 
 namespace SuperGlue.EventStore.Data
@@ -20,9 +23,15 @@ namespace SuperGlue.EventStore.Data
         private readonly IManageTimeOuts _timeoutManager;
         private readonly IDictionary<string, object> _environment;
         private readonly ConcurrentDictionary<string, LoadedAggregate> _loadedAggregates = new ConcurrentDictionary<string, LoadedAggregate>();
+        private readonly ConcurrentStack<LoadedEventAwareItem> _loadedEventAwareItems = new ConcurrentStack<LoadedEventAwareItem>();
+        private readonly ConcurrentDictionary<string, LoadedProcessState> _loadedProcessStates = new ConcurrentDictionary<string, LoadedProcessState>();
+        private readonly ConcurrentStack<AttachedCommand> _attachedCommands = new ConcurrentStack<AttachedCommand>();
 
         private const int WritePageSize = 500;
         private const int ReadPageSize = 500;
+        public const string CorrelationIdKey = "CorrelationId";
+        public const string CausationIdKey = "CausationId";
+        public const string CommitIdHeader = "CommitId";
 
         public DefaultRepository(IEventStoreConnection eventStoreConnection, IHandleEventSerialization eventSerialization, ICheckConflicts checkConflicts,
             IEnumerable<IManageChanges> manageChanges, IManageTimeOuts timeoutManager, IDictionary<string, object> environment)
@@ -37,16 +46,11 @@ namespace SuperGlue.EventStore.Data
 
         public async Task<T> Load<T>(string id) where T : IAggregate, new()
         {
-            LoadedAggregate aggregate;
+            LoadedAggregate loadedAggregate;
 
-            if (_loadedAggregates.TryGetValue(id, out aggregate))
-                return (T)aggregate.Aggregate;
+            if (_loadedAggregates.TryGetValue(id, out loadedAggregate))
+                return (T)loadedAggregate.Aggregate;
 
-            return await LoadVersion<T>(id, int.MaxValue);
-        }
-
-        public async Task<T> LoadVersion<T>(string id, int version) where T : IAggregate, new()
-        {
             var aggregate = new T
             {
                 Id = id
@@ -54,16 +58,33 @@ namespace SuperGlue.EventStore.Data
 
             var streamName = aggregate.GetStreamName(_environment);
 
-            var events = await LoadEventsFromStream(streamName, 0, version);
+            var events = await LoadEventsFromStream(streamName, 0, int.MaxValue);
 
-            aggregate.BuildFromHistory(new EventStream(events.Select(DeserializeEvent)));
-
-            if (aggregate.Version != version && version < int.MaxValue)
-                throw new AggregateVersionException(id, typeof(T), aggregate.Version, version);
+            aggregate.BuildFromHistory(new EventStream(events.Select(x => new Event(x.Event.EventId, DeserializeEvent(x)))));
 
             OnAggregateLoaded(aggregate);
 
             return aggregate;
+        }
+
+        public async Task<T> LoadProcessState<T>(string streamName, string id) where T : IProcessManagerState, new()
+        {
+            LoadedProcessState loadedState;
+            if (_loadedProcessStates.TryGetValue(streamName, out loadedState))
+                return (T)loadedState.State;
+
+            var state = new T
+            {
+                Id = id
+            };
+
+            var events = await LoadEventsFromStream(streamName, 0, int.MaxValue);
+
+            state.BuildFromHistory(new EventStream(events.Select(x => new Event(x.Event.EventId, DeserializeEvent(x)))));
+
+            OnProcessStateLoaded(state, streamName);
+
+            return state;
         }
 
         public async Task<IEnumerable<object>> LoadStream(string stream)
@@ -80,8 +101,19 @@ namespace SuperGlue.EventStore.Data
 
         public async Task SaveChanges()
         {
+            foreach (var loadedProcessState in _loadedProcessStates)
+                await Save(loadedProcessState.Value.State, loadedProcessState.Key, loadedProcessState.Value.CorrelationId, loadedProcessState.Value.CausationId);
+
             foreach (var aggregate in _loadedAggregates)
-                await Save(aggregate.Value.Aggregate);
+                await Save(aggregate.Value.Aggregate, aggregate.Value.CorrelationId, aggregate.Value.CausationId);
+
+            LoadedEventAwareItem item;
+            while (_loadedEventAwareItems.TryPop(out item))
+                await Save(item.CanApplyEvents, item.CorrelationId, item.CausationId);
+
+            AttachedCommand command;
+            while (_attachedCommands.TryPop(out command))
+                await Save(command.Command, command.Id, command.CorrelationId, command.CausationId);
         }
 
         public void ThrowAwayChanges()
@@ -89,7 +121,7 @@ namespace SuperGlue.EventStore.Data
             _loadedAggregates.Clear();
         }
 
-        private async Task Save(IAggregate aggregate)
+        private async Task Save(IAggregate aggregate, string correlationId, string causationId)
         {
             var commitHeaders = new Dictionary<string, object>();
 
@@ -102,6 +134,12 @@ namespace SuperGlue.EventStore.Data
 
             foreach (var item in aggregateMetaData)
                 commitHeaders[item.Key] = item.Value;
+
+            if (!string.IsNullOrEmpty(correlationId))
+                commitHeaders[CorrelationIdKey] = correlationId;
+
+            if (!string.IsNullOrEmpty(causationId))
+                commitHeaders[CausationIdKey] = causationId;
 
             var streamName = aggregate.GetStreamName(_environment);
             var eventStream = aggregate.GetUncommittedChanges();
@@ -142,18 +180,93 @@ namespace SuperGlue.EventStore.Data
             aggregate.ClearUncommittedChanges();
         }
 
-        public async Task SaveToStream(string stream, IEnumerable<object> events, IReadOnlyDictionary<string, object> metaData)
+        private async Task Save(ICanApplyEvents canApplyEvents, string correlationId, string causationId)
         {
-            var commitHeaders = metaData.ToDictionary(x => x.Key, x => x.Value);
+            var commitHeaders = new Dictionary<string, object>();
 
-            var requestMetaData = _environment.GetMetaData().MetaData;
+            var metaData = _environment.GetMetaData().MetaData;
 
-            foreach (var item in requestMetaData)
+            foreach (var item in metaData)
                 commitHeaders[item.Key] = item.Value;
 
-            var newEvents = events.ToList();
+            var itemMetaData = canApplyEvents.GetMetaData(_environment);
 
-            await SaveEventsToStream(stream, ExpectedVersion.Any, newEvents, commitHeaders);
+            foreach (var item in itemMetaData)
+                commitHeaders[item.Key] = item.Value;
+
+            if (!string.IsNullOrEmpty(correlationId))
+                commitHeaders[CorrelationIdKey] = correlationId;
+
+            if (!string.IsNullOrEmpty(causationId))
+                commitHeaders[CausationIdKey] = causationId;
+
+            var streamName = canApplyEvents.GetStreamName(_environment);
+            var events = canApplyEvents.GetAppliedEvents().ToList();
+
+            await SaveEventsToStream(streamName, ExpectedVersion.Any, events.Select(x => new Event(x.Id, x.Instance)).ToList(), commitHeaders);
+
+            canApplyEvents.ClearAppliedEvents();
+        }
+
+        private async Task Save(IProcessManagerState state, string streamName, string correlationId, string causationId)
+        {
+            var commitHeaders = new Dictionary<string, object>();
+
+            var metaData = _environment.GetMetaData().MetaData;
+
+            foreach (var item in metaData)
+                commitHeaders[item.Key] = item.Value;
+
+            var itemMetaData = state.GetMetaData(_environment);
+
+            foreach (var item in itemMetaData)
+                commitHeaders[item.Key] = item.Value;
+
+            if (!string.IsNullOrEmpty(correlationId))
+                commitHeaders[CorrelationIdKey] = correlationId;
+
+            if (!string.IsNullOrEmpty(causationId))
+                commitHeaders[CausationIdKey] = causationId;
+
+            var eventStream = state.GetUncommittedChanges();
+
+            var newEvents = eventStream.Events.ToList();
+            var originalVersion = state.Version - newEvents.Count;
+
+            var versionToExpect = originalVersion == 0 ? ExpectedVersion.Any : originalVersion - 1;
+
+            await SaveEventsToStream(streamName, versionToExpect, newEvents, commitHeaders);
+
+            state.ClearUncommittedChanges();
+        }
+
+        private async Task Save(object command, string id, string correlationId, string causationId)
+        {
+            var settings = _environment.GetSettings<EventStoreSettings>();
+
+            var streamName = (settings.FindCommandStreamFor ?? ((x, y, z, a) => null))(_environment, command, id, causationId);
+
+            if (string.IsNullOrWhiteSpace(streamName))
+                return;
+
+            var commitHeaders = new Dictionary<string, object>();
+
+            var metaData = _environment.GetMetaData().MetaData;
+
+            foreach (var item in metaData)
+                commitHeaders[item.Key] = item.Value;
+
+            if (!string.IsNullOrEmpty(correlationId))
+                commitHeaders[CorrelationIdKey] = correlationId;
+
+            if (!string.IsNullOrEmpty(causationId))
+                commitHeaders[CausationIdKey] = causationId;
+
+            Guid messageId;
+            if (!Guid.TryParse(id, out messageId))
+                messageId = Guid.NewGuid();
+
+            await SaveEventsToStream(streamName, ExpectedVersion.Any, new List<Event> { new Event(messageId, command) }, commitHeaders);
         }
 
         public void Attache(IAggregate aggregate)
@@ -161,11 +274,21 @@ namespace SuperGlue.EventStore.Data
             OnAggregateLoaded(aggregate);
         }
 
-        public event Action<IAggregate> AggregateLoaded;
-
-        protected async Task SaveEventsToStream(string streamName, int expectedVersion, IReadOnlyCollection<object> events, IDictionary<string, object> commitHeaders)
+        public void Attache(ICanApplyEvents canApplyEvents)
         {
-            var eventsToSave = events.Select(e => ToEventData(Guid.NewGuid(), e, commitHeaders)).ToList();
+            _loadedEventAwareItems.Push(new LoadedEventAwareItem(canApplyEvents, _environment.GetCorrelationId(), _environment.GetCausationId()));
+        }
+
+        public void Attach(object command, string id, string causedBy)
+        {
+            _attachedCommands.Push(new AttachedCommand(command, id, _environment.GetCorrelationId(), causedBy));
+        }
+
+        protected async Task SaveEventsToStream(string streamName, int expectedVersion, IReadOnlyCollection<Event> events, IDictionary<string, object> commitHeaders)
+        {
+            commitHeaders[CommitIdHeader] = Guid.NewGuid();
+
+            var eventsToSave = events.Select(e => ToEventData(e.Id, e.Instance, commitHeaders)).ToList();
 
             if (!eventsToSave.Any())
                 return;
@@ -227,10 +350,12 @@ namespace SuperGlue.EventStore.Data
         {
             aggregate.AggregateAttached += OnAggregateLoaded;
 
-            _loadedAggregates[aggregate.Id] = new LoadedAggregate(aggregate);
+            _loadedAggregates[aggregate.Id] = new LoadedAggregate(aggregate, _environment.GetCorrelationId(), _environment.GetCausationId());
+        }
 
-            var handler = AggregateLoaded;
-            if (handler != null) handler(aggregate);
+        protected void OnProcessStateLoaded(IProcessManagerState state, string stream)
+        {
+            _loadedProcessStates[stream] = new LoadedProcessState(state, _environment.GetCorrelationId(), _environment.GetCausationId());
         }
 
         private EventData ToEventData(Guid eventId, object evnt, IDictionary<string, object> headers)
@@ -247,12 +372,60 @@ namespace SuperGlue.EventStore.Data
 
         private class LoadedAggregate
         {
-            public LoadedAggregate(IAggregate aggregate)
+            public LoadedAggregate(IAggregate aggregate, string correlationId, string causationId)
             {
                 Aggregate = aggregate;
+                CorrelationId = correlationId;
+                CausationId = causationId;
             }
 
-            public IAggregate Aggregate { get; private set; }
+            public IAggregate Aggregate { get; }
+            public string CorrelationId { get; }
+            public string CausationId { get; }
+        }
+
+        private class LoadedEventAwareItem
+        {
+            public LoadedEventAwareItem(ICanApplyEvents canApplyEvents, string correlationId, string causationId)
+            {
+                CanApplyEvents = canApplyEvents;
+                CorrelationId = correlationId;
+                CausationId = causationId;
+            }
+
+            public ICanApplyEvents CanApplyEvents { get; }
+            public string CorrelationId { get; }
+            public string CausationId { get; }
+        }
+
+        private class LoadedProcessState
+        {
+            public LoadedProcessState(IProcessManagerState state, string correlationId, string causationId)
+            {
+                State = state;
+                CorrelationId = correlationId;
+                CausationId = causationId;
+            }
+
+            public IProcessManagerState State { get; }
+            public string CorrelationId { get; }
+            public string CausationId { get; }
+        }
+
+        private class AttachedCommand
+        {
+            public AttachedCommand(object command, string id, string correlationId, string causationId)
+            {
+                Command = command;
+                Id = id;
+                CorrelationId = correlationId;
+                CausationId = causationId;
+            }
+
+            public object Command { get; }
+            public string Id { get; }
+            public string CorrelationId { get; }
+            public string CausationId { get; }
         }
     }
 }

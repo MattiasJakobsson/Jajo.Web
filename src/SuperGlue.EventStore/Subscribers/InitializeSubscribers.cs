@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
+using SuperGlue.EventStore.Data;
 using SuperGlue.UnitOfWork;
 
 namespace SuperGlue.EventStore.Subscribers
@@ -154,7 +155,13 @@ namespace SuperGlue.EventStore.Subscribers
                 request.Event = evnt;
                 request.IsCatchUp = catchup;
 
-                await chain(requestEnvironment);
+                var correlationId = evnt.Metadata.Get(DefaultRepository.CorrelationIdKey, Guid.NewGuid().ToString());
+
+                using (requestEnvironment.OpenCorrelationContext(correlationId))
+                using (requestEnvironment.OpenCausationContext(evnt.EventId.ToString()))
+                {
+                    await chain(requestEnvironment);
+                }
 
                 done(evnt);
             }

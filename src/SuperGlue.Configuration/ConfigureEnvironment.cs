@@ -15,10 +15,10 @@ namespace SuperGlue.Configuration
         public ConfigureEnvironment(AppFunc next, ConfigureEnvironmentOptions options)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             if (options == null)
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException(nameof(options));
 
             _next = next;
             _options = options;
@@ -32,7 +32,19 @@ namespace SuperGlue.Configuration
             var chainBefore = environment.GetCurrentChain();
             environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.CurrentChainData] = new ConfigurationsEnvironmentExtensions.ChainData(_options.ChainName, Guid.NewGuid().ToString());
 
-            await _next(environment);
+            var correlationId = environment.GetCorrelationId();
+
+            if (string.IsNullOrEmpty(correlationId))
+            {
+                using (environment.OpenCorrelationContext(Guid.NewGuid().ToString()))
+                {
+                    await _next(environment);
+                }
+            }
+            else
+            {
+                await _next(environment);
+            }
 
             environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.CurrentChainData] = chainBefore;
         }
@@ -46,7 +58,7 @@ namespace SuperGlue.Configuration
             ChainName = chainName;
         }
 
-        public IDictionary<string, object> ApplicationEnvironment { get; private set; }
-        public string ChainName { get; private set; }
+        public IDictionary<string, object> ApplicationEnvironment { get; }
+        public string ChainName { get; }
     }
 }

@@ -4,11 +4,11 @@ namespace SuperGlue.EventStore
 {
     public class EventStream : IEventStream
     {
-        public EventStream(IEnumerable<object> events)
+        public EventStream(IEnumerable<Event> events)
         {
             Events = events;
         }
 
-        public IEnumerable<object> Events { get; private set; }
+        public IEnumerable<Event> Events { get; }
     }
 }

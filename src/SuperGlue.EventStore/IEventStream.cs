@@ -4,6 +4,6 @@ namespace SuperGlue.EventStore
 {
     public interface IEventStream
     {
-        IEnumerable<object> Events { get; }
+        IEnumerable<Event> Events { get; }
     }
 }

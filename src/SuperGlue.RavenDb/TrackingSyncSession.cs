@@ -13,12 +13,12 @@ namespace SuperGlue.RavenDb
     public class TrackingSyncSession : IDocumentSession
     {
         private readonly IDocumentSession _innerSession;
-        private readonly ITrackEntitiesWithEvents _trackEntitiesWithEvents;
+        private readonly IEnumerable<IAmInterestedInEventAwareItems> _amInterestedInEventAwareItems;
 
-        public TrackingSyncSession(IDocumentSession innerSession, ITrackEntitiesWithEvents trackEntitiesWithEvents)
+        public TrackingSyncSession(IDocumentSession innerSession, IEnumerable<IAmInterestedInEventAwareItems> amInterestedInEventAwareItems)
         {
-            _trackEntitiesWithEvents = trackEntitiesWithEvents;
             _innerSession = innerSession;
+            _amInterestedInEventAwareItems = amInterestedInEventAwareItems;
         }
 
         public void Dispose()
@@ -240,14 +240,16 @@ namespace SuperGlue.RavenDb
             Loaded(entity);
         }
 
-        public ISyncAdvancedSessionOperation Advanced { get { return _innerSession.Advanced; } }
+        public ISyncAdvancedSessionOperation Advanced => _innerSession.Advanced;
 
         private void Loaded(object entity)
         {
             var canApplyEvents = entity as ICanApplyEvents;
 
-            if (canApplyEvents != null)
-                _trackEntitiesWithEvents.Track(canApplyEvents);
+            if (canApplyEvents == null) return;
+
+            foreach (var amInterestedInEventAwareItemse in _amInterestedInEventAwareItems)
+                amInterestedInEventAwareItemse.Track(canApplyEvents);
         }
     }
 }

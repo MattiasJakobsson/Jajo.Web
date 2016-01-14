@@ -158,7 +158,10 @@ namespace SuperGlue.EventStore.Projections
                 request.Projection = projection;
                 request.Events = eventsList;
 
-                await chain(requestEnvironment);
+                using (requestEnvironment.OpenCorrelationContext(Guid.NewGuid().ToString()))
+                {
+                    await chain(requestEnvironment);
+                }
             }
             catch (Exception ex)
             {

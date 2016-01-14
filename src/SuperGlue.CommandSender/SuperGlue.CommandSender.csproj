@@ -45,6 +45,12 @@
     <Compile Include="..\Shared\Cache.cs">
       <Link>Cache.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\CorrelationExtensions.cs">
+      <Link>CorrelationExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\Shared\EnvironmentCommandExtensions.cs">
+      <Link>EnvironmentCommandExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
@@ -53,7 +59,6 @@
     </Compile>
     <Compile Include="CommandPipeline.cs" />
     <Compile Include="DefaultCommandSender.cs" />
-    <Compile Include="EnvironmentCommandExtensions.cs" />
     <Compile Include="ExecuteCurrentCommand.cs" />
     <Compile Include="IHandleCommand.cs" />
     <Compile Include="ISendCommand.cs" />

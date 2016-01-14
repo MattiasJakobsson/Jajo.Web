@@ -8,16 +8,15 @@ namespace SuperGlue.EventTracking
     public abstract class CanApplyEvents : ICanApplyEvents
     {
         private const string EntityClrTypeHeader = "EntityClrTypeName";
-        private const string CommitIdHeader = "CommitId";
         private const string EntityIdHeader = "EntityId";
 
-        private readonly ICollection<object> _events = new Collection<object>();
+        private readonly ICollection<TrackedEvent> _events = new Collection<TrackedEvent>();
 
         public string Id { get; set; }
 
-        public IEnumerable<object> GetAppliedEvents()
+        public IEnumerable<TrackedEvent> GetAppliedEvents()
         {
-            return new ReadOnlyCollection<object>(_events.ToList());
+            return new ReadOnlyCollection<TrackedEvent>(_events.ToList());
         }
 
         public void ClearAppliedEvents()
@@ -30,19 +29,18 @@ namespace SuperGlue.EventTracking
             return new Dictionary<string, object>
             {
                 {EntityClrTypeHeader, GetType().AssemblyQualifiedName},
-                {CommitIdHeader, Guid.NewGuid()},
                 {EntityIdHeader, Id}
             };
         }
 
         public string GetStreamName(IDictionary<string, object> environment)
         {
-            return string.Format("entity-{0}-{1}", GetType().Name, Id.Replace("/", "-"));
+            return $"entity-{GetType().Name}-{Id.Replace("/", "-")}";
         }
 
         protected void ApplyEvent(object evnt)
         {
-            _events.Add(evnt);
+            _events.Add(new TrackedEvent(Guid.NewGuid(), evnt));
         }
     }
 }
