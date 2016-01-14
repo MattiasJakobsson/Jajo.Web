@@ -14,7 +14,7 @@ namespace SuperGlue.Web.Assets
             foreach (var source in settings.Sources)
                 assets.AddRange(LoadFromDirectory(source.Path, source.Path, source.Priority));
 
-            await Move(assets, settings.AssetsDestination);
+            await Move(assets, settings.AssetsDestination).ConfigureAwait(false);
         }
 
         private static async Task Move(IEnumerable<Asset> assets, string moveTo)
@@ -35,7 +35,7 @@ namespace SuperGlue.Web.Assets
                 if (!Directory.Exists(assetDirectory))
                     Directory.CreateDirectory(assetDirectory);
 
-                await asset.Content.CopyToAsync(File.Create(assetPath));
+                await asset.Content.CopyToAsync(File.Create(assetPath)).ConfigureAwait(false);
             }
         }
 

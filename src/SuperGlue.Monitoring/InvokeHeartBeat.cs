@@ -22,9 +22,9 @@ namespace SuperGlue.Monitoring
         {
             var heartBeatMonitor = environment.GetHeartBeatMonitor();
 
-            await heartBeatMonitor.Beat(environment);
+            await heartBeatMonitor.Beat(environment).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

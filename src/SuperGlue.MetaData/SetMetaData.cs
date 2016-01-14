@@ -16,7 +16,7 @@ namespace SuperGlue.MetaData
         public SetMetaData(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -33,7 +33,7 @@ namespace SuperGlue.MetaData
 
             foreach (var supplier in metaDataSuppliers.Where(supplier => supplier.CanHandleChain(environment.GetCurrentChain().Name)))
             {
-                var data = await supplier.GetMetaData(environment);
+                var data = await supplier.GetMetaData(environment).ConfigureAwait(false);
 
                 foreach (var item in data)
                     metaData[item.Key] = item.Value;
@@ -41,7 +41,7 @@ namespace SuperGlue.MetaData
 
             environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = new RequestMetaData(new ReadOnlyDictionary<string, object>(metaData));
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
 
             environment[MetaDataEnvironmentExtensions.MetaDataConstants.RequestMetaData] = oldMetaData;
         }

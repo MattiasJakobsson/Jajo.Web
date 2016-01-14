@@ -92,9 +92,9 @@ namespace SuperGlue.Web
                 _environment = environment;
             }
 
-            public string Method { get { return _environment.Get<string>(OwinConstants.RequestMethod); } }
-            public string Scheme { get { return _environment.Get<string>(OwinConstants.RequestScheme); } }
-            public bool IsSecure { get { return string.Equals(Scheme, "HTTPS", StringComparison.OrdinalIgnoreCase); } }
+            public string Method => _environment.Get<string>(OwinConstants.RequestMethod);
+            public string Scheme => _environment.Get<string>(OwinConstants.RequestScheme);
+            public bool IsSecure => string.Equals(Scheme, "HTTPS", StringComparison.OrdinalIgnoreCase);
 
             public string Host
             {
@@ -112,30 +112,31 @@ namespace SuperGlue.Web
                 }
             }
 
-            public string PathBase { get { return _environment.Get<string>(OwinConstants.RequestPathBase); } }
-            public string Path { get { return _environment.Get<string>(OwinConstants.RequestPath); } }
-            public string QueryString { get { return _environment.Get<string>(OwinConstants.RequestQueryString); } }
-            public ReadableStringCollection Query { get { return new ReadableStringCollection(GetQuery()); } }
-            public Uri Uri { get { return new Uri(Scheme + Uri.SchemeDelimiter + Host + PathBase + Path + (string.IsNullOrEmpty(QueryString) ? "" : "?" + QueryString)); } }
-            public string Protocol { get { return _environment.Get<string>(OwinConstants.RequestProtocol); } }
-            public RequestHeaders Headers { get { return new RequestHeaders(new ReadOnlyDictionary<string, string[]>(_environment.Get<IDictionary<string, string[]>>(OwinConstants.RequestHeaders, new Dictionary<string, string[]>()))); } }
-            public RequestCookieCollection Cookies { get { return new RequestCookieCollection(GetCookies()); } }
-            public Stream Body { get { return _environment.Get<Stream>(OwinConstants.RequestBody); } }
+            public string PathBase => _environment.Get<string>(OwinConstants.RequestPathBase);
+            public string Path => _environment.Get<string>(OwinConstants.RequestPath);
+            public string QueryString => _environment.Get<string>(OwinConstants.RequestQueryString);
+            public ReadableStringCollection Query => new ReadableStringCollection(GetQuery());
+            public Uri Uri => new Uri(Scheme + Uri.SchemeDelimiter + Host + PathBase + Path + (string.IsNullOrEmpty(QueryString) ? "" : "?" + QueryString));
+            public string Protocol => _environment.Get<string>(OwinConstants.RequestProtocol);
+            public RequestHeaders Headers => new RequestHeaders(new ReadOnlyDictionary<string, string[]>(_environment.Get<IDictionary<string, string[]>>(OwinConstants.RequestHeaders, new Dictionary<string, string[]>())));
+            public RequestCookieCollection Cookies => new RequestCookieCollection(GetCookies());
+            public Stream Body => _environment.Get<Stream>(OwinConstants.RequestBody);
+
             public CancellationToken CallCancelled
             {
                 get { return _environment.Get<CancellationToken>(OwinConstants.CallCancelled); }
                 set { Set(OwinConstants.CallCancelled, value); }
             }
-            public string LocalIpAddress { get { return _environment.Get<string>(OwinConstants.CommonKeys.LocalIpAddress); } }
+            public string LocalIpAddress => _environment.Get<string>(OwinConstants.CommonKeys.LocalIpAddress);
 
             public async Task<ReadableStringCollection> ReadForm()
             {
-                return (await GetForm()).Form;
+                return (await GetForm().ConfigureAwait(false)).Form;
             }
 
             public async Task<IEnumerable<HttpFile>> ReadFiles()
             {
-                return (await GetForm()).Files;
+                return (await GetForm().ConfigureAwait(false)).Files;
             }
 
             public int? LocalPort
@@ -150,7 +151,7 @@ namespace SuperGlue.Web
                 }
             }
 
-            public string RemoteIpAddress { get { return _environment.Get<string>(OwinConstants.CommonKeys.RemoteIpAddress); } }
+            public string RemoteIpAddress => _environment.Get<string>(OwinConstants.CommonKeys.RemoteIpAddress);
 
             public int? RemotePort
             {
@@ -265,7 +266,7 @@ namespace SuperGlue.Web
 
                     var accumulator = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
-                    ParseDelimited(await reader.ReadToEndAsync(), new[] { '&' }, AppendItemCallback, accumulator);
+                    ParseDelimited(await reader.ReadToEndAsync().ConfigureAwait(false), new[] { '&' }, AppendItemCallback, accumulator);
 
                     foreach (var kv in accumulator)
                         form.Add(kv.Key, kv.Value);
@@ -342,10 +343,10 @@ namespace SuperGlue.Web
                     RawHeaders = rawHeaders;
                 }
 
-                public IReadOnlyDictionary<string, string[]> RawHeaders { get; private set; }
-                public string ContentType { get { return GetHeader(HeadersConstants.ContentType); } }
-                public string MediaType { get { return GetHeader(HeadersConstants.MediaType); } }
-                public string Accept { get { return GetHeader(HeadersConstants.Accept); } }
+                public IReadOnlyDictionary<string, string[]> RawHeaders { get; }
+                public string ContentType => GetHeader(HeadersConstants.ContentType);
+                public string MediaType => GetHeader(HeadersConstants.MediaType);
+                public string Accept => GetHeader(HeadersConstants.Accept);
 
                 public string GetHeader(string key)
                 {
@@ -368,12 +369,12 @@ namespace SuperGlue.Web
                 public RequestCookieCollection(IDictionary<string, string> store)
                 {
                     if (store == null)
-                        throw new ArgumentNullException("store");
+                        throw new ArgumentNullException(nameof(store));
 
                     Store = store;
                 }
 
-                private IDictionary<string, string> Store { get; set; }
+                private IDictionary<string, string> Store { get; }
 
                 public string this[string key]
                 {
@@ -518,20 +519,11 @@ namespace SuperGlue.Web
                         _buffer = new byte[_boundaryAsBytes.Length];
                     }
 
-                    public bool IsBoundary
-                    {
-                        get { return _buffer.SequenceEqual(_boundaryAsBytes); }
-                    }
+                    public bool IsBoundary => _buffer.SequenceEqual(_boundaryAsBytes);
 
-                    public bool IsFull
-                    {
-                        get { return _position.Equals(_buffer.Length); }
-                    }
+                    public bool IsFull => _position.Equals(_buffer.Length);
 
-                    public int Length
-                    {
-                        get { return _buffer.Length; }
-                    }
+                    public int Length => _buffer.Length;
 
                     public void Reset()
                     {
@@ -559,7 +551,7 @@ namespace SuperGlue.Web
                     public string Filename { get; private set; }
                     public string Name { get; private set; }
 
-                    public HttpMultipartSubStream Value { get; private set; }
+                    public HttpMultipartSubStream Value { get; }
 
                     private void ExtractHeaders()
                     {
@@ -631,25 +623,13 @@ namespace SuperGlue.Web
                         _end = end;
                     }
 
-                    public override bool CanRead
-                    {
-                        get { return true; }
-                    }
+                    public override bool CanRead => true;
 
-                    public override bool CanSeek
-                    {
-                        get { return true; }
-                    }
+                    public override bool CanSeek => true;
 
-                    public override bool CanWrite
-                    {
-                        get { return false; }
-                    }
+                    public override bool CanWrite => false;
 
-                    public override long Length
-                    {
-                        get { return (_end - _start); }
-                    }
+                    public override long Length => (_end - _start);
 
                     public override long Position
                     {
@@ -775,8 +755,8 @@ namespace SuperGlue.Web
                     Files = files;
                 }
 
-                public ReadableStringCollection Form { get; private set; }
-                public IEnumerable<HttpFile> Files { get; private set; }
+                public ReadableStringCollection Form { get; }
+                public IEnumerable<HttpFile> Files { get; }
             }
 
             public class ReadableStringCollection : IEnumerable<KeyValuePair<string, string[]>>
@@ -784,17 +764,14 @@ namespace SuperGlue.Web
                 public ReadableStringCollection(IDictionary<string, string[]> store)
                 {
                     if (store == null)
-                        throw new ArgumentNullException("store");
+                        throw new ArgumentNullException(nameof(store));
 
                     Store = store;
                 }
 
-                private IDictionary<string, string[]> Store { get; set; }
+                private IDictionary<string, string[]> Store { get; }
 
-                public string this[string key]
-                {
-                    get { return Get(key); }
-                }
+                public string this[string key] => Get(key);
 
                 public string Get(string key)
                 {
@@ -859,8 +836,8 @@ namespace SuperGlue.Web
                 set { Set(OwinConstants.ResponseProtocol, value); }
             }
 
-            public ResponseHeaders Headers { get { return new ResponseHeaders(_environment.Get<IDictionary<string, string[]>>(OwinConstants.ResponseHeaders, new Dictionary<string, string[]>())); } }
-            public ResponseCookieCollection Cookies { get { return new ResponseCookieCollection(Headers); } }
+            public ResponseHeaders Headers => new ResponseHeaders(_environment.Get<IDictionary<string, string[]>>(OwinConstants.ResponseHeaders, new Dictionary<string, string[]>()));
+            public ResponseCookieCollection Cookies => new ResponseCookieCollection(Headers);
 
             public Stream Body
             {
@@ -885,7 +862,7 @@ namespace SuperGlue.Web
 
             public virtual Task Write(byte[] data, CancellationToken token)
             {
-                return Write(data, 0, data == null ? 0 : data.Length, token);
+                return Write(data, 0, data?.Length ?? 0, token);
             }
 
             public virtual Task Write(byte[] data, int offset, int count, CancellationToken token)
@@ -908,7 +885,7 @@ namespace SuperGlue.Web
                     RawHeaders = rawHeaders;
                 }
 
-                public IDictionary<string, string[]> RawHeaders { get; private set; }
+                public IDictionary<string, string[]> RawHeaders { get; }
 
                 public virtual long? ContentLength
                 {
@@ -994,7 +971,7 @@ namespace SuperGlue.Web
                 public void SetHeader(string key, string value)
                 {
                     if (string.IsNullOrWhiteSpace(key))
-                        throw new ArgumentNullException("key");
+                        throw new ArgumentNullException(nameof(key));
 
                     if (string.IsNullOrWhiteSpace(value))
                         RawHeaders.Remove(key);
@@ -1018,7 +995,7 @@ namespace SuperGlue.Web
                         return;
 
                     var existing = GetHeaderUnmodified(key);
-                    SetHeaderUnmodified(key, existing == null ? values : existing.Concat(values));
+                    SetHeaderUnmodified(key, existing?.Concat(values) ?? values);
                 }
 
                 private string[] GetHeaderUnmodified(string key)
@@ -1040,7 +1017,7 @@ namespace SuperGlue.Web
                 public ResponseCookieCollection(ResponseHeaders headers)
                 {
                     if (headers == null)
-                        throw new ArgumentNullException("headers");
+                        throw new ArgumentNullException(nameof(headers));
 
                     _headers = headers;
                 }
@@ -1053,7 +1030,7 @@ namespace SuperGlue.Web
                 public void Append(string key, string value, CookieOptions options)
                 {
                     if (options == null)
-                        throw new ArgumentNullException("options");
+                        throw new ArgumentNullException(nameof(options));
 
                     var domainHasValue = !string.IsNullOrEmpty(options.Domain);
                     var pathHasValue = !string.IsNullOrEmpty(options.Path);
@@ -1095,7 +1072,7 @@ namespace SuperGlue.Web
                 public void Delete(string key, CookieOptions options)
                 {
                     if (options == null)
-                        throw new ArgumentNullException("options");
+                        throw new ArgumentNullException(nameof(options));
 
                     var domainHasValue = !string.IsNullOrEmpty(options.Domain);
                     var pathHasValue = !string.IsNullOrEmpty(options.Path);

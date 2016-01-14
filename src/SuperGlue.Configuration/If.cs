@@ -14,10 +14,10 @@ namespace SuperGlue.Configuration
         public If(AppFunc next, IfOptions options)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             if (options == null)
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException(nameof(options));
 
             _next = next;
             _options = options;
@@ -28,10 +28,10 @@ namespace SuperGlue.Configuration
             var ifResult = _options.Check(environment);
 
             if (ifResult)
-                await _options.Chain(environment);
+                await _options.Chain(environment).ConfigureAwait(false);
 
             if (_options.ShouldContinueWithNext(environment, ifResult))
-                await _next(environment);
+                await _next(environment).ConfigureAwait(false);
         }
     }
 
@@ -44,8 +44,8 @@ namespace SuperGlue.Configuration
             ShouldContinueWithNext = shouldContinueWithNext;
         }
 
-        public Func<IDictionary<string, object>, bool> Check { get; private set; }
-        public AppFunc Chain { get; private set; }
-        public Func<IDictionary<string, object>, bool,  bool> ShouldContinueWithNext { get; private set; }
+        public Func<IDictionary<string, object>, bool> Check { get; }
+        public AppFunc Chain { get; }
+        public Func<IDictionary<string, object>, bool,  bool> ShouldContinueWithNext { get; }
     }
 }

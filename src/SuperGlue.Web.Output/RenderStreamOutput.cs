@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Output
                 return null;
 
             output.Position = 0;
-            var content = await new StreamReader(output).ReadToEndAsync();
+            var content = await new StreamReader(output).ReadToEndAsync().ConfigureAwait(false);
 
             return new OutputRenderingResult(content, environment.GetRequest().Headers.Accept.Split(',').Select(x => x.Trim()).FirstOrDefault());
         }

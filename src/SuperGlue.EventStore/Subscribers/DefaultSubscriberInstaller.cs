@@ -33,7 +33,7 @@ namespace SuperGlue.EventStore.Subscribers
 
             try
             {
-                await _eventStoreConnection.CreatePersistentSubscriptionAsync(stream, groupName, settings, _eventStoreConnectionString.GetUserCredentials());
+                await _eventStoreConnection.CreatePersistentSubscriptionAsync(stream, groupName, settings, _eventStoreConnectionString.GetUserCredentials()).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

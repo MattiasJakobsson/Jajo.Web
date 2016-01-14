@@ -35,7 +35,7 @@ namespace SuperGlue.Web.Http
                 .Select(x => x.Trim())
                 .Any(encoding => string.Equals(encoding, "gzip", StringComparison.Ordinal)))
             {
-                await _next(environment);
+                await _next(environment).ConfigureAwait(false);
                 return;
             }
 
@@ -44,10 +44,10 @@ namespace SuperGlue.Web.Http
 
             try
             {
-                await _next(environment);
+                await _next(environment).ConfigureAwait(false);
 
                 if (environment.GetResponse().Body is BufferingStream)
-                    await environment.GetResponse().Body.FlushAsync();
+                    await environment.GetResponse().Body.FlushAsync().ConfigureAwait(false);
             }
             finally
             {
@@ -71,7 +71,7 @@ namespace SuperGlue.Web.Http
                 if (!(_stream is GZipStream))
                 {
                     Seek(0, SeekOrigin.Begin);
-                    await CopyToAsync(_stream, 8192, cancellationToken);
+                    await CopyToAsync(_stream, 8192, cancellationToken).ConfigureAwait(false);
                     SetLength(0);
 
                     return;
@@ -86,13 +86,13 @@ namespace SuperGlue.Web.Http
 
                 if (_stream is GZipStream)
                 {
-                    await _stream.WriteAsync(buffer, offset, count, request.CallCancelled);
+                    await _stream.WriteAsync(buffer, offset, count, request.CallCancelled).ConfigureAwait(false);
                     return;
                 }
 
                 if ((count + Length) < 4096)
                 {
-                    await base.WriteAsync(buffer, offset, count, cancellationToken);
+                    await base.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
                     return;
                 }
 
@@ -104,12 +104,12 @@ namespace SuperGlue.Web.Http
                 response.Headers.SetHeader("Content-Encoding", "gzip");
                 response.Headers.SetHeader("Transfer-Encoding", "chunked");
 
-                await base.WriteAsync(buffer, offset, count, cancellationToken);
+                await base.WriteAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
 
                 _stream = new GZipStream(_stream, CompressionMode.Compress, true);
 
                 Seek(0, SeekOrigin.Begin);
-                await CopyToAsync(_stream, 8192, request.CallCancelled);
+                await CopyToAsync(_stream, 8192, request.CallCancelled).ConfigureAwait(false);
             }
         }
     }

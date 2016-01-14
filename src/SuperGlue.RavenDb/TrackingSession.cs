@@ -47,7 +47,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<T> LoadAsync<T>(string id, CancellationToken token = default(CancellationToken))
         {
-            var entity = await _innerSession.LoadAsync<T>(id, token);
+            var entity = await _innerSession.LoadAsync<T>(id, token).ConfigureAwait(false);
 
             Loaded(entity);
 
@@ -56,7 +56,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<T[]> LoadAsync<T>(IEnumerable<string> ids, CancellationToken token = default(CancellationToken))
         {
-            var entities = await _innerSession.LoadAsync<T>(ids, token);
+            var entities = await _innerSession.LoadAsync<T>(ids, token).ConfigureAwait(false);
 
             foreach (var entity in entities)
                 Loaded(entity);
@@ -66,7 +66,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<T> LoadAsync<T>(ValueType id, CancellationToken token = default(CancellationToken))
         {
-            var entity = await _innerSession.LoadAsync<T>(id, token);
+            var entity = await _innerSession.LoadAsync<T>(id, token).ConfigureAwait(false);
 
             Loaded(entity);
 
@@ -75,7 +75,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<T[]> LoadAsync<T>(CancellationToken token = default(CancellationToken), params ValueType[] ids)
         {
-            var entities = await _innerSession.LoadAsync<T>(token, ids);
+            var entities = await _innerSession.LoadAsync<T>(token, ids).ConfigureAwait(false);
 
             foreach (var entity in entities)
                 Loaded(entity);
@@ -85,7 +85,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<T[]> LoadAsync<T>(IEnumerable<ValueType> ids, CancellationToken token = default(CancellationToken))
         {
-            var entities = await _innerSession.LoadAsync<T>(ids, token);
+            var entities = await _innerSession.LoadAsync<T>(ids, token).ConfigureAwait(false);
 
             foreach (var entity in entities)
                 Loaded(entity);
@@ -125,7 +125,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<TResult> LoadAsync<TTransformer, TResult>(string id, CancellationToken token = default(CancellationToken)) where TTransformer : AbstractTransformerCreationTask, new()
         {
-            var entity = await _innerSession.LoadAsync<TTransformer, TResult>(id, token: token);
+            var entity = await _innerSession.LoadAsync<TTransformer, TResult>(id, token: token).ConfigureAwait(false);
 
             Loaded(entity);
 
@@ -134,7 +134,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<TResult> LoadAsync<TTransformer, TResult>(string id, Action<ILoadConfiguration> configure, CancellationToken token = default(CancellationToken)) where TTransformer : AbstractTransformerCreationTask, new()
         {
-            var entity = await _innerSession.LoadAsync<TTransformer, TResult>(id, configure, token);
+            var entity = await _innerSession.LoadAsync<TTransformer, TResult>(id, configure, token).ConfigureAwait(false);
 
             Loaded(entity);
 
@@ -143,7 +143,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<TResult[]> LoadAsync<TTransformer, TResult>(IEnumerable<string> ids, Action<ILoadConfiguration> configure, CancellationToken token = default(CancellationToken)) where TTransformer : AbstractTransformerCreationTask, new()
         {
-            var results = await _innerSession.LoadAsync<TTransformer, TResult>(ids, configure, token);
+            var results = await _innerSession.LoadAsync<TTransformer, TResult>(ids, configure, token).ConfigureAwait(false);
 
             foreach (var result in results)
                 Loaded(result);
@@ -153,7 +153,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<TResult> LoadAsync<TResult>(string id, string transformer, Action<ILoadConfiguration> configure, CancellationToken token = default(CancellationToken))
         {
-            var result = await _innerSession.LoadAsync<TResult>(id, transformer, configure, token);
+            var result = await _innerSession.LoadAsync<TResult>(id, transformer, configure, token).ConfigureAwait(false);
 
             Loaded(result);
 
@@ -162,7 +162,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<TResult[]> LoadAsync<TResult>(IEnumerable<string> ids, string transformer, Action<ILoadConfiguration> configure = null, CancellationToken token = default(CancellationToken))
         {
-            var results = await _innerSession.LoadAsync<TResult>(ids, transformer, configure, token);
+            var results = await _innerSession.LoadAsync<TResult>(ids, transformer, configure, token).ConfigureAwait(false);
 
             foreach (var result in results)
                 Loaded(result);
@@ -172,7 +172,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<TResult> LoadAsync<TResult>(string id, Type transformerType, Action<ILoadConfiguration> configure = null, CancellationToken token = default(CancellationToken))
         {
-            var result = await _innerSession.LoadAsync<TResult>(id, transformerType, configure, token);
+            var result = await _innerSession.LoadAsync<TResult>(id, transformerType, configure, token).ConfigureAwait(false);
 
             Loaded(result);
 
@@ -181,7 +181,7 @@ namespace SuperGlue.RavenDb
 
         public async Task<TResult[]> LoadAsync<TResult>(IEnumerable<string> ids, Type transformerType, Action<ILoadConfiguration> configure = null, CancellationToken token = default(CancellationToken))
         {
-            var results = await _innerSession.LoadAsync<TResult>(ids, transformerType, configure, token);
+            var results = await _innerSession.LoadAsync<TResult>(ids, transformerType, configure, token).ConfigureAwait(false);
 
             foreach (var result in results)
                 Loaded(result);
@@ -196,21 +196,21 @@ namespace SuperGlue.RavenDb
 
         public async Task StoreAsync(object entity, Etag etag, CancellationToken token = default(CancellationToken))
         {
-            await _innerSession.StoreAsync(entity, etag, token);
+            await _innerSession.StoreAsync(entity, etag, token).ConfigureAwait(false);
 
             Loaded(entity);
         }
 
         public async Task StoreAsync(object entity, Etag etag, string id, CancellationToken token = default(CancellationToken))
         {
-            await _innerSession.StoreAsync(entity, etag, id, token);
+            await _innerSession.StoreAsync(entity, etag, id, token).ConfigureAwait(false);
 
             Loaded(entity);
         }
 
         public async Task StoreAsync(object entity, string id, CancellationToken token = new CancellationToken())
         {
-            await _innerSession.StoreAsync(entity, id, token);
+            await _innerSession.StoreAsync(entity, id, token).ConfigureAwait(false);
 
             Loaded(entity);
         }

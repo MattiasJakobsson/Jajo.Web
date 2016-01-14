@@ -16,7 +16,7 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
 
         public async Task<DataQueryResult> Query(DataQueryInput input)
         {
-            var data = await _manageDiagnosticsInformation.GetDataFor(input.Slug, input.Id, input.Step);
+            var data = await _manageDiagnosticsInformation.GetDataFor(input.Slug, input.Id, input.Step).ConfigureAwait(false);
             
             return new DataQueryResult(input.Slug, input.Id, input.Step, data.ToDictionary(x => x.Key, x => x.Value.Select(y => new KeyValuePair<string, string>(y.Key, y.Value.GetStringRepresentation()))));
         }

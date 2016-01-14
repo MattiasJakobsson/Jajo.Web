@@ -25,9 +25,9 @@ namespace SuperGlue.Hosting
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await _options.Func(environment);
+            await _options.Func(environment).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 

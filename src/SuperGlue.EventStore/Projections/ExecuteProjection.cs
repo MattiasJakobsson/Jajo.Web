@@ -33,12 +33,12 @@ namespace SuperGlue.EventStore.Projections
                     using (environment.OpenCorrelationContext(correlationId))
                     using (environment.OpenCausationContext(evnt.EventId.ToString()))
                     {
-                        await stateApplier.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata);
+                        await stateApplier.Apply(evnt.Data, evnt.EventNumber, evnt.Metadata).ConfigureAwait(false);
                     }
                 }
             }
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

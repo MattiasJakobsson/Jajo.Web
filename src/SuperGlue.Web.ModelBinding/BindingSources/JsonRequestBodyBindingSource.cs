@@ -14,7 +14,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
 
         public async Task<IDictionary<string, object>> GetValues(IDictionary<string, object> envinronment)
         {
-            await SetValues(envinronment);
+            await SetValues(envinronment).ConfigureAwait(false);
 
             return _data.ToDictionary(x => x.Key.ToLower(), x => x.Value);
         }
@@ -26,7 +26,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
 
             var streamReader = new StreamReader(envinronment.GetRequest().Body, Encoding.UTF8, true, 4 * 1024, true);
 
-            var json = await streamReader.ReadToEndAsync();
+            var json = await streamReader.ReadToEndAsync().ConfigureAwait(false);
 
             try
             {

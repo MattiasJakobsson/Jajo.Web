@@ -13,7 +13,7 @@ namespace SuperGlue.Web.Validation
         public ValidateRequest(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -26,14 +26,14 @@ namespace SuperGlue.Web.Validation
 
             foreach (var validator in validators)
             {
-                var result = await validator.Validate(environment);
+                var result = await validator.Validate(environment).ConfigureAwait(false);
                 errors.AddRange(result.Errors);
             }
 
             var validationResult = new ValidationResult(errors);
 
             if (validationResult.IsValid)
-                await _next(environment);
+                await _next(environment).ConfigureAwait(false);
             else
                 environment[ValidationEnvironmentExtensions.ValidationConstants.ValidationResult] = validationResult;
         }

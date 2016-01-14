@@ -38,11 +38,11 @@ namespace SuperGlue.Web.Routing.Superscribe
                 {"RoutedTo", data.Response ?? ""},
                 {"Url", environment.GetRequest().Uri},
                 {"Found", data.Response != null}
-            }));
+            })).ConfigureAwait(false);
 
             environment.SetRouteDestination(data.Response, endpoint != null ? endpoint.InputTypes : new List<Type>(), (IDictionary<string, object>)data.Parameters);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

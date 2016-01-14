@@ -21,7 +21,7 @@ namespace SuperGlue.RavenDb
         {
             var skip = (page - 1) * pageSize;
 
-            var items = await query.Skip(skip).Take(pageSize).ToListAsync();
+            var items = await query.Skip(skip).Take(pageSize).ToListAsync().ConfigureAwait(false);
 
             return new PagedList<TItem>(items, statistics.TotalResults, page, pageSize);
         }

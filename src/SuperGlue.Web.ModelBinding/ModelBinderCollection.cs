@@ -34,7 +34,7 @@ namespace SuperGlue.Web.ModelBinding
         public async Task<BindingResult> Bind(Type type, IBindingContext bindingContext)
         {
             if(_valueConverterCollection.CanConvert(type, bindingContext))
-                return _valueConverterCollection.Convert(type, await _bindingSourceCollection.Get(bindingContext.GetPrefix(), bindingContext.Environment), bindingContext);
+                return _valueConverterCollection.Convert(type, await _bindingSourceCollection.Get(bindingContext.GetPrefix(), bindingContext.Environment).ConfigureAwait(false), bindingContext);
 
             var binder = GetMatchingBinders(type).FirstOrDefault();
 
@@ -46,9 +46,9 @@ namespace SuperGlue.Web.ModelBinding
 
             bindingContext.Environment.Log("Going to bind type: {0} using {1}.", LogLevel.Debug, type, binder.GetType().Name);
 
-            var result = await binder.Bind(type, bindingContext);
+            var result = await binder.Bind(type, bindingContext).ConfigureAwait(false);
 
-            bindingContext.Environment.Log("Finished binding type: {0} using {1}. Result: Success = {2}, Instance = {3}.", LogLevel.Debug, type, binder.GetType().Name, result.Success, result.Instance != null ? result.Instance.ToString() : "null");
+            bindingContext.Environment.Log("Finished binding type: {0} using {1}. Result: Success = {2}, Instance = {3}.", LogLevel.Debug, type, binder.GetType().Name, result.Success, result.Instance?.ToString() ?? "null");
 
             return result;
         }

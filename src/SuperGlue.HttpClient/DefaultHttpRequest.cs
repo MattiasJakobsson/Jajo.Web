@@ -76,7 +76,7 @@ namespace SuperGlue.HttpClient
                 requestMessage.Content = parser != null ? parser.GetContent(new ReadOnlyDictionary<string, object>(_parameters)) : new FormUrlEncodedContent(_parameters.ToDictionary(x => x.Key, x => (x.Value ?? "").ToString()));
             }
 
-            var response = await HttpClient.SendAsync(requestMessage);
+            var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (_shouldThrow)
                 response.EnsureSuccessStatusCode();

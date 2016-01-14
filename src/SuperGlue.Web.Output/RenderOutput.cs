@@ -13,16 +13,16 @@ namespace SuperGlue.Web.Output
         public RenderOutput(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await environment.Resolve<IRenderToOutput>().Render(environment);
+            await environment.Resolve<IRenderToOutput>().Render(environment).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

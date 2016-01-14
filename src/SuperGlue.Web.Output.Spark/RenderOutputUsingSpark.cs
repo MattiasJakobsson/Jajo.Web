@@ -40,9 +40,7 @@ namespace SuperGlue.Web.Output.Spark
 
             if (matchingTemplates.Count > 1)
                 throw new Exception(
-                    string.Format(
-                        "More then one template was found for endpoint.\nThe following templates were found: {0}",
-                        string.Join(", ", matchingTemplates.Select(x => x.Name))));
+                    $"More then one template was found for endpoint.\nThe following templates were found: {string.Join(", ", matchingTemplates.Select(x => x.Name))}");
 
             var template = matchingTemplates.Single();
 
@@ -63,7 +61,7 @@ namespace SuperGlue.Web.Output.Spark
             writer.Flush();
             outputStream.Position = 0;
 
-            var content = await new StreamReader(outputStream).ReadToEndAsync();
+            var content = await new StreamReader(outputStream).ReadToEndAsync().ConfigureAwait(false);
 
             return new OutputRenderingResult(content, ContentType.Html);
         }
@@ -130,8 +128,8 @@ namespace SuperGlue.Web.Output.Spark
         {
             return new[]
             {
-                string.Format("Layouts{0}{1}.spark", template.PathSeperator, masterName),
-                string.Format("Shared{0}{1}.spark", template.PathSeperator, masterName)
+                $"Layouts{template.PathSeperator}{masterName}.spark",
+                $"Shared{template.PathSeperator}{masterName}.spark"
             };
         }
 
@@ -139,8 +137,8 @@ namespace SuperGlue.Web.Output.Spark
         {
             return new[]
             {
-                string.Format("Layouts{0}Application.spark", template.PathSeperator),
-                string.Format("Shared{0}Application.spark", template.PathSeperator)
+                $"Layouts{template.PathSeperator}Application.spark",
+                $"Shared{template.PathSeperator}Application.spark"
             };
         }
 
@@ -156,13 +154,13 @@ namespace SuperGlue.Web.Output.Spark
 
             var result = _grammar.ParseUseMaster(new Position(sourceContext));
 
-            return result == null ? null : result.Value;
+            return result?.Value;
         }
 
 
         private static string GetFullPath(Template viewTemplate)
         {
-            return string.Format("{0}{1}", viewTemplate.Path, viewTemplate.Name);
+            return $"{viewTemplate.Path}{viewTemplate.Name}";
         }
 
         private static string GetNamespaceEncodedPathViewPath(string viewPath)
@@ -204,7 +202,7 @@ namespace SuperGlue.Web.Output.Spark
                     };
             }
 
-            public ParseAction<string> ParseUseMaster { get; private set; }
+            public ParseAction<string> ParseUseMaster { get; }
         }
     }
 }

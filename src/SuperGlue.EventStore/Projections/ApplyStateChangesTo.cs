@@ -36,12 +36,12 @@ namespace SuperGlue.EventStore.Projections
 
                 if (!_instances.ContainsKey(id))
                 {
-                    var projectionInstance = await Load(id);
+                    var projectionInstance = await Load(id).ConfigureAwait(false);
 
                     _instances[id] = projectionInstance;
                 }
 
-                await handlerMapping.Item1(evnt, new EventContext<TState>(_instances[id], metaData));
+                await handlerMapping.Item1(evnt, new EventContext<TState>(_instances[id], metaData)).ConfigureAwait(false);
             }
         }
 

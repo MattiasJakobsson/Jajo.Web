@@ -14,7 +14,7 @@ namespace SuperGlue.Web.Http
         public SetStatusCode(AppFunc next, int statusCode)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
             _statusCode = statusCode;
@@ -24,7 +24,7 @@ namespace SuperGlue.Web.Http
         {
             environment["owin.ResponseStatusCode"] = _statusCode;
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

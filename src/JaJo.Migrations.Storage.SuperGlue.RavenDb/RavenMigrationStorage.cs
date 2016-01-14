@@ -19,19 +19,19 @@ namespace JaJo.Migrations.Storage.SuperGlue.RavenDb
 
         public async Task<int> GetVersionFor(string migration)
         {
-            return (await GetVersion(migration)).Version ?? 0;
+            return (await GetVersion(migration).ConfigureAwait(false)).Version ?? 0;
         }
 
         public async Task SaveVersionFor(string migration, int version)
         {
-            var migrationVersion = await GetVersion(migration);
+            var migrationVersion = await GetVersion(migration).ConfigureAwait(false);
 
             migrationVersion.Version = version;
         }
 
         private async Task<MigrationVersion> GetVersion(string migration)
         {
-            var migrationVersion = await _session.LoadAsync<MigrationVersion>(MigrationVersion.BuildId(migration));
+            var migrationVersion = await _session.LoadAsync<MigrationVersion>(MigrationVersion.BuildId(migration)).ConfigureAwait(false);
 
             if (migrationVersion != null)
                 return migrationVersion;
@@ -41,7 +41,7 @@ namespace JaJo.Migrations.Storage.SuperGlue.RavenDb
                 Id = MigrationVersion.BuildId(migration)
             };
 
-            await _session.StoreAsync(migrationVersion);
+            await _session.StoreAsync(migrationVersion).ConfigureAwait(false);
 
             return migrationVersion;
         }

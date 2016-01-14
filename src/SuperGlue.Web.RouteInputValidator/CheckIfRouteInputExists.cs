@@ -20,7 +20,7 @@ namespace SuperGlue.Web.RouteInputValidator
             {
                 var currentInputType = inputType;
 
-                var input = await environment.Bind(currentInputType);
+                var input = await environment.Bind(currentInputType).ConfigureAwait(false);
 
                 var existenceCheckers = environment.ResolveAll(typeof(IEnsureExists<>).MakeGenericType(currentInputType));
 
@@ -28,7 +28,7 @@ namespace SuperGlue.Web.RouteInputValidator
                 {
                     var currentExistenceChecker = existenceChecker;
 
-                    if (!await EnsureExistsExecutionMethods.Get(existenceChecker.GetType(), x => CompileExecutionFunctionFor(currentExistenceChecker.GetType(), currentInputType))(existenceChecker, input))
+                    if (!await EnsureExistsExecutionMethods.Get(existenceChecker.GetType(), x => CompileExecutionFunctionFor(currentExistenceChecker.GetType(), currentInputType))(existenceChecker, input).ConfigureAwait(false))
                         return false;
                 }
             }

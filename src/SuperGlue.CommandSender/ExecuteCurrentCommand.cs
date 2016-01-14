@@ -33,11 +33,11 @@ namespace SuperGlue.CommandSender
                 {
                     var executionMethod = _commandExecutionMethods.Get(command.GetType(), key => CompileExecutionFunctionFor(executor.GetType(), command.GetType()));
 
-                    await executionMethod(executor, command);
+                    await executionMethod(executor, command).ConfigureAwait(false);
                 }
             }
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
 
         protected Func<object, object, Task> CompileExecutionFunctionFor(Type executorType, Type commandType)

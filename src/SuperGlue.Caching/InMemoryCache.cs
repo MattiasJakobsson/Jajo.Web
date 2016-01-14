@@ -10,7 +10,7 @@ namespace SuperGlue.Caching
     {
         public async Task<T> Get<T>(string key) where T : class
         {
-            return (await Get(key)) as T;
+            return (await Get(key).ConfigureAwait(false)) as T;
         }
 
         public Task<object> Get(string key)
@@ -64,7 +64,7 @@ namespace SuperGlue.Caching
         public async Task AddToList(string key, IEnumerable<object> values, int? maxListLength = null, TimeSpan? expires = null)
         {
             foreach (var value in values)
-                await AddToList(key, value, maxListLength, expires);
+                await AddToList(key, value, maxListLength, expires).ConfigureAwait(false);
         }
 
         private static ICollection<object> GetListFor(string key)

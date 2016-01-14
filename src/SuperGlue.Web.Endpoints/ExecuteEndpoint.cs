@@ -13,7 +13,7 @@ namespace SuperGlue.Web.Endpoints
         public ExecuteEndpoint(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -25,9 +25,9 @@ namespace SuperGlue.Web.Endpoints
             var endpointExecutor = environment.Resolve<IExecuteAnyEndpoint>();
 
             if (routeInformation.RoutedTo != null)
-                await endpointExecutor.Execute(environment, routeInformation.RoutedTo);
+                await endpointExecutor.Execute(environment, routeInformation.RoutedTo).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

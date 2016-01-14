@@ -30,7 +30,7 @@ namespace SuperGlue.Web.Endpoints
 
         public async Task Execute(MethodInfo endpointMethod, IDictionary<string, object> environment)
         {
-            await ExecutionMethodsCache[endpointMethod](_endpoint);
+            await ExecutionMethodsCache[endpointMethod](_endpoint).ConfigureAwait(false);
         }
     }
 }

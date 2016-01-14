@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
 
         public async Task<IndexQueryResult> Query(IndexQueryInput input)
         {
-            var categories = await _manageDiagnosticsInformation.GetCategories();
+            var categories = await _manageDiagnosticsInformation.GetCategories().ConfigureAwait(false);
 
             return new IndexQueryResult(categories);
         }

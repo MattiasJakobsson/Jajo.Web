@@ -15,10 +15,10 @@ namespace SuperGlue.FeatureToggler
         public EnsureFeaturesAreEnabled(AppFunc next, EnsureFeaturesAreEnabledSettings settings)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             if (settings == null)
-                throw new ArgumentNullException("settings");
+                throw new ArgumentNullException(nameof(settings));
 
             _next = next;
             _settings = settings;
@@ -42,7 +42,7 @@ namespace SuperGlue.FeatureToggler
 
                 while (currentFeatureType != null && typeof(IFeature).IsAssignableFrom(currentFeatureType))
                 {
-                    if (!await featuresChecker.IsEnabled(currentFeatureType, environment))
+                    if (!await featuresChecker.IsEnabled(currentFeatureType, environment).ConfigureAwait(false))
                     {
                         environment[FeatureEnvironmentExtensions.FeatureConstants.FeatureValidationFailed] = true;
                         return;
@@ -52,7 +52,7 @@ namespace SuperGlue.FeatureToggler
                 }
             }
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 

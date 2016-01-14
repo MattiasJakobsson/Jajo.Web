@@ -22,11 +22,11 @@ namespace SuperGlue.Configuration
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var wrapper = await _options.Wrapper.Begin(environment, _options.MiddleWareType);
+            var wrapper = await _options.Wrapper.Begin(environment, _options.MiddleWareType).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
 
-            await wrapper.End();
+            await wrapper.End().ConfigureAwait(false);
         }
     }
 

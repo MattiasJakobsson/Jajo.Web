@@ -32,7 +32,7 @@ namespace SuperGlue.Security.Authorization
 
             foreach (var service in environment.ResolveAll<IFindRequiredAuthorizationInformationFromRequest>())
             {
-                authorizationInformations.AddRange(await service.FindFor(environment));
+                authorizationInformations.AddRange(await service.FindFor(environment).ConfigureAwait(false));
             }
 
             var isAuthorized = true;
@@ -48,7 +48,7 @@ namespace SuperGlue.Security.Authorization
                     var currentAuthorizationValidator = authorizationValidator;
 
                     if (!await AuthorizationValidatorExecutors.Get(currentAuthorizationValidator.GetType(), 
-                        x => CompileExecutionFunctionFor(currentAuthorizationValidator.GetType(), currentAuthorizationInformation.GetType()))(currentAuthorizationValidator, currentAuthorizationInformation, tokens, environment))
+                        x => CompileExecutionFunctionFor(currentAuthorizationValidator.GetType(), currentAuthorizationInformation.GetType()))(currentAuthorizationValidator, currentAuthorizationInformation, tokens, environment).ConfigureAwait(false))
                     {
                         isAuthorized = false;
                         break;
@@ -57,7 +57,7 @@ namespace SuperGlue.Security.Authorization
             }
 
             if (isAuthorized)
-                await _next(environment);
+                await _next(environment).ConfigureAwait(false);
             else
                 environment.FailAuthorization();
         }

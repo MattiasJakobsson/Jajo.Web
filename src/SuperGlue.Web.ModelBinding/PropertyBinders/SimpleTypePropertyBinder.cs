@@ -23,10 +23,10 @@ namespace SuperGlue.Web.ModelBinding.PropertyBinders
 
         public async Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
         {
-            if (!await _bindingSourceCollection.ContainsKey(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment))
+            if (!await _bindingSourceCollection.ContainsKey(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment).ConfigureAwait(false))
                 return false;
 
-            var conversionResult = _valueConverterCollection.Convert(propertyInfo.PropertyType, await _bindingSourceCollection.Get(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment), bindingContext);
+            var conversionResult = _valueConverterCollection.Convert(propertyInfo.PropertyType, await _bindingSourceCollection.Get(bindingContext.GetKey(propertyInfo.Name), bindingContext.Environment).ConfigureAwait(false), bindingContext);
 
             if (!conversionResult.Success)
                 return false;

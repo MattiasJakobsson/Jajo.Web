@@ -52,7 +52,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
                 var id = handlerMapping.Item2(evnt);
 
-                await handlerMapping.Item1(evnt, await _repository.Load<TState>(GetStreamName(id), id), metaData);
+                await handlerMapping.Item1(evnt, await _repository.Load<TState>(GetStreamName(id), id).ConfigureAwait(false), metaData).ConfigureAwait(false);
             }
         }
 

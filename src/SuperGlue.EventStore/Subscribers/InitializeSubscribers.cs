@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
@@ -37,7 +36,7 @@ namespace SuperGlue.EventStore.Subscribers
             var streams = subscriptionSettings.GetSubscribedStreams();
 
             foreach (var stream in streams)
-                await SubscribeService(chain, stream.Item1, stream.Item2, subscriptionSettings.GetPersistentSubscriptionGroupNameFor(stream.Item1, settings), settings);
+                await SubscribeService(chain, stream.Item1, stream.Item2, subscriptionSettings.GetPersistentSubscriptionGroupNameFor(stream.Item1, settings), settings).ConfigureAwait(false);
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
@@ -83,8 +82,8 @@ namespace SuperGlue.EventStore.Subscribers
                         var eventstoreSubscription = await _eventStoreConnection.SubscribeToStreamAsync(stream, true,
                             async (subscription, evnt) => await PushEventToService(chain, stream, _eventSerialization.DeSerialize(evnt), false, environment,
                                 x => environment.Log("Successfully handled event: {0} on stream: {1}", LogLevel.Debug, x.EventId, stream),
-                                (x, exception) => environment.Log(exception, "Failed handling event: {0} on stream: {1}", LogLevel.Error, x.EventId, stream)),
-                            async (subscription, reason, exception) => await SubscriptionDropped(chain, stream, true, subscriptionKey, reason, exception, environment));
+                                (x, exception) => environment.Log(exception, "Failed handling event: {0} on stream: {1}", LogLevel.Error, x.EventId, stream)).ConfigureAwait(false),
+                            async (subscription, reason, exception) => await SubscriptionDropped(chain, stream, true, subscriptionKey, reason, exception, environment).ConfigureAwait(false)).ConfigureAwait(false);
 
                         _serviceSubscriptions[subscriptionKey] = new LiveOnlyServiceSubscription(eventstoreSubscription);
                     }
@@ -102,7 +101,7 @@ namespace SuperGlue.EventStore.Subscribers
                                     environment.Log(exception, "Failed handling event: {0} on stream: {1}", LogLevel.Error, x.EventId, stream);
 
                                     subscription.Fail(x.OriginalEvent, PersistentSubscriptionNakEventAction.Unknown, exception.Message);
-                                }), async (subscription, reason, exception) => await SubscriptionDropped(chain, stream, false, subscriptionKey, reason, exception, environment), autoAck:false);
+                                }).ConfigureAwait(false), async (subscription, reason, exception) => await SubscriptionDropped(chain, stream, false, subscriptionKey, reason, exception, environment).ConfigureAwait(false), autoAck:false);
 
                         _serviceSubscriptions[subscriptionKey] = new PersistentServiceSubscription(eventstoreSubscription);
                     }
@@ -116,7 +115,7 @@ namespace SuperGlue.EventStore.Subscribers
 
                     environment.Log(ex, "Couldn't subscribe to stream: {0}. Retrying in 5 seconds.", LogLevel.Warn, stream);
 
-                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
                 }
             }
         }
@@ -129,7 +128,7 @@ namespace SuperGlue.EventStore.Subscribers
             environment.Log(exception, "Subscription dropped for stream: {0}. Reason: {1}. Retrying...", LogLevel.Warn, stream, reason);
 
             if (reason != SubscriptionDropReason.UserInitiated)
-                await SubscribeService(chain, stream, liveOnlySubscriptions, subscriptionKey, environment);
+                await SubscribeService(chain, stream, liveOnlySubscriptions, subscriptionKey, environment).ConfigureAwait(false);
         }
 
         private static async Task PushEventToService(AppFunc chain, string stream, DeSerializationResult evnt, bool catchup, IDictionary<string, object> environment, Action<DeSerializationResult> done, Action<DeSerializationResult, Exception> error)
@@ -160,7 +159,7 @@ namespace SuperGlue.EventStore.Subscribers
                 using (requestEnvironment.OpenCorrelationContext(correlationId))
                 using (requestEnvironment.OpenCausationContext(evnt.EventId.ToString()))
                 {
-                    await chain(requestEnvironment);
+                    await chain(requestEnvironment).ConfigureAwait(false);
                 }
 
                 done(evnt);

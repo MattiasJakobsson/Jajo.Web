@@ -63,7 +63,7 @@ namespace SuperGlue.Web.Routing
                         foreach (var urlPart in endpoint.UrlParts)
                             urlPart.AddToBuilder(routeBuilder);
 
-                        await routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings);
+                        await routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings).ConfigureAwait(false);
                     }
                 }
             });

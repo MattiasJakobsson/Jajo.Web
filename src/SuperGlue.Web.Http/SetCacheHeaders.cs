@@ -13,7 +13,7 @@ namespace SuperGlue.Web.Http
         public SetCacheHeaders(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -25,7 +25,7 @@ namespace SuperGlue.Web.Http
             if(cachedOutput != null)
                 SetCacheOptions(cachedOutput.GetCacheSettings(), environment);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
 
         private static void SetCacheOptions(CacheOptions cacheOptions, IDictionary<string, object> environment)

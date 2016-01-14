@@ -31,13 +31,13 @@ namespace SuperGlue.Configuration
             {
                 try
                 {
-                    await Start(settings, environment, overrides);
+                    await Start(settings, environment, overrides).ConfigureAwait(false);
                     return;
                 }
                 catch (Exception ex)
                 {
                     lastException = ex;
-                    await Task.Delay(retryInterval ?? TimeSpan.FromSeconds(5));
+                    await Task.Delay(retryInterval ?? TimeSpan.FromSeconds(5)).ConfigureAwait(false);
                 }
 
                 tries++;
@@ -50,7 +50,7 @@ namespace SuperGlue.Configuration
         {
             var appStarters = _appStarters ?? new List<IStartApplication>();
 
-            await _environment.Publish(ConfigurationEvents.BeforeApplicationShutDown);
+            await _environment.Publish(ConfigurationEvents.BeforeApplicationShutDown).ConfigureAwait(false);
 
             var actions = new ConcurrentBag<Task>();
 
@@ -59,11 +59,11 @@ namespace SuperGlue.Configuration
                 actions.Add(x.ShutDown(_environment));
             });
 
-            await Task.WhenAll(actions);
+            await Task.WhenAll(actions).ConfigureAwait(false);
 
-            await _environment.Publish(ConfigurationEvents.AfterApplicationShutDown);
+            await _environment.Publish(ConfigurationEvents.AfterApplicationShutDown).ConfigureAwait(false);
 
-            await RunConfigurations(_setups ?? new ReadOnlyCollection<ConfigurationSetupResult>(new Collection<ConfigurationSetupResult>()), _applicationEnvironment, x => x.ShutdownAction(_environment));
+            await RunConfigurations(_setups ?? new ReadOnlyCollection<ConfigurationSetupResult>(new Collection<ConfigurationSetupResult>()), _applicationEnvironment, x => x.ShutdownAction(_environment)).ConfigureAwait(false);
         }
 
         public virtual string ApplicationName => GetType().Assembly.FullName.Replace(".", "");
@@ -99,15 +99,15 @@ namespace SuperGlue.Configuration
 
             _setups = FindConfigurationSetups(assemblies, environment);
 
-            await RunConfigurations(_setups, environment, x => x.StartupAction(_environment));
+            await RunConfigurations(_setups, environment, x => x.StartupAction(_environment)).ConfigureAwait(false);
 
-            await Configure(environment);
+            await Configure(environment).ConfigureAwait(false);
 
             var settingsConfiguration = new SettingsConfiguration(GetSettings, settings, environment);
 
-            await RunConfigurations(_setups, environment, x => x.ConfigureAction(settingsConfiguration));
+            await RunConfigurations(_setups, environment, x => x.ConfigureAction(settingsConfiguration)).ConfigureAwait(false);
 
-            await settings.Publish(ConfigurationEvents.BeforeApplicationStart);
+            await settings.Publish(ConfigurationEvents.BeforeApplicationStart).ConfigureAwait(false);
 
             _appStarters = settings.ResolveAll<IStartApplication>();
 
@@ -133,9 +133,9 @@ namespace SuperGlue.Configuration
                     startTasks.Add(starter.Start(chain, settings, environment));
             });
 
-            await Task.WhenAll(startTasks);
+            await Task.WhenAll(startTasks).ConfigureAwait(false);
 
-            await settings.Publish(ConfigurationEvents.AfterApplicationStart);
+            await settings.Publish(ConfigurationEvents.AfterApplicationStart).ConfigureAwait(false);
 
             stopwatch.Stop();
 
@@ -146,7 +146,7 @@ namespace SuperGlue.Configuration
                 {"ExecutionTime", stopwatch.Elapsed},
                 {"Environment", environment},
                 {"ApplicationName", ApplicationName}
-            }));
+            })).ConfigureAwait(false);
         }
 
         protected virtual object GetSettings(Type settingsType)
@@ -189,7 +189,7 @@ namespace SuperGlue.Configuration
         protected virtual async Task<AppFunc> GetChain(string name, Action<IBuildAppFunction> buildDefault)
         {
             if (!_chains.ContainsKey(name))
-                await AddChain(name, buildDefault);
+                await AddChain(name, buildDefault).ConfigureAwait(false);
 
             return _chains[name];
         }
@@ -233,7 +233,7 @@ namespace SuperGlue.Configuration
 
         protected virtual async Task RunConfigurations(IReadOnlyCollection<ConfigurationSetupResult> configurations, string environment, Func<ConfigurationSetupResult, Task> executionAction)
         {
-            var executed = (await ExecuteConfigurationsDependingOn(configurations, "superglue.ApplicationSetupStarted", executionAction)).ToList();
+            var executed = (await ExecuteConfigurationsDependingOn(configurations, "superglue.ApplicationSetupStarted", executionAction).ConfigureAwait(false)).ToList();
 
             while (true)
             {
@@ -244,7 +244,7 @@ namespace SuperGlue.Configuration
 
                 var dependencyToExecute = missing.OrderBy(x => missing.Count(y => y.ConfigurationName == x.DependsOn)).Select(x => x.DependsOn).FirstOrDefault();
 
-                var missingExecuted = (await ExecuteConfigurationsDependingOn(missing, dependencyToExecute, executionAction)).ToList();
+                var missingExecuted = (await ExecuteConfigurationsDependingOn(missing, dependencyToExecute, executionAction).ConfigureAwait(false)).ToList();
 
                 if (!missingExecuted.Any())
                 {
@@ -255,7 +255,7 @@ namespace SuperGlue.Configuration
                         actions.Add(executionAction(x));
                     });
 
-                    await Task.WhenAll(actions);
+                    await Task.WhenAll(actions).ConfigureAwait(false);
 
                     break;
                 }
@@ -286,12 +286,12 @@ namespace SuperGlue.Configuration
                 results.Add(configuration);
             });
 
-            await Task.WhenAll(actions);
+            await Task.WhenAll(actions).ConfigureAwait(false);
 
             var executed = results.ToList();
 
             foreach (var item in results.Distinct())
-                executed.AddRange(await ExecuteConfigurationsDependingOn(configurations, item.ConfigurationName, executionAction));
+                executed.AddRange(await ExecuteConfigurationsDependingOn(configurations, item.ConfigurationName, executionAction).ConfigureAwait(false));
 
             return executed;
         }

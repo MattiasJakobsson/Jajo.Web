@@ -18,7 +18,7 @@ namespace SuperGlue.Web.Output.Html.Autocomplete
         {
             var searcher = _searchers.FirstOrDefault(x => x.GetName().Equals(input.Slug, StringComparison.InvariantCultureIgnoreCase));
 
-            return new SearchQueryResult(searcher == null ? new List<AutocompleteSearchResult>() : await searcher.Search(input.Search));
+            return new SearchQueryResult(searcher == null ? new List<AutocompleteSearchResult>() : await searcher.Search(input.Search).ConfigureAwait(false));
         }
     }
 

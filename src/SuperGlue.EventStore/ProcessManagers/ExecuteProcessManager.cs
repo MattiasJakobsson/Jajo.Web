@@ -23,9 +23,9 @@ namespace SuperGlue.EventStore.ProcessManagers
             var processManager = environment.GetEventStoreRequest().ProcessManager;
             var evnt = environment.GetEventStoreRequest().Event;
 
-            await processManager.Apply(evnt.Data, evnt.Metadata);
+            await processManager.Apply(evnt.Data, evnt.Metadata).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

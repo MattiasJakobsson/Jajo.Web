@@ -29,7 +29,7 @@ namespace SuperGlue.EventStore.Timeouts
             if (timeOutManager == null)
                 throw new InvalidOperationException("There is no timeout manager");
 
-            await timeOutManager.Add(new TimeoutData(writeTo, id, message, time, metaData));
+            await timeOutManager.Add(new TimeoutData(writeTo, id, message, time, metaData)).ConfigureAwait(false);
         }
 
         public void Start()
@@ -41,8 +41,7 @@ namespace SuperGlue.EventStore.Timeouts
 
         public void Stop()
         {
-            if (_tokenSource != null)
-                _tokenSource.Cancel();
+            _tokenSource?.Cancel();
         }
 
         private void StartPoller()
@@ -50,7 +49,7 @@ namespace SuperGlue.EventStore.Timeouts
             var token = _tokenSource.Token;
 
             Task.Factory
-                .StartNew(async x => await Poll(x), token, TaskCreationOptions.LongRunning)
+                .StartNew(async x => await Poll(x).ConfigureAwait(false), token, TaskCreationOptions.LongRunning)
                 .ContinueWith(t =>
                 {
                     (t.Exception ?? new AggregateException()).Handle(ex => true);
@@ -69,7 +68,7 @@ namespace SuperGlue.EventStore.Timeouts
             {
                 if (_nextRetrieval > DateTime.UtcNow)
                 {
-                    await Task.Delay(_secondsToSleepBetweenPolls * 1000);
+                    await Task.Delay(_secondsToSleepBetweenPolls * 1000, cancellationToken).ConfigureAwait(false);
                     continue;
                 }
 
@@ -84,7 +83,7 @@ namespace SuperGlue.EventStore.Timeouts
                         startSlice = x.Item2;
 
                     return _eventStoreConnection.AppendToStreamAsync(x.Item1.WriteTo, ExpectedVersion.Any, ToEventData(x.Item1.Id, x.Item1.Message, x.Item1.MetaData));
-                });
+                }).ConfigureAwait(false);
 
                 _nextRetrieval = nextExpiredTimeout;
 

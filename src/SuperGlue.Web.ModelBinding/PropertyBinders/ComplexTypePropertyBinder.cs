@@ -20,9 +20,9 @@ namespace SuperGlue.Web.ModelBinding.PropertyBinders
 
         public async Task<bool> Bind(object instance, PropertyInfo propertyInfo, IBindingContext bindingContext)
         {
-            using (bindingContext.OpenChildContext(string.Format("{0}_", propertyInfo.Name)))
+            using (bindingContext.OpenChildContext($"{propertyInfo.Name}_"))
             {
-                var result = await bindingContext.Bind(propertyInfo.PropertyType);
+                var result = await bindingContext.Bind(propertyInfo.PropertyType).ConfigureAwait(false);
 
                 if (!result.Success)
                     return false;

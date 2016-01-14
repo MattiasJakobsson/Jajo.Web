@@ -48,7 +48,7 @@ namespace SuperGlue.ApiDiscovery
                 .Query(new Dictionary<string, object>
                 {
                     {"name", name}
-                });
+                }).ConfigureAwait(false);
 
             return response.StateAs<ApiDefinition>();
         }

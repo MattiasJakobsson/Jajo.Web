@@ -21,7 +21,7 @@ namespace SuperGlue.Web.Output
             serializer.Serialize(stream, output);
 
             stream.Position = 0;
-            var content = await new StreamReader(stream).ReadToEndAsync();
+            var content = await new StreamReader(stream).ReadToEndAsync().ConfigureAwait(false);
 
             return new OutputRenderingResult(content, "application/xml");
         }

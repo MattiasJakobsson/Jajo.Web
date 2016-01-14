@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SuperGlue.ExceptionManagement
@@ -17,10 +16,10 @@ namespace SuperGlue.ExceptionManagement
         public Retry(AppFunc next, int retryTimes, TimeSpan retryInterval, string description)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             if (retryTimes < 1)
-                throw new ArgumentException("You have to try atleast once", "retryTimes");
+                throw new ArgumentException("You have to try atleast once", nameof(retryTimes));
 
             _next = next;
             _retryTimes = retryTimes;
@@ -37,7 +36,7 @@ namespace SuperGlue.ExceptionManagement
             {
                 try
                 {
-                    await _next(environment);
+                    await _next(environment).ConfigureAwait(false);
 
                     lastException = null;
 
@@ -48,7 +47,7 @@ namespace SuperGlue.ExceptionManagement
                     lastException = ex;
                 }
 
-                await Task.Delay(_retryInterval);
+                await Task.Delay(_retryInterval).ConfigureAwait(false);
 
                 tries++;
             }

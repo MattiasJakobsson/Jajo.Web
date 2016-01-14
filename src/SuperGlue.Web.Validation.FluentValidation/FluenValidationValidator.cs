@@ -16,7 +16,7 @@ namespace SuperGlue.Web.Validation.FluentValidation
 
         public async Task<ValidationResult> Validate()
         {
-            var validationResult = await ValidateAsync(_input);
+            var validationResult = await ValidateAsync(_input).ConfigureAwait(false);
         
             return new ValidationResult(validationResult.Errors.Select(x => new ValidationResult.ValidationError(x.PropertyName, x.ErrorMessage)));
         }

@@ -27,22 +27,13 @@ namespace SuperGlue.HttpClient
         {
             var parser = _contentTypeParsers.FirstOrDefault(x => x.Matches(_httpResponseMessage.Content.Headers.ContentType.MediaType));
 
-            return parser != null ? parser.ParseResponse<T>(await ReadRawBody()) : default(T);
+            return parser != null ? parser.ParseResponse<T>(await ReadRawBody().ConfigureAwait(false)) : default(T);
         }
 
-        public HttpResponseHeaders Headers
-        {
-            get { return _httpResponseMessage.Headers; }
-        }
+        public HttpResponseHeaders Headers => _httpResponseMessage.Headers;
 
-        public HttpStatusCode StatusCode
-        {
-            get { return _httpResponseMessage.StatusCode; }
-        }
+        public HttpStatusCode StatusCode => _httpResponseMessage.StatusCode;
 
-        public bool IsSuccessStatusCode
-        {
-            get { return _httpResponseMessage.IsSuccessStatusCode; }
-        }
+        public bool IsSuccessStatusCode => _httpResponseMessage.IsSuccessStatusCode;
     }
 }

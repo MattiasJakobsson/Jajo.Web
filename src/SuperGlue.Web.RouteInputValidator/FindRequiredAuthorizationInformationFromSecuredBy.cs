@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Security.Authorization;
 
@@ -18,7 +17,7 @@ namespace SuperGlue.Web.RouteInputValidator
 
             foreach (var input in environment.GetInputsForEndpoint(environment))
             {
-                var securedBy = await environment.Bind(input) as IAmSecuredBy;
+                var securedBy = await environment.Bind(input).ConfigureAwait(false) as IAmSecuredBy;
 
                 if(securedBy != null)
                     authorizationInformations.AddRange(securedBy.GetSecuredBy());

@@ -14,7 +14,7 @@ namespace SuperGlue.EventStore.Projections
         public SetLastEvent(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -29,10 +29,10 @@ namespace SuperGlue.EventStore.Projections
             {
                 var lastEvent = events.Select(x => x.OriginalEventNumber).OrderByDescending(x => x).First();
 
-                await eventNumbersForProjections.UpdateLastEvent(projection.ProjectionName, lastEvent, environment);
+                await eventNumbersForProjections.UpdateLastEvent(projection.ProjectionName, lastEvent, environment).ConfigureAwait(false);
             }
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

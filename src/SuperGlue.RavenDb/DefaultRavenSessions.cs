@@ -54,7 +54,7 @@ namespace SuperGlue.RavenDb
         public virtual async Task SaveChanges()
         {
             foreach (var session in _openedSessions)
-                await session.Value.SaveChangesAsync();
+                await session.Value.SaveChangesAsync().ConfigureAwait(false);
 
             foreach (var session in _openedSyncSessions)
                 session.Value.SaveChanges();

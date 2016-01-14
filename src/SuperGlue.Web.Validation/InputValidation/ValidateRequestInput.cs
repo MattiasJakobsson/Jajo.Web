@@ -19,7 +19,7 @@ namespace SuperGlue.Web.Validation.InputValidation
             if (inputType == null)
                 return new ValidationResult(new List<ValidationResult.ValidationError>());
 
-            var input = await environment.Bind(inputType) as IAmValidatedBy;
+            var input = await environment.Bind(inputType).ConfigureAwait(false) as IAmValidatedBy;
 
             if (input == null)
                 return new ValidationResult(new List<ValidationResult.ValidationError>());
@@ -29,7 +29,7 @@ namespace SuperGlue.Web.Validation.InputValidation
             if (validator == null)
                 return new ValidationResult(new List<ValidationResult.ValidationError>());
 
-            return await validator.Validate();
+            return await validator.Validate().ConfigureAwait(false);
         }
     }
 }

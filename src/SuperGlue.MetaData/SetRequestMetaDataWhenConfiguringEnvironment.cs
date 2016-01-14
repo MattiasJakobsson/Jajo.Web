@@ -26,7 +26,7 @@ namespace SuperGlue.MetaData
 
             foreach (var supplier in _metaDataSuppliers.Where(supplier => supplier.CanHandleChain(environment.GetCurrentChain().Name)))
             {
-                var data = await supplier.GetMetaData(environment);
+                var data = await supplier.GetMetaData(environment).ConfigureAwait(false);
 
                 foreach (var item in data)
                     metaData[item.Key] = item.Value;

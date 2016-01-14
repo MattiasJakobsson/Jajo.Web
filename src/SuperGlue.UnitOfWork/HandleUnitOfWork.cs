@@ -29,29 +29,29 @@ namespace SuperGlue.UnitOfWork
             var unitOfWorks = environment.ResolveAll<ISuperGlueUnitOfWork>().ToList();
 
             foreach (var unitOfWork in unitOfWorks)
-                await unitOfWork.Begin();
+                await unitOfWork.Begin().ConfigureAwait(false);
 
             if (_handleRollback)
             {
                 try
                 {
-                    await _next(environment);
+                    await _next(environment).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
                     foreach (var unitOfWork in unitOfWorks)
-                        await unitOfWork.Rollback(ex);
+                        await unitOfWork.Rollback(ex).ConfigureAwait(false);
 
                     throw;
                 }
             }
             else
             {
-                await _next(environment);
+                await _next(environment).ConfigureAwait(false);
             }
 
             foreach (var unitOfWork in unitOfWorks)
-                await unitOfWork.Commit();
+                await unitOfWork.Commit().ConfigureAwait(false);
         }
     }
 

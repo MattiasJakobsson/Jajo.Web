@@ -11,7 +11,7 @@ namespace SuperGlue.Web.Endpoints
             var executor = endpoint.GetCorrectEndpointExecutor(environment);
 
             if (executor != null)
-                await executor.Execute(endpoint, environment);
+                await executor.Execute(endpoint, environment).ConfigureAwait(false);
         }
     }
 }

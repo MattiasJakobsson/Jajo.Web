@@ -13,7 +13,7 @@ namespace SuperGlue.Web.ModelBinding
         public BindModels(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -24,12 +24,12 @@ namespace SuperGlue.Web.ModelBinding
 
             environment[BindExtensions.BindConstants.ModelBinder] = (Func<Type, Task<object>>)(async x =>
             {
-                var result = await modelBinderCollection.Bind(x, new BindingContext(modelBinderCollection, environment));
+                var result = await modelBinderCollection.Bind(x, new BindingContext(modelBinderCollection, environment)).ConfigureAwait(false);
 
                 return result.Instance;
             });
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

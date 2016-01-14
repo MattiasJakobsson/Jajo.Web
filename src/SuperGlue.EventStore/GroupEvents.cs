@@ -15,10 +15,10 @@ namespace SuperGlue.EventStore
         public GroupEvents(AppFunc next, GroupEventsOptions options)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             if (options == null)
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException(nameof(options));
 
             _next = next;
             _options = options;
@@ -42,7 +42,7 @@ namespace SuperGlue.EventStore
                 childEnvironment.GetEventStoreRequest().Events = groupedEvent.ToList();
                 childEnvironment[EventStoreEnvironmentExtensions.EventStoreConstants.EventsGroupedBy] = groupedEvent.Key;
 
-                await _next(childEnvironment);
+                await _next(childEnvironment).ConfigureAwait(false);
             }
         }
     }

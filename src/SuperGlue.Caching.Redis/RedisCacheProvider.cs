@@ -19,7 +19,7 @@ namespace SuperGlue.Caching.Redis
 
         public async Task<T> Get<T>(string key) where T : class
         {
-            return (await Get(key)) as T;
+            return (await Get(key).ConfigureAwait(false)) as T;
         }
 
         public async Task<object> Get(string key)
@@ -31,7 +31,7 @@ namespace SuperGlue.Caching.Redis
             byte[] data = null;
 
             if (result != null)
-                data = await result;
+                data = await result.ConfigureAwait(false);
 
             return _redisDataSerializer.Deserialize(data);
         }
@@ -42,9 +42,9 @@ namespace SuperGlue.Caching.Redis
 
             Transactionally(x => resultTask = x.ListRangeAsync(key, stop: numberOfItems - 1 ?? -1));
 
-            var result = await resultTask;
+            var result = await resultTask.ConfigureAwait(false);
 
-            return result == null ? new List<object>() : result.Select(x => _redisDataSerializer.Deserialize(x)).ToList();
+            return result?.Select(x => _redisDataSerializer.Deserialize(x)).ToList() ?? new List<object>();
         }
 
         public Task<bool> Set(string key, object value, TimeSpan? expires = null)

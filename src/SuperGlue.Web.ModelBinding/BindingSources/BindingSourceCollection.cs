@@ -26,7 +26,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
 
         public async Task<bool> ContainsKey(string key, IDictionary<string, object> environment)
         {
-            var result = (await GetSourcesContainingKey(key.ToLower(), environment)).Any();
+            var result = (await GetSourcesContainingKey(key.ToLower(), environment).ConfigureAwait(false)).Any();
 
             environment.Log("Searched for binding key: {0} with result: Success = {1}.", key, result);
 
@@ -37,7 +37,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
         {
             environment.Log("Searching for binding key: {0}", LogLevel.Debug, key);
 
-            var matchingSources = (await GetSourcesContainingKey(key.ToLower(), environment)).ToList();
+            var matchingSources = (await GetSourcesContainingKey(key.ToLower(), environment).ConfigureAwait(false)).ToList();
 
             if (!matchingSources.Any())
             {
@@ -47,7 +47,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
 
             var bindingSource = matchingSources.First();
 
-            var result = (await bindingSource.GetValues(environment))[key.ToLower()];
+            var result = (await bindingSource.GetValues(environment).ConfigureAwait(false))[key.ToLower()];
 
             environment.Log("Binding key: {0} with value: {1} using source: {2}", LogLevel.Debug, key, result ?? "null", bindingSource);
 
@@ -60,7 +60,7 @@ namespace SuperGlue.Web.ModelBinding.BindingSources
 
             foreach (var bindingSource in _bindingSources)
             {
-                if ((await bindingSource.GetValues(environment)).ContainsKey(key.ToLower()))
+                if ((await bindingSource.GetValues(environment).ConfigureAwait(false)).ContainsKey(key.ToLower()))
                     results.Add(bindingSource);
             }
 

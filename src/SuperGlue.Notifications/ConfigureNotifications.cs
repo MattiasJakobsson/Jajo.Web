@@ -21,7 +21,7 @@ namespace SuperGlue.Notifications
                     {
                         try
                         {
-                            await notifier.ErrorNotification(from, message, environment, exception);
+                            await notifier.ErrorNotification(@from, message, environment, exception).ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {

@@ -15,7 +15,7 @@ namespace SuperGlue.RequestBranching
         public BranchRequest(AppFunc next, BranchRequestConfiguration configuration)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
             _configuration = configuration;
@@ -23,12 +23,12 @@ namespace SuperGlue.RequestBranching
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
 
             foreach (var item in _configuration.Cases)
             {
                 if (item.Item1(environment))
-                    await item.Item2(environment);
+                    await item.Item2(environment).ConfigureAwait(false);
             }
         }
     }
@@ -37,7 +37,7 @@ namespace SuperGlue.RequestBranching
     {
         private readonly IList<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>> _cases = new List<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>>();
 
-        public IReadOnlyCollection<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>> Cases { get { return new ReadOnlyCollection<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>>(_cases); } }
+        public IReadOnlyCollection<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>> Cases => new ReadOnlyCollection<Tuple<Func<IDictionary<string, object>, bool>, AppFunc>>(_cases);
 
         public BranchRequestConfiguration AddCase(Func<IDictionary<string, object>, bool> check, AppFunc result)
         {

@@ -19,7 +19,7 @@ namespace SuperGlue.ApiDiscovery
 
                 var registrationApi = ConfigurationManager.ConnectionStrings["Api.Register"];
 
-                if (registrationApi != null && !string.IsNullOrEmpty(registrationApi.ConnectionString))
+                if (!string.IsNullOrEmpty(registrationApi?.ConnectionString))
                 {
                     var connectionString = new RegistrationConnectionString(registrationApi.ConnectionString);
 
@@ -32,10 +32,10 @@ namespace SuperGlue.ApiDiscovery
 
                     var finders = sources.Select(y => y.Find(x));
 
-                    var definitions = (await Task.WhenAll(finders)).SelectMany(y => y.ToList()).ToArray();
+                    var definitions = (await Task.WhenAll(finders).ConfigureAwait(false)).SelectMany(y => y.ToList()).ToArray();
 
                     if (definitions.Any())
-                        await environment.Resolve<IApiRegistry>().Register(x, definitions);
+                        await environment.Resolve<IApiRegistry>().Register(x, definitions).ConfigureAwait(false);
                 });
 
                 return Task.CompletedTask;

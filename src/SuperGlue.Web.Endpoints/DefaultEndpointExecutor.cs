@@ -18,7 +18,7 @@ namespace SuperGlue.Web.Endpoints
             {
                 var executionMethod = FindExecutionMethod(executor, endpoint);
 
-                await ExecuteMethod(executionMethod, executor, endpoint, environment);
+                await ExecuteMethod(executionMethod, executor, endpoint, environment).ConfigureAwait(false);
             }
         }
 

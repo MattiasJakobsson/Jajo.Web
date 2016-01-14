@@ -13,7 +13,7 @@ namespace SuperGlue.StructureMap
         public NestedStructureMapContainer(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -26,7 +26,7 @@ namespace SuperGlue.StructureMap
             {
                 environment.SetupContainerInEnvironment(container);
 
-                await _next(environment);
+                await _next(environment).ConfigureAwait(false);
             }
         }
     }

@@ -116,7 +116,7 @@ namespace SuperGlue.Configuration
 
             try
             {
-                await Task.WhenAll(actions);
+                await Task.WhenAll(actions).ConfigureAwait(false);
 
                 return null;
             }
@@ -136,8 +136,8 @@ namespace SuperGlue.Configuration
                 Handler = handler;
             }
 
-            public string Event { get; private set; }
-            public Func<IDictionary<string, object>, Task> Handler { get; private set; }
+            public string Event { get; }
+            public Func<IDictionary<string, object>, Task> Handler { get; }
         }
 
         public class ChainData

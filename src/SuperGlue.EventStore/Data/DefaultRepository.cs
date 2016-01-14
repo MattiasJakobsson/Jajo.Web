@@ -63,7 +63,7 @@ namespace SuperGlue.EventStore.Data
 
             var streamName = aggregate.GetStreamName(_environment);
 
-            var events = await LoadEventsFromStream(streamName, 0, int.MaxValue);
+            var events = await LoadEventsFromStream(streamName, 0, int.MaxValue).ConfigureAwait(false);
 
             aggregate.BuildFromHistory(new EventStream(events.Select(x => new Event(x.Event.EventId, DeserializeEvent(x)))));
 
@@ -83,7 +83,7 @@ namespace SuperGlue.EventStore.Data
                 Id = id
             };
 
-            var events = await LoadEventsFromStream(streamName, 0, int.MaxValue);
+            var events = await LoadEventsFromStream(streamName, 0, int.MaxValue).ConfigureAwait(false);
 
             state.BuildFromHistory(new EventStream(events.Select(x => new Event(x.Event.EventId, DeserializeEvent(x)))));
 
@@ -94,7 +94,7 @@ namespace SuperGlue.EventStore.Data
 
         public async Task<IEnumerable<object>> LoadStream(string stream)
         {
-            return (await LoadEventsFromStream(stream, 0, int.MaxValue)).Select(DeserializeEvent);
+            return (await LoadEventsFromStream(stream, 0, int.MaxValue).ConfigureAwait(false)).Select(DeserializeEvent);
         }
 
         public async Task RequestTimeOut(string stream, object evnt, DateTime at)
@@ -115,7 +115,7 @@ namespace SuperGlue.EventStore.Data
             if (!string.IsNullOrEmpty(causationId))
                 commitHeaders[CausationIdKey] = causationId;
 
-            await _timeoutManager.RequestTimeOut(stream, Guid.NewGuid(), evnt, at, commitHeaders);
+            await _timeoutManager.RequestTimeOut(stream, Guid.NewGuid(), evnt, at, commitHeaders).ConfigureAwait(false);
         }
 
         public Task RequestTimeOut(string stream, object evnt, TimeSpan @in)
@@ -126,18 +126,18 @@ namespace SuperGlue.EventStore.Data
         public async Task SaveChanges()
         {
             foreach (var loadedProcessState in _loadedProcessStates)
-                await Save(loadedProcessState.Value.State, loadedProcessState.Key, loadedProcessState.Value.CorrelationId, loadedProcessState.Value.CausationId);
+                await Save(loadedProcessState.Value.State, loadedProcessState.Key, loadedProcessState.Value.CorrelationId, loadedProcessState.Value.CausationId).ConfigureAwait(false);
 
             foreach (var aggregate in _loadedAggregates)
-                await Save(aggregate.Value.Aggregate, aggregate.Value.CorrelationId, aggregate.Value.CausationId);
+                await Save(aggregate.Value.Aggregate, aggregate.Value.CorrelationId, aggregate.Value.CausationId).ConfigureAwait(false);
 
             LoadedEventAwareItem item;
             while (_loadedEventAwareItems.TryPop(out item))
-                await Save(item.CanApplyEvents, item.CorrelationId, item.CausationId);
+                await Save(item.CanApplyEvents, item.CorrelationId, item.CausationId).ConfigureAwait(false);
 
             AttachedCommand command;
             while (_attachedCommands.TryPop(out command))
-                await Save(command.Command, command.Id, command.CorrelationId, command.CausationId);
+                await Save(command.Command, command.Id, command.CorrelationId, command.CausationId).ConfigureAwait(false);
         }
 
         public void ThrowAwayChanges()
@@ -176,7 +176,7 @@ namespace SuperGlue.EventStore.Data
             {
                 try
                 {
-                    await SaveEventsToStream(streamName, versionToExpect, newEvents, commitHeaders);
+                    await SaveEventsToStream(streamName, versionToExpect, newEvents, commitHeaders).ConfigureAwait(false);
                     break;
                 }
                 catch (WrongExpectedVersionException ex)
@@ -191,7 +191,7 @@ namespace SuperGlue.EventStore.Data
                     _environment.Log(ae.InnerException, "Events where added to aggregate with id: {0} since last load. Checking for conflicts and trying again...", LogLevel.Warn, aggregate.Id);
                 }
 
-                var storedEvents = (await LoadEventsFromStream(streamName, versionToExpect < 0 ? 0 : versionToExpect, int.MaxValue)).ToList();
+                var storedEvents = (await LoadEventsFromStream(streamName, versionToExpect < 0 ? 0 : versionToExpect, int.MaxValue).ConfigureAwait(false)).ToList();
 
                 var currentVersion = storedEvents.Select(x => x.OriginalEventNumber).OrderByDescending(x => x).FirstOrDefault();
 
@@ -227,7 +227,7 @@ namespace SuperGlue.EventStore.Data
             var streamName = canApplyEvents.GetStreamName(_environment);
             var events = canApplyEvents.GetAppliedEvents().ToList();
 
-            await SaveEventsToStream(streamName, ExpectedVersion.Any, events.Select(x => new Event(x.Id, x.Instance)).ToList(), commitHeaders);
+            await SaveEventsToStream(streamName, ExpectedVersion.Any, events.Select(x => new Event(x.Id, x.Instance)).ToList(), commitHeaders).ConfigureAwait(false);
 
             canApplyEvents.ClearAppliedEvents();
         }
@@ -259,7 +259,7 @@ namespace SuperGlue.EventStore.Data
 
             var versionToExpect = originalVersion == 0 ? ExpectedVersion.Any : originalVersion - 1;
 
-            await SaveEventsToStream(streamName, versionToExpect, newEvents, commitHeaders);
+            await SaveEventsToStream(streamName, versionToExpect, newEvents, commitHeaders).ConfigureAwait(false);
 
             state.ClearUncommittedChanges();
         }
@@ -286,7 +286,7 @@ namespace SuperGlue.EventStore.Data
             if (!string.IsNullOrEmpty(causationId))
                 commitHeaders[CausationIdKey] = causationId;
 
-            await SaveEventsToStream(streamName, ExpectedVersion.Any, new List<Event> { new Event(id, command) }, commitHeaders);
+            await SaveEventsToStream(streamName, ExpectedVersion.Any, new List<Event> { new Event(id, command) }, commitHeaders).ConfigureAwait(false);
         }
 
         public void Attach(IAggregate aggregate)
@@ -315,27 +315,27 @@ namespace SuperGlue.EventStore.Data
 
             if (eventsToSave.Count < WritePageSize)
             {
-                await _eventStoreConnection.AppendToStreamAsync(streamName, expectedVersion, eventsToSave);
+                await _eventStoreConnection.AppendToStreamAsync(streamName, expectedVersion, eventsToSave).ConfigureAwait(false);
                 _environment.Log("Saved {0} events to stream {1}.", LogLevel.Debug, eventsToSave.Count, streamName);
             }
             else
             {
-                var transaction = await _eventStoreConnection.StartTransactionAsync(streamName, expectedVersion);
+                var transaction = await _eventStoreConnection.StartTransactionAsync(streamName, expectedVersion).ConfigureAwait(false);
 
                 var position = 0;
                 while (position < eventsToSave.Count)
                 {
                     var pageEvents = eventsToSave.Skip(position).Take(WritePageSize).ToList();
-                    await transaction.WriteAsync(pageEvents);
+                    await transaction.WriteAsync(pageEvents).ConfigureAwait(false);
                     _environment.Log("Saved {0} events to stream {1}.", LogLevel.Debug, pageEvents.Count, streamName);
                     position += WritePageSize;
                 }
 
-                await transaction.CommitAsync();
+                await transaction.CommitAsync().ConfigureAwait(false);
             }
 
             foreach (var manageChanges in _manageChanges)
-                await manageChanges.ChangesSaved(events, commitHeaders);
+                await manageChanges.ChangesSaved(events, commitHeaders).ConfigureAwait(false);
         }
 
         protected async Task<IEnumerable<ResolvedEvent>> LoadEventsFromStream(string streamName, int from, int to)
@@ -353,7 +353,7 @@ namespace SuperGlue.EventStore.Data
                 if (sliceCount == 0)
                     break;
 
-                currentSlice = await _eventStoreConnection.ReadStreamEventsForwardAsync(streamName, sliceStart, sliceCount, false);
+                currentSlice = await _eventStoreConnection.ReadStreamEventsForwardAsync(streamName, sliceStart, sliceCount, false).ConfigureAwait(false);
 
                 if (currentSlice.Status == SliceReadStatus.StreamDeleted)
                     throw new StreamDeletedException(streamName);

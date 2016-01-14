@@ -14,7 +14,7 @@ namespace SuperGlue.EventStore.Subscribers
         public ExecuteSubscribers(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -23,9 +23,9 @@ namespace SuperGlue.EventStore.Subscribers
         {
             var evnt = environment.GetEventStoreRequest().Event;
 
-            await Execute(evnt, environment);
+            await Execute(evnt, environment).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
 
         private static async Task Execute(DeSerializationResult evnt, IDictionary<string, object> environment)
@@ -40,9 +40,9 @@ namespace SuperGlue.EventStore.Subscribers
             //TODO:Refactor
             foreach (var subscriber in subscribers)
             {
-                await (Task)subscriber.Subscriber.GetType()
+                await ((Task)subscriber.Subscriber.GetType()
                     .GetMethod("Handle", new[] { subscriber.Type, typeof(IDictionary<string, object>) })
-                    .Invoke(subscriber.Subscriber, new[] { evnt.Data, evnt.Metadata });
+                    .Invoke(subscriber.Subscriber, new[] { evnt.Data, evnt.Metadata })).ConfigureAwait(false);
             }
         }
 

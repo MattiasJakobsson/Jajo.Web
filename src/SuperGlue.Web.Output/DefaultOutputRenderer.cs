@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Output
             if (renderer == null)
                 return;
 
-            var result = await renderer.Render(environment);
+            var result = await renderer.Render(environment).ConfigureAwait(false);
 
             if (result == null)
                 return;
@@ -24,7 +24,7 @@ namespace SuperGlue.Web.Output
 
             response.Headers.ContentType = result.ContentType;
 
-            await response.Write(result.Body);
+            await response.Write(result.Body).ConfigureAwait(false);
         }
     }
 }

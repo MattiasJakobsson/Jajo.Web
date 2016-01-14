@@ -36,7 +36,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                 List<Tuple<TimeoutData, DateTime>> results;
                 if (_lastCleanupTime == DateTime.MinValue || _lastCleanupTime.Add(_triggerCleanupEvery) < now)
                 {
-                    results = (await GetCleanupChunk(startSlice, session)).ToList();
+                    results = (await GetCleanupChunk(startSlice, session).ConfigureAwait(false)).ToList();
                 }
                 else
                 {
@@ -49,9 +49,9 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                     .Where(t => t.Time > startSlice);
 
                 var qhi = new Reference<QueryHeaderInformation>();
-                using (var enumerator = await session.Advanced.StreamAsync(query, qhi))
+                using (var enumerator = await session.Advanced.StreamAsync(query, qhi).ConfigureAwait(false))
                 {
-                    while (await enumerator.MoveNextAsync())
+                    while (await enumerator.MoveNextAsync().ConfigureAwait(false))
                     {
                         var dateTime = enumerator.Current.Document.Time;
                         nextTimeToRunQuery = dateTime;
@@ -67,12 +67,12 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
 
                 foreach (var result in results)
                 {
-                    await timeoutFound(result);
+                    await timeoutFound(result).ConfigureAwait(false);
 
                     session.Delete(result);
                 }
 
-                await session.SaveChangesAsync();
+                await session.SaveChangesAsync().ConfigureAwait(false);
 
                 return nextTimeToRunQuery;
             }
@@ -93,7 +93,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
             var chunk = (await GetChunkQuery(session)
                 .Where(t => t.Time <= startSlice.Subtract(_cleanupGapFromTimeslice))
                 .Take(1024)
-                .ToListAsync())
+                .ToListAsync().ConfigureAwait(false))
                 .Select(arg => new Tuple<TimeoutData, DateTime>(arg.GetTimeoutData(), arg.Time));
 
             _lastCleanupTime = DateTime.UtcNow;
@@ -123,9 +123,9 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                     OwningTimeOutManager = _timeoutManagerName,
                     Time = timeout.Time,
                     WriteTo = timeout.WriteTo
-                });
+                }).ConfigureAwait(false);
 
-                await session.SaveChangesAsync();
+                await session.SaveChangesAsync().ConfigureAwait(false);
             }
         }
     }

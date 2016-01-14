@@ -15,7 +15,7 @@ namespace SuperGlue.UnitOfWork
         public RollbackUnitOfWork(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -27,9 +27,9 @@ namespace SuperGlue.UnitOfWork
             var exception = environment.GetException();
 
             foreach (var unitOfWork in unitOfWorks)
-                await unitOfWork.Rollback(exception);
+                await unitOfWork.Rollback(exception).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

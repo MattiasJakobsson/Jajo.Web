@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
 
         public async Task<DetailsQueryResult> Query(DetailsQueryInput input)
         {
-            var types = await _manageDiagnosticsInformation.GetTypesFor(input.Slug);
+            var types = await _manageDiagnosticsInformation.GetTypesFor(input.Slug).ConfigureAwait(false);
 
             return new DetailsQueryResult(input.Slug, types);
         }

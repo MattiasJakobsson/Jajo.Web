@@ -26,10 +26,10 @@ namespace SuperGlue.EventStore.Projections
 
             foreach (var projection in matchingProjections)
             {
-                var name = string.Format("project-to-{0}", projection.ProjectionName);
+                var name = $"project-to-{projection.ProjectionName}";
                 var query = projectionBuilder.BuildStreamProjection(projection.GetInterestingStreams(), projection.ProjectionName);
 
-                await projectionManager.CreateOrUpdateContinuousQueryAsync(name, query, credentials);
+                await projectionManager.CreateOrUpdateContinuousQueryAsync(name, query, credentials).ConfigureAwait(false);
             }
         }
     }

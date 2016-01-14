@@ -13,7 +13,7 @@ namespace JaJo.Migrations.Storage.SuperGlue.RavenDb
             {
                 environment.RegisterTransient(typeof(IMigrationStorage), typeof(RavenMigrationStorage));
 
-                await environment.Resolve<IRavenSessions>().EnsureDbExists((environment.GetSettings<MigrationRavenStorageSettings>() ?? new MigrationRavenStorageSettings()).GetDatabase());
+                await environment.Resolve<IRavenSessions>().EnsureDbExists((environment.GetSettings<MigrationRavenStorageSettings>() ?? new MigrationRavenStorageSettings()).GetDatabase()).ConfigureAwait(false);
             }, "superglue.RavenDb.Configure");
         }
     }

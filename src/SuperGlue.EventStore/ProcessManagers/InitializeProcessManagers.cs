@@ -35,7 +35,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             running = true;
 
             foreach (var processManager in _processManagers)
-                await SubscribeProcessManager(chain, processManager, settings);
+                await SubscribeProcessManager(chain, processManager, settings).ConfigureAwait(false);
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
@@ -76,8 +76,8 @@ namespace SuperGlue.EventStore.ProcessManagers
                 try
                 {
                     var eventStoreSubscription = _eventStoreConnection.ConnectToPersistentSubscription(currentProcessManager.ProcessName, currentProcessManager.ProcessName,
-                        async (subscription, evnt) => await PushEventToProcessManager(chain, currentProcessManager, _eventSerialization.DeSerialize(evnt), environment, subscription),
-                        async (subscription, reason, exception) => await SubscriptionDropped(chain, currentProcessManager, reason, exception, environment),
+                        async (subscription, evnt) => await PushEventToProcessManager(chain, currentProcessManager, _eventSerialization.DeSerialize(evnt), environment, subscription).ConfigureAwait(false),
+                        async (subscription, reason, exception) => await SubscriptionDropped(chain, currentProcessManager, reason, exception, environment).ConfigureAwait(false),
                         autoAck: false);
 
                     _processManagerSubscriptions[currentProcessManager.ProcessName] = new ProcessManagerSubscription(eventStoreSubscription);
@@ -91,7 +91,7 @@ namespace SuperGlue.EventStore.ProcessManagers
 
                     environment.Log(ex, "Couldn't subscribe processmanager: {0}. Retrying in 5 seconds.", LogLevel.Error, currentProcessManager.ProcessName);
 
-                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
                 }
             }
         }
@@ -136,7 +136,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                 using (requestEnvironment.OpenCorrelationContext(correlationId))
                 using (requestEnvironment.OpenCausationContext(evnt.EventId.ToString()))
                 {
-                    await chain(requestEnvironment);
+                    await chain(requestEnvironment).ConfigureAwait(false);
                 }
 
                 subscription.Acknowledge(evnt.OriginalEvent);

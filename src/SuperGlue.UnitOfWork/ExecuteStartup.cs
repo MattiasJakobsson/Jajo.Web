@@ -22,9 +22,9 @@ namespace SuperGlue.UnitOfWork
             var applicationTasks = environment.ResolveAll<IApplicationTask>().ToList();
 
             foreach (var applicationTask in applicationTasks)
-                await applicationTask.Start(environment);
+                await applicationTask.Start(environment).ConfigureAwait(false);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 }

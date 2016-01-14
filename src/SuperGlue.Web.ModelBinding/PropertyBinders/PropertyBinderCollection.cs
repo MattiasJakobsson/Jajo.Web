@@ -26,15 +26,15 @@ namespace SuperGlue.Web.ModelBinding.PropertyBinders
 
             if (binder == null)
             {
-                bindingContext.Environment.Log("Failed to find a propertybinder for property: {0} on: {1}.", LogLevel.Info, propertyInfo.Name, propertyInfo.DeclaringType != null ? propertyInfo.DeclaringType.Name : "");
+                bindingContext.Environment.Log("Failed to find a propertybinder for property: {0} on: {1}.", LogLevel.Info, propertyInfo.Name, propertyInfo.DeclaringType?.Name ?? "");
                 return false;
             }
 
-            bindingContext.Environment.Log("Going to bind property: {0} on: {1} using: {2}.", LogLevel.Debug, propertyInfo.Name, propertyInfo.DeclaringType != null ? propertyInfo.DeclaringType.Name : "", binder);
+            bindingContext.Environment.Log("Going to bind property: {0} on: {1} using: {2}.", LogLevel.Debug, propertyInfo.Name, propertyInfo.DeclaringType?.Name ?? "", binder);
 
-            var result = await binder.Bind(instance, propertyInfo, bindingContext);
+            var result = await binder.Bind(instance, propertyInfo, bindingContext).ConfigureAwait(false);
 
-            bindingContext.Environment.Log("Finished binding property: {0} on: {1} using: {2} with result: Success = {3}.", LogLevel.Debug, propertyInfo.Name, propertyInfo.DeclaringType != null ? propertyInfo.DeclaringType.Name : "", binder, result);
+            bindingContext.Environment.Log("Finished binding property: {0} on: {1} using: {2} with result: Success = {3}.", LogLevel.Debug, propertyInfo.Name, propertyInfo.DeclaringType?.Name ?? "", binder, result);
 
             return result;
         }

@@ -38,12 +38,12 @@ namespace SuperGlue.Configuration
             {
                 using (environment.OpenCorrelationContext(Guid.NewGuid().ToString()))
                 {
-                    await _next(environment);
+                    await _next(environment).ConfigureAwait(false);
                 }
             }
             else
             {
-                await _next(environment);
+                await _next(environment).ConfigureAwait(false);
             }
 
             environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.CurrentChainData] = chainBefore;

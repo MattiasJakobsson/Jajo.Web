@@ -41,7 +41,7 @@ namespace SuperGlue.EventStore.Timeouts
                 nextTimeToRunQuery = now.AddMinutes(1);
 
             foreach (var timeout in dueTimeouts)
-                await timeoutFound(new Tuple<TimeoutData, DateTime>(timeout, timeout.Time));
+                await timeoutFound(new Tuple<TimeoutData, DateTime>(timeout, timeout.Time)).ConfigureAwait(false);
 
             return nextTimeToRunQuery;
         }

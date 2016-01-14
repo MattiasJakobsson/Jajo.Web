@@ -20,7 +20,7 @@ namespace SuperGlue.CommandSender
             using (_environment.OpenCommandContext(command, commandId))
             using (_environment.OpenCausationContext(commandId.ToString()))
             {
-                await CommandPipeline.CurrentPipeline(_environment);
+                await CommandPipeline.CurrentPipeline(_environment).ConfigureAwait(false);
             }
         }
     }

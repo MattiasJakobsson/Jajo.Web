@@ -26,16 +26,16 @@ namespace SuperGlue.ApiDiscovery
 
         public async Task<ApiResource> Query(IDictionary<string, object> data)
         {
-            var definition = await _findDefinition();
+            var definition = await _findDefinition().ConfigureAwait(false);
 
-            return await _executeApiRequests.ExecuteQuery(definition, _instructions, data);
+            return await _executeApiRequests.ExecuteQuery(definition, _instructions, data).ConfigureAwait(false);
         }
 
         public async Task<IHttpResponse> ExecuteForm(IFormTravelInstruction travelToForm, IDictionary<string, object> data)
         {
-            var resource = await Query(data);
+            var resource = await Query(data).ConfigureAwait(false);
 
-            return await _executeApiRequests.ExecuteForm(resource, travelToForm, data);
+            return await _executeApiRequests.ExecuteForm(resource, travelToForm, data).ConfigureAwait(false);
         }
     }
 }

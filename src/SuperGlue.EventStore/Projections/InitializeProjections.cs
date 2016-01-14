@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
@@ -37,7 +36,7 @@ namespace SuperGlue.EventStore.Projections
             running = true;
 
             foreach (var projection in _projections)
-                await SubscribeProjection(projection, chain, settings);
+                await SubscribeProjection(projection, chain, settings).ConfigureAwait(false);
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
@@ -91,11 +90,12 @@ namespace SuperGlue.EventStore.Projections
                     var messageSubscription = Observable
                         .FromEvent<DeSerializationResult>(x => messageProcessor.MessageArrived += x, x => messageProcessor.MessageArrived -= x)
                         .Buffer(TimeSpan.FromSeconds(bufferSettings.Seconds), bufferSettings.NumberOfEvents)
-                        .Subscribe(async x => await PushEventsToProjections(chain, currentEventStoreProjection, x, environment));
+                        .Subscribe(async x => await PushEventsToProjections(chain, currentEventStoreProjection, x, environment).ConfigureAwait(false));
 
-                    var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentEventStoreProjection.ProjectionName, await eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName, environment), true,
+                    var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentEventStoreProjection.ProjectionName, 
+                        await eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName, environment).ConfigureAwait(false), true,
                         (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt)),
-                        subscriptionDropped: async (subscription, reason, exception) => await SubscriptionDropped(chain, currentEventStoreProjection, reason, exception, environment));
+                        subscriptionDropped: async (subscription, reason, exception) => await SubscriptionDropped(chain, currentEventStoreProjection, reason, exception, environment).ConfigureAwait(false));
 
                     _projectionSubscriptions[currentEventStoreProjection.ProjectionName] = new ProjectionSubscription(messageSubscription, eventStoreSubscription);
 
@@ -108,7 +108,7 @@ namespace SuperGlue.EventStore.Projections
 
                     environment.Log(ex, "Couldn't subscribe projection: {0}. Retrying in 5 seconds.", LogLevel.Warn, currentEventStoreProjection.ProjectionName);
 
-                    await Task.Delay(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
                 }
             }
         }
@@ -130,7 +130,7 @@ namespace SuperGlue.EventStore.Projections
             environment.Log(exception, "Subscription dropped for projection: {0}. Reason: {1}. Retrying...", LogLevel.Warn, projection.ProjectionName, reason);
 
             if (reason != SubscriptionDropReason.UserInitiated)
-                await SubscribeProjection(projection, chain, environment);
+                await SubscribeProjection(projection, chain, environment).ConfigureAwait(false);
         }
 
         private async Task PushEventsToProjections(AppFunc chain, IEventStoreProjection projection, IEnumerable<DeSerializationResult> events, IDictionary<string, object> environment)
@@ -160,7 +160,7 @@ namespace SuperGlue.EventStore.Projections
 
                 using (requestEnvironment.OpenCorrelationContext(Guid.NewGuid().ToString()))
                 {
-                    await chain(requestEnvironment);
+                    await chain(requestEnvironment).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -169,7 +169,7 @@ namespace SuperGlue.EventStore.Projections
 
                 StopProjection(projection);
 
-                await environment.Notifications().Error("projections", $"Projection: {projection.ProjectionName} failed!", ex);
+                await environment.Notifications().Error("projections", $"Projection: {projection.ProjectionName} failed!", ex).ConfigureAwait(false);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace SuperGlue
 
         public static async Task<T> Bind<T>(this IDictionary<string, object> environment)
         {
-            return (T) (await environment.Bind(typeof (T)));
+            return (T) (await environment.Bind(typeof (T)).ConfigureAwait(false));
         }
 
         public static async Task<object> Bind(this IDictionary<string, object> environment, Type type)
@@ -22,7 +22,7 @@ namespace SuperGlue
             var modelBinder = environment.Get<Func<Type, Task<object>>>(BindConstants.ModelBinder);
             var requestTypedParameters = GetRequestTypedParameters(environment);
 
-            return requestTypedParameters.ContainsKey(type) ? requestTypedParameters[type] : await modelBinder(type);
+            return requestTypedParameters.ContainsKey(type) ? requestTypedParameters[type] : await modelBinder(type).ConfigureAwait(false);
         }
 
         public static void Set<T>(this IDictionary<string, object> environment, T data)

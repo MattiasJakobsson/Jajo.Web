@@ -17,14 +17,14 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
 
         public async Task<int?> GetLastEvent(string projection, IDictionary<string, object> environment)
         {
-            var projectionEventNumber = await GetProjectionEventNumber(projection, environment);
+            var projectionEventNumber = await GetProjectionEventNumber(projection, environment).ConfigureAwait(false);
 
             return projectionEventNumber.LastEvent;
         }
 
         public async Task UpdateLastEvent(string projection, int lastEvent, IDictionary<string, object> environment)
         {
-            var projectionEventNumber = await GetProjectionEventNumber(projection, environment);
+            var projectionEventNumber = await GetProjectionEventNumber(projection, environment).ConfigureAwait(false);
 
             projectionEventNumber.LastEvent = lastEvent;
         }
@@ -33,7 +33,7 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
         {
             var service = environment.GetApplicationName();
 
-            var projectionEventNumber = await _session.LoadAsync<ProjectionEventNumber>(ProjectionEventNumber.GetId(service, projection));
+            var projectionEventNumber = await _session.LoadAsync<ProjectionEventNumber>(ProjectionEventNumber.GetId(service, projection)).ConfigureAwait(false);
 
             if (projectionEventNumber == null)
             {
@@ -42,7 +42,7 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
                     Id = ProjectionEventNumber.GetId(service, projection)
                 };
 
-                await _session.StoreAsync(projectionEventNumber);
+                await _session.StoreAsync(projectionEventNumber).ConfigureAwait(false);
             }
 
             return projectionEventNumber;

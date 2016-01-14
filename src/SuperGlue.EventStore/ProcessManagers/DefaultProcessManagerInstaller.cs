@@ -32,12 +32,12 @@ namespace SuperGlue.EventStore.ProcessManagers
 
             foreach (var processManager in matchingProcessManagers)
             {
-                var name = string.Format("project-to-{0}", processManager.ProcessName);
+                var name = $"project-to-{processManager.ProcessName}";
                 var query = projectionBuilder.BuildStreamProjection(processManager.GetStreamsToProcess(),
                     processManager.ProcessName,
                     processManager.GetEventMappings().Select(x => new ProjectionBuilder.EventMap(x.Key.Name, x.Value)));
 
-                await projectionManager.CreateOrUpdateContinuousQueryAsync(name, query, credentials);
+                await projectionManager.CreateOrUpdateContinuousQueryAsync(name, query, credentials).ConfigureAwait(false);
             }
         }
 
@@ -56,7 +56,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                 try
                 {
                     await _eventStoreConnection
-                        .CreatePersistentSubscriptionAsync(processManager.ProcessName, processManager.ProcessName, settings, _eventStoreConnectionString.GetUserCredentials());
+                        .CreatePersistentSubscriptionAsync(processManager.ProcessName, processManager.ProcessName, settings, _eventStoreConnectionString.GetUserCredentials()).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {

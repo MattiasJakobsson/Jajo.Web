@@ -9,14 +9,11 @@ namespace SuperGlue.Api.Hal
 {
     public class ParseHalApiResponse : IParseApiResponse
     {
-        public string ContentType
-        {
-            get { return "application/hal+json"; }
-        }
+        public string ContentType => "application/hal+json";
 
         public async Task<ApiResource> Parse(IHttpResponse response, ApiDefinition definition)
         {
-            var obj = JObject.Parse(await response.ReadRawBody());
+            var obj = JObject.Parse(await response.ReadRawBody().ConfigureAwait(false));
             var resource = ParseRootResourceObject(obj, definition);
 
             return resource;

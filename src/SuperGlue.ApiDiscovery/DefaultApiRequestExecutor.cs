@@ -25,9 +25,9 @@ namespace SuperGlue.ApiDiscovery
             var parser = _responseParsers.FirstOrDefault(x => definition.Accepts.Contains(x.ContentType));
 
             if(parser == null)
-                throw new ApiException(string.Format("Can't handle api named: {0}", definition.Name));
+                throw new ApiException($"Can't handle api named: {definition.Name}");
 
-            var currentResource = await GetAsync(definition.Location, parser, definition);
+            var currentResource = await GetAsync(definition.Location, parser, definition).ConfigureAwait(false);
 
             if (currentResource == null)
             {
@@ -62,7 +62,7 @@ namespace SuperGlue.ApiDiscovery
                 if (!uri.IsAbsoluteUri)
                     uri = new Uri(definition.Location.Scheme + Uri.SchemeDelimiter + definition.Location.Host + (definition.Location.IsDefaultPort ? "" : string.Concat(":", definition.Location.Port)) + uri);
 
-                currentResource = await GetAsync(uri, parser, definition);
+                currentResource = await GetAsync(uri, parser, definition).ConfigureAwait(false);
 
                 if (currentResource == null)
                 {
@@ -129,7 +129,7 @@ namespace SuperGlue.ApiDiscovery
             request = formData
                 .Aggregate(request, (current, item) => current.Parameter(item.Key, item.Value));
 
-            var response = await request.Send();
+            var response = await request.Send().ConfigureAwait(false);
 
             if (!response.IsSuccessStatusCode)
                 _environment.Log("Execution of form at: {0} returned status code: {1}.", LogLevel.Error, uri, response.StatusCode);
@@ -142,14 +142,14 @@ namespace SuperGlue.ApiDiscovery
             var response = await _httpClient
                 .Start(uri)
                 .ModifyHeaders(x => x.Accept.Add(new MediaTypeWithQualityHeaderValue(parser.ContentType)))
-                .Send();
+                .Send().ConfigureAwait(false);
 
             _environment.Log("Api request to url: {0} finished with status code: {1}.", LogLevel.Debug, uri, response.StatusCode);
 
             if (!response.IsSuccessStatusCode)
                 return null;
 
-            return await parser.Parse(response, definition);
+            return await parser.Parse(response, definition).ConfigureAwait(false);
         }
     }
 }

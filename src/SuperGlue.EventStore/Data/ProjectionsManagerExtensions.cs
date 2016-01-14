@@ -12,16 +12,16 @@ namespace SuperGlue.EventStore.Data
             var currentProjection = "";
             try
             {
-                currentProjection = await projectionsManager.GetQueryAsync(name, credentials);
+                currentProjection = await projectionsManager.GetQueryAsync(name, credentials).ConfigureAwait(false);
             }
             catch (Exception)
             {
             }
 
             if (string.IsNullOrEmpty(currentProjection))
-                await projectionsManager.CreateContinuousAsync(name, query, credentials);
+                await projectionsManager.CreateContinuousAsync(name, query, credentials).ConfigureAwait(false);
             else if (query != currentProjection)
-                await projectionsManager.UpdateQueryAsync(name, query, credentials);
+                await projectionsManager.UpdateQueryAsync(name, query, credentials).ConfigureAwait(false);
         }
     }
 }

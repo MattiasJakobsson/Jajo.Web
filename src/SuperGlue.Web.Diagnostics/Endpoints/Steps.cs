@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
 
         public async Task<StepsQueryResult> Query(StepsQueryInput input)
         {
-            var steps = await _manageDiagnosticsInformation.GetStepsFor(input.Slug, input.Id);
+            var steps = await _manageDiagnosticsInformation.GetStepsFor(input.Slug, input.Id).ConfigureAwait(false);
 
             return new StepsQueryResult(input.Slug, input.Id, steps);
         }
@@ -36,8 +36,8 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
             Steps = steps;
         }
 
-        public string Category { get; private set; }
-        public string Type { get; private set; }
+        public string Category { get; }
+        public string Type { get; }
         public IEnumerable<string> Steps { get; private set; }
 
         public DataQueryInput GetDataInput(string step)

@@ -28,7 +28,7 @@ namespace SuperGlue.Web.ModelBinding
                 .Where(x => x.CanWrite)
                 .Select(x => _propertyBinderCollection.Bind(instance, x, bindingContext));
 
-            var success = (await Task.WhenAll(binderTasks)).Any(x => x);
+            var success = (await Task.WhenAll(binderTasks).ConfigureAwait(false)).Any(x => x);
 
             return new BindingResult(instance, success);
         }

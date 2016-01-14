@@ -20,7 +20,7 @@ namespace JaJo.Migrations.SuperGlue
             var settings = environment.GetSettings<JaJoMigrationsSettings>() ?? new JaJoMigrationsSettings();
 
             foreach (var context in settings.FindContexts())
-                await _migrateApplication.MigrateApplicationToLatestVersion(context);
+                await _migrateApplication.MigrateApplicationToLatestVersion(context).ConfigureAwait(false);
         }
 
         public Task ShutDown(IDictionary<string, object> environment)

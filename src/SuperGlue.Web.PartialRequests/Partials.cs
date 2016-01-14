@@ -23,7 +23,7 @@ namespace SuperGlue.Web.PartialRequests
 
             var partialEnvironment = environment.CreatePartialRequest(partial);
 
-            await partialChain(partialEnvironment);
+            await partialChain(partialEnvironment).ConfigureAwait(false);
 
             var responseBody = partialEnvironment.GetResponse().Body;
 

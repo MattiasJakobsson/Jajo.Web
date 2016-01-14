@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Sample
         public HandledExceptionMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -24,12 +24,12 @@ namespace SuperGlue.Web.Sample
         {
             var exception = environment.Get<Exception>("superglue.Exception");
 
-            await environment.GetResponse().Write(exception.Message);
-            await environment.GetResponse().Write(exception.StackTrace);
+            await environment.GetResponse().Write(exception.Message).ConfigureAwait(false);
+            await environment.GetResponse().Write(exception.StackTrace).ConfigureAwait(false);
 
             environment.SetOutput(exception.Message);
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 
@@ -40,18 +40,18 @@ namespace SuperGlue.Web.Sample
         public HandleNotFoundMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await environment.GetResponse().Write("Not found!");
+            await environment.GetResponse().Write("Not found!").ConfigureAwait(false);
 
             environment.SetOutput("Not found!");
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 
@@ -62,7 +62,7 @@ namespace SuperGlue.Web.Sample
         public HandleValidationErrorMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -75,11 +75,11 @@ namespace SuperGlue.Web.Sample
             foreach (var error in validationResult.Errors)
                 result.AppendFormat("Error {0}: {1}<br/>", error.Key, error.Message);
 
-            await environment.GetResponse().Write(result.ToString());
+            await environment.GetResponse().Write(result.ToString()).ConfigureAwait(false);
 
             environment.SetOutput(result.ToString());
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 
@@ -90,18 +90,18 @@ namespace SuperGlue.Web.Sample
         public HandleUnauthorizedMiddleware(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            await environment.GetResponse().Write("Unauthorized");
+            await environment.GetResponse().Write("Unauthorized").ConfigureAwait(false);
 
             environment.SetOutput("Unauthorized");
 
-            await _next(environment);
+            await _next(environment).ConfigureAwait(false);
         }
     }
 

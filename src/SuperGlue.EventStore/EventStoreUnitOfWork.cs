@@ -21,7 +21,7 @@ namespace SuperGlue.EventStore
 
         public async Task Commit()
         {
-            await _repository.SaveChanges();
+            await _repository.SaveChanges().ConfigureAwait(false);
         }
 
         public Task Rollback(Exception exception = null)

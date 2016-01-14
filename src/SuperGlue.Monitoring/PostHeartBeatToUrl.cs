@@ -22,15 +22,15 @@ namespace SuperGlue.Monitoring
             webRequest.ContentType = "application/json";
             webRequest.Method = "POST";
 
-            var requestStream = await webRequest.GetRequestStreamAsync();
+            var requestStream = await webRequest.GetRequestStreamAsync().ConfigureAwait(false);
             var streamWriter = new StreamWriter(requestStream);
 
-            await streamWriter.WriteAsync(_message ?? "");
+            await streamWriter.WriteAsync(_message ?? "").ConfigureAwait(false);
 
-            await streamWriter.FlushAsync();
+            await streamWriter.FlushAsync().ConfigureAwait(false);
             requestStream.Close();
 
-            (await webRequest.GetResponseAsync()).Close();
+            (await webRequest.GetResponseAsync().ConfigureAwait(false)).Close();
         }
     }
 }

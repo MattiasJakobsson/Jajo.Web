@@ -31,7 +31,7 @@ namespace SuperGlue.Web.Endpoints
 
         public async Task Execute(MethodInfo endpointMethod, IDictionary<string, object> environment)
         {
-            var result = await ExecutionMethodsCache[endpointMethod](_endpoint, await environment.Bind<TInput>());
+            var result = await ExecutionMethodsCache[endpointMethod](_endpoint, await environment.Bind<TInput>().ConfigureAwait(false)).ConfigureAwait(false);
 
             environment.SetOutput(result);
         }

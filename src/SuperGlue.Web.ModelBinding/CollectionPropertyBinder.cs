@@ -40,7 +40,7 @@ namespace SuperGlue.Web.ModelBinding
                                                                using (bindingContext.OpenChildContext(prefix))
                                                                {
                                                                    var addMethod = AddMethods[collectionType];
-                                                                   var result = await bindingContext.Bind(itemType);
+                                                                   var result = await bindingContext.Bind(itemType).ConfigureAwait(false);
 
                                                                    if (!result.Success) return false;
                                                                    
@@ -58,7 +58,7 @@ namespace SuperGlue.Web.ModelBinding
             {
                 currentPrefix = string.Format(formatString, index);
                 index++;
-            } while (await addToCollection(itemType, currentPrefix));
+            } while (await addToCollection(itemType, currentPrefix).ConfigureAwait(false));
 
             propertyInfo.SetValue(instance, collection, null);
 

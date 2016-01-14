@@ -23,9 +23,9 @@ namespace SuperGlue.UnitOfWork
                     foreach (var item in x)
                         requestEnvironment[item.Key] = item.Value;
 
-                    var startupChain = await GetApplicationStartupChain(x);
+                    var startupChain = await GetApplicationStartupChain(x).ConfigureAwait(false);
 
-                    await startupChain(requestEnvironment);
+                    await startupChain(requestEnvironment).ConfigureAwait(false);
                 });
 
                 environment.SubscribeTo(ConfigurationEvents.AfterApplicationShutDown, async x =>
@@ -35,9 +35,9 @@ namespace SuperGlue.UnitOfWork
                     foreach (var item in x)
                         requestEnvironment[item.Key] = item.Value;
 
-                    var shutdownChain = await GetApplicationShutdownChain(x);
+                    var shutdownChain = await GetApplicationShutdownChain(x).ConfigureAwait(false);
 
-                    await shutdownChain(requestEnvironment);
+                    await shutdownChain(requestEnvironment).ConfigureAwait(false);
                 });
 
                 return Task.CompletedTask;

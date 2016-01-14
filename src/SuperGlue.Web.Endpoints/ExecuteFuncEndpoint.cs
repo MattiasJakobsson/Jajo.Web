@@ -8,7 +8,7 @@ namespace SuperGlue.Web.Endpoints
     {
         public async Task Execute(Func<Task> endpoint, IDictionary<string, object> environment)
         {
-            await endpoint();
+            await endpoint().ConfigureAwait(false);
         }
     }
 }
