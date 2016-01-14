@@ -16,12 +16,17 @@ namespace SuperGlue.EventStore.Data
         {
             yield return new ConfigurationSetupResult("superglue.EventStore.Setup", environment =>
             {
-                environment.AlterSettings<EventStoreSettings>(x => x.ModifySettings(y =>
+                environment.AlterSettings<EventStoreSettings>(x =>
                 {
-                    y.KeepReconnecting();
-                    y.KeepRetrying();
-                    y.UseCustomLogger(new EventStoreLog(environment));
-                }));
+                    x.ModifySettings(y =>
+                    {
+                        y.KeepReconnecting();
+                        y.KeepRetrying();
+                        y.UseCustomLogger(new EventStoreLog(environment));
+                    });
+
+                    x.StoreCommands((env, command, id, causationId) => "commands");
+                });
 
                 environment.RegisterSingleton(typeof(IEventStoreConnection), (x, y) => connection);
                 environment.RegisterSingleton(typeof(EventStoreConnectionString), (x, y) => connectionString);

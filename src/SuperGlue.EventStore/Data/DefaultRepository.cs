@@ -240,7 +240,7 @@ namespace SuperGlue.EventStore.Data
             state.ClearUncommittedChanges();
         }
 
-        private async Task Save(object command, string id, string correlationId, string causationId)
+        private async Task Save(object command, Guid id, string correlationId, string causationId)
         {
             var settings = _environment.GetSettings<EventStoreSettings>();
 
@@ -262,11 +262,7 @@ namespace SuperGlue.EventStore.Data
             if (!string.IsNullOrEmpty(causationId))
                 commitHeaders[CausationIdKey] = causationId;
 
-            Guid messageId;
-            if (!Guid.TryParse(id, out messageId))
-                messageId = Guid.NewGuid();
-
-            await SaveEventsToStream(streamName, ExpectedVersion.Any, new List<Event> { new Event(messageId, command) }, commitHeaders);
+            await SaveEventsToStream(streamName, ExpectedVersion.Any, new List<Event> { new Event(id, command) }, commitHeaders);
         }
 
         public void Attache(IAggregate aggregate)
@@ -279,7 +275,7 @@ namespace SuperGlue.EventStore.Data
             _loadedEventAwareItems.Push(new LoadedEventAwareItem(canApplyEvents, _environment.GetCorrelationId(), _environment.GetCausationId()));
         }
 
-        public void Attach(object command, string id, string causedBy)
+        public void Attache(object command, Guid id, string causedBy)
         {
             _attachedCommands.Push(new AttachedCommand(command, id, _environment.GetCorrelationId(), causedBy));
         }
@@ -414,7 +410,7 @@ namespace SuperGlue.EventStore.Data
 
         private class AttachedCommand
         {
-            public AttachedCommand(object command, string id, string correlationId, string causationId)
+            public AttachedCommand(object command, Guid id, string correlationId, string causationId)
             {
                 Command = command;
                 Id = id;
@@ -423,7 +419,7 @@ namespace SuperGlue.EventStore.Data
             }
 
             public object Command { get; }
-            public string Id { get; }
+            public Guid Id { get; }
             public string CorrelationId { get; }
             public string CausationId { get; }
         }

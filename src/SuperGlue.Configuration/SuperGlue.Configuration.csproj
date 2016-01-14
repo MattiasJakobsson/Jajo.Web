@@ -72,6 +72,7 @@
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
     <Compile Include="ConfigurationSetupResult.cs" />
     <Compile Include="Continue.cs" />
+    <Compile Include="EmptyEnd.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="IBuildAppFunction.cs" />
     <Compile Include="IEndThings.cs" />

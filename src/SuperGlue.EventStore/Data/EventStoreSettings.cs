@@ -15,7 +15,7 @@ namespace SuperGlue.EventStore.Data
         }
 
         public string ConnectionStringName { get; private set; }
-        public Func<IDictionary<string, object>, object, string, string, string> FindCommandStreamFor { get; private set; }
+        public Func<IDictionary<string, object>, object, Guid, string, string> FindCommandStreamFor { get; private set; }
 
         public EventStoreSettings UseConnectionStringName(string connectionString)
         {
@@ -29,7 +29,7 @@ namespace SuperGlue.EventStore.Data
             return this;
         }
 
-        public EventStoreSettings StoreCommands(Func<IDictionary<string, object>, object, string, string, string> findStream)
+        public EventStoreSettings StoreCommands(Func<IDictionary<string, object>, object, Guid, string, string> findStream)
         {
             FindCommandStreamFor = findStream;
 

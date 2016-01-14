@@ -15,10 +15,10 @@ namespace SuperGlue.CommandSender
 
         public async Task Send<TCommand>(TCommand command)
         {
-            var commandId = Guid.NewGuid().ToString();
+            var commandId = Guid.NewGuid();
 
             using (_environment.OpenCommandContext(command, commandId))
-            using (_environment.OpenCausationContext(commandId))
+            using (_environment.OpenCausationContext(commandId.ToString()))
             {
                 await CommandPipeline.CurrentPipeline(_environment);
             }

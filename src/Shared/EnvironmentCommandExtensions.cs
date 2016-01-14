@@ -15,14 +15,14 @@ namespace SuperGlue
             return environment.Get<Command>(CommandConstants.CurrentCommand);
         }
 
-        public static IDisposable OpenCommandContext(this IDictionary<string, object> environment, object command, string id)
+        public static IDisposable OpenCommandContext(this IDictionary<string, object> environment, object command, Guid id)
         {
             return new CommandDisposable(environment, command, id);
         }
 
         public class Command
         {
-            public Command(object commandObject, string commandId, string causedBy)
+            public Command(object commandObject, Guid commandId, string causedBy)
             {
                 CommandObject = commandObject;
                 CommandId = commandId;
@@ -30,7 +30,7 @@ namespace SuperGlue
             }
 
             public object CommandObject { get; }
-            public string CommandId { get; }
+            public Guid CommandId { get; }
             public string CausedBy { get; }
         }
 
@@ -39,7 +39,7 @@ namespace SuperGlue
             private readonly IDictionary<string, object> _environment;
             private readonly Command _previousCommand;
 
-            public CommandDisposable(IDictionary<string, object> environment, object newCommand, string newCommandId)
+            public CommandDisposable(IDictionary<string, object> environment, object newCommand, Guid newCommandId)
             {
                 _environment = environment;
 

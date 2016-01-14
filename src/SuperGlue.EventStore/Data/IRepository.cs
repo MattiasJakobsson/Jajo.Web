@@ -15,6 +15,6 @@ namespace SuperGlue.EventStore.Data
         void ThrowAwayChanges();
         void Attache(IAggregate aggregate);
         void Attache(ICanApplyEvents canApplyEvents);
-        void Attach(object command, string id, string causedBy);
+        void Attache(object command, Guid id, string causedBy);
     }
 }

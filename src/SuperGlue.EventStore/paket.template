@@ -15,3 +15,4 @@ dependencies
 	SuperGlue.EventTracking
 	SuperGlue.MetaData
 	SuperGlue.ExceptionManagement
+	SuperGlue.CommandSender
