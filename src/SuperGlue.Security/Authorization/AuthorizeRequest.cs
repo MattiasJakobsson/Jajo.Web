@@ -19,7 +19,7 @@ namespace SuperGlue.Security.Authorization
         public AuthorizeRequest(AppFunc next)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _next = next;
         }
@@ -28,7 +28,12 @@ namespace SuperGlue.Security.Authorization
         {
             var tokens = environment.ResolveAll<IAuthenticationTokenSource>().Select(x => x.GetToken(environment)).ToList();
 
-            var authorizationInformations = environment.ResolveAll<IFindRequiredAuthorizationInformationFromRequest>().SelectMany(x => x.FindFor(environment)).ToList();
+            var authorizationInformations = new List<IAuthorizationInformation>();
+
+            foreach (var service in environment.ResolveAll<IFindRequiredAuthorizationInformationFromRequest>())
+            {
+                authorizationInformations.AddRange(await service.FindFor(environment));
+            }
 
             var isAuthorized = true;
 

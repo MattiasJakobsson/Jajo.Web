@@ -50,7 +50,7 @@ namespace SuperGlue.EventStore.Timeouts
             var token = _tokenSource.Token;
 
             Task.Factory
-                .StartNew(Poll, token, TaskCreationOptions.LongRunning)
+                .StartNew(async x => await Poll(x), token, TaskCreationOptions.LongRunning)
                 .ContinueWith(t =>
                 {
                     (t.Exception ?? new AggregateException()).Handle(ex => true);
@@ -59,7 +59,7 @@ namespace SuperGlue.EventStore.Timeouts
                 }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        private void Poll(object obj)
+        private async Task Poll(object obj)
         {
             var cancellationToken = (CancellationToken)obj;
 
@@ -69,7 +69,7 @@ namespace SuperGlue.EventStore.Timeouts
             {
                 if (_nextRetrieval > DateTime.UtcNow)
                 {
-                    Thread.Sleep(_secondsToSleepBetweenPolls * 1000);
+                    await Task.Delay(_secondsToSleepBetweenPolls * 1000);
                     continue;
                 }
 
@@ -78,13 +78,13 @@ namespace SuperGlue.EventStore.Timeouts
                 if (timeOutManager == null)
                     return;
 
-                var nextExpiredTimeout = timeOutManager.GetNextChunk(startSlice, x =>
+                var nextExpiredTimeout = await timeOutManager.GetNextChunk(startSlice, x =>
                 {
                     if (startSlice < x.Item2)
                         startSlice = x.Item2;
 
-                    _eventStoreConnection.AppendToStreamAsync(x.Item1.WriteTo, ExpectedVersion.Any, ToEventData(x.Item1.Id, x.Item1.Message, x.Item1.MetaData));
-                }).Result;
+                    return _eventStoreConnection.AppendToStreamAsync(x.Item1.WriteTo, ExpectedVersion.Any, ToEventData(x.Item1.Id, x.Item1.Message, x.Item1.MetaData));
+                });
 
                 _nextRetrieval = nextExpiredTimeout;
 

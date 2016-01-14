@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SuperGlue.Configuration
@@ -38,7 +37,7 @@ namespace SuperGlue.Configuration
                 catch (Exception ex)
                 {
                     lastException = ex;
-                    Thread.Sleep(retryInterval ?? TimeSpan.FromSeconds(5));
+                    await Task.Delay(retryInterval ?? TimeSpan.FromSeconds(5));
                 }
 
                 tries++;

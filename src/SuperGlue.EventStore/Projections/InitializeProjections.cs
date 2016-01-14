@@ -108,7 +108,7 @@ namespace SuperGlue.EventStore.Projections
 
                     environment.Log(ex, "Couldn't subscribe projection: {0}. Retrying in 5 seconds.", LogLevel.Warn, currentEventStoreProjection.ProjectionName);
 
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                 }
             }
         }

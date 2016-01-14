@@ -116,7 +116,7 @@ namespace SuperGlue.EventStore.Subscribers
 
                     environment.Log(ex, "Couldn't subscribe to stream: {0}. Retrying in 5 seconds.", LogLevel.Warn, stream);
 
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                 }
             }
         }

@@ -27,7 +27,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
             _cleanupGapFromTimeslice = TimeSpan.FromMinutes(1);
         }
 
-        public async Task<DateTime> GetNextChunk(DateTime startSlice, Action<Tuple<TimeoutData, DateTime>> timeoutFound)
+        public async Task<DateTime> GetNextChunk(DateTime startSlice, Func<Tuple<TimeoutData, DateTime>, Task> timeoutFound)
         {
             var now = DateTime.UtcNow;
 
@@ -36,7 +36,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                 List<Tuple<TimeoutData, DateTime>> results;
                 if (_lastCleanupTime == DateTime.MinValue || _lastCleanupTime.Add(_triggerCleanupEvery) < now)
                 {
-                    results = GetCleanupChunk(startSlice, session).ToList();
+                    results = (await GetCleanupChunk(startSlice, session)).ToList();
                 }
                 else
                 {
@@ -67,7 +67,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
 
                 foreach (var result in results)
                 {
-                    timeoutFound(result);
+                    await timeoutFound(result);
 
                     session.Delete(result);
                 }
@@ -84,16 +84,16 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
                 .OrderBy(t => t.Time)
                 .Where(
                     t =>
-                        t.OwningTimeOutManager == String.Empty ||
+                        t.OwningTimeOutManager == string.Empty ||
                         t.OwningTimeOutManager == _timeoutManagerName);
         }
 
-        private IEnumerable<Tuple<TimeoutData, DateTime>> GetCleanupChunk(DateTime startSlice, IAsyncDocumentSession session)
+        private async Task<IEnumerable<Tuple<TimeoutData, DateTime>>> GetCleanupChunk(DateTime startSlice, IAsyncDocumentSession session)
         {
-            var chunk = GetChunkQuery(session)
+            var chunk = (await GetChunkQuery(session)
                 .Where(t => t.Time <= startSlice.Subtract(_cleanupGapFromTimeslice))
                 .Take(1024)
-                .ToList()
+                .ToListAsync())
                 .Select(arg => new Tuple<TimeoutData, DateTime>(arg.GetTimeoutData(), arg.Time));
 
             _lastCleanupTime = DateTime.UtcNow;

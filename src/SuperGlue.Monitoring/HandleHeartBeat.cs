@@ -61,7 +61,7 @@ namespace SuperGlue.Monitoring
 
                 await _chain(requestEnvironment);
 
-                Thread.Sleep(_interval);
+                await Task.Delay(_interval);
             }
         }
     }

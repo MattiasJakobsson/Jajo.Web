@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
@@ -29,16 +28,14 @@ namespace SuperGlue.EventStore.ProcessManagers
 
         public string Chain => "chains.ProcessManagers";
 
-        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {
             settings.Log("Starting processmanagers for environment: {0}", LogLevel.Debug, environment);
 
             running = true;
 
             foreach (var processManager in _processManagers)
-                SubscribeProcessManager(chain, processManager, settings);
-
-            return Task.CompletedTask;
+                await SubscribeProcessManager(chain, processManager, settings);
         }
 
         public Task ShutDown(IDictionary<string, object> settings)
@@ -61,7 +58,7 @@ namespace SuperGlue.EventStore.ProcessManagers
             return buildApp.Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions(true)).Use<ExecuteProcessManager>().Build();
         }
 
-        private void SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)
+        private async Task SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)
         {
             environment.Log("Subscribing processmanager: {0}", LogLevel.Debug, currentProcessManager.ProcessName);
 
@@ -80,7 +77,7 @@ namespace SuperGlue.EventStore.ProcessManagers
                 {
                     var eventStoreSubscription = _eventStoreConnection.ConnectToPersistentSubscription(currentProcessManager.ProcessName, currentProcessManager.ProcessName,
                         async (subscription, evnt) => await PushEventToProcessManager(chain, currentProcessManager, _eventSerialization.DeSerialize(evnt), environment, subscription),
-                        (subscription, reason, exception) => SubscriptionDropped(chain, currentProcessManager, reason, exception, environment),
+                        async (subscription, reason, exception) => await SubscriptionDropped(chain, currentProcessManager, reason, exception, environment),
                         autoAck: false);
 
                     _processManagerSubscriptions[currentProcessManager.ProcessName] = new ProcessManagerSubscription(eventStoreSubscription);
@@ -94,20 +91,22 @@ namespace SuperGlue.EventStore.ProcessManagers
 
                     environment.Log(ex, "Couldn't subscribe processmanager: {0}. Retrying in 5 seconds.", LogLevel.Error, currentProcessManager.ProcessName);
 
-                    Thread.Sleep(TimeSpan.FromSeconds(5));
+                    await Task.Delay(TimeSpan.FromSeconds(5));
                 }
             }
         }
 
-        private void SubscriptionDropped(AppFunc chain, IManageProcess processManager, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)
+        private Task SubscriptionDropped(AppFunc chain, IManageProcess processManager, SubscriptionDropReason reason, Exception exception, IDictionary<string, object> environment)
         {
             if (!running)
-                return;
+                return Task.CompletedTask;
 
             environment.Log(exception, "Subscription dropped for processmanager: {0}. Reason: {1}. Retrying...", LogLevel.Warn, processManager.ProcessName, reason);
 
             if (reason != SubscriptionDropReason.UserInitiated)
-                SubscribeProcessManager(chain, processManager, environment);
+                return SubscribeProcessManager(chain, processManager, environment);
+
+            return Task.CompletedTask;
         }
 
         private static async Task PushEventToProcessManager(AppFunc chain, IManageProcess processManager, DeSerializationResult evnt, IDictionary<string, object> environment, EventStorePersistentSubscriptionBase subscription)

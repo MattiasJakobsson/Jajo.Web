@@ -29,7 +29,7 @@ namespace SuperGlue.Web.Routing
                 });
 
                 return Task.CompletedTask;
-            }, "superglue.ContainerSetup", configureAction: configuration =>
+            }, "superglue.ContainerSetup", configureAction: async configuration =>
             {
                 shouldDelayRouteConfiguration = false;
 
@@ -63,11 +63,9 @@ namespace SuperGlue.Web.Routing
                         foreach (var urlPart in endpoint.UrlParts)
                             urlPart.AddToBuilder(routeBuilder);
 
-                        routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings);
+                        await routeBuilder.Build(endpoint.Destination, endpoint.RoutedParameters, configuration.Settings);
                     }
                 }
-
-                return Task.CompletedTask;
             });
         }
 

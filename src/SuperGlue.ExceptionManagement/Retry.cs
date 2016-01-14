@@ -48,7 +48,7 @@ namespace SuperGlue.ExceptionManagement
                     lastException = ex;
                 }
 
-                Thread.Sleep(_retryInterval);
+                await Task.Delay(_retryInterval);
 
                 tries++;
             }

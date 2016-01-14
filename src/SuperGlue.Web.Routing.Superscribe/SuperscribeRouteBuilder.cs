@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Superscribe.Models;
 using Superscribe.Utils;
 using String = Superscribe.Models.String;
@@ -72,7 +73,7 @@ namespace SuperGlue.Web.Routing.Superscribe
             _constraints.Add(constraint);
         }
 
-        public void Build(object routeTo, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, IDictionary<string, object> environment)
+        public Task Build(object routeTo, IDictionary<Type, Func<object, IDictionary<string, object>>> routedInputs, IDictionary<string, object> environment)
         {
             var baseNode = environment.GetRouteEngine().Base;
 
@@ -85,7 +86,7 @@ namespace SuperGlue.Web.Routing.Superscribe
             if (_node == null)
             {
                 baseNode.FinalFunctions.AddRange(finalFunctions);
-                return;
+                return Task.CompletedTask;
             }
 
             _node.FinalFunctions.AddRange(finalFunctions);
@@ -97,12 +98,12 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             environment.AddRouteToEndpoint(routeTo, routedInputs, _node);
 
-            environment.PushDiagnosticsData(DiagnosticsCategories.Setup, DiagnosticsTypes.Bootstrapping, "Routes", new Tuple<string, IDictionary<string, object>>(string.Format("Route created for {0}", GetPattern()), new Dictionary<string, object>
+            return environment.PushDiagnosticsData(DiagnosticsCategories.Setup, DiagnosticsTypes.Bootstrapping, "Routes", new Tuple<string, IDictionary<string, object>>($"Route created for {GetPattern()}", new Dictionary<string, object>
             {
                 {"Pattern", GetPattern()},
                 {"Inputs", string.Join(", ", routedInputs.Select(x => x.Key.Name))},
                 {"RoutedTo", routeTo}
-            })).Wait();
+            }));
         }
 
         private string GetPattern()

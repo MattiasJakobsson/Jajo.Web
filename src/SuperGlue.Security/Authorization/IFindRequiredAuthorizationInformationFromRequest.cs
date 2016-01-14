@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SuperGlue.Security.Authorization
 {
     public interface IFindRequiredAuthorizationInformationFromRequest
     {
-        IEnumerable<IAuthorizationInformation> FindFor(IDictionary<string, object> environment);
+        Task<IEnumerable<IAuthorizationInformation>> FindFor(IDictionary<string, object> environment);
     }
 }
