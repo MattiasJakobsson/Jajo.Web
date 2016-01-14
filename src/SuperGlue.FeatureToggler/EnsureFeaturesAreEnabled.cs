@@ -63,6 +63,6 @@ namespace SuperGlue.FeatureToggler
             GetInputsToCheck = getInputsToCheck;
         }
 
-        public Func<IDictionary<string, object>, IEnumerable<Type>> GetInputsToCheck { get; private set; }
+        public Func<IDictionary<string, object>, IEnumerable<Type>> GetInputsToCheck { get; }
     }
 }

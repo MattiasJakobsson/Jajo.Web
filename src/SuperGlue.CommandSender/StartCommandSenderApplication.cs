@@ -9,10 +9,7 @@ namespace SuperGlue.CommandSender
 
     public class StartCommandSenderApplication : IStartApplication
     {
-        public string Chain
-        {
-            get { return "CommandSender"; }
-        }
+        public string Chain => "CommandSender";
 
         public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
         {

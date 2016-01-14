@@ -20,7 +20,7 @@ namespace SuperGlue.EventStore.Timeouts.RavenDb
 
         public static string BuildId(Guid id)
         {
-            return string.Format("TimeOuts/{0}", id);
+            return $"TimeOuts/{id}";
         }
     }
 }

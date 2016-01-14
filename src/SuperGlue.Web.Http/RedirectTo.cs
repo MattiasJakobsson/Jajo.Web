@@ -13,7 +13,7 @@ namespace SuperGlue.Web.Http
         public RedirectTo(AppFunc next, RedirectToOptions options)
         {
             if (next == null)
-                throw new ArgumentNullException("next");
+                throw new ArgumentNullException(nameof(next));
 
             _options = options;
         }
@@ -36,6 +36,6 @@ namespace SuperGlue.Web.Http
             GetRedirectUrl = getRedirectUrl;
         }
 
-        public Func<IDictionary<string, object>, string> GetRedirectUrl { get; private set; }
+        public Func<IDictionary<string, object>, string> GetRedirectUrl { get; }
     }
 }

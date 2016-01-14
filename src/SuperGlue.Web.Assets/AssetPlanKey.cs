@@ -6,29 +6,14 @@ namespace SuperGlue.Web.Assets
 {
     public class AssetPlanKey : IEnumerable<string>
     {
-        private readonly MimeType _mimeType;
-        private readonly IEnumerable<string> _names;
+        public MimeType MimeType { get; }
 
-        public MimeType MimeType
-        {
-            get
-            {
-                return _mimeType;
-            }
-        }
-
-        public IEnumerable<string> Names
-        {
-            get
-            {
-                return _names;
-            }
-        }
+        public IEnumerable<string> Names { get; }
 
         public AssetPlanKey(MimeType mimeType, IEnumerable<string> names)
         {
-            _mimeType = mimeType;
-            _names = names;
+            MimeType = mimeType;
+            Names = names;
         }
 
         public bool Equals(AssetPlanKey other)
@@ -39,8 +24,8 @@ namespace SuperGlue.Web.Assets
             if (ReferenceEquals(this, other))
                 return true;
 
-            if (Equals(other._mimeType, _mimeType))
-                return other._names.IsEqualTo(_names);
+            if (Equals(other.MimeType, MimeType))
+                return other.Names.IsEqualTo(Names);
 
             return false;
         }
@@ -61,7 +46,7 @@ namespace SuperGlue.Web.Assets
 
         public override int GetHashCode()
         {
-            return (_mimeType != null ? _mimeType.GetHashCode() : 0) * 397 ^ (_names != null ? _names.Join("*").GetHashCode() : 0);
+            return (MimeType?.GetHashCode() ?? 0) * 397 ^ (Names?.Join("*").GetHashCode() ?? 0);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -76,12 +61,12 @@ namespace SuperGlue.Web.Assets
 
         public IEnumerator<string> GetEnumerator()
         {
-            return _names.GetEnumerator();
+            return Names.GetEnumerator();
         }
 
         public override string ToString()
         {
-            return string.Format("MimeType: {0}, Names: {1}", _mimeType, Names.Join(", "));
+            return $"MimeType: {MimeType}, Names: {Names.Join(", ")}";
         }
     }
 }

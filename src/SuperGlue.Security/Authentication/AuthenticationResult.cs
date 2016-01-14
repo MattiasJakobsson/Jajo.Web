@@ -9,9 +9,9 @@
             Code = code;
         }
 
-        public AuthenticationToken Token { get; private set; }
+        public AuthenticationToken Token { get; }
         public string Description { get; private set; }
         public int Code { get; private set; }
-        public bool Success { get { return Token != null; } }
+        public bool Success => Token != null;
     }
 }

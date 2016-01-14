@@ -9,7 +9,7 @@ namespace SuperGlue.Web.FileUpload
     {
         public Task Persist(IDictionary<string, object> environment, string name, Stream content)
         {
-            var filePath = environment.ResolvePath(string.Format("~/upload/{0}", name));
+            var filePath = environment.ResolvePath($"~/upload/{name}");
 
             content.Position = 0;
 
@@ -24,7 +24,7 @@ namespace SuperGlue.Web.FileUpload
 
         public string GetUrlFor(IDictionary<string, object> environment, string file, ITransformFile transformer = null)
         {
-            return string.Format("/upload/{0}", transformer != null ? transformer.GetFileName(file) : file);
+            return $"/upload/{(transformer != null ? transformer.GetFileName(file) : file)}";
         }
     }
 }

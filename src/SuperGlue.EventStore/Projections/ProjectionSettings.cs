@@ -10,7 +10,7 @@ namespace SuperGlue.EventStore.Projections
         public ProjectionSettings BufferSeconds(int seconds)
         {
             if(seconds < 0)
-                throw new ArgumentException("seconds can't be negative", "seconds");
+                throw new ArgumentException("seconds can't be negative", nameof(seconds));
 
             _dispatchBufferSeconds = seconds;
 
@@ -20,7 +20,7 @@ namespace SuperGlue.EventStore.Projections
         public ProjectionSettings BufferNumber(int number)
         {
             if (number < 0)
-                throw new ArgumentException("number can't be negative", "number");
+                throw new ArgumentException("number can't be negative", nameof(number));
 
             _dispatchBufferNumber = number;
 

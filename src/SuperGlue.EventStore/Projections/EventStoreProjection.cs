@@ -4,7 +4,7 @@ namespace SuperGlue.EventStore.Projections
 {
     public abstract class EventStoreProjection : IEventStoreProjection
     {
-        public virtual string ProjectionName { get { return string.Join("-", GetType().FullName.Split('.')).ToLower(); } }
+        public virtual string ProjectionName => string.Join("-", GetType().FullName.Split('.')).ToLower();
 
         public abstract IEnumerable<string> GetInterestingStreams();
 

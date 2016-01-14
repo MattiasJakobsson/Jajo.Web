@@ -5,7 +5,7 @@ namespace SuperGlue.EventStore.ConflictManagement
     public class ConflictingEventException : Exception
     {
         public ConflictingEventException(string streamName, int oldVersion, int newVersion)
-            : base(string.Format("The stream: {0} has a unresolvable conflicts between version {1} and {2}", streamName, oldVersion, newVersion))
+            : base($"The stream: {streamName} has a unresolvable conflicts between version {oldVersion} and {newVersion}")
         {
 
         }

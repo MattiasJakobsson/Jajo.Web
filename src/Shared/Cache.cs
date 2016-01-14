@@ -17,7 +17,7 @@ namespace SuperGlue
 
         private Func<TKey, TValue> _currentOnMissing = delegate(TKey key)
         {
-            var message = string.Format("Key '{0}' could not be found", key);
+            var message = $"Key '{key}' could not be found";
             throw new KeyNotFoundException(message);
         };
 
@@ -58,10 +58,7 @@ namespace SuperGlue
             set { _getKey = value; }
         }
 
-        public int Count
-        {
-            get { return _values.Count; }
-        }
+        public int Count => _values.Count;
 
         public TValue First
         {

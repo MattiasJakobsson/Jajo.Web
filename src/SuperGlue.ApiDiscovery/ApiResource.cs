@@ -18,7 +18,7 @@ namespace SuperGlue.ApiDiscovery
             Children = children.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.OfType<ApiResource>());
         }
 
-        public string Name { get; private set; }
+        public string Name { get; }
         public IEnumerable<ApiLink> Links { get; private set; }
         public IReadOnlyDictionary<string, ApiForm> Forms { get; private set; }
         public IReadOnlyDictionary<string, IEnumerable<ApiResource>> Children { get; private set; }

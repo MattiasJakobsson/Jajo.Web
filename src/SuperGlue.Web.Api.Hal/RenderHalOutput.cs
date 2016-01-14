@@ -10,10 +10,7 @@ namespace SuperGlue.Web.Api.Hal
 {
     public class RenderHalOutput : IRenderApiOutput
     {
-        public string Type
-        {
-            get { return "application/hal+json"; }
-        }
+        public string Type => "application/hal+json";
 
         public Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {

@@ -9,7 +9,7 @@ namespace SuperGlue.Web.Assets
 
         public bool AssetsSetupEnabled { get; private set; }
         public string AssetsDestination { get; private set; }
-        public IReadOnlyCollection<AssetsSource> Sources { get { return new ReadOnlyCollection<AssetsSource>(_sources); } }
+        public IReadOnlyCollection<AssetsSource> Sources => new ReadOnlyCollection<AssetsSource>(_sources);
 
         public AssetSettings SetSetupEnabled(bool enabled)
         {

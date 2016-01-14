@@ -35,13 +35,13 @@ namespace SuperGlue.Web.ModelBinding.ValueConverters
 
             if (converter == null)
             {
-                context.Environment.Log("Failed to find a matching converter for type: {0}", LogLevel.Info, destinationType != null ? destinationType.Name : "null");
+                context.Environment.Log("Failed to find a matching converter for type: {0}", LogLevel.Info, destinationType?.Name ?? "null");
                 return new BindingResult(null, false);
             }
 
             var result = converter.Convert(destinationType, value);
 
-            context.Environment.Log("Converted value: \"{0}\" to type: {1} using converted: {2} with result: Success = {3}.", (value ?? "").ToString(), destinationType != null ? destinationType.Name : "null", converter.GetType().Name, result.Success);
+            context.Environment.Log("Converted value: \"{0}\" to type: {1} using converted: {2} with result: Success = {3}.", (value ?? "").ToString(), destinationType?.Name ?? "null", converter.GetType().Name, result.Success);
 
             return result;
         }

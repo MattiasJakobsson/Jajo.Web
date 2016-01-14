@@ -31,8 +31,7 @@ namespace SuperGlue.Web.Security
             }
             finally
             {
-                if (aesAlg != null)
-                    aesAlg.Clear();
+                aesAlg?.Clear();
             }
 
             return outStr;
@@ -63,8 +62,7 @@ namespace SuperGlue.Web.Security
             }
             finally
             {
-                if (aesAlg != null)
-                    aesAlg.Clear();
+                aesAlg?.Clear();
             }
 
             return plaintext;

@@ -23,7 +23,7 @@ namespace SuperGlue.EventStore
         public object Data { get; private set; }
         public Dictionary<string, object> Metadata { get; private set; }
         public ResolvedEvent OriginalEvent { get; private set; }
-        public Exception Error { get; private set; }
-        public bool Successful { get { return Error == null; } }
+        public Exception Error { get; }
+        public bool Successful => Error == null;
     }
 }

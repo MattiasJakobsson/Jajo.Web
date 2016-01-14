@@ -4,7 +4,7 @@ namespace SuperGlue.EventStore.Timeouts
 {
     public static class TimeOutManager
     {
-        private readonly static object SyncRoot = new object();
+        private static readonly object SyncRoot = new object();
 
         public static Func<IStoreTimeouts> GetCurrent = () => null;
 

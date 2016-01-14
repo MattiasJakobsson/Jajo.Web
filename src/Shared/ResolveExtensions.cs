@@ -10,11 +10,11 @@ namespace SuperGlue
         {
             public const string ResolveInstance = "superglue.ResolveInstance";
             public const string ResolveAllInstances = "superglue.ResolveAllInstances";
-            public const string RegisterTransient = "superglue.Container.RegisterTransient";
-            public const string RegisterSingleton = "superglue.Container.RegisterSingleton";
-            public const string RegisterSingletonType = "superglue.Container.RegisterSingletonType";
-            public const string RegisterAllClosing = "superglue.Container.RegisterAllClosing";
-            public const string RegisterAll = "superglue.Container.RegisterAll";
+            public const string RegisterTransientKey = "superglue.Container.RegisterTransient";
+            public const string RegisterSingletonKey = "superglue.Container.RegisterSingleton";
+            public const string RegisterSingletonTypeKey = "superglue.Container.RegisterSingletonType";
+            public const string RegisterAllClosingKey = "superglue.Container.RegisterAllClosing";
+            public const string RegisterAllKey = "superglue.Container.RegisterAll";
             public const string RegisterTransientFromFunc = "superglue.Container.RegisterTransientFromFunc";
             public const string RegisterSingletonFromFunc = "superglue.Container.RegisterSingletonFromFunc";
         }
@@ -41,7 +41,7 @@ namespace SuperGlue
 
         public static void RegisterTransient(this IDictionary<string, object> environment, Type serviceType, Type implimentationType)
         {
-            environment.Get<Action<Type, Type>>(ContainerConstants.RegisterTransient)(serviceType, implimentationType);
+            environment.Get<Action<Type, Type>>(ContainerConstants.RegisterTransientKey)(serviceType, implimentationType);
         }
 
         public static void RegisterTransient(this IDictionary<string, object> environment, Type serviceType, Func<Type, IDictionary<string, object>, object> getService)
@@ -51,7 +51,7 @@ namespace SuperGlue
 
         public static void RegisterSingleton(this IDictionary<string, object> environment, Type serviceType, object instance)
         {
-            environment.Get<Action<Type, object>>(ContainerConstants.RegisterSingleton)(serviceType, instance);
+            environment.Get<Action<Type, object>>(ContainerConstants.RegisterSingletonKey)(serviceType, instance);
         }
 
         public static void RegisterSingleton(this IDictionary<string, object> environment, Type serviceType, Func<Type, IDictionary<string, object>, object> getService)
@@ -61,17 +61,17 @@ namespace SuperGlue
 
         public static void RegisterSingletonType(this IDictionary<string, object> environment, Type serviceType, Type implimentationType)
         {
-            environment.Get<Action<Type, Type>>(ContainerConstants.RegisterSingletonType)(serviceType, implimentationType);
+            environment.Get<Action<Type, Type>>(ContainerConstants.RegisterSingletonTypeKey)(serviceType, implimentationType);
         }
 
         public static void RegisterAllClosing(this IDictionary<string, object> environment, Type openServiceType)
         {
-            environment.Get<Action<Type>>(ContainerConstants.RegisterAllClosing)(openServiceType);
+            environment.Get<Action<Type>>(ContainerConstants.RegisterAllClosingKey)(openServiceType);
         }
 
         public static void RegisterAll(this IDictionary<string, object> environment, Type serviceType)
         {
-            environment.Get<Action<Type>>(ContainerConstants.RegisterAll)(serviceType);
+            environment.Get<Action<Type>>(ContainerConstants.RegisterAllKey)(serviceType);
         }
     }
 }

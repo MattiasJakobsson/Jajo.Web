@@ -7,7 +7,7 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
 
         public static string GetId(string service, string projectionName)
         {
-            return string.Format("Services/{0}/Projections/{1}", service, projectionName);
+            return $"Services/{service}/Projections/{projectionName}";
         }
     }
 }

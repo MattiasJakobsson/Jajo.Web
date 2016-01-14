@@ -16,7 +16,7 @@ namespace SuperGlue.EventStore.Data
         public string BuildStreamProjection(IEnumerable<string> fromStreams, string toStream)
         {
             return FromStreamsTemplate
-                .Replace("[[FromStreams]]", string.Join(", ", fromStreams.Select(x => string.Format("'{0}'", x))))
+                .Replace("[[FromStreams]]", string.Join(", ", fromStreams.Select(x => $"'{x}'")))
                 .Replace("[[ToStream]]", toStream);
         }
 
@@ -24,15 +24,16 @@ namespace SuperGlue.EventStore.Data
         {
             var projectionBuilder = new StringBuilder();
 
-            projectionBuilder.AppendLine(string.Format("fromStreams([{0}])", string.Join(", ", fromStreams.Select(x => string.Format("'{0}'", x)))));
+            projectionBuilder.AppendLine(
+                $"fromStreams([{string.Join(", ", fromStreams.Select(x => $"'{x}'"))}])");
             projectionBuilder.AppendLine(".when({");
 
             foreach (var eventMap in eventMaps)
             {
-                projectionBuilder.AppendLine(string.Format("{0}: function(s, e){1}", eventMap.EventName, "{"));
+                projectionBuilder.AppendLine($"{eventMap.EventName}: function(s, e){"{"}");
 
                 projectionBuilder.AppendLine(string.IsNullOrEmpty(eventMap.PartitionKeyLocation)
-                    ? string.Format("linkTo('{0}', e);", toStream)
+                    ? $"linkTo('{toStream}', e);"
                     : string.Format("linkTo('{0}', e, {2}'PartitionKey': 'e.data.{1}'{3});", toStream, eventMap.PartitionKeyLocation, "{", "}"));
 
                 projectionBuilder.AppendLine("},");
@@ -51,8 +52,8 @@ namespace SuperGlue.EventStore.Data
                 PartitionKeyLocation = partitionKeyLocation;
             }
 
-            public string EventName { get; private set; }
-            public string PartitionKeyLocation { get; private set; }
+            public string EventName { get; }
+            public string PartitionKeyLocation { get; }
         }
     }
 }

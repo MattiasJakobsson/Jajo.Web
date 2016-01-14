@@ -105,7 +105,7 @@ namespace SuperGlue.Web.Output.Spark
             {
                 DeepSearch = false,
                 Exclude = null,
-                Include = string.Join(";", assemblyNames.OrderBy(x => x).Select(x => string.Format("{0}.pdb", (x))))
+                Include = string.Join(";", assemblyNames.OrderBy(x => x).Select(x => $"{(x)}.pdb"))
             };
         }
 
@@ -128,8 +128,8 @@ namespace SuperGlue.Web.Output.Spark
         {
             unchecked
             {
-                int result = (Include != null ? Include.GetHashCode() : 0);
-                result = (result * 397) ^ (Exclude != null ? Exclude.GetHashCode() : 0);
+                var result = Include?.GetHashCode() ?? 0;
+                result = (result * 397) ^ (Exclude?.GetHashCode() ?? 0);
                 result = (result * 397) ^ DeepSearch.GetHashCode();
                 return result;
             }
@@ -137,7 +137,7 @@ namespace SuperGlue.Web.Output.Spark
 
         public override string ToString()
         {
-            return string.Format("Include: {0}, Exclude: {1}", Include, Exclude);
+            return $"Include: {Include}, Exclude: {Exclude}";
         }
 
         public static FileSet Everything()

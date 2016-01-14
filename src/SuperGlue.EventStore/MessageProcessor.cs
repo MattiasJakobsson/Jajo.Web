@@ -9,7 +9,7 @@ namespace SuperGlue.EventStore
         public virtual void OnMessageArrived(DeSerializationResult obj)
         {
             var handler = MessageArrived;
-            if (handler != null) handler(obj);
+            handler?.Invoke(obj);
         }
     }
 }

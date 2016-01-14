@@ -54,6 +54,6 @@ namespace SuperGlue.EventStore
             GroupBy = groupBy;
         }
 
-        public Func<DeSerializationResult, object> GroupBy { get; private set; }
+        public Func<DeSerializationResult, object> GroupBy { get; }
     }
 }

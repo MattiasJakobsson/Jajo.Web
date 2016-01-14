@@ -29,9 +29,7 @@ namespace SuperGlue.Web.Output.Spark
 
             var assembly = availableAssemblies.FirstOrDefault(x => x.GetType(capturedString, false) != null);
 
-            if (assembly == null) return null;
-
-            return assembly.GetType(capturedString, true);
+            return assembly?.GetType(capturedString, true);
         }
     }
 }

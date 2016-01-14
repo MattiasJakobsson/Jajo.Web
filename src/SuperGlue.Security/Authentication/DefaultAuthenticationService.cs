@@ -22,7 +22,7 @@ namespace SuperGlue.Security.Authentication
                 .FirstOrDefault();
 
             if(strategy == null)
-                throw new InvalidOperationException(string.Format("No strategy defined for request of type: {0}", typeof(TAuthenticationRequest).Name));
+                throw new InvalidOperationException($"No strategy defined for request of type: {typeof (TAuthenticationRequest).Name}");
 
             return strategy.CheckAuthentication(authenticationRequest, environment);
         }

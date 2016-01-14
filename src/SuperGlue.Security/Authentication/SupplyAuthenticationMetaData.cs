@@ -26,10 +26,10 @@ namespace SuperGlue.Security.Authentication
 
             foreach (var user in users)
             {
-                metaData[string.Format("Authentications.{0}.User", user.User.Source)] = user.User.GetClaimsString();
+                metaData[$"Authentications.{user.User.Source}.User"] = user.User.GetClaimsString();
 
                 if (user.IsBehalfOf)
-                    metaData[string.Format("Authentications.{0}.OnBehalfOf", user.User.Source)] = user.OnBehalfOf.GetClaimsString();
+                    metaData[$"Authentications.{user.User.Source}.OnBehalfOf"] = user.OnBehalfOf.GetClaimsString();
             }
 
             return Task.FromResult<IDictionary<string, object>>(metaData);

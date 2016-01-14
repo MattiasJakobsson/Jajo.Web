@@ -29,7 +29,7 @@ namespace SuperGlue.ApiDiscovery
                 currentResource = currentResource.Children[selector.Collection].FirstOrDefault(x => selector.Matcher(x));
             }
 
-            return currentResource != null ? currentResource.Links.FirstOrDefault(x => x.Rel == _rel) : null;
+            return currentResource?.Links.FirstOrDefault(x => x.Rel == _rel);
         }
     }
 }

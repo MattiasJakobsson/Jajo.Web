@@ -9,21 +9,9 @@ namespace SuperGlue.Web.Assets
         private readonly List<string> _rendered = new List<string>();
         private readonly List<string> _requirements = new List<string>();
 
-        public IEnumerable<string> AllRequestedAssets
-        {
-            get
-            {
-                return _requirements;
-            }
-        }
+        public IEnumerable<string> AllRequestedAssets => _requirements;
 
-        public IEnumerable<string> AllRenderedAssets
-        {
-            get
-            {
-                return _rendered;
-            }
-        }
+        public IEnumerable<string> AllRenderedAssets => _rendered;
 
         public void Require(params string[] name)
         {

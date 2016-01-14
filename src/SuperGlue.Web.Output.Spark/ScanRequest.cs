@@ -18,9 +18,9 @@ namespace SuperGlue.Web.Output.Spark
             _onFound = new CompositeAction<FileFound>();
         }
 
-        public IEnumerable<string> Roots { get { return _roots; } }
-        public string Filters { get { return string.Join(";", _filter); } }
-        public IEnumerable<string> ExcludedDirectories { get { return _excludes; } }
+        public IEnumerable<string> Roots => _roots;
+        public string Filters => string.Join(";", _filter);
+        public IEnumerable<string> ExcludedDirectories => _excludes;
 
         public void AddRoot(string root)
         {

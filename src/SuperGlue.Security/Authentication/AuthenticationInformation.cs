@@ -10,10 +10,10 @@ namespace SuperGlue.Security.Authentication
             User = user;
         }
 
-        public AuthenticationToken User { get; private set; }
-        public AuthenticationToken OnBehalfOf { get; private set; }
-        public bool IsAuthenticated { get { return GetAuthorizedUser() != null; } }
-        public bool IsBehalfOf { get { return OnBehalfOf != null; } }
+        public AuthenticationToken User { get; }
+        public AuthenticationToken OnBehalfOf { get; }
+        public bool IsAuthenticated => GetAuthorizedUser() != null;
+        public bool IsBehalfOf => OnBehalfOf != null;
 
         public AuthenticationToken GetAuthorizedUser()
         {

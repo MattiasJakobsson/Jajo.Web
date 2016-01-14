@@ -29,7 +29,7 @@ namespace SuperGlue.Security
         public string Hash(string original, string algorithm, string salt)
         {
             var algorithmToUse = (algorithm ?? "").ToUpper();
-            var input = string.Format("{0}{1}{2}", original, _settings.Key, salt);
+            var input = $"{original}{_settings.Key}{salt}";
 
             return AvailableHashAlgorithms.ContainsKey(algorithmToUse) ? AvailableHashAlgorithms[algorithmToUse](input) : AvailableHashAlgorithms.First().Value(input);
         }

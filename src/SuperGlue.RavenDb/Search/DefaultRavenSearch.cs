@@ -40,19 +40,17 @@ namespace SuperGlue.RavenDb.Search
                 query = searchers.Aggregate(query, (current, searcher) => searcher.ApplyTo(current, currentPart.Value));
             }
 
-            foreach (var part in leftoverParts)
-            {
-                var currentPart = part;
-                query = handleLeftOvers.Aggregate(query, (current, searcher) => searcher.ApplyTo(current, currentPart.Name, currentPart.Value));
-            }
+            query = leftoverParts
+                            .Aggregate(query, (current1, currentPart) => handleLeftOvers
+                                                                                    .Aggregate(current1, (current, searcher) => searcher.ApplyTo(current, currentPart.Name, currentPart.Value)));
 
-            foreach (var part in parsingResult.SpecialCommands)
-            {
-                var currentPart = part;
-                var searchers = specialsParts.Where(x => x.Command == currentPart).ToList();
-
-                query = searchers.Aggregate(query, (current, searcher) => searcher.ApplyTo(current));
-            }
+            query = parsingResult
+                .SpecialCommands
+                .Select(currentPart => specialsParts
+                                            .Where(x => x.Command == currentPart)
+                                            .ToList())
+                .Aggregate(query, (current1, searchers) => searchers
+                                                                .Aggregate(current1, (current, searcher) => searcher.ApplyTo(current)));
 
             return freeTextSearcher == null ? query : freeTextSearcher.ApplyTo(query, parsingResult.FreeSearch);
         }

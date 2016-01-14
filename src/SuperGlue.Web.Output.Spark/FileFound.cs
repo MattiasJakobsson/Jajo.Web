@@ -9,7 +9,7 @@ namespace SuperGlue.Web.Output.Spark
             Directory = directory;
         }
 
-        public string Path { get; private set; }
+        public string Path { get; }
         public string Root { get; private set; }
         public string Directory { get; private set; }
 

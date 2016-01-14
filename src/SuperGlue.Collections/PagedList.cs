@@ -26,9 +26,9 @@ namespace SuperGlue.Collections
             return GetEnumerator();
         }
 
-        public int TotalPages { get { return (int)Math.Ceiling(TotalCount / (double)PageSize); } }
-        public long TotalCount { get; private set; }
-        public int CurrentPage { get; private set; }
-        public int PageSize { get; private set; }
+        public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
+        public long TotalCount { get; }
+        public int CurrentPage { get; }
+        public int PageSize { get; }
     }
 }

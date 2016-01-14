@@ -8,8 +8,8 @@
             Name = name;
         }
 
-        public string Name { get; private set; }
-        public string Value { get; private set; }
+        public string Name { get; }
+        public string Value { get; }
 
         public override int GetHashCode()
         {

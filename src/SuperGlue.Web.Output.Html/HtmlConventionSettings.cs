@@ -7,7 +7,6 @@ namespace SuperGlue.Web.Output.Html
     public class HtmlConventionSettings
     {
         private readonly ProfileExpression _profileExpression;
-        private readonly HtmlConventionLibrary _library;
 
         private static readonly Cache<Type, Func<HtmlConventionLibrary, object>> ElementGeneratorsCache = new Cache<Type, Func<HtmlConventionLibrary, object>>(x =>
             {
@@ -19,35 +18,23 @@ namespace SuperGlue.Web.Output.Html
 
         public HtmlConventionSettings()
         {
-            _library = new HtmlConventionLibrary();
-            _profileExpression = new ProfileExpression(_library, TagConstants.Default);
+            ConventionLibrary = new HtmlConventionLibrary();
+            _profileExpression = new ProfileExpression(ConventionLibrary, TagConstants.Default);
         }
 
-        public ElementCategoryExpression Labels
-        {
-            get { return _profileExpression.Labels; }
-        }
+        public ElementCategoryExpression Labels => _profileExpression.Labels;
 
-        public ElementCategoryExpression Displays
-        {
-            get { return _profileExpression.Displays; }
-        }
+        public ElementCategoryExpression Displays => _profileExpression.Displays;
 
-        public ElementCategoryExpression Editors
-        {
-            get { return _profileExpression.Editors; }
-        }
+        public ElementCategoryExpression Editors => _profileExpression.Editors;
 
-        public ElementCategoryExpression Forms
-        {
-            get { return new ElementCategoryExpression(_library.TagLibrary.Category("Form").Profile(TagConstants.Default)); }
-        }
+        public ElementCategoryExpression Forms => new ElementCategoryExpression(ConventionLibrary.TagLibrary.Category("Form").Profile(TagConstants.Default));
 
-        internal HtmlConventionLibrary ConventionLibrary { get { return _library; } }
+        internal HtmlConventionLibrary ConventionLibrary { get; }
 
         internal object ElementGeneratorFor(Type model)
         {
-            return ElementGeneratorsCache[model](_library);
+            return ElementGeneratorsCache[model](ConventionLibrary);
         }
     }
 }

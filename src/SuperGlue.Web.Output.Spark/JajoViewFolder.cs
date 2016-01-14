@@ -24,7 +24,7 @@ namespace SuperGlue.Web.Output.Spark
                 .FirstOrDefault(v => CompareViewPaths(ConvertPath(GetFullPath(v)), searchPath));
 
             if (viewTemplate == null)
-                throw new FileNotFoundException(string.Format("Template {0} not found", path), path);
+                throw new FileNotFoundException($"Template {path} not found", path);
 
             return new SuperGlueViewFile(viewTemplate);
         }
@@ -61,24 +61,20 @@ namespace SuperGlue.Web.Output.Spark
 
         private static string GetFullPath(Template viewTemplate)
         {
-            return string.Format("{0}{1}", viewTemplate.Path, viewTemplate.Name);
+            return $"{viewTemplate.Path}{viewTemplate.Name}";
         }
 
         public class SuperGlueViewFile : IViewFile
         {
             private readonly Template _viewTemplate;
-            private readonly long _created;
 
             public SuperGlueViewFile(Template viewTemplate)
             {
                 _viewTemplate = viewTemplate;
-                _created = DateTime.Now.Ticks;
+                LastModified = DateTime.Now.Ticks;
             }
 
-            public long LastModified
-            {
-                get { return _created; }
-            }
+            public long LastModified { get; }
 
             public Stream OpenViewStream()
             {

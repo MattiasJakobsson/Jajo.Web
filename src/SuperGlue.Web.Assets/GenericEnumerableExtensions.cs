@@ -32,19 +32,21 @@ namespace SuperGlue.Web.Assets
         [DebuggerStepThrough]
         public static IEnumerable<T> Each<T>(this IEnumerable<T> values, Action<T> eachAction)
         {
-            foreach (var obj in values)
+            var enumerable = values as T[] ?? values.ToArray();
+            foreach (var obj in enumerable)
                 eachAction(obj);
 
-            return values;
+            return enumerable;
         }
 
         [DebuggerStepThrough]
         public static IEnumerable Each(this IEnumerable values, Action<object> eachAction)
         {
-            foreach (var obj in values)
+            var enumerable = values as object[] ?? values.Cast<object>().ToArray();
+            foreach (var obj in enumerable)
                 eachAction(obj);
 
-            return values;
+            return enumerable;
         }
 
         public static void Fill<T>(this IList<T> list, T value)

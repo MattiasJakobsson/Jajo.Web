@@ -37,8 +37,8 @@ namespace SuperGlue.Caching.Redis
                 Data = data;
             }
 
-            public string Data { get; private set; }
-            public string Type { get; private set; }
+            public string Data { get; }
+            public string Type { get; }
         }
     }
 }

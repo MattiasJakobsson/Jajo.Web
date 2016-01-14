@@ -38,6 +38,6 @@ namespace SuperGlue.Configuration
             ContinueChain = continueChain;
         }
 
-        public Action<IDictionary<string, object>>  ContinueChain { get; private set; } 
+        public Action<IDictionary<string, object>>  ContinueChain { get; } 
     }
 }

@@ -6,9 +6,6 @@ namespace SuperGlue.Web.Http
 {
     public class CacheOptions
     {
-        private readonly DateTime? _absoluteExpiry;
-        private readonly TimeSpan? _slidingExpiry;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheOptions"/> class.
         /// </summary>
@@ -16,7 +13,7 @@ namespace SuperGlue.Web.Http
         /// <remarks>Use this constructor when you want to specify absolute expiry.</remarks>
         public CacheOptions(DateTime absoluteExpiry)
         {
-            _absoluteExpiry = absoluteExpiry;
+            AbsoluteExpiry = absoluteExpiry;
         }
 
         /// <summary>
@@ -26,7 +23,7 @@ namespace SuperGlue.Web.Http
         /// <remarks>Use this constructor when you want to specify sliding expiry.</remarks>
         public CacheOptions(TimeSpan slidingExpiry)
         {
-            _slidingExpiry = slidingExpiry;
+            SlidingExpiry = slidingExpiry;
         }
 
         private CacheOptions() { }
@@ -34,10 +31,7 @@ namespace SuperGlue.Web.Http
         /// <summary>
         /// Gets the absolute expiry time.
         /// </summary>
-        public DateTime? AbsoluteExpiry
-        {
-            get { return _absoluteExpiry; }
-        }
+        public DateTime? AbsoluteExpiry { get; }
 
         /// <summary>
         /// Gets a value indicating whether caching should be disabled for a resource.
@@ -45,10 +39,7 @@ namespace SuperGlue.Web.Http
         /// <value>
         ///   <c>true</c> if caching should be disabled; otherwise, <c>false</c>.
         /// </value>
-        public bool Disable
-        {
-            get { return !(_slidingExpiry.HasValue || _absoluteExpiry.HasValue); }
-        }
+        public bool Disable => !(SlidingExpiry.HasValue || AbsoluteExpiry.HasValue);
 
         /// <summary>
         /// Gets or sets a value indicating the level at which the response may be cached.
@@ -59,10 +50,7 @@ namespace SuperGlue.Web.Http
         /// <summary>
         /// Gets the sliding expiry time.
         /// </summary>
-        public TimeSpan? SlidingExpiry
-        {
-            get { return _slidingExpiry; }
-        }
+        public TimeSpan? SlidingExpiry { get; }
 
         /// <summary>
         /// Gets or sets names of headers which should be considered by the caching systems.

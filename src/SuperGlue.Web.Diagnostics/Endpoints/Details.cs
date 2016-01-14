@@ -34,7 +34,7 @@ namespace SuperGlue.Web.Diagnostics.Endpoints
             Types = types;
         }
 
-        public string Category { get; private set; }
+        public string Category { get; }
         public IEnumerable<string> Types { get; private set; }
 
         public StepsQueryInput GetStepsInput(string type)

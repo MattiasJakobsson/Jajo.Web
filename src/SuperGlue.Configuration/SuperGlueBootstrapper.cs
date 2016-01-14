@@ -85,13 +85,13 @@ namespace SuperGlue.Configuration
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetConfigSettings] = (Func<Type, object>)GetSettings;
 
-            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChainSettings] = (Func<string, ChainSettings>)GetChainSettings;
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChainSettingsKey] = (Func<string, ChainSettings>)GetChainSettings;
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChain] = (Func<string, Action<IBuildAppFunction>, Task<AppFunc>>)GetChain;
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ApplicationName] = ApplicationName;
 
-            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetTags] = (Func<IEnumerable<string>>)GetApplicationTags;
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetTagsKey] = (Func<IEnumerable<string>>)GetApplicationTags;
 
             overrides = overrides ?? ApplicationStartersOverrides.Configure();
 

@@ -29,12 +29,12 @@ namespace SuperGlue.Web.ModelBinding
 
         public void PrefixWith(string prefix)
         {
-            _currentPrefix = string.Format("{0}{1}", _currentPrefix, prefix);
+            _currentPrefix = $"{_currentPrefix}{prefix}";
         }
 
         public string GetKey(string name)
         {
-            return string.Format("{0}{1}", _currentPrefix, name).ToLower();
+            return $"{_currentPrefix}{name}".ToLower();
         }
 
         public string GetPrefix()
@@ -51,7 +51,7 @@ namespace SuperGlue.Web.ModelBinding
             return new Disposable(oldPrefix, x => _currentPrefix = x);
         }
 
-        public IDictionary<string, object> Environment { get; private set; }
+        public IDictionary<string, object> Environment { get; }
 
         private class Disposable : IDisposable
         {

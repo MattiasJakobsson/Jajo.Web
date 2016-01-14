@@ -53,7 +53,7 @@ namespace SuperGlue.Web.Output.Spark
                 _resourceName = resourceName;
             }
 
-            public Assembly Assembly { get; private set; }
+            public Assembly Assembly { get; }
 
             public string GetPath()
             {
@@ -64,7 +64,7 @@ namespace SuperGlue.Web.Output.Spark
             {
                 var splitted = _resourceName.Split('.');
 
-                return string.Format("{0}.{1}", splitted[splitted.Length - 2], splitted.Last());
+                return $"{splitted[splitted.Length - 2]}.{splitted.Last()}";
             }
 
             public string GetResourceName()

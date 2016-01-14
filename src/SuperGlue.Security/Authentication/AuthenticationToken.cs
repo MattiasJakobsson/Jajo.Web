@@ -12,7 +12,7 @@ namespace SuperGlue.Security.Authentication
         }
 
         public string Source { get; private set; }
-        public IEnumerable<Claim> Claims { get; private set; }
+        public IEnumerable<Claim> Claims { get; }
 
         public class Claim
         {
@@ -22,8 +22,8 @@ namespace SuperGlue.Security.Authentication
                 Value = value;
             }
 
-            public string Type { get; private set; }
-            public string Value { get; private set; }
+            public string Type { get; }
+            public string Value { get; }
         }
 
         public string GetClaimsString()

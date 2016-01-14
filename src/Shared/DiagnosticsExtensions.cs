@@ -24,7 +24,7 @@ namespace SuperGlue
 
         public static string RequestsFor(IDictionary<string, object> environment)
         {
-            return string.Format("{0}-requests", environment.GetCurrentChain().Name);
+            return $"{environment.GetCurrentChain().Name}-requests";
         }
     }
 

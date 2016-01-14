@@ -35,17 +35,13 @@ namespace SuperGlue.Web.Output
         public static readonly MimeType Svg = New("image/svg+xml", ".svg");
 
         private readonly IList<string> _extensions = new List<string>();
-        private readonly string _mimeType;
 
         private MimeType(string mimeType)
         {
-            _mimeType = mimeType;
+            Value = mimeType;
         }
 
-        public string Value
-        {
-            get { return _mimeType; }
-        }
+        public string Value { get; }
 
         public static MimeType New(string mimeTypeValue, params string[] extensions)
         {
@@ -67,7 +63,7 @@ namespace SuperGlue.Web.Output
 
         public override string ToString()
         {
-            return _mimeType;
+            return Value;
         }
 
         public static IEnumerable<MimeType> All()
@@ -97,10 +93,7 @@ namespace SuperGlue.Web.Output
             return MappingFromExtension[extension];
         }
 
-        public IEnumerable<string> Extensions
-        {
-            get { return _extensions; }
-        }
+        public IEnumerable<string> Extensions => _extensions;
 
         private static readonly Cache<string, MimeType> MappingFromExtension;
 

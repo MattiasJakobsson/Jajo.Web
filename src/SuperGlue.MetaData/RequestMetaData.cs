@@ -9,7 +9,7 @@ namespace SuperGlue.MetaData
             MetaData = metaData;
         }
 
-        public IReadOnlyDictionary<string, object> MetaData { get; private set; }
+        public IReadOnlyDictionary<string, object> MetaData { get; }
 
         public object Get(string key)
         {

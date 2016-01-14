@@ -16,9 +16,9 @@ namespace SuperGlue.ApiDiscovery
                 .ToDictionary(x => x.Name, x => x.Value);
         }
 
-        public string Name { get { return GetOption("name", "registration"); } }
-        public Uri Location { get { return new Uri(GetOption("location")); } }
-        public IEnumerable<string> Accepts { get { return GetOption("accepts").Split(','); } }
+        public string Name => GetOption("name", "registration");
+        public Uri Location => new Uri(GetOption("location"));
+        public IEnumerable<string> Accepts => GetOption("accepts").Split(',');
 
         private string GetOption(string key, string defaultValue = "")
         {
@@ -42,8 +42,8 @@ namespace SuperGlue.ApiDiscovery
                 Value = parts[1];
             }
 
-            public string Name { get; private set; }
-            public string Value { get; private set; }
+            public string Name { get; }
+            public string Value { get; }
         }
     }
 }

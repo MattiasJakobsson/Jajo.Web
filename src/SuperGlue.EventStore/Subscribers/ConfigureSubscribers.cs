@@ -21,12 +21,12 @@ namespace SuperGlue.EventStore.Subscribers
                 var settings = x.WithSettings<SubscribersSettings>();
 
                 settings
-                    .FindPersistentSubscriptionNameUsing((serviceName, stream) => string.Format("{0}-{1}", serviceName, stream));
+                    .FindPersistentSubscriptionNameUsing((serviceName, stream) => $"{serviceName}-{stream}");
 
                 var streams = (ConfigurationManager.AppSettings["EventStore.Streams"] ?? "").Split(';').Where(y => !string.IsNullOrWhiteSpace(y)).ToList();
 
                 foreach (var stream in streams)
-                    settings.SubscribeToStream(stream, ConfigurationManager.AppSettings[string.Format("EventStore.Streams.{0}.LiveOnly", stream)] == "true");
+                    settings.SubscribeToStream(stream, ConfigurationManager.AppSettings[$"EventStore.Streams.{stream}.LiveOnly"] == "true");
 
                 return Task.CompletedTask;
             });

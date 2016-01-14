@@ -70,8 +70,8 @@ namespace SuperGlue.EventStore.Data
                 Value = parts[1];
             }
 
-            public string Name { get; private set; }
-            public string Value { get; private set; }
+            public string Name { get; }
+            public string Value { get; }
         }
 
         private class ConnectionOptions
@@ -79,7 +79,8 @@ namespace SuperGlue.EventStore.Data
             public ConnectionOptions(IReadOnlyDictionary<string, string> options, string connectionStringName)
             {
                 if (!options.ContainsKey("Ip"))
-                    throw new InvalidEventstoreConnectionStringException(string.Format("The connection string named \"{0}\" doesn't contain a ip.", connectionStringName));
+                    throw new InvalidEventstoreConnectionStringException(
+                        $"The connection string named \"{connectionStringName}\" doesn't contain a ip.");
 
                 Ip = options["Ip"];
 
@@ -106,12 +107,12 @@ namespace SuperGlue.EventStore.Data
                     Password = options["Password"];
             }
 
-            private string Ip { get; set; }
-            private int HttpPort { get; set; }
-            private int TcpPort { get; set; }
-            private string UserName { get; set; }
-            private string Password { get; set; }
-            private ConnectionApi Api { get; set; }
+            private string Ip { get; }
+            private int HttpPort { get; }
+            private int TcpPort { get; }
+            private string UserName { get; }
+            private string Password { get; }
+            private ConnectionApi Api { get; }
 
             public IPEndPoint GetIpEndPoint()
             {

@@ -12,10 +12,10 @@ namespace SuperGlue.ApiDiscovery
     /// </summary>
     public class UriTemplate
     {
-        const string _UriReservedSymbols = ":/?#[]@!$&'()*+,;=";
-        const string _UriUnreservedSymbols = "-._~";
+        const string UriReservedSymbols = ":/?#[]@!$&'()*+,;=";
+        const string UriUnreservedSymbols = "-._~";
 
-        static Dictionary<char, OperatorInfo> _Operators = new Dictionary<char, OperatorInfo>() {
+        static readonly Dictionary<char, OperatorInfo> Operators = new Dictionary<char, OperatorInfo>() {
             {'\0', new OperatorInfo {Default = true, First = "", Seperator = ',', Named = false, IfEmpty = "",AllowReserved = false}},
             {'+', new OperatorInfo {Default = false, First = "", Seperator = ',', Named = false, IfEmpty = "",AllowReserved = true}},
             {'.', new OperatorInfo {Default = false, First = ".", Seperator = '.', Named = false, IfEmpty = "",AllowReserved = false}},
@@ -27,7 +27,7 @@ namespace SuperGlue.ApiDiscovery
         };
 
         readonly string _template;
-        readonly Dictionary<string, object> _Parameters = new Dictionary<string, object>();
+        readonly Dictionary<string, object> _parameters = new Dictionary<string, object>();
 
         enum States
         {
@@ -35,9 +35,9 @@ namespace SuperGlue.ApiDiscovery
             ParsingExpression
         }
 
-        bool _ErrorDetected = false;
-        StringBuilder _Result;
-        List<string> _ParameterNames;
+        bool _errorDetected;
+        StringBuilder _result;
+        List<string> _parameterNames;
 
         public UriTemplate(string template)
         {
@@ -47,38 +47,38 @@ namespace SuperGlue.ApiDiscovery
 
         public void SetParameter(string name, object value)
         {
-            _Parameters[name] = value;
+            _parameters[name] = value;
         }
 
         public void SetParameter(string name, string value)
         {
-            _Parameters[name] = value;
+            _parameters[name] = value;
         }
 
         public void SetParameter(string name, IEnumerable<string> value)
         {
-            _Parameters[name] = value;
+            _parameters[name] = value;
         }
 
         public void SetParameter(string name, IDictionary<string, string> value)
         {
-            _Parameters[name] = value;
+            _parameters[name] = value;
         }
 
 
         public IEnumerable<string> GetParameterNames()
         {
             var parameterNames = new List<string>();
-            _ParameterNames = parameterNames;
+            _parameterNames = parameterNames;
             Resolve();
-            _ParameterNames = null;
+            _parameterNames = null;
             return parameterNames;
         }
 
         public string Resolve()
         {
             var currentState = States.CopyingLiterals;
-            _Result = new StringBuilder();
+            _result = new StringBuilder();
             StringBuilder currentExpression = null;
             foreach (var character in _template.ToCharArray())
             {
@@ -92,11 +92,11 @@ namespace SuperGlue.ApiDiscovery
                         }
                         else if (character == '}')
                         {
-                            throw new ArgumentException("Malformed template, unexpected } : " + _Result.ToString());
+                            throw new ArgumentException("Malformed template, unexpected } : " + _result);
                         }
                         else
                         {
-                            _Result.Append(character);
+                            _result.Append(character);
                         }
                         break;
                     case States.ParsingExpression:
@@ -108,7 +108,7 @@ namespace SuperGlue.ApiDiscovery
                         }
                         else
                         {
-                            currentExpression.Append(character);
+                            currentExpression?.Append(character);
                         }
 
                         break;
@@ -116,17 +116,17 @@ namespace SuperGlue.ApiDiscovery
             }
             if (currentState == States.ParsingExpression)
             {
-                _Result.Append("{");
-                _Result.Append(currentExpression.ToString());
+                _result.Append("{");
+                if (currentExpression != null) _result.Append(currentExpression);
 
-                throw new ArgumentException("Malformed template, missing } : " + _Result.ToString());
+                throw new ArgumentException("Malformed template, missing } : " + _result);
             }
 
-            if (_ErrorDetected)
+            if (_errorDetected)
             {
-                throw new ArgumentException("Malformed template : " + _Result.ToString());
+                throw new ArgumentException("Malformed template : " + _result);
             }
-            return _Result.ToString();
+            return _result.ToString();
         }
 
         void ProcessExpression(StringBuilder currentExpression)
@@ -134,8 +134,8 @@ namespace SuperGlue.ApiDiscovery
 
             if (currentExpression.Length == 0)
             {
-                _ErrorDetected = true;
-                _Result.Append("{}");
+                _errorDetected = true;
+                _result.Append("{}");
                 return;
             }
 
@@ -182,7 +182,7 @@ namespace SuperGlue.ApiDiscovery
                         }
                         else
                         {
-                            _ErrorDetected = true;
+                            _errorDetected = true;
                         }
                         break;
                 }
@@ -194,29 +194,30 @@ namespace SuperGlue.ApiDiscovery
         bool ProcessVariable(VarSpec varSpec)
         {
             var varname = varSpec.VarName.ToString();
-            if (_ParameterNames != null) _ParameterNames.Add(varname);
+            _parameterNames?.Add(varname);
 
-            if (!_Parameters.ContainsKey(varname)
-                || _Parameters[varname] == null
-                || (_Parameters[varname] is IList && ((IList)_Parameters[varname]).Count == 0)
-                || (_Parameters[varname] is IDictionary && ((IDictionary)_Parameters[varname]).Count == 0))
+            if (!_parameters.ContainsKey(varname)
+                || _parameters[varname] == null
+                || (_parameters[varname] is IList && ((IList)_parameters[varname]).Count == 0)
+                || (_parameters[varname] is IDictionary && ((IDictionary)_parameters[varname]).Count == 0))
                 return false;
 
             if (varSpec.First)
             {
-                _Result.Append(varSpec.OperatorInfo.First);
+                _result.Append(varSpec.OperatorInfo.First);
             }
             else
             {
-                _Result.Append(varSpec.OperatorInfo.Seperator);
+                _result.Append(varSpec.OperatorInfo.Seperator);
             }
 
-            object value = _Parameters[varname];
+            object value = _parameters[varname];
 
             // Handle Strings
-            if (value is string)
+            var s = value as string;
+            if (s != null)
             {
-                var stringValue = (string)value;
+                var stringValue = s;
                 if (varSpec.OperatorInfo.Named)
                 {
                     AppendName(varname, varSpec.OperatorInfo, string.IsNullOrEmpty(stringValue));
@@ -229,12 +230,13 @@ namespace SuperGlue.ApiDiscovery
                 var list = value as IEnumerable<string>;
                 if (list != null)
                 {
+                    var enumerable = list as string[] ?? list.ToArray();
                     if (varSpec.OperatorInfo.Named && !varSpec.Explode) // exploding will prefix with list name
                     {
-                        AppendName(varname, varSpec.OperatorInfo, list.Count() == 0);
+                        AppendName(varname, varSpec.OperatorInfo, !enumerable.Any());
                     }
 
-                    AppendList(varSpec.OperatorInfo, varSpec.Explode, varname, list);
+                    AppendList(varSpec.OperatorInfo, varSpec.Explode, varname, enumerable);
                 }
                 else
                 {
@@ -245,7 +247,7 @@ namespace SuperGlue.ApiDiscovery
                     {
                         if (varSpec.OperatorInfo.Named && !varSpec.Explode) // exploding will prefix with list name
                         {
-                            AppendName(varname, varSpec.OperatorInfo, dictionary.Count() == 0);
+                            AppendName(varname, varSpec.OperatorInfo, !dictionary.Any());
                         }
                         AppendDictionary(varSpec.OperatorInfo, varSpec.Explode, dictionary);
                     }
@@ -261,42 +263,35 @@ namespace SuperGlue.ApiDiscovery
         {
             foreach (string key in dictionary.Keys)
             {
-                _Result.Append(key);
-                if (explode) _Result.Append('=');
-                else _Result.Append(',');
+                _result.Append(key);
+                _result.Append(explode ? '=' : ',');
                 AppendValue(dictionary[key], 0, op.AllowReserved);
 
-                if (explode)
-                {
-                    _Result.Append(op.Seperator);
-                }
-                else
-                {
-                    _Result.Append(',');
-                }
+                _result.Append(explode ? op.Seperator : ',');
             }
-            if (dictionary.Count() > 0)
+            if (dictionary.Any())
             {
-                _Result.Remove(_Result.Length - 1, 1);
+                _result.Remove(_result.Length - 1, 1);
             }
         }
 
         void AppendList(OperatorInfo op, bool explode, string variable, IEnumerable<string> list)
         {
-            foreach (string item in list)
+            var enumerable = list as string[] ?? list.ToArray();
+            foreach (string item in enumerable)
             {
                 if (op.Named && explode)
                 {
-                    _Result.Append(variable);
-                    _Result.Append("=");
+                    _result.Append(variable);
+                    _result.Append("=");
                 }
                 AppendValue(item, 0, op.AllowReserved);
 
-                _Result.Append(explode ? op.Seperator : ',');
+                _result.Append(explode ? op.Seperator : ',');
             }
-            if (list.Count() > 0)
+            if (enumerable.Any())
             {
-                _Result.Remove(_Result.Length - 1, 1);
+                _result.Remove(_result.Length - 1, 1);
             }
         }
 
@@ -311,21 +306,14 @@ namespace SuperGlue.ApiDiscovery
                 }
             }
 
-            _Result.Append(Encode(value, allowReserved));
+            _result.Append(Encode(value, allowReserved));
 
         }
 
         void AppendName(string variable, OperatorInfo op, bool valueIsEmpty)
         {
-            _Result.Append(variable);
-            if (valueIsEmpty)
-            {
-                _Result.Append(op.IfEmpty);
-            }
-            else
-            {
-                _Result.Append("=");
-            }
+            _result.Append(variable);
+            _result.Append(valueIsEmpty ? op.IfEmpty : "=");
         }
 
 
@@ -346,9 +334,9 @@ namespace SuperGlue.ApiDiscovery
             {
                 if ((c >= 'A' && c <= 'z') //Alpha
                     || (c >= '0' && c <= '9') // Digit
-                    || _UriUnreservedSymbols.IndexOf(c) != -1
+                    || UriUnreservedSymbols.IndexOf(c) != -1
                     // Unreserved symbols  - These should never be percent encoded
-                    || (allowReserved && _UriReservedSymbols.IndexOf(c) != -1))
+                    || (allowReserved && UriReservedSymbols.IndexOf(c) != -1))
                 // Reserved symbols - should be included if requested (+)
                 {
                     result.Append(c);
@@ -379,12 +367,12 @@ namespace SuperGlue.ApiDiscovery
         {
             var esc = new char[3];
             esc[0] = '%';
-            esc[1] = HexDigits[(((int)c & 240) >> 4)];
-            esc[2] = HexDigits[((int)c & 15)];
+            esc[1] = HexDigits[((c & 240) >> 4)];
+            esc[2] = HexDigits[(c & 15)];
             return new string(esc);
         }
 
-        static readonly char[] HexDigits = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+        static readonly char[] HexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         static OperatorInfo GetOperator(char operatorIndicator)
         {
@@ -399,11 +387,11 @@ namespace SuperGlue.ApiDiscovery
                 case '&':
                 case '?':
                 case '.':
-                    op = _Operators[operatorIndicator];
+                    op = Operators[operatorIndicator];
                     break;
 
                 default:
-                    op = _Operators['\0'];
+                    op = Operators['\0'];
                     break;
             }
             return op;
@@ -423,21 +411,17 @@ namespace SuperGlue.ApiDiscovery
 
         public class VarSpec
         {
-            readonly OperatorInfo _operatorInfo;
             public StringBuilder VarName = new StringBuilder();
-            public bool Explode = false;
-            public int PrefixLength = 0;
+            public bool Explode;
+            public int PrefixLength;
             public bool First = true;
 
             public VarSpec(OperatorInfo operatorInfo)
             {
-                _operatorInfo = operatorInfo;
+                OperatorInfo = operatorInfo;
             }
 
-            public OperatorInfo OperatorInfo
-            {
-                get { return _operatorInfo; }
-            }
+            public OperatorInfo OperatorInfo { get; }
         }
     }
 }
