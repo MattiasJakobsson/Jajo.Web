@@ -22,7 +22,7 @@ namespace SuperGlue.Discovery.Consul
                 Address = settings.Address,
                 Port = settings.Port,
                 Tags = settings.GetTags(),
-                Checks = settings.GetChecks(),
+                Checks = settings.GetChecks()
             });
 
             return Task.CompletedTask;

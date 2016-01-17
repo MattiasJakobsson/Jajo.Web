@@ -344,9 +344,9 @@ namespace SuperGlue.Web
                 }
 
                 public IReadOnlyDictionary<string, string[]> RawHeaders { get; }
-                public string ContentType => GetHeader(HeadersConstants.ContentType);
-                public string MediaType => GetHeader(HeadersConstants.MediaType);
-                public string Accept => GetHeader(HeadersConstants.Accept);
+                public string ContentType => GetHeader(HeadersConstants.ContentType) ?? "";
+                public string MediaType => GetHeader(HeadersConstants.MediaType) ?? "";
+                public string Accept => GetHeader(HeadersConstants.Accept) ?? "";
 
                 public string GetHeader(string key)
                 {
