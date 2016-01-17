@@ -22,7 +22,7 @@ namespace SuperGlue.Web.Http
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            environment["owin.ResponseStatusCode"] = _statusCode;
+            environment.GetResponse().StatusCode = _statusCode;
 
             await _next(environment).ConfigureAwait(false);
         }

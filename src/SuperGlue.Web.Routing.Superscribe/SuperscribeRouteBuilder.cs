@@ -98,6 +98,8 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             environment.AddRouteToEndpoint(routeTo, routedInputs, _node);
 
+            environment.Log($"Created route for: {GetPattern()}", LogLevel.Debug);
+
             return environment.PushDiagnosticsData(DiagnosticsCategories.Setup, DiagnosticsTypes.Bootstrapping, "Routes", new Tuple<string, IDictionary<string, object>>($"Route created for {GetPattern()}", new Dictionary<string, object>
             {
                 {"Pattern", GetPattern()},

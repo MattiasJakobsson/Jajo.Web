@@ -25,7 +25,7 @@ namespace SuperGlue.Web.Http
             environment.GetResponse().StatusCode = 301;
             environment.GetResponse().Headers.Location = redirectTo;
 
-            return Task.Factory.StartNew(() => { });
+            return Task.CompletedTask;
         }
     }
 
