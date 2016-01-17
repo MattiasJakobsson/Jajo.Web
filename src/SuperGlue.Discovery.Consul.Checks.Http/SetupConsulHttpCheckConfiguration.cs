@@ -35,8 +35,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
 
                         x
                             .WithAddress(url.DnsSafeHost)
-                            .WithPort(url.Port)
-                            .WithTag("web");
+                            .WithPort(url.Port);
                     });
                 }
 
