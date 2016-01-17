@@ -66,7 +66,7 @@ namespace SuperGlue.Configuration
             await RunConfigurations(_setups ?? new ReadOnlyCollection<ConfigurationSetupResult>(new Collection<ConfigurationSetupResult>()), _applicationEnvironment, x => x.ShutdownAction(_environment)).ConfigureAwait(false);
         }
 
-        public virtual string ApplicationName => GetType().Assembly.FullName.Replace(".", "");
+        public virtual string ApplicationName => GetType().Assembly.GetName().Name.Replace(".", "");
 
         protected abstract Task Configure(string environment);
 

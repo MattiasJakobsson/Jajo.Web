@@ -17,7 +17,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Http.Api
 
         public string Check()
         {
-            var response = _consulHttpCheckSettings.Check(_environment);
+            var response = _consulHttpCheckSettings.PerformCheck(_environment);
 
             switch (response.Status)
             {
