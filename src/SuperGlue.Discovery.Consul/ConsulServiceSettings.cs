@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Consul;
@@ -8,6 +9,7 @@ namespace SuperGlue.Discovery.Consul
     {
         private readonly ICollection<string> _tags = new List<string>();
         private readonly ICollection<AgentServiceCheck> _checks = new List<AgentServiceCheck>();
+        private readonly ICollection<Action<ConsulClientConfiguration>> _alterSettings = new List<Action<ConsulClientConfiguration>>();
 
         public string Id { get; private set; }
         public string Name { get; private set; }
@@ -56,6 +58,13 @@ namespace SuperGlue.Discovery.Consul
             return this;
         }
 
+        public ConsulServiceSettings AlterSettingsWith(Action<ConsulClientConfiguration> alter)
+        {
+            _alterSettings.Add(alter);
+
+            return this;
+        }
+
         public string[] GetTags()
         {
             return _tags.ToArray();
@@ -68,7 +77,12 @@ namespace SuperGlue.Discovery.Consul
 
         public Client CreateClient()
         {
-            return new Client();
+            var settings = new ConsulClientConfiguration();
+
+            foreach (var alterSetting in _alterSettings)
+                alterSetting(settings);
+
+            return new Client(settings);
         }
     }
 }
