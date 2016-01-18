@@ -12,5 +12,6 @@ namespace SuperGlue.Configuration
         Task Start(AppFunc chain, IDictionary<string, object> settings, string environment);
         Task ShutDown(IDictionary<string, object> settings);
         AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment);
+        NodeTypeRequirements SetupRequirements(NodeTypeRequirements nodeTypeRequirements);
     }
 }
