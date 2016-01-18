@@ -36,8 +36,8 @@ namespace SuperGlue.Monitoring
         {
             var token = _tokenSource.Token;
 
-            Task.Factory
-                .StartNew(async x => await Beat(x, environment).ConfigureAwait(false), token, TaskCreationOptions.LongRunning)
+            Task
+                .Run(async () => await Beat(token, environment).ConfigureAwait(false), token)
                 .ContinueWith(t =>
                 {
                     (t.Exception ?? new AggregateException()).Handle(ex => true);
@@ -46,12 +46,12 @@ namespace SuperGlue.Monitoring
                 }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        private async Task Beat(object obj, IDictionary<string, object> environment)
+        private async Task Beat(CancellationToken cancellationToken, IDictionary<string, object> environment)
         {
-            var cancellationToken = (CancellationToken)obj;
-
             while (!cancellationToken.IsCancellationRequested)
             {
+                await Task.Delay(_interval, cancellationToken).ConfigureAwait(false);
+
                 var requestEnvironment = new Dictionary<string, object>();
 
                 foreach (var item in environment)
@@ -60,8 +60,6 @@ namespace SuperGlue.Monitoring
                 requestEnvironment.SetHeartBeatMonitor(_monitorHeartBeats);
 
                 await _chain(requestEnvironment).ConfigureAwait(false);
-
-                await Task.Delay(_interval, cancellationToken).ConfigureAwait(false);
             }
         }
     }

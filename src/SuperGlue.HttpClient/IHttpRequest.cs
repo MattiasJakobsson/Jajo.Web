@@ -8,6 +8,7 @@ namespace SuperGlue.HttpClient
     {
         IHttpRequest ModifyHeaders(Action<HttpRequestHeaders> modifier);
         IHttpRequest Method(string method);
+        IHttpRequest Body(string body);
         IHttpRequest ContentType(string contentType);
         IHttpRequest Parameter(string key, object value);
         IHttpRequest ThrowOnError();

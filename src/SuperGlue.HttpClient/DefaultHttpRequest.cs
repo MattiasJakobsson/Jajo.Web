@@ -22,6 +22,7 @@ namespace SuperGlue.HttpClient
         private string _method = "GET";
         private string _contentType = "application/x-www-form-urlencoded";
         private bool _shouldThrow;
+        private string _body;
         private readonly IDictionary<string, object> _parameters = new Dictionary<string, object>();
         private readonly ICollection<Action<HttpRequestHeaders>> _headerModifiers = new List<Action<HttpRequestHeaders>>();
 
@@ -40,6 +41,12 @@ namespace SuperGlue.HttpClient
         public IHttpRequest Method(string method)
         {
             _method = method;
+            return this;
+        }
+
+        public IHttpRequest Body(string body)
+        {
+            _body = body;
             return this;
         }
 
@@ -74,6 +81,9 @@ namespace SuperGlue.HttpClient
                 var parser = _contentTypeParsers.FirstOrDefault(x => x.Matches(_contentType));
 
                 requestMessage.Content = parser != null ? parser.GetContent(new ReadOnlyDictionary<string, object>(_parameters)) : new FormUrlEncodedContent(_parameters.ToDictionary(x => x.Key, x => (x.Value ?? "").ToString()));
+
+                if (!string.IsNullOrEmpty(_body))
+                    requestMessage.Content = new StringContent(_body);
             }
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);

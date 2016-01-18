@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Net;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.HttpClient;
 
 namespace SuperGlue.Monitoring
 {
@@ -18,19 +18,15 @@ namespace SuperGlue.Monitoring
 
         public async Task Beat(IDictionary<string, object> environment)
         {
-            var webRequest = WebRequest.Create(_url);
-            webRequest.ContentType = "application/json";
-            webRequest.Method = "POST";
+            var httpClient = environment.Resolve<IHttpClient>();
 
-            var requestStream = await webRequest.GetRequestStreamAsync().ConfigureAwait(false);
-            var streamWriter = new StreamWriter(requestStream);
-
-            await streamWriter.WriteAsync(_message ?? "").ConfigureAwait(false);
-
-            await streamWriter.FlushAsync().ConfigureAwait(false);
-            requestStream.Close();
-
-            (await webRequest.GetResponseAsync().ConfigureAwait(false)).Close();
+            await httpClient
+                .Start(new Uri(_url))
+                .Method("POST")
+                .Body(_message)
+                .ThrowOnError()
+                .Send()
+                .ConfigureAwait(false);
         }
     }
 }

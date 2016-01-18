@@ -91,6 +91,10 @@
       <Project>{54d633a5-a7df-48d4-98af-7b39bca91ad5}</Project>
       <Name>SuperGlue.Logging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SuperGlue.Monitoring\SuperGlue.Monitoring.csproj">
+      <Project>{b579c403-005c-47b3-8e26-1f4a8d228593}</Project>
+      <Name>SuperGlue.Monitoring</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SuperGlue.Security\SuperGlue.Security.csproj">
       <Project>{a9e022f8-1aa3-4afc-8ec2-1d4a8d2e9f7a}</Project>
       <Name>SuperGlue.Security</Name>

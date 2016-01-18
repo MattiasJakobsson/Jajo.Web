@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using SuperGlue.ExceptionManagement;
 using SuperGlue.FeatureToggler;
+using SuperGlue.Monitoring;
 using SuperGlue.RequestBranching;
 using SuperGlue.Security.Authorization;
 using SuperGlue.StructureMap;
@@ -23,6 +25,7 @@ namespace SuperGlue.Web.Sample
         protected override async Task Configure(string environment)
         {
             AlterSettings<RouteSettings>(x => x.UsePolicy(new QueryCommandMethodRoutePolicy(new List<Assembly> { GetType().Assembly })));
+            AlterSettings<HeartBeatSettings>(x => x.HeartBeatTo(new PostHeartBeatToUrl("http://google.com"), TimeSpan.FromSeconds(10)));
 
             await AddChain("chains.Partials", app =>
             {
