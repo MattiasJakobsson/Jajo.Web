@@ -91,14 +91,17 @@ namespace SuperGlue.Web.Routing.Superscribe
 
             _node.FinalFunctions.AddRange(finalFunctions);
 
-            var oldActivationFunction = _node.ActivationFunction;
-            _node.ActivationFunction = (routeData, segment) => _constraints.All(x => x.IsValid(routeTo)) && oldActivationFunction(routeData, segment);
+            if (_constraints.Any())
+            {
+                var oldActivationFunction = _node.ActivationFunction;
+                _node.ActivationFunction = (routeData, segment) => _constraints.All(x => x.IsValid(routeTo)) && oldActivationFunction(routeData, segment);
+            }
 
             baseNode.Zip(_node.Base());
 
             environment.AddRouteToEndpoint(routeTo, routedInputs, _node);
 
-            environment.Log($"Created route for: {GetPattern()}", LogLevel.Debug);
+            environment.Log($"Created route for: {GetPattern().Replace("{", "{{").Replace("}", "}}")}", LogLevel.Debug);
 
             return environment.PushDiagnosticsData(DiagnosticsCategories.Setup, DiagnosticsTypes.Bootstrapping, "Routes", new Tuple<string, IDictionary<string, object>>($"Route created for {GetPattern()}", new Dictionary<string, object>
             {
