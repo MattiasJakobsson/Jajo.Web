@@ -16,7 +16,7 @@ namespace SuperGlue.Diagnostics
 
                 environment.AlterSettings<DiagnosticsSettings>(x =>
                 {
-                    if (applicationEnvironment == "test")
+                    if (applicationEnvironment == "test" || applicationEnvironment == "local")
                         x.AllowAll();
                     else
                         x.DisllowAll();
