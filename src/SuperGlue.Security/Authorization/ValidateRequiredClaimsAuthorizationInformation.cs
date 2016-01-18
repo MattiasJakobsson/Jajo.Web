@@ -9,15 +9,12 @@ namespace SuperGlue.Security.Authorization
     {
         public Task<bool> IsValid(RequiredClaimsAuthorizationInformation authorizationInformation, IEnumerable<AuthenticationToken> tokens, IDictionary<string, object> environment)
         {
-            return Task.Factory.StartNew(() =>
-            {
-                var claims = tokens
-                    .Where(x => string.IsNullOrEmpty(authorizationInformation.TokenSource) || x.Source == authorizationInformation.TokenSource)
-                    .SelectMany(x => x.Claims)
-                    .FirstOrDefault(x => string.IsNullOrEmpty(authorizationInformation.Key) || x.Type == authorizationInformation.Key);
+            var claims = tokens
+                .Where(x => string.IsNullOrEmpty(authorizationInformation.TokenSource) || x.Source == authorizationInformation.TokenSource)
+                .SelectMany(x => x.Claims)
+                .FirstOrDefault(x => string.IsNullOrEmpty(authorizationInformation.Key) || x.Type == authorizationInformation.Key);
 
-                return claims != null && authorizationInformation.IsValid(claims.Value);
-            });
+            return Task.FromResult(claims != null && authorizationInformation.IsValid(claims.Value));
         }
     }
 }

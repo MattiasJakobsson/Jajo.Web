@@ -20,7 +20,12 @@ namespace SuperGlue.Web.Endpoints
 
                 var lambda = Expression.Lambda<Action<TEndpoint>>(Expression.Call(endpointParameter, x), endpointParameter).Compile();
 
-                return (endpoint => Task.Factory.StartNew(() => lambda(endpoint)));
+                return (endpoint =>
+                {
+                    lambda(endpoint);
+
+                    return Task.CompletedTask;
+                });
             });
 
         public ExecuteZeroModelInZeroModelOutEndpoint(TEndpoint endpoint)

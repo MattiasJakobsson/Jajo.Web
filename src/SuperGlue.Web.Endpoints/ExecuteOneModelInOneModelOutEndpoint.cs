@@ -21,7 +21,7 @@ namespace SuperGlue.Web.Endpoints
 
                 var lambda = Expression.Lambda<Func<TEndpoint, TInput, TOutput>>(Expression.Call(endpointParameter, x, inputParameter), endpointParameter, inputParameter).Compile();
 
-                return ((endpoint, input) => Task.Factory.StartNew(() => lambda(endpoint, input)));
+                return ((endpoint, input) => Task.FromResult(lambda(endpoint, input)));
             });
 
         public ExecuteOneModelInOneModelOutEndpoint(TEndpoint endpoint)

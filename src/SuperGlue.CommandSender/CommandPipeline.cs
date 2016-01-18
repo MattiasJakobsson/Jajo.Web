@@ -12,7 +12,7 @@ namespace SuperGlue.CommandSender
 
         public static AppFunc CurrentPipeline
         {
-            get { return currentPipeline ?? (x => Task.Factory.StartNew(() => { })); }
+            get { return currentPipeline ?? (x => Task.CompletedTask); }
         }
 
         public static void Use(AppFunc pipeline)

@@ -48,8 +48,8 @@ namespace SuperGlue.EventStore.Timeouts
         {
             var token = _tokenSource.Token;
 
-            Task.Factory
-                .StartNew(async x => await Poll(x).ConfigureAwait(false), token, TaskCreationOptions.LongRunning)
+            Task
+                .Run(async () => await Poll(token).ConfigureAwait(false), token)
                 .ContinueWith(t =>
                 {
                     (t.Exception ?? new AggregateException()).Handle(ex => true);
@@ -58,10 +58,8 @@ namespace SuperGlue.EventStore.Timeouts
                 }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        private async Task Poll(object obj)
+        private async Task Poll(CancellationToken cancellationToken)
         {
-            var cancellationToken = (CancellationToken)obj;
-
             var startSlice = DateTime.UtcNow.AddYears(-10);
 
             while (!cancellationToken.IsCancellationRequested)
