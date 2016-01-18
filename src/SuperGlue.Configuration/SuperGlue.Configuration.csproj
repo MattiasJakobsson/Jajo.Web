@@ -35,6 +35,7 @@
       <HintPath>..\..\packages\Newtonsoft.Json\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -66,15 +67,20 @@
     <Compile Include="BuildAppFunction.cs" />
     <Compile Include="BuildAppFunctionExtensions.cs" />
     <Compile Include="ChainSettings.cs" />
+    <Compile Include="ConfigFileConfigurationSource.cs" />
     <Compile Include="ConfigurationEvents.cs" />
     <Compile Include="ConfigureEnvironment.cs" />
     <Compile Include="ConfigurationFile.cs" />
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
     <Compile Include="ConfigurationSetupResult.cs" />
     <Compile Include="Continue.cs" />
+    <Compile Include="DefaultApplicationConfiguration.cs" />
     <Compile Include="EmptyEnd.cs" />
+    <Compile Include="EnvironmentVariableConfigurationSource.cs" />
     <Compile Include="Files.cs" />
+    <Compile Include="IApplicationConfiguration.cs" />
     <Compile Include="IBuildAppFunction.cs" />
+    <Compile Include="IConfigurationSource.cs" />
     <Compile Include="IEndThings.cs" />
     <Compile Include="If.cs" />
     <Compile Include="ISetupConfigurations.cs" />

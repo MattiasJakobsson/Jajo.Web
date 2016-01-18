@@ -48,8 +48,8 @@ namespace SuperGlue.EventStore.Data
             }, configuration =>
             {
                 var connectionInformation = configuration
-                .WithSettings<EventStoreSettings>()
-                .CreateConnection();
+                    .WithSettings<EventStoreSettings>()
+                    .CreateConnection(configuration.Settings.Resolve<IApplicationConfiguration>());
 
                 connection = connectionInformation.Item2;
                 connectionString = connectionInformation.Item1;

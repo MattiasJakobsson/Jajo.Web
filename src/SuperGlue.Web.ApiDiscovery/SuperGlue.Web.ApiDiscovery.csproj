@@ -58,7 +58,6 @@
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
     <Compile Include="ConfigureWebApiDiscovery.cs" />
-    <Compile Include="FindRootApiEndpoints.cs" />
     <Compile Include="IRenderApiOutput.cs" />
     <Compile Include="IRootApiInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

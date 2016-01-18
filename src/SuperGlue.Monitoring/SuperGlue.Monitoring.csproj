@@ -55,7 +55,6 @@
     <Compile Include="MonitoringEnvironmentExtensions.cs" />
     <Compile Include="PostHeartBeatToUrl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SetupMonitoringConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.template" />

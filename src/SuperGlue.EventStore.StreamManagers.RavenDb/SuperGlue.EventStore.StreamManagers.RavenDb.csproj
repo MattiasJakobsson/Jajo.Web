@@ -52,6 +52,7 @@
     <Compile Include="ManageEventNumbersForProjectionsInRavenDb.cs" />
     <Compile Include="ProjectionEventNumber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RavenStreamManagerSettings.cs" />
     <Compile Include="SetupRavenDbStreamManagerConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>

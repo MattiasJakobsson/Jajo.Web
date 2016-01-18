@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net;
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.Common.Log;
 using EventStore.ClientAPI.Projections;
 using EventStore.ClientAPI.SystemData;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.Data
 {
@@ -14,12 +14,11 @@ namespace SuperGlue.EventStore.Data
     {
         private readonly ConnectionOptions _connectionOptions;
 
-        public EventStoreConnectionString(string connectionStringName)
+        public EventStoreConnectionString(string connectionStringName, IApplicationConfiguration configuration)
         {
-            var connectionString = ConfigurationManager.ConnectionStrings[connectionStringName];
+            var connectionString = configuration.GetConnectionString(connectionStringName);
 
             var options = connectionString
-                .ConnectionString
                 .Split(';')
                 .Select(x => new ConnectionPart(x))
                 .ToDictionary(x => x.Name, x => x.Value);

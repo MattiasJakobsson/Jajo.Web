@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Configuration;
 using System.Threading.Tasks;
 using StackExchange.Redis;
 using SuperGlue.Configuration;
@@ -14,21 +13,21 @@ namespace SuperGlue.Caching.Redis
             {
                 environment.RegisterTransient(typeof(ICache), typeof(RedisCacheProvider));
                 environment.RegisterTransient(typeof(IRedisDataSerializer), typeof(DefaultRedisDataSerializer));
+                environment.AlterSettings<RedisCacheSettings>(x =>
+                {
+                    var connectionString = environment.Resolve<IApplicationConfiguration>().GetConnectionString("Redis.Cache");
 
-                var connectionString = (environment.GetSettings<RedisCacheSettings>() ?? new RedisCacheSettings()).ConnectionString;
+                    if (string.IsNullOrEmpty(connectionString))
+                        connectionString = "localhost:6379,abortConnect=false";
 
-                if(string.IsNullOrEmpty(connectionString))
-                    return Task.CompletedTask;
+                    if (string.IsNullOrEmpty(x.ConnectionString))
+                        x.UseConnectionString(connectionString);
+                });
 
-                environment.RegisterSingleton(typeof(ConnectionMultiplexer), (x, y) => ConnectionMultiplexer.Connect(connectionString));
+                environment.RegisterSingleton(typeof(ConnectionMultiplexer), (x, y) => ConnectionMultiplexer.Connect(y.GetSettings<RedisCacheSettings>().ConnectionString));
 
                 return Task.CompletedTask;
-            }, "superglue.CacheSetup", configureAction: settings =>
-            {
-                settings.WithSettings<RedisCacheSettings>().UseConnectionString(ConfigurationManager.ConnectionStrings["Redis.Cache"].ConnectionString);
-
-                return Task.CompletedTask;
-            });
+            }, "superglue.CacheSetup");
         }
     }
 }

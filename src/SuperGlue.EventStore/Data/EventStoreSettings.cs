@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using EventStore.ClientAPI;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.EventStore.Data
 {
@@ -51,9 +52,9 @@ namespace SuperGlue.EventStore.Data
             return this;
         }
 
-        internal Tuple<EventStoreConnectionString, IEventStoreConnection> CreateConnection()
+        internal Tuple<EventStoreConnectionString, IEventStoreConnection> CreateConnection(IApplicationConfiguration configuration)
         {
-            var connectionString = new EventStoreConnectionString(ConnectionStringName);
+            var connectionString = new EventStoreConnectionString(ConnectionStringName, configuration);
 
             var connection = connectionString.CreateConnection(x =>
             {
