@@ -18,9 +18,9 @@ namespace SuperGlue.Configuration
             _bootstrapper = SuperGlueBootstrapper.Find();
         }
 
-        public void Start(string environment, IEnumerable<string> nodeTypes)
+        public void Start(string environment)
         {
-            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, nodeTypes).Wait();
+            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment).Wait();
         }
 
         public void Stop()

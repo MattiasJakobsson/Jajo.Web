@@ -58,11 +58,6 @@ namespace SuperGlue.EventStore.ProcessManagers
             return buildApp.Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions(true)).Use<ExecuteProcessManager>().Build();
         }
 
-        public NodeTypeRequirements SetupRequirements(NodeTypeRequirements nodeTypeRequirements)
-        {
-            return nodeTypeRequirements;
-        }
-
         private async Task SubscribeProcessManager(AppFunc chain, IManageProcess currentProcessManager, IDictionary<string, object> environment)
         {
             environment.Log("Subscribing processmanager: {0}", LogLevel.Debug, currentProcessManager.ProcessName);

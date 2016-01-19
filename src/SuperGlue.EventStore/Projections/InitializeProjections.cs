@@ -65,11 +65,6 @@ namespace SuperGlue.EventStore.Projections
                 .Build();
         }
 
-        public NodeTypeRequirements SetupRequirements(NodeTypeRequirements nodeTypeRequirements)
-        {
-            return nodeTypeRequirements.RequireNodeType("master");
-        }
-
         private async Task SubscribeProjection(IEventStoreProjection currentEventStoreProjection, AppFunc chain, IDictionary<string, object> environment)
         {
             environment.Log("Subscribing projection: {0}", LogLevel.Debug, currentEventStoreProjection.ProjectionName);

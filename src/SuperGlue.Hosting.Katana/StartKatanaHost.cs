@@ -45,10 +45,5 @@ namespace SuperGlue.Hosting.Katana
         {
             return null;
         }
-
-        public NodeTypeRequirements SetupRequirements(NodeTypeRequirements nodeTypeRequirements)
-        {
-            return nodeTypeRequirements;
-        }
     }
 }

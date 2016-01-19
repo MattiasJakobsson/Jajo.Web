@@ -53,11 +53,6 @@ namespace SuperGlue.EventStore.Subscribers
             return Task.CompletedTask;
         }
 
-        public NodeTypeRequirements SetupRequirements(NodeTypeRequirements nodeTypeRequirements)
-        {
-            return nodeTypeRequirements;
-        }
-
         public AppFunc GetDefaultChain(IBuildAppFunction buildApp, IDictionary<string, object> settings, string environment)
         {
             settings.Log("Getting default chain for subscribers for environment: {0}", LogLevel.Debug, environment);

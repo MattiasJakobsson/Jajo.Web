@@ -38,10 +38,5 @@ namespace SuperGlue.Monitoring
                 .Use<InvokeHeartBeat>()
                 .Build();
         }
-
-        public NodeTypeRequirements SetupRequirements(NodeTypeRequirements nodeTypeRequirements)
-        {
-            return nodeTypeRequirements;
-        }
     }
 }

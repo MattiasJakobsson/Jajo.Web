@@ -17,12 +17,12 @@ namespace SuperGlue.Configuration
         private readonly IDictionary<string, AppFunc> _chains = new ConcurrentDictionary<string, AppFunc>();
         private readonly IDictionary<Type, object> _settings = new ConcurrentDictionary<Type, object>();
         private readonly IDictionary<string, ChainSettings> _chainSettings = new ConcurrentDictionary<string, ChainSettings>();
-        private IEnumerable<ConfiguredAppStarter> _appStarters;
+        private IEnumerable<IStartApplication> _appStarters;
         private IReadOnlyCollection<ConfigurationSetupResult> _setups;
         private IDictionary<string, object> _environment;
         private string _applicationEnvironment;
 
-        public virtual async Task StartApplications(IDictionary<string, object> settings, string environment, IEnumerable<string> nodeTypes, int retryCount = 10, TimeSpan? retryInterval = null)
+        public virtual async Task StartApplications(IDictionary<string, object> settings, string environment, int retryCount = 10, TimeSpan? retryInterval = null)
         {
             var tries = 0;
             Exception lastException = null;
@@ -31,7 +31,7 @@ namespace SuperGlue.Configuration
             {
                 try
                 {
-                    await Start(settings, environment, nodeTypes).ConfigureAwait(false);
+                    await Start(settings, environment).ConfigureAwait(false);
                     return;
                 }
                 catch (Exception ex)
@@ -48,20 +48,9 @@ namespace SuperGlue.Configuration
 
         public virtual async Task ShutDown()
         {
-            _environment.StopNodeChangeListeners();
-
-            var startedAppStarters = (_appStarters ?? new List<ConfiguredAppStarter>()).Where(x => x.Started).ToList();
-
             await _environment.Publish(ConfigurationEvents.BeforeApplicationShutDown).ConfigureAwait(false);
 
-            var actions = new ConcurrentBag<Task>();
-
-            Parallel.ForEach(startedAppStarters, x =>
-            {
-                actions.Add(x.ShutDown(_environment));
-            });
-
-            await Task.WhenAll(actions).ConfigureAwait(false);
+            await RunShutdowns().ConfigureAwait(false);
 
             await _environment.Publish(ConfigurationEvents.AfterApplicationShutDown).ConfigureAwait(false);
 
@@ -72,7 +61,7 @@ namespace SuperGlue.Configuration
 
         protected abstract Task Configure(string environment);
 
-        protected virtual async Task Start(IDictionary<string, object> settings, string environment, IEnumerable<string> nodeTypes)
+        protected virtual async Task Start(IDictionary<string, object> settings, string environment)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -82,8 +71,6 @@ namespace SuperGlue.Configuration
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
             if (!basePath.EndsWith("\\"))
                 basePath = $"{basePath}\\";
-
-            settings.InitializeNodeTypes(nodeTypes.ToArray());
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ResolvePathFunc] = (Func<string, string>)(x => x.Replace("~", basePath));
 
@@ -113,18 +100,11 @@ namespace SuperGlue.Configuration
 
             _appStarters = settings
                 .ResolveAll<IStartApplication>()
-                .Select(x => new ConfiguredAppStarter(x))
                 .ToList();
 
             settings["superglue.ApplicationStarters"] = _appStarters;
 
-            var currentNodeTypes = settings.GetCurrentNodeTypes().ToList();
-
-            await RunStarters(currentNodeTypes).ConfigureAwait(false);
-
-            settings.ListenToNodeTypeChanges((type, changeType, currentTypes) => RunStarters(settings.GetCurrentNodeTypes()));
-
-            await settings.StartNodeChangeListeners().ConfigureAwait(false);
+            await RunStarters().ConfigureAwait(false);
 
             await settings.Publish(ConfigurationEvents.AfterApplicationStart).ConfigureAwait(false);
 
@@ -140,9 +120,9 @@ namespace SuperGlue.Configuration
             })).ConfigureAwait(false);
         }
 
-        private Task RunStarters(IEnumerable<string> currentNodeTypes)
+        protected virtual Task RunStarters()
         {
-            var validAppStart = _appStarters.Where(x => x.Requirements.IsValid(currentNodeTypes)).ToList();
+            var validAppStart = _appStarters.ToList();
 
             var startTasks = new ConcurrentBag<Task>();
 
@@ -160,6 +140,20 @@ namespace SuperGlue.Configuration
             });
 
             return Task.WhenAll(startTasks);
+        }
+
+        protected virtual Task RunShutdowns()
+        {
+            var appStarters = _appStarters ?? new List<IStartApplication>();
+
+            var actions = new ConcurrentBag<Task>();
+
+            Parallel.ForEach(appStarters, x =>
+            {
+                actions.Add(x.ShutDown(_environment));
+            });
+
+            return Task.WhenAll(actions);
         }
 
         protected virtual object GetSettings(Type settingsType)

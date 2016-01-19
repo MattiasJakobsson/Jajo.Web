@@ -29,10 +29,5 @@ namespace SuperGlue.CommandSender
                 .Use<ExecuteCurrentCommand>()
                 .Build();
         }
-
-        public NodeTypeRequirements SetupRequirements(NodeTypeRequirements nodeTypeRequirements)
-        {
-            return nodeTypeRequirements;
-        }
     }
 }

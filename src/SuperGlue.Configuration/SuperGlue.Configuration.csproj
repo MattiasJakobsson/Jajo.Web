@@ -68,7 +68,6 @@
     <Compile Include="ChainSettings.cs" />
     <Compile Include="ConfigFileConfigurationSource.cs" />
     <Compile Include="ConfigurationEvents.cs" />
-    <Compile Include="ConfiguredAppStarter.cs" />
     <Compile Include="ConfigureEnvironment.cs" />
     <Compile Include="ConfigurationFile.cs" />
     <Compile Include="ConfigurationsEnvironmentExtensions.cs" />
@@ -89,8 +88,6 @@
     <Compile Include="IStartApplication.cs" />
     <Compile Include="IWrapMiddleware.cs" />
     <Compile Include="NodeChangeType.cs" />
-    <Compile Include="NodeTypeExtensions.cs" />
-    <Compile Include="NodeTypeRequirements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteBootstrapper.cs" />
     <Compile Include="SettingsConfiguration.cs" />

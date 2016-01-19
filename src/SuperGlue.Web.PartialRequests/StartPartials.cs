@@ -27,10 +27,5 @@ namespace SuperGlue.Web.PartialRequests
         {
             return null;
         }
-
-        public NodeTypeRequirements SetupRequirements(NodeTypeRequirements nodeTypeRequirements)
-        {
-            return nodeTypeRequirements;
-        }
     }
 }
