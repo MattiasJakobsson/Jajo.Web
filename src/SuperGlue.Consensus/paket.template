@@ -1,0 +1,10 @@
+﻿type file
+id SuperGlue.Consensus
+version 1.0
+authors Mattias Jakobsson
+description
+        Authorization middleware
+files
+    bin/Release/SuperGlue.Consensus.dll ==> lib
+dependencies
+	SuperGlue.Configuration
