@@ -75,10 +75,12 @@
     <Compile Include="ConfigurationSetupResult.cs" />
     <Compile Include="Continue.cs" />
     <Compile Include="DefaultApplicationConfiguration.cs" />
+    <Compile Include="DefaultApplicationEvents.cs" />
     <Compile Include="EmptyEnd.cs" />
     <Compile Include="EnvironmentVariableConfigurationSource.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="IApplicationConfiguration.cs" />
+    <Compile Include="IApplicationEvents.cs" />
     <Compile Include="IBuildAppFunction.cs" />
     <Compile Include="IConfigurationSource.cs" />
     <Compile Include="IEndThings.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="RemoteBootstrapper.cs" />
     <Compile Include="SettingsConfiguration.cs" />
     <Compile Include="SetupApplicationConfigurations.cs" />
+    <Compile Include="SetupApplicationEvents.cs" />
     <Compile Include="SetupMiddlewareWrappersConfiguration.cs" />
     <Compile Include="StreamExtensions.cs" />
     <Compile Include="SuperGlueBootstrapper.cs" />

@@ -28,7 +28,7 @@ namespace SuperGlue.Diagnostics
                         return Task.CompletedTask;
 
                     var manager = environment.Resolve<IManageDiagnosticsInformation>();
-
+                    
                     return manager.AddDiagnostics(y, z, a, new DiagnosticsData(b.Item1, b.Item2.ToDictionary(c => c.Key, c => (c.Value as IDiagnosticsValue) ?? new ObjectDiagnosticsValue(c.Value))));
                 });
 
