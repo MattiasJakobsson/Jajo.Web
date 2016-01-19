@@ -62,7 +62,15 @@ namespace SuperGlue.Consensus.LeaderElection.Consul
             while (!cancellationToken.IsCancellationRequested)
             {
                 if (!consulLock.IsHeld)
+                {
+                    if (_currentRole != NodeRole.Follower)
+                    {
+                        _applicationEvents.Publish(new NodeRoleTransitioned(NodeRole.Follower));
+                        _currentRole = NodeRole.Follower;
+                    }
+
                     consulLock.Acquire(cancellationToken);
+                }
 
                 while (!cancellationToken.IsCancellationRequested && consulLock.IsHeld)
                 {
@@ -73,12 +81,6 @@ namespace SuperGlue.Consensus.LeaderElection.Consul
                     }
 
                     await Task.Delay(TimeSpan.FromSeconds(10), cancellationToken).ConfigureAwait(false);
-                }
-
-                if (_currentRole != NodeRole.Follower && !consulLock.IsHeld)
-                {
-                    _applicationEvents.Publish(new NodeRoleTransitioned(NodeRole.Follower));
-                    _currentRole = NodeRole.Follower;
                 }
             }
         }
