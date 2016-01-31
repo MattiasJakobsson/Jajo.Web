@@ -9,13 +9,13 @@ namespace SuperGlue.Discovery.Consul
 {
     public class HandleConsulRegistration : IApplicationTask
     {
-        public Task Start(IDictionary<string, object> environment)
+        public async Task Start(IDictionary<string, object> environment)
         {
             var settings = environment.GetSettings<ConsulServiceSettings>();
 
             var client = settings.CreateClient();
 
-            client.Agent.ServiceRegister(new AgentServiceRegistration
+            await client.Agent.ServiceRegister(new AgentServiceRegistration
             {
                 Name = settings.Name,
                 ID = settings.Id,
@@ -23,20 +23,16 @@ namespace SuperGlue.Discovery.Consul
                 Port = settings.Port,
                 Tags = settings.GetTags(),
                 Checks = settings.GetChecks()
-            });
-
-            return Task.CompletedTask;
+            }).ConfigureAwait(false);
         }
 
-        public Task ShutDown(IDictionary<string, object> environment)
+        public async Task ShutDown(IDictionary<string, object> environment)
         {
             var settings = environment.GetSettings<ConsulServiceSettings>();
 
             var client = settings.CreateClient();
 
-            client.Agent.ServiceDeregister(settings.Id);
-
-            return Task.CompletedTask;
+            await client.Agent.ServiceDeregister(settings.Id).ConfigureAwait(false);
         }
 
         public Task Exception(IDictionary<string, object> environment, Exception exception)

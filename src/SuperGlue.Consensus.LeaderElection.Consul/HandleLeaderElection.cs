@@ -15,6 +15,7 @@ namespace SuperGlue.Consensus.LeaderElection.Consul
         private static readonly CancellationTokenSource CancellationTokenSource = new CancellationTokenSource();
         private readonly IApplicationEvents _applicationEvents;
         private NodeRole _currentRole = NodeRole.Follower;
+        private IDistributedLock _lock;
 
         public HandleLeaderElection(IApplicationEvents applicationEvents)
         {
@@ -27,9 +28,9 @@ namespace SuperGlue.Consensus.LeaderElection.Consul
 
             var client = consulServiceSettings.CreateClient();
 
-            var consulLock = client.CreateLock($"service/{consulServiceSettings.Name}/leader");
+            _lock = client.CreateLock($"service/{consulServiceSettings.Name}/leader");
 
-            StartLeaderElection(consulLock, CancellationTokenSource.Token);
+            StartLeaderElection(_lock, CancellationTokenSource.Token);
 
             return Task.CompletedTask;
         }
@@ -37,6 +38,9 @@ namespace SuperGlue.Consensus.LeaderElection.Consul
         public Task ShutDown(IDictionary<string, object> environment)
         {
             CancellationTokenSource.Cancel();
+
+            if(_lock != null && _lock.IsHeld)
+                _lock.Release();
 
             return Task.CompletedTask;
         }

@@ -75,14 +75,14 @@ namespace SuperGlue.Discovery.Consul
             return _checks.ToArray();
         }
 
-        public Client CreateClient()
+        public ConsulClient CreateClient()
         {
             var settings = new ConsulClientConfiguration();
 
             foreach (var alterSetting in _alterSettings)
                 alterSetting(settings);
 
-            return new Client(settings);
+            return new ConsulClient(settings);
         }
     }
 }

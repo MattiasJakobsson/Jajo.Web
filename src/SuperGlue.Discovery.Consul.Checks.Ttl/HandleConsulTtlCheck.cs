@@ -7,7 +7,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
 {
     public class HandleConsulTtlCheck : IMonitorHeartBeats
     {
-        public Task Beat(IDictionary<string, object> environment)
+        public async Task Beat(IDictionary<string, object> environment)
         {
             var consulServiceSettings = environment.GetSettings<ConsulServiceSettings>();
             var checkSettings = environment.GetSettings<ConsulTtlCheckSettings>();
@@ -19,17 +19,15 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
             switch (response.Status)
             {
                 case CheckStatus.Pass:
-                    client.Agent.PassTTL(consulServiceSettings.Id, response.Note);
+                    await client.Agent.PassTTL(consulServiceSettings.Id, response.Note).ConfigureAwait(false);
                     break;
                 case CheckStatus.Warn:
-                    client.Agent.WarnTTL(consulServiceSettings.Id, response.Note);
+                    await client.Agent.WarnTTL(consulServiceSettings.Id, response.Note).ConfigureAwait(false);
                     break;
                 case CheckStatus.Fail:
-                    client.Agent.FailTTL(consulServiceSettings.Id, response.Note);
+                    await client.Agent.FailTTL(consulServiceSettings.Id, response.Note).ConfigureAwait(false);
                     break;
             }
-
-            return Task.CompletedTask;
         }
     }
 }
