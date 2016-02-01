@@ -1,42 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace SuperGlue.FeatureToggler
 {
     public class FeatureSettings
     {
-        private readonly IList<Type> _enabledFeatures = new List<Type>();
+        private readonly IList<string> _enabledFeatures = new List<string>();
 
-        public FeatureSettings EnabledFeature<TFeature>() where TFeature : IFeature
+        public FeatureSettings EnabledFeature(string feature)
         {
-            return EnabledFeature(typeof(TFeature));
-        }
-
-        public FeatureSettings DisableFeature<TFeature>() where TFeature : IFeature
-        {
-            return DisableFeature(typeof(TFeature));
-        }
-
-        public FeatureSettings EnabledFeature(Type featureType)
-        {
-            if (!_enabledFeatures.Contains(featureType))
-                _enabledFeatures.Add(featureType);
+            if (!_enabledFeatures.Contains(feature))
+                _enabledFeatures.Add(feature);
 
             return this;
         }
 
-        public FeatureSettings DisableFeature(Type featureType)
+        public FeatureSettings DisableFeature(string feature)
         {
-            if (_enabledFeatures.Contains(featureType))
-                _enabledFeatures.Remove(featureType);
+            if (_enabledFeatures.Contains(feature))
+                _enabledFeatures.Remove(feature);
 
             return this;
         }
 
-        internal IReadOnlyCollection<Type> GetEnabledFeatures()
+        internal IReadOnlyCollection<string> GetEnabledFeatures()
         {
-            return new ReadOnlyCollection<Type>(_enabledFeatures);
+            return new ReadOnlyCollection<string>(_enabledFeatures);
         }
     }
 }

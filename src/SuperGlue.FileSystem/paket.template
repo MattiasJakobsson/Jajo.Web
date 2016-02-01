@@ -1,0 +1,10 @@
+﻿type file
+id SuperGlue.FileSystem
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.FileSystem.dll ==> lib
+dependencies
+	SuperGlue.Configuration

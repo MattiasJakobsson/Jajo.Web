@@ -17,6 +17,8 @@ nuget JaJo.Projects.Templating
 nuget Microsoft.CodeAnalysis.CSharp
 nuget Microsoft.Owin.Host.SystemWeb
 nuget Microsoft.Owin.SelfHost
+nuget Microsoft.WindowsAzure.Management.Storage
+nuget Microsoft.WindowsAzure.StorageClient
 nuget NLog
 nuget Newtonsoft.Json
 nuget Owin

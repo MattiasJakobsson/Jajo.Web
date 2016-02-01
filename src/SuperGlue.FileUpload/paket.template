@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.FileUpload
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.FileUpload.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.FileSystem

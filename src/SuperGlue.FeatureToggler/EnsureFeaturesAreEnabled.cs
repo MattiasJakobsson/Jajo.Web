@@ -28,41 +28,22 @@ namespace SuperGlue.FeatureToggler
         {
             var featuresChecker = environment.Resolve<ICheckIfFeatureIsEnabled>();
 
-            //TODO:Use static caching so we don't have to use reflection every time
-            var featureTypes = _settings
-                .GetInputsToCheck(environment)
-                .SelectMany(x => x.GetInterfaces())
-                .Where(x => x.GenericTypeArguments.Length == 1 && typeof(IFeature).IsAssignableFrom(x.GenericTypeArguments[0]) && typeof(IBelongToFeature<>).MakeGenericType(x.GenericTypeArguments[0]) == x)
-                .Select(x => x.GenericTypeArguments[0])
+            var features = (await _settings
+                .GetInputsToCheck(environment).ConfigureAwait(false))
+                .SelectMany(x => x.GetFeatures())
                 .ToList();
 
-            foreach (var feature in featureTypes)
+            foreach (var feature in features)
             {
                 var currentFeatureType = feature;
 
-                while (currentFeatureType != null && typeof(IFeature).IsAssignableFrom(currentFeatureType))
-                {
-                    if (!await featuresChecker.IsEnabled(currentFeatureType, environment).ConfigureAwait(false))
-                    {
-                        environment[FeatureEnvironmentExtensions.FeatureConstants.FeatureValidationFailed] = true;
-                        return;
-                    }
+                if (await featuresChecker.IsEnabled(currentFeatureType, environment).ConfigureAwait(false)) continue;
 
-                    currentFeatureType = currentFeatureType.BaseType;
-                }
+                environment[FeatureEnvironmentExtensions.FeatureConstants.FeatureValidationFailed] = true;
+                return;
             }
 
             await _next(environment).ConfigureAwait(false);
         }
-    }
-
-    public class EnsureFeaturesAreEnabledSettings
-    {
-        public EnsureFeaturesAreEnabledSettings(Func<IDictionary<string, object>, IEnumerable<Type>> getInputsToCheck)
-        {
-            GetInputsToCheck = getInputsToCheck;
-        }
-
-        public Func<IDictionary<string, object>, IEnumerable<Type>> GetInputsToCheck { get; }
     }
 }

@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using SuperGlue.ExceptionManagement;
 using SuperGlue.FeatureToggler;
-using SuperGlue.Monitoring;
 using SuperGlue.RequestBranching;
 using SuperGlue.Security.Authorization;
 using SuperGlue.StructureMap;
@@ -25,13 +23,25 @@ namespace SuperGlue.Web.Sample
         protected override async Task Configure(string environment)
         {
             AlterSettings<RouteSettings>(x => x.UsePolicy(new QueryCommandMethodRoutePolicy(new List<Assembly> { GetType().Assembly })));
-            AlterSettings<HeartBeatSettings>(x => x.HeartBeatTo(new PostHeartBeatToUrl("http://google.com"), TimeSpan.FromSeconds(10)));
 
             await AddChain("chains.Partials", app =>
             {
                 app
                     .Use<RouteUsingSuperscribe>()
-                    .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(x => x.GetRouteInformation().InputTypes))
+                    .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(async x =>
+                    {
+                        var result = new List<IBelongToFeatures>();
+
+                        foreach (var inputType in x.GetRouteInformation().InputTypes)
+                        {
+                            var belongToFeature = (await x.Bind(inputType).ConfigureAwait(false)) as IBelongToFeatures;
+
+                            if (belongToFeature != null)
+                                result.Add(belongToFeature);
+                        }
+
+                        return result;
+                    }))
                     .Use<AuthorizeRequest>()
                     .Use<ExecuteEndpoint>()
                     .Use<RenderOutput>();
@@ -67,7 +77,20 @@ namespace SuperGlue.Web.Sample
                     .Use<BindModels>()
                     .Use<RouteUsingSuperscribe>()
                     .Use<HandleUnitOfWork>(new HandleUnitOfWorkOptions())
-                    .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(x => x.GetRouteInformation().InputTypes))
+                    .Use<EnsureFeaturesAreEnabled>(new EnsureFeaturesAreEnabledSettings(async x =>
+                    {
+                        var result = new List<IBelongToFeatures>();
+
+                        foreach (var inputType in x.GetRouteInformation().InputTypes)
+                        {
+                            var belongToFeature = (await x.Bind(inputType).ConfigureAwait(false)) as IBelongToFeatures;
+
+                            if (belongToFeature != null)
+                                result.Add(belongToFeature);
+                        }
+
+                        return result;
+                    }))
                     .Use<AuthorizeRequest>()
                     .Use<ValidateRequest>()
                     .Use<ExecuteEndpoint>()

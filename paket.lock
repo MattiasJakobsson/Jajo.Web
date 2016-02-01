@@ -19,15 +19,30 @@ NUGET
       Newtonsoft.Json (>= 7.0.1)
       Tavis.UriTemplates (>= 0.6.4)
     HtmlTags (3.0.0.186)
+    Hyak.Common (1.1.0)
+      Microsoft.Bcl (>= 1.1.9) - framework: portable-net403+win+wpa81
+      Microsoft.Bcl.Async (>= 1.0.168) - framework: portable-net403+win+wpa81
+      Microsoft.Bcl.Build (>= 1.0.14) - framework: portable-net403+win+wpa81
+      Microsoft.Net.Http (>= 2.2.22) - framework: portable-net403+win+wpa81
+      Newtonsoft.Json (>= 7.0.1) - framework: portable-net403+win+wpa81
     JsonFx (2.0.1209.2802)
     Microsoft.AspNet.WebApi.Client (5.2.3)
       Microsoft.Net.Http (>= 2.2.22) - framework: portable-wp80+win+net45+wp81+wpa81
       Newtonsoft.Json (>= 6.0.4) - framework: >= net45, portable-wp80+win+net45+wp81+wpa81
-    Microsoft.Bcl (1.1.10) - framework: net40, portable-wp80+win+net45+wp81+wpa81
+    Microsoft.Azure.Common (2.1.0)
+      Hyak.Common (>= 1.0.2)
+      Microsoft.Azure.Common.Dependencies (>= 1.0.0)
+    Microsoft.Azure.Common.Dependencies (1.0.0)
+      Microsoft.Bcl (>= 1.1.9) - framework: >= net40, portable-net45+wp80+wpa81+win
+      Microsoft.Bcl.Async (>= 1.0.168) - framework: >= net40, portable-net45+wp80+wpa81+win
+      Microsoft.Bcl.Build (>= 1.0.14) - framework: >= net40, portable-net45+wp80+wpa81+win
+      Microsoft.Net.Http (>= 2.2.22) - framework: >= net40, portable-net45+wp80+wpa81+win
+      Newtonsoft.Json (>= 6.0.4) - framework: >= net40, portable-net45+wp80+wpa81+win
+    Microsoft.Bcl (1.1.10) - framework: >= net40, portable-net403+win+wpa81, portable-net45+wp80+wpa81+win, portable-wp80+win+net45+wp81+wpa81
       Microsoft.Bcl.Build (>= 1.0.14)
-    Microsoft.Bcl.Async (1.0.168) - framework: net40
+    Microsoft.Bcl.Async (1.0.168) - framework: >= net40, portable-net403+win+wpa81, portable-net45+wp80+wpa81+win
       Microsoft.Bcl (>= 1.1.8)
-    Microsoft.Bcl.Build (1.0.21) - import_targets: false, framework: net40, portable-wp80+win+net45+wp81+wpa81
+    Microsoft.Bcl.Build (1.0.21) - import_targets: false, framework: >= net40, portable-net403+win+wpa81, portable-net45+wp80+wpa81+win, portable-wp80+win+net45+wp81+wpa81
     Microsoft.CodeAnalysis.Analyzers (1.1.0)
     Microsoft.CodeAnalysis.Common (1.1.1)
       Microsoft.CodeAnalysis.Analyzers (>= 1.1.0)
@@ -35,7 +50,7 @@ NUGET
       System.Reflection.Metadata (>= 1.1.0)
     Microsoft.CodeAnalysis.CSharp (1.1.1)
       Microsoft.CodeAnalysis.Common (1.1.1)
-    Microsoft.Net.Http (2.2.29) - framework: portable-wp80+win+net45+wp81+wpa81
+    Microsoft.Net.Http (2.2.29) - framework: >= net40, portable-net403+win+wpa81, portable-net45+wp80+wpa81+win, portable-wp80+win+net45+wp81+wpa81
       Microsoft.Bcl (>= 1.1.10)
       Microsoft.Bcl.Build (>= 1.0.14)
     Microsoft.Owin (3.0.1)
@@ -56,6 +71,9 @@ NUGET
       Microsoft.Owin.Host.HttpListener (>= 3.0.1)
       Microsoft.Owin.Hosting (>= 3.0.1)
       Owin (>= 1.0)
+    Microsoft.WindowsAzure.Management.Storage (5.1.1)
+      Microsoft.Azure.Common (>= 2.0.4 < 3.0)
+    Microsoft.WindowsAzure.StorageClient (1.0.0)
     Newtonsoft.Json (8.0.2)
     NLog (4.2.3)
     Owin (1.0)

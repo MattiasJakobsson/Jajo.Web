@@ -1,0 +1,12 @@
+﻿type file
+id SuperGlue.Localization
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Localization.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.UnitOfWork
+	SuperGlue.FileSystem

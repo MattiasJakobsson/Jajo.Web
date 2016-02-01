@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.FileUpload.Azure
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.FileUpload.Azure.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.FileUpload

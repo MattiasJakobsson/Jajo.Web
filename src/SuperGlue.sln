@@ -148,6 +148,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Consensus", "Supe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Consensus.LeaderElection.Consul", "SuperGlue.Consensus.LeaderElection.Consul\SuperGlue.Consensus.LeaderElection.Consul.csproj", "{D50F89F6-6B82-4E59-AE03-077F01138401}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Localization", "SuperGlue.Localization\SuperGlue.Localization.csproj", "{A0F1C4AC-A69C-4895-B66D-4A1229A59133}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.FileSystem", "SuperGlue.FileSystem\SuperGlue.FileSystem.csproj", "{4C9190E4-719F-479E-B609-8A3E65E82BAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.FileUpload", "SuperGlue.FileUpload\SuperGlue.FileUpload.csproj", "{0FEEDD00-2D30-4FC9-98DA-41C27DD62229}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.FileUpload.Azure", "SuperGlue.FileUpload.Azure\SuperGlue.FileUpload.Azure.csproj", "{0F0897D0-EF44-4327-96D5-FFB3966B884D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -366,6 +374,22 @@ Global
 		{D50F89F6-6B82-4E59-AE03-077F01138401}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D50F89F6-6B82-4E59-AE03-077F01138401}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D50F89F6-6B82-4E59-AE03-077F01138401}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0F1C4AC-A69C-4895-B66D-4A1229A59133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0F1C4AC-A69C-4895-B66D-4A1229A59133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0F1C4AC-A69C-4895-B66D-4A1229A59133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0F1C4AC-A69C-4895-B66D-4A1229A59133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C9190E4-719F-479E-B609-8A3E65E82BAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C9190E4-719F-479E-B609-8A3E65E82BAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C9190E4-719F-479E-B609-8A3E65E82BAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C9190E4-719F-479E-B609-8A3E65E82BAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FEEDD00-2D30-4FC9-98DA-41C27DD62229}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FEEDD00-2D30-4FC9-98DA-41C27DD62229}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FEEDD00-2D30-4FC9-98DA-41C27DD62229}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FEEDD00-2D30-4FC9-98DA-41C27DD62229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F0897D0-EF44-4327-96D5-FFB3966B884D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F0897D0-EF44-4327-96D5-FFB3966B884D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F0897D0-EF44-4327-96D5-FFB3966B884D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0897D0-EF44-4327-96D5-FFB3966B884D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

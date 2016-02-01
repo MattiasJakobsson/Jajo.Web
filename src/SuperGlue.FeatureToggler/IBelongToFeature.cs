@@ -1,7 +1,9 @@
-﻿namespace SuperGlue.FeatureToggler
-{
-    public interface IBelongToFeature<TFeature> where TFeature : IFeature
-    {
+﻿using System.Collections.Generic;
 
+namespace SuperGlue.FeatureToggler
+{
+    public interface IBelongToFeatures
+    {
+        IEnumerable<string> GetFeatures();
     }
 }
