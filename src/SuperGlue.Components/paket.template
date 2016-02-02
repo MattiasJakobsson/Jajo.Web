@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.Components
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Components.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.ContentParsing

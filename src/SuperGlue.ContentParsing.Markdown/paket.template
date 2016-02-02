@@ -1,0 +1,11 @@
+﻿type file
+id SuperGlue.ContentParsing.Markdown
+version 1.0
+authors Mattias Jakobsson
+description
+        Authorization middleware
+files
+    bin/Release/SuperGlue.ContentParsing.Markdown.dll ==> lib
+dependencies
+	SuperGlue.ContentParsing
+	MarkdownSharp
