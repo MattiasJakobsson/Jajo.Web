@@ -44,7 +44,8 @@ namespace SuperGlue.Web.Sample
                     }))
                     .Use<AuthorizeRequest>()
                     .Use<ExecuteEndpoint>()
-                    .Use<RenderOutput>();
+                    .Use<RenderOutput>()
+                    .Use<WriteToOutput>();
             }).ConfigureAwait(false);
 
             await AddChain("chains.Web", app =>
@@ -94,7 +95,8 @@ namespace SuperGlue.Web.Sample
                     .Use<AuthorizeRequest>()
                     .Use<ValidateRequest>()
                     .Use<ExecuteEndpoint>()
-                    .Use<RenderOutput>();
+                    .Use<RenderOutput>()
+                    .Use<WriteToOutput>();
             }, x => x.SetWebApplicationRoot("/test/")).ConfigureAwait(false);
         }
     }

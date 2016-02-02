@@ -20,6 +20,7 @@ namespace SuperGlue.Web.Output
                     .When(y => (y.GetOutput() as IRedirectable) != null).UseRenderer(new RenderRedirectOutput()));
 
                 environment.RegisterTransient(typeof(IRenderToOutput), typeof(DefaultOutputRenderer));
+                environment.RegisterTransient(typeof(IWriteToOutput), typeof(DefaultOutputWriter));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

@@ -59,11 +59,14 @@
     </Compile>
     <Compile Include="ConfigureOutput.cs" />
     <Compile Include="DefaultOutputRenderer.cs" />
+    <Compile Include="DefaultOutputWriter.cs" />
     <Compile Include="IRedirectable.cs" />
     <Compile Include="IRenderOutput.cs" />
     <Compile Include="IRenderToOutput.cs" />
     <Compile Include="ISuperGlueView.cs" />
+    <Compile Include="IWriteToOutput.cs" />
     <Compile Include="MimeType.cs" />
+    <Compile Include="OutputExtensions.cs" />
     <Compile Include="OutputRenderingResult.cs" />
     <Compile Include="OutputSettingsExtensions.cs" />
     <Compile Include="OutputSettings.cs" />
@@ -74,6 +77,7 @@
     <Compile Include="RenderRedirectOutput.cs" />
     <Compile Include="RenderStreamOutput.cs" />
     <Compile Include="RenderStringOutput.cs" />
+    <Compile Include="WriteToOutput.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.references" />

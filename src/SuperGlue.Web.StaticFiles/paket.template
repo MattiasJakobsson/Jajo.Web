@@ -1,0 +1,12 @@
+﻿type file
+id SuperGlue.Web.StaticFiles
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Web.StaticFiles.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.FileSystem
+	SuperGlue.Web.Output

@@ -22,6 +22,13 @@ namespace SuperGlue.Web.Routing.Superscribe
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
+            if (environment.GetRouteInformation().RoutedTo != null)
+            {
+                await _next(environment).ConfigureAwait(false);
+
+                return;
+            }
+
             var path = environment.GetRequest().Path + "?" + environment.GetRequest().QueryString;
             var method = environment.GetRequest().Method;
 
