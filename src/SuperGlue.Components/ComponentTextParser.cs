@@ -17,7 +17,7 @@ namespace SuperGlue.Components
             _componentSources = componentSources;
         }
 
-        protected override async Task<object> FindParameterValue(IDictionary<string, object> environment, Match match, Func<string, string> recurse)
+        protected override async Task<object> FindParameterValue(IDictionary<string, object> environment, Match match, Func<string, Task<string>> recurse)
         {
             var componentNameGroup = match.Groups["componentName"];
 
@@ -45,7 +45,7 @@ namespace SuperGlue.Components
 
             var result = await Read(environment, data, component).ConfigureAwait(false);
 
-            return recurse(result);
+            return await recurse(result);
         }
 
         protected override IEnumerable<Regex> GetRegexes()

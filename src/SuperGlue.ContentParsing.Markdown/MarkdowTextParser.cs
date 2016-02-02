@@ -8,7 +8,7 @@ namespace SuperGlue.ContentParsing.Markdown
 {
     public class MarkdowTextParser : RegexTextParser
     {
-        protected override Task<object> FindParameterValue(IDictionary<string, object> environment, Match match, Func<string, string> recurse)
+        protected override Task<object> FindParameterValue(IDictionary<string, object> environment, Match match, Func<string, Task<string>> recurse)
         {
             var markdownParser = new MarkdownSharp.Markdown(new MarkdownOptions
             {

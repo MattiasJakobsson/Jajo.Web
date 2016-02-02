@@ -11,7 +11,7 @@ namespace SuperGlue.ContentParsing
     {
         protected virtual string SeperateListItemsWith => "\n";
 
-        public async Task<string> Parse(IDictionary<string, object> environment, string text, Func<string, string> recurse)
+        public async Task<string> Parse(IDictionary<string, object> environment, string text, Func<string, Task<string>> recurse)
         {
             text = text ?? "";
 
@@ -36,7 +36,7 @@ namespace SuperGlue.ContentParsing
             return text;
         }
         
-        protected abstract Task<object> FindParameterValue(IDictionary<string, object> environment, Match match, Func<string, string> recurse);
+        protected abstract Task<object> FindParameterValue(IDictionary<string, object> environment, Match match, Func<string, Task<string>> recurse);
         protected abstract IEnumerable<Regex> GetRegexes();
     }
 }
