@@ -60,6 +60,7 @@
     <Compile Include="RegexExtensions.cs" />
     <Compile Include="RegexTextParser.cs" />
     <Compile Include="SetupContentParsingConfiguration.cs" />
+    <Compile Include="TextParserExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="paket.template" />
