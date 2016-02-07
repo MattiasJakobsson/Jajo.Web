@@ -59,7 +59,6 @@
     </Compile>
     <Compile Include="ConfigureWebApiDiscovery.cs" />
     <Compile Include="IRenderApiOutput.cs" />
-    <Compile Include="IRootApiInput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

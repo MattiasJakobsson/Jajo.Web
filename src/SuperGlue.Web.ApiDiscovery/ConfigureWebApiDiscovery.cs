@@ -13,7 +13,6 @@ namespace SuperGlue.Web.ApiDiscovery
             yield return new ConfigurationSetupResult("superglue.WebApiDiscoverySetup", environment =>
             {
                 environment.RegisterAll(typeof(IRenderApiOutput));
-                environment.RegisterAll(typeof(IRootApiInput));
 
                 var apiRenderers = environment.ResolveAll<IRenderApiOutput>();
 
