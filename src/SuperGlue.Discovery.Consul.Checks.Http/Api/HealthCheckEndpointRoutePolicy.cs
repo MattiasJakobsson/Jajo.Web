@@ -17,8 +17,11 @@ namespace SuperGlue.Discovery.Consul.Checks.Http.Api
         {
             yield return new EndpointInformation(typeof(HealthCheckEndpoint).GetMethod("Check"), new List<IUrlPart>
             {
-                new StaticUrlPart(_settings.CheckEndpointRoute)
-            }, new Dictionary<Type, Func<object, IDictionary<string, object>>>(), new[] { "GET" });
+                new StaticUrlPart(_settings.CheckEndpoint.UrlPath)
+            }, new Dictionary<Type, Func<object, IDictionary<string, object>>>
+            {
+                {typeof(HealthCheckInput), x => new Dictionary<string, object>()}
+            }, new[] { "GET" });
         }
     }
 }

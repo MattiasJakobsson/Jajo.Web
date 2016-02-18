@@ -15,17 +15,30 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
             var client = consulServiceSettings.CreateClient();
 
             var response = checkSettings.PerformCheck(environment);
+            var note = response.Note;
 
             switch (response.Status)
             {
                 case CheckStatus.Pass:
-                    await client.Agent.PassTTL(consulServiceSettings.Id, response.Note).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(note))
+                        note = "Pass";
+
+                    await client.Agent.PassTTL($"service:{consulServiceSettings.Id}", note).ConfigureAwait(false);
+
                     break;
                 case CheckStatus.Warn:
-                    await client.Agent.WarnTTL(consulServiceSettings.Id, response.Note).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(note))
+                        note = "Warn";
+
+                    await client.Agent.WarnTTL($"service:{consulServiceSettings.Id}", note).ConfigureAwait(false);
+
                     break;
                 case CheckStatus.Fail:
-                    await client.Agent.FailTTL(consulServiceSettings.Id, response.Note).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(note))
+                        note = "Fail";
+
+                    await client.Agent.FailTTL($"service:{consulServiceSettings.Id}", note).ConfigureAwait(false);
+
                     break;
             }
         }

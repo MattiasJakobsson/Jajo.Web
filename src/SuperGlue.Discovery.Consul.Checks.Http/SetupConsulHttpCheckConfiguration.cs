@@ -17,7 +17,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
             {
                 environment.AlterSettings<ConsulHttpCheckSettings>(x =>
                 {
-                    x.WithInterval(TimeSpan.FromSeconds(10)).WithRoute("_healthcheck");
+                    x.WithInterval(TimeSpan.FromSeconds(10)).WithRoute(new HealthCheckInput(), "_healthcheck");
                 });
 
                 environment.AlterSettings<RouteSettings>(x =>
@@ -56,7 +56,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
                     .WithCheck(new AgentServiceCheck
                     {
                         Interval = httpSettings.Interval,
-                        HTTP = new Uri(binding, httpSettings.CheckEndpointRoute).ToString()
+                        HTTP = new Uri(binding, settings.Settings.RouteTo(httpSettings.CheckEndpoint.Input)).ToString()
                     });
 
                 return Task.CompletedTask;

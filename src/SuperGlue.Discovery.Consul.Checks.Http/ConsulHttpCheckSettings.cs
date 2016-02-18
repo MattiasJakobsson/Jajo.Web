@@ -6,7 +6,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
     public class ConsulHttpCheckSettings
     {
         public Func<IDictionary<string, object>, CheckResponse> Check { get; private set; }
-        public string CheckEndpointRoute { get; private set; }
+        public CheckUrl CheckEndpoint { get; private set; }
         public TimeSpan Interval { get; private set; }
 
         public ConsulHttpCheckSettings WithCheck(Func<IDictionary<string, object>, CheckResponse> check)
@@ -16,9 +16,9 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
             return this;
         }
 
-        public ConsulHttpCheckSettings WithRoute(string route)
+        public ConsulHttpCheckSettings WithRoute(object routedTo, string urlPart)
         {
-            CheckEndpointRoute = route;
+            CheckEndpoint = new CheckUrl(urlPart, routedTo);
 
             return this;
         }
@@ -33,6 +33,18 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
         public CheckResponse PerformCheck(IDictionary<string, object> dictionary)
         {
             return (Check ?? (x => new CheckResponse(CheckStatus.Pass)))(dictionary);
+        }
+
+        public class CheckUrl
+        {
+            public CheckUrl(string urlPath, object input)
+            {
+                UrlPath = urlPath;
+                Input = input;
+            }
+
+            public string UrlPath { get; private set; }
+            public object Input { get; private set; } 
         }
     }
 }

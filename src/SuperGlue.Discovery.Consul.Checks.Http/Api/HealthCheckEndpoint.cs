@@ -15,24 +15,43 @@ namespace SuperGlue.Discovery.Consul.Checks.Http.Api
             _consulHttpCheckSettings = environment.GetSettings<ConsulHttpCheckSettings>();
         }
 
-        public string Check()
+        public string Check(HealthCheckInput input)
         {
             var response = _consulHttpCheckSettings.PerformCheck(_environment);
+
+            var note = response.Note;
 
             switch (response.Status)
             {
                 case CheckStatus.Pass:
                     _environment.GetResponse().StatusCode = 200;
+
+                    if (string.IsNullOrEmpty(note))
+                        note = "Pass";
+
                     break;
                 case CheckStatus.Warn:
                     _environment.GetResponse().StatusCode = 429;
+
+                    if (string.IsNullOrEmpty(note))
+                        note = "Warn";
+
                     break;
                 case CheckStatus.Fail:
                     _environment.GetResponse().StatusCode = 500;
+
+                    if (string.IsNullOrEmpty(note))
+                        note = "Fail";
+
                     break;
             }
 
-            return response.Note;
+            return note;
         }
+    }
+
+    public class HealthCheckInput
+    {
+         
     }
 }
