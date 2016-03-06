@@ -82,6 +82,7 @@
     <Compile Include="IApplicationEvents.cs" />
     <Compile Include="IBuildAppFunction.cs" />
     <Compile Include="IConfigurationSource.cs" />
+    <Compile Include="IDefineChain.cs" />
     <Compile Include="IEndThings.cs" />
     <Compile Include="If.cs" />
     <Compile Include="ISetupConfigurations.cs" />

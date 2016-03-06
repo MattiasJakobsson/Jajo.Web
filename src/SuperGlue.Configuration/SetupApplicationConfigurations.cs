@@ -11,6 +11,7 @@ namespace SuperGlue.Configuration
             {
                 environment.RegisterAll(typeof(IStartApplication));
                 environment.RegisterAll(typeof(IConfigurationSource));
+                environment.RegisterAll(typeof(IDefineChain));
 
                 environment.RegisterTransient(typeof(IApplicationConfiguration), typeof(DefaultApplicationConfiguration));
 

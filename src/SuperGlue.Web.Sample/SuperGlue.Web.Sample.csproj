@@ -63,9 +63,12 @@
     <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>
+    <Compile Include="DefinePartialsChain.cs" />
+    <Compile Include="DefineWebChain.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SampleBootstrapper.cs" />
+    <Compile Include="SetupRouteConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -16,13 +16,17 @@ namespace SuperGlue.Configuration
     {
         protected readonly IDictionary<string, AppFunc> Chains = new ConcurrentDictionary<string, AppFunc>();
         private readonly IDictionary<Type, object> _settings = new ConcurrentDictionary<Type, object>();
-        private readonly IDictionary<string, ChainSettings> _chainSettings = new ConcurrentDictionary<string, ChainSettings>();
+
+        private readonly IDictionary<string, ChainSettings> _chainSettings =
+            new ConcurrentDictionary<string, ChainSettings>();
+
         private IEnumerable<IStartApplication> _appStarters;
         private IReadOnlyCollection<ConfigurationSetupResult> _setups;
         protected IDictionary<string, object> Environment;
         protected string ApplicationEnvironment;
 
-        public virtual async Task StartApplications(IDictionary<string, object> settings, string environment, int retryCount = 10, TimeSpan? retryInterval = null)
+        public virtual async Task StartApplications(IDictionary<string, object> settings, string environment,
+            int retryCount = 10, TimeSpan? retryInterval = null)
         {
             var tries = 0;
             Exception lastException = null;
@@ -54,7 +58,11 @@ namespace SuperGlue.Configuration
 
             await Environment.Publish(ConfigurationEvents.AfterApplicationShutDown).ConfigureAwait(false);
 
-            await RunConfigurations(_setups ?? new ReadOnlyCollection<ConfigurationSetupResult>(new Collection<ConfigurationSetupResult>()), ApplicationEnvironment, x => x.ShutdownAction(Environment)).ConfigureAwait(false);
+            await
+                RunConfigurations(
+                    _setups ??
+                    new ReadOnlyCollection<ConfigurationSetupResult>(new Collection<ConfigurationSetupResult>()),
+                    ApplicationEnvironment, x => x.ShutdownAction(Environment)).ConfigureAwait(false);
         }
 
         public virtual string ApplicationName => GetType().Assembly.GetName().Name.Replace(".", "");
@@ -72,17 +80,22 @@ namespace SuperGlue.Configuration
             if (!basePath.EndsWith("\\"))
                 basePath = $"{basePath}\\";
 
-            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ResolvePathFunc] = (Func<string, string>)(x => x.Replace("~", basePath));
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ResolvePathFunc] =
+                (Func<string, string>) (x => x.Replace("~", basePath));
 
-            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetConfigSettings] = (Func<Type, object>)GetSettings;
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetConfigSettings] =
+                (Func<Type, object>) GetSettings;
 
-            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChainSettingsKey] = (Func<string, ChainSettings>)GetChainSettings;
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChainSettingsKey] =
+                (Func<string, ChainSettings>) GetChainSettings;
 
-            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChain] = (Func<string, Action<IBuildAppFunction>, Task<AppFunc>>)GetChain;
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChain] =
+                (Func<string, Action<IBuildAppFunction>, Task<AppFunc>>) GetChain;
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ApplicationName] = ApplicationName;
 
-            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetTagsKey] = (Func<IEnumerable<string>>)GetApplicationTags;
+            settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetTagsKey] =
+                (Func<IEnumerable<string>>) GetApplicationTags;
 
             var assemblies = LoadApplicationAssemblies().ToList();
 
@@ -90,11 +103,18 @@ namespace SuperGlue.Configuration
 
             await RunConfigurations(_setups, environment, x => x.StartupAction(Environment)).ConfigureAwait(false);
 
+            var chainDefiners = settings.ResolveAll<IDefineChain>();
+
+            foreach (var chainDefiner in chainDefiners)
+                await AddChain(chainDefiner.Name, chainDefiner.Define, chainDefiner.AlterSettings).ConfigureAwait(false);
+
             await Configure(environment).ConfigureAwait(false);
 
             var settingsConfiguration = new SettingsConfiguration(GetSettings, settings, environment);
 
-            await RunConfigurations(_setups, environment, x => x.ConfigureAction(settingsConfiguration)).ConfigureAwait(false);
+            await
+                RunConfigurations(_setups, environment, x => x.ConfigureAction(settingsConfiguration))
+                    .ConfigureAwait(false);
 
             _appStarters = settings
                 .ResolveAll<IStartApplication>()
@@ -112,15 +132,18 @@ namespace SuperGlue.Configuration
 
             Environment.Log("Bootstrapping done in {0} ms", LogLevel.Debug, stopwatch.Elapsed.TotalMilliseconds);
 
-            await Environment.PushDiagnosticsData(DiagnosticsCategories.Setup, DiagnosticsTypes.Bootstrapping, "Init", new Tuple<string, IDictionary<string, object>>("ApplicationsStarted", new Dictionary<string, object>
-            {
-                {"ExecutionTime", stopwatch.Elapsed},
-                {"Environment", environment},
-                {"ApplicationName", ApplicationName}
-            })).ConfigureAwait(false);
+            await
+                Environment.PushDiagnosticsData(DiagnosticsCategories.Setup, DiagnosticsTypes.Bootstrapping, "Init",
+                    new Tuple<string, IDictionary<string, object>>("ApplicationsStarted", new Dictionary<string, object>
+                    {
+                        {"ExecutionTime", stopwatch.Elapsed},
+                        {"Environment", environment},
+                        {"ApplicationName", ApplicationName}
+                    })).ConfigureAwait(false);
         }
 
-        protected virtual Task BeforeApplicationStart(IDictionary<string, object> settings, IEnumerable<IStartApplication> appStarters)
+        protected virtual Task BeforeApplicationStart(IDictionary<string, object> settings,
+            IEnumerable<IStartApplication> appStarters)
         {
             return settings.Publish(ConfigurationEvents.BeforeApplicationStart);
         }
@@ -136,7 +159,9 @@ namespace SuperGlue.Configuration
                 if (Chains.ContainsKey(starter.Chain))
                     chain = Chains[starter.Chain];
 
-                chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(starter.Chain), Environment, ApplicationEnvironment);
+                chain = chain ??
+                        starter.GetDefaultChain(GetAppFunctionBuilder(starter.Chain), Environment,
+                            ApplicationEnvironment);
 
                 if (chain != null)
                     startTasks.Add(starter.Start(chain, Environment, ApplicationEnvironment));
@@ -149,10 +174,7 @@ namespace SuperGlue.Configuration
         {
             var actions = new ConcurrentBag<Task>();
 
-            Parallel.ForEach(appStarters, x =>
-            {
-                actions.Add(x.ShutDown(Environment));
-            });
+            Parallel.ForEach(appStarters, x => { actions.Add(x.ShutDown(Environment)); });
 
             return Task.WhenAll(actions);
         }
@@ -202,7 +224,8 @@ namespace SuperGlue.Configuration
             return Chains[name];
         }
 
-        protected Task AddChain(string name, Action<IBuildAppFunction> configure, Action<ChainSettings> alterSettings = null)
+        protected Task AddChain(string name, Action<IBuildAppFunction> configure,
+            Action<ChainSettings> alterSettings = null)
         {
             var appFuncBuilder = GetAppFunctionBuilder(name);
 
@@ -225,7 +248,8 @@ namespace SuperGlue.Configuration
             return new BuildAppFunction(Environment, chain);
         }
 
-        protected virtual IReadOnlyCollection<ConfigurationSetupResult> FindConfigurationSetups(IEnumerable<Assembly> assemblies, string environment)
+        protected virtual IReadOnlyCollection<ConfigurationSetupResult> FindConfigurationSetups(
+            IEnumerable<Assembly> assemblies, string environment)
         {
             Environment[ConfigurationsEnvironmentExtensions.ConfigurationConstants.Assemblies] = assemblies;
 
@@ -239,9 +263,13 @@ namespace SuperGlue.Configuration
             return setups.SelectMany(x => x.Setup(environment)).ToList();
         }
 
-        protected virtual async Task RunConfigurations(IReadOnlyCollection<ConfigurationSetupResult> configurations, string environment, Func<ConfigurationSetupResult, Task> executionAction)
+        protected virtual async Task RunConfigurations(IReadOnlyCollection<ConfigurationSetupResult> configurations,
+            string environment, Func<ConfigurationSetupResult, Task> executionAction)
         {
-            var executed = (await ExecuteConfigurationsDependingOn(configurations, "superglue.ApplicationSetupStarted", executionAction).ConfigureAwait(false)).ToList();
+            var executed =
+                (await
+                    ExecuteConfigurationsDependingOn(configurations, "superglue.ApplicationSetupStarted",
+                        executionAction).ConfigureAwait(false)).ToList();
 
             while (true)
             {
@@ -250,18 +278,21 @@ namespace SuperGlue.Configuration
                 if (!missing.Any())
                     break;
 
-                var dependencyToExecute = missing.OrderBy(x => missing.Count(y => y.ConfigurationName == x.DependsOn)).Select(x => x.DependsOn).FirstOrDefault();
+                var dependencyToExecute =
+                    missing.OrderBy(x => missing.Count(y => y.ConfigurationName == x.DependsOn))
+                        .Select(x => x.DependsOn)
+                        .FirstOrDefault();
 
-                var missingExecuted = (await ExecuteConfigurationsDependingOn(missing, dependencyToExecute, executionAction).ConfigureAwait(false)).ToList();
+                var missingExecuted =
+                    (await
+                        ExecuteConfigurationsDependingOn(missing, dependencyToExecute, executionAction)
+                            .ConfigureAwait(false)).ToList();
 
                 if (!missingExecuted.Any())
                 {
                     var actions = new ConcurrentBag<Task>();
 
-                    Parallel.ForEach(missing, x =>
-                    {
-                        actions.Add(executionAction(x));
-                    });
+                    Parallel.ForEach(missing, x => { actions.Add(executionAction(x)); });
 
                     await Task.WhenAll(actions).ConfigureAwait(false);
 
@@ -276,11 +307,13 @@ namespace SuperGlue.Configuration
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Where(x =>
-                        !x.GlobalAssemblyCache && !x.IsDynamic && !x.FullName.StartsWith("System") &&
-                        !x.FullName.StartsWith("Microsoft"));
+                    !x.GlobalAssemblyCache && !x.IsDynamic && !x.FullName.StartsWith("System") &&
+                    !x.FullName.StartsWith("Microsoft"));
         }
 
-        protected virtual async Task<IEnumerable<ConfigurationSetupResult>> ExecuteConfigurationsDependingOn(IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn, Func<ConfigurationSetupResult, Task> executionAction)
+        protected virtual async Task<IEnumerable<ConfigurationSetupResult>> ExecuteConfigurationsDependingOn(
+            IReadOnlyCollection<ConfigurationSetupResult> configurations, string dependsOn,
+            Func<ConfigurationSetupResult, Task> executionAction)
         {
             var configurationsToExecute = configurations.Where(x => x.DependsOn == dependsOn).ToList();
 
@@ -299,7 +332,10 @@ namespace SuperGlue.Configuration
             var executed = results.ToList();
 
             foreach (var item in results.Distinct())
-                executed.AddRange(await ExecuteConfigurationsDependingOn(configurations, item.ConfigurationName, executionAction).ConfigureAwait(false));
+                executed.AddRange(
+                    await
+                        ExecuteConfigurationsDependingOn(configurations, item.ConfigurationName, executionAction)
+                            .ConfigureAwait(false));
 
             return executed;
         }
@@ -333,14 +369,17 @@ namespace SuperGlue.Configuration
                 AppDomain.CurrentDomain.BaseDirectory
             };
 
-            paths.AddRange((AppDomain.CurrentDomain.RelativeSearchPath ?? "").Split(';').Where(x => !string.IsNullOrEmpty(x)));
+            paths.AddRange(
+                (AppDomain.CurrentDomain.RelativeSearchPath ?? "").Split(';').Where(x => !string.IsNullOrEmpty(x)));
 
             var referencedPaths = paths
                 .SelectMany(x => Directory.GetFiles(x, "*.dll"))
                 .ToList();
 
-            var toLoad = referencedPaths.Where(r => !loadedPaths.Contains(r, StringComparer.InvariantCultureIgnoreCase)).ToList();
-            toLoad.ForEach(path => loadedAssemblies.Add(AppDomain.CurrentDomain.Load(AssemblyName.GetAssemblyName(path))));
+            var toLoad =
+                referencedPaths.Where(r => !loadedPaths.Contains(r, StringComparer.InvariantCultureIgnoreCase)).ToList();
+            toLoad.ForEach(
+                path => loadedAssemblies.Add(AppDomain.CurrentDomain.Load(AssemblyName.GetAssemblyName(path))));
         }
     }
 }
