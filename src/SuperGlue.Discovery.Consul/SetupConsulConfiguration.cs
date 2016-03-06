@@ -15,7 +15,7 @@ namespace SuperGlue.Discovery.Consul
                 {
                     var settings = x
                         .WithId(Guid.NewGuid().ToString())
-                        .WithName(environment.GetApplicationName());
+                        .WithName(environment.GetApplicationName().ToLower());
 
                     foreach (var tag in environment.GetTags())
                         settings.WithTag(tag);
