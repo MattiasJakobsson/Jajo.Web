@@ -2,15 +2,15 @@ NUGET
   remote: https://www.nuget.org/api/v2
   specs:
     BCrypt.Net (0.1.0)
-    Consul (0.6.3.1)
+    Consul (0.6.3.3)
       Newtonsoft.Json (>= 7.0.1)
     CSharpTest.Net.Collections (14.906.1403.1082)
     EasyHttp (1.6.80)
       JsonFx (>= 2.0.1209.2802)
-    EventStore.Client (3.4.0)
+    EventStore.Client (3.5.0)
     Fixie (1.0.0.41)
     FluentCommandLineParser (1.4.3)
-    FluentValidation (6.1.0)
+    FluentValidation (6.2.1)
     FubuCore (2.0.1.321)
     FubuCsProjFile (1.9.0.229)
       FubuCore (>= 1.0)
@@ -97,10 +97,10 @@ NUGET
       Rx-Interfaces (>= 2.2.5)
     Should (1.1.20)
     Spark (1.8.1)
-    StackExchange.Redis (1.0.488)
+    StackExchange.Redis (1.1.572)
       Microsoft.Bcl (>= 1.1.9) - framework: net40
       Microsoft.Bcl.Async (>= 1.0.168) - framework: net40
-    structuremap (4.0.1.318)
+    structuremap (4.1.0.361)
       System.Collections (>= 4.0.10) - framework: dnxcore50
       System.Collections.Concurrent (>= 4.0.10) - framework: dnxcore50
       System.Diagnostics.Debug (>= 4.0.10) - framework: dnxcore50
@@ -298,4 +298,4 @@ NUGET
   remote: https://www.myget.org/F/jajo/api/v2
   specs:
     JaJo.Migrations (1.0.0.10)
-    JaJo.Projects.Templating (1.0.0.23)
+    JaJo.Projects.Templating (1.0.0.32)
