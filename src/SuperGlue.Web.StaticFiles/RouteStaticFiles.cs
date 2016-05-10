@@ -34,7 +34,9 @@ namespace SuperGlue.Web.StaticFiles
 
             var fileSystem = environment.Resolve<IFileSystem>();
 
-            var path = environment.ResolvePath($"~/{Path.Combine(_options.BaseDirectory, environment.GetRequest().Path)}");
+            var requestedPath = environment.GetRequest().Path;
+
+            var path = environment.ResolvePath($"~/{_options.BaseDirectory}{requestedPath}");
 
             if (!fileSystem.FileExists(path))
             {
