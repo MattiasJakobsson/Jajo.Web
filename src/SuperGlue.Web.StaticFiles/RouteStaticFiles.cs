@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using SuperGlue.FileSystem;
@@ -11,13 +12,15 @@ namespace SuperGlue.Web.StaticFiles
     public class RouteStaticFiles
     {
         private readonly AppFunc _next;
+        private readonly RouteStaticFilesOptions _options;
 
-        public RouteStaticFiles(AppFunc next)
+        public RouteStaticFiles(AppFunc next, RouteStaticFilesOptions options)
         {
             if (next == null)
                 throw new ArgumentNullException(nameof(next));
 
             _next = next;
+            _options = options;
         }
 
         public async Task Invoke(IDictionary<string, object> environment)
@@ -31,7 +34,21 @@ namespace SuperGlue.Web.StaticFiles
 
             var fileSystem = environment.Resolve<IFileSystem>();
 
-            var path = environment.ResolvePath($"~/{environment.GetRequest().Path}");
+            var path = environment.ResolvePath($"~/{Path.Combine(_options.BaseDirectory, environment.GetRequest().Path)}");
+
+            if (!fileSystem.FileExists(path))
+            {
+                foreach (var defaultFile in _options.DefaultFiles)
+                {
+                    var currentPath = Path.Combine(path, defaultFile);
+
+                    if (!fileSystem.FileExists(currentPath))
+                        continue;
+
+                    path = currentPath;
+                    break;
+                }
+            }
 
             if (fileSystem.FileExists(path))
             {
@@ -49,5 +66,17 @@ namespace SuperGlue.Web.StaticFiles
 
             await _next(environment).ConfigureAwait(false);
         }
+    }
+
+    public class RouteStaticFilesOptions
+    {
+        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, string baseDirectory = "")
+        {
+            DefaultFiles = defaultFiles;
+            BaseDirectory = baseDirectory;
+        }
+
+        public IEnumerable<string> DefaultFiles { get; }
+        public string BaseDirectory { get; }
     }
 }

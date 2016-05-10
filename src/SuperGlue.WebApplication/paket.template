@@ -11,6 +11,7 @@ dependencies
 	SuperGlue.Web.RouteInputValidator
 	SuperGlue.Web.Routing
 	SuperGlue.Web.Validation
+	SuperGlue.Web.StaticFiles
 	SuperGlue.CommandSender
 	SuperGlue.Configuration
 	SuperGlue.FeatureToggler
