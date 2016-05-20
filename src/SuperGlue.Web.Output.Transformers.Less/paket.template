@@ -1,0 +1,12 @@
+﻿type file
+id SuperGlue.Web.Output.Transformers.Less
+version 1.0
+authors Mattias Jakobsson
+description
+        Middleware
+files
+    bin/Release/SuperGlue.Web.Output.Transformers.Less.dll ==> lib
+dependencies
+	SuperGlue.Configuration
+	SuperGlue.Web.Output
+	dotless

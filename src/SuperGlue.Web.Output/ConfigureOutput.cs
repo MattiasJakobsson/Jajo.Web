@@ -21,6 +21,7 @@ namespace SuperGlue.Web.Output
 
                 environment.RegisterTransient(typeof(IRenderToOutput), typeof(DefaultOutputRenderer));
                 environment.RegisterTransient(typeof(IWriteToOutput), typeof(DefaultOutputWriter));
+	            environment.RegisterAll(typeof(ITransformOutput));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

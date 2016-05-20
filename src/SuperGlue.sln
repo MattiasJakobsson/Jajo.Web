@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Output.Spark", "SuperGlue.Web.Output.Spark\SuperGlue.Web.Output.Spark.csproj", "{398CB3D5-983E-48B7-8F72-07B2DC735909}"
 EndProject
@@ -149,6 +149,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Components", "SuperGlue.Components\SuperGlue.Components.csproj", "{30671575-8F94-4E90-A36C-B20C915ADD67}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Templates", "SuperGlue.Templates\SuperGlue.Templates.csproj", "{FC32E207-DC6A-46B4-81FA-B72F948304D9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SuperGlue.Web.Output.Transformers.Less", "SuperGlue.Web.Output.Transformers.Less\SuperGlue.Web.Output.Transformers.Less.csproj", "{24D87720-8382-4DDF-BD4D-76196D2A2EF5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -400,6 +402,10 @@ Global
 		{FC32E207-DC6A-46B4-81FA-B72F948304D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC32E207-DC6A-46B4-81FA-B72F948304D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC32E207-DC6A-46B4-81FA-B72F948304D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24D87720-8382-4DDF-BD4D-76196D2A2EF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24D87720-8382-4DDF-BD4D-76196D2A2EF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24D87720-8382-4DDF-BD4D-76196D2A2EF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24D87720-8382-4DDF-BD4D-76196D2A2EF5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -426,5 +432,6 @@ Global
 		{CACF0B53-767D-4859-AE34-E7E449EE1B13} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 		{F8DFAEC8-25F4-4EE1-965E-433EC4F5AF19} = {81446136-6F84-4E76-BF09-AF174C3648AA}
 		{85CF556F-7676-4518-87EE-C94362C5B5FB} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
+		{24D87720-8382-4DDF-BD4D-76196D2A2EF5} = {3A802CD0-D29F-4C2F-9525-F8A9E3175C4B}
 	EndGlobalSection
 EndGlobal

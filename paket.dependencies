@@ -4,6 +4,7 @@ source https://www.myget.org/F/jajo/api/v2
 nuget BCrypt.Net
 nuget Consul
 nuget CSharpTest.Net.Collections
+nuget dotless
 nuget EasyHttp
 nuget EventStore.Client
 nuget Fixie

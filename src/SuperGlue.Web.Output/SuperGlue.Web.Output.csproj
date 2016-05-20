@@ -64,6 +64,7 @@
     <Compile Include="IRenderOutput.cs" />
     <Compile Include="IRenderToOutput.cs" />
     <Compile Include="ISuperGlueView.cs" />
+    <Compile Include="ITransformOutput.cs" />
     <Compile Include="IWriteToOutput.cs" />
     <Compile Include="MimeType.cs" />
     <Compile Include="OutputExtensions.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="RenderRedirectOutput.cs" />
     <Compile Include="RenderStreamOutput.cs" />
     <Compile Include="RenderStringOutput.cs" />
+    <Compile Include="TransformOutput.cs" />
     <Compile Include="WriteToOutput.cs" />
   </ItemGroup>
   <ItemGroup>
