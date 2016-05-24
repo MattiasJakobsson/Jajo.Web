@@ -27,7 +27,7 @@ namespace SuperGlue.Web.Output
 			if (output != null)
 			{
 				foreach (var transformer in transformers)
-					output = await transformer.Transform(output, environment);
+					output = await transformer.Transform(output, environment).ConfigureAwait(false);
 
 				environment.SetOutputResult(output);
 			}
