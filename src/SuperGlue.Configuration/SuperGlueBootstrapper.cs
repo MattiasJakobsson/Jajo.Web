@@ -25,29 +25,9 @@ namespace SuperGlue.Configuration
         protected IDictionary<string, object> Environment;
         protected string ApplicationEnvironment;
 
-        public virtual async Task StartApplications(IDictionary<string, object> settings, string environment,
-            int retryCount = 10, TimeSpan? retryInterval = null)
+        public virtual Task StartApplications(IDictionary<string, object> settings, string environment)
         {
-            var tries = 0;
-            Exception lastException = null;
-
-            while (tries < retryCount)
-            {
-                try
-                {
-                    await Start(settings, environment).ConfigureAwait(false);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    lastException = ex;
-                    await Task.Delay(retryInterval ?? TimeSpan.FromSeconds(5)).ConfigureAwait(false);
-                }
-
-                tries++;
-            }
-
-            throw new ApplicationStartupException(tries, lastException);
+            return Start(settings, environment);
         }
 
         public virtual async Task ShutDown()
@@ -81,21 +61,21 @@ namespace SuperGlue.Configuration
                 basePath = $"{basePath}\\";
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ResolvePathFunc] =
-                (Func<string, string>) (x => x.Replace("~", basePath));
+                (Func<string, string>)(x => x.Replace("~", basePath));
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetConfigSettings] =
-                (Func<Type, object>) GetSettings;
+                (Func<Type, object>)GetSettings;
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChainSettingsKey] =
-                (Func<string, ChainSettings>) GetChainSettings;
+                (Func<string, ChainSettings>)GetChainSettings;
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetChain] =
-                (Func<string, Action<IBuildAppFunction>, Task<AppFunc>>) GetChain;
+                (Func<string, Action<IBuildAppFunction>, Task<AppFunc>>)GetChain;
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.ApplicationName] = ApplicationName;
 
             settings[ConfigurationsEnvironmentExtensions.ConfigurationConstants.GetTagsKey] =
-                (Func<IEnumerable<string>>) GetApplicationTags;
+                (Func<IEnumerable<string>>)GetApplicationTags;
 
             var assemblies = LoadApplicationAssemblies().ToList();
 

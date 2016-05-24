@@ -62,7 +62,6 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
-    <Compile Include="ApplicationStartupException.cs" />
     <Compile Include="BuildAppFunction.cs" />
     <Compile Include="BuildAppFunctionExtensions.cs" />
     <Compile Include="ChainSettings.cs" />
