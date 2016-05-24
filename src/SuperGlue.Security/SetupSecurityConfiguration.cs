@@ -18,16 +18,11 @@ namespace SuperGlue.Security
                 environment.RegisterAll(typeof(IAuthenticationStrategy));
                 environment.RegisterAllClosing(typeof(IAuthenticationStrategy<>));
 
-                environment.RegisterTransient(typeof(IHasher), (x, y) => new DefaultHasher(y.GetHasherSettings()));
+                environment.RegisterTransient(typeof(IHasher), (x, y) => new DefaultHasher(y.GetSettings<HasherSettings>()));
                 environment.RegisterTransient(typeof(IAuthenticationService), typeof(DefaultAuthenticationService));
 
                 return Task.CompletedTask;
-            }, "superglue.ContainerSetup", configureAction: configuration =>
-            {
-                configuration.Settings[SecurityEnvironmentExtensions.SecurityConstants.HasherSettings] = configuration.WithSettings<HasherSettings>();
-
-                return Task.CompletedTask;
-            });
+            }, "superglue.ContainerSetup");
         }
     }
 }

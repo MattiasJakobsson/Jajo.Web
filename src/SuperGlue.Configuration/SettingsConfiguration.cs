@@ -19,12 +19,7 @@ namespace SuperGlue.Configuration
 
         public TSettings WithSettings<TSettings>()
         {
-            return (TSettings)_getSettings(typeof (TSettings));
-        }
-
-        public void InitializeSettings<TSettings>()
-        {
-            _getSettings(typeof (TSettings));
+            return (TSettings) _getSettings(typeof(TSettings));
         }
     }
 }
