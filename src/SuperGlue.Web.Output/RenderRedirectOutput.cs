@@ -10,14 +10,14 @@ namespace SuperGlue.Web.Output
             var output = environment.GetOutput() as IRedirectable;
 
             if (output == null)
-                return Task.FromResult(new OutputRenderingResult("", ""));
+                return Task.FromResult(new OutputRenderingResult(null, ""));
 
             var redirectTo = output.GetUrl(environment);
 
             environment.GetResponse().StatusCode = 301;
             environment.GetResponse().Headers.Location = redirectTo;
 
-            return Task.FromResult(new OutputRenderingResult("", ""));
+            return Task.FromResult(new OutputRenderingResult(null, ""));
         }
     }
 }

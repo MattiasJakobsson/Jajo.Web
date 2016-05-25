@@ -7,14 +7,15 @@ namespace SuperGlue.Web.Output
     {
         public Task Write(IDictionary<string, object> environment, OutputRenderingResult result)
         {
-            if(result == null)
+            if (result == null)
                 return Task.CompletedTask;
 
             var response = environment.GetResponse();
 
             response.Headers.ContentType = result.ContentType;
 
-            return response.Write(result.Body);
+            using (result.Body)
+                return response.Write(result.Body);
         }
     }
 }

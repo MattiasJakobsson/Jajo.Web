@@ -97,6 +97,11 @@ namespace SuperGlue.FileSystem
             return Task.FromResult(File.ReadAllText(filename));
         }
 
+        public Task<Stream> ReadFile(string filename)
+        {
+            return Task.FromResult<Stream>(File.Open(filename, FileMode.Open));
+        }
+
         public string GetFileName(string path)
         {
             return Path.GetFileName(path);

@@ -54,6 +54,9 @@
     <Compile Include="..\Shared\ResolveExtensions.cs">
       <Link>ResolveExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\Shared\StringExtensions.cs">
+      <Link>StringExtensions.cs</Link>
+    </Compile>
     <Compile Include="..\Shared\WebEnvironmentExtensions.cs">
       <Link>WebEnvironmentExtensions.cs</Link>
     </Compile>

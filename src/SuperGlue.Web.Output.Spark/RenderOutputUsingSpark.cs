@@ -24,7 +24,7 @@ namespace SuperGlue.Web.Output.Spark
                 _grammar = new UseMasterGrammar(engine.Settings.Prefix);
         }
 
-        public async Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
+        public Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {
             var output = environment.GetOutput();
 
@@ -36,7 +36,7 @@ namespace SuperGlue.Web.Output.Spark
             var matchingTemplates = templates.Where(x => x.ModelType == output.GetType()).ToList();
 
             if (matchingTemplates.Count < 1)
-                return new OutputRenderingResult("", ContentType.Html);
+                return Task.FromResult(new OutputRenderingResult(null, ContentType.Html));
 
             if (matchingTemplates.Count > 1)
                 throw new Exception(
@@ -51,7 +51,7 @@ namespace SuperGlue.Web.Output.Spark
             var view = sparkViewEntry.CreateInstance() as SuperGlueSparkView;
 
             if (view == null)
-                return new OutputRenderingResult("", ContentType.Html);
+                return Task.FromResult(new OutputRenderingResult(null, ContentType.Html));
 
             var outputStream = new MemoryStream();
             var writer = new StreamWriter(outputStream);
@@ -59,11 +59,8 @@ namespace SuperGlue.Web.Output.Spark
             view.Render(new ViewContext(output, environment), writer);
 
             writer.Flush();
-            outputStream.Position = 0;
 
-            var content = await new StreamReader(outputStream).ReadToEndAsync().ConfigureAwait(false);
-
-            return new OutputRenderingResult(content, ContentType.Html);
+            return Task.FromResult(new OutputRenderingResult(outputStream, ContentType.Html));
         }
 
         private SparkViewDescriptor BuildDescriptor(Template template, bool searchForMaster, ICollection<string> searchedLocations)

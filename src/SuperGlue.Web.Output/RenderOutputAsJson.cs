@@ -6,7 +6,7 @@ namespace SuperGlue.Web.Output
 {
     public class RenderOutputAsJson : IRenderOutput
     {
-        public Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
+        public async Task<OutputRenderingResult> Render(IDictionary<string, object> environment)
         {
             var output = environment.GetOutput();
 
@@ -15,7 +15,7 @@ namespace SuperGlue.Web.Output
 
             var serialized = JsonConvert.SerializeObject(output);
 
-            return Task.FromResult(new OutputRenderingResult(serialized, "application/json"));
+            return new OutputRenderingResult(await serialized.ToStream().ConfigureAwait(false), "application/json");
         }
     }
 }

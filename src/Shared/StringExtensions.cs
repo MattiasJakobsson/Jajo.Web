@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SuperGlue
 {
-    public static class StringExtensions
+    internal static class StringExtensions
     {
         private static readonly List<Rule> Plurals = new List<Rule>();
         private static readonly List<Rule> Singulars = new List<Rule>();
@@ -160,6 +162,16 @@ namespace SuperGlue
         {
             var bytes = System.Text.Encoding.GetEncoding("Cyrillic").GetBytes(txt);
             return System.Text.Encoding.ASCII.GetString(bytes);
+        }
+
+        public static async Task<Stream> ToStream(this string input)
+        {
+            var stream = new MemoryStream();
+            var writer = new StreamWriter(stream);
+            await writer.WriteAsync(input).ConfigureAwait(false);
+            await writer.FlushAsync().ConfigureAwait(false);
+            stream.Position = 0;
+            return stream;
         }
     }
 }

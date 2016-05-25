@@ -31,6 +31,8 @@ namespace SuperGlue.FileSystem
 
         Task<string> ReadStringFromFile(string filename);
 
+        Task<Stream> ReadFile(string filename);
+
         Task WriteObjectToFile(string filename, object target);
 
         Task<T> LoadFromFile<T>(string filename) where T : new();

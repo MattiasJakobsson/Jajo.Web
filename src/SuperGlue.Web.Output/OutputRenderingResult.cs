@@ -1,14 +1,16 @@
-﻿namespace SuperGlue.Web.Output
+﻿using System.IO;
+
+namespace SuperGlue.Web.Output
 {
     public class OutputRenderingResult
     {
-        public OutputRenderingResult(string body, string contentType)
+        public OutputRenderingResult(Stream body, string contentType)
         {
             Body = body;
             ContentType = contentType;
         }
 
-        public string Body { get; private set; }
+        public Stream Body { get; private set; }
         public string ContentType { get; private set; }
     }
 }

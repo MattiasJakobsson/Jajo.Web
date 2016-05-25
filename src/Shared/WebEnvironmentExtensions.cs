@@ -871,6 +871,21 @@ namespace SuperGlue.Web
                 return Body.WriteAsync(data, offset, count, token);
             }
 
+            public virtual Task Write(Stream data)
+            {
+                return Write(data, CancellationToken.None);
+            }
+
+            public virtual Task Write(Stream data, CancellationToken token)
+            {
+                if (data == null)
+                    return Task.CompletedTask;
+
+                Headers.ContentLength += data.Length;
+                data.Position = 0;
+                return data.CopyToAsync(Body);
+            }
+
             private void Set(string key, object value)
             {
                 _environment[key] = value;

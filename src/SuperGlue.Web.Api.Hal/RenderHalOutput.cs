@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SuperGlue.ApiDiscovery;
@@ -23,7 +25,7 @@ namespace SuperGlue.Web.Api.Hal
 
             var serialized = JsonConvert.SerializeObject(response);
 
-            return Task.FromResult(new OutputRenderingResult(serialized, "application/hal+json"));
+            return Task.FromResult(new OutputRenderingResult(new MemoryStream(Encoding.UTF8.GetBytes(serialized)), "application/hal+json"));
         }
 
         private static IDictionary<string, object> BuildDocumentFor(IApiResponse apiResponse)

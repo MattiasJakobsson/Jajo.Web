@@ -13,13 +13,11 @@ namespace SuperGlue.Web.StaticFiles
             var output = environment.GetOutput() as StaticFileOutput;
 
             if (output == null)
-                return new OutputRenderingResult("", "");
+                return new OutputRenderingResult(null, "");
 
             var fileSystem = environment.Resolve<IFileSystem>();
 
-            var content = await fileSystem.ReadStringFromFile(output.FilePath).ConfigureAwait(false);
-
-            return new OutputRenderingResult(content, environment.GetRequest().Headers.Accept.Split(',').Select(x => x.Trim()).FirstOrDefault());
+            return new OutputRenderingResult(await fileSystem.ReadFile(output.FilePath).ConfigureAwait(false), environment.GetRequest().Headers.Accept.Split(',').Select(x => x.Trim()).FirstOrDefault());
         }
     }
 }
