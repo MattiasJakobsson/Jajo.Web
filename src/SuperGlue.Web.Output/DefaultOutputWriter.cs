@@ -5,17 +5,17 @@ namespace SuperGlue.Web.Output
 {
     public class DefaultOutputWriter : IWriteToOutput
     {
-        public Task Write(IDictionary<string, object> environment, OutputRenderingResult result)
+        public async Task Write(IDictionary<string, object> environment, OutputRenderingResult result)
         {
             if (result == null)
-                return Task.CompletedTask;
+                return;
 
             var response = environment.GetResponse();
 
             response.Headers.ContentType = result.ContentType;
 
             using (result.Body)
-                return response.Write(result.Body);
+                await response.Write(result.Body).ConfigureAwait(false);
         }
     }
 }
