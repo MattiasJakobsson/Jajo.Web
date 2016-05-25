@@ -30,8 +30,10 @@ namespace SuperGlue.StructureMap
                 {
                     return currentContainer.GetInstance(x);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    var typeName = x != null ? x.FullName : "null";
+                    environment.Log(ex, $"Failed resolving type: {typeName}", LogLevel.Warn);
                     return null;
                 }
             });
@@ -42,8 +44,10 @@ namespace SuperGlue.StructureMap
                 {
                     return currentContainer.GetAllInstances(x).OfType<object>();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    var typeName = x != null ? x.FullName : "null";
+                    environment.Log(ex, $"Failed resolving all instances of type: {typeName}", LogLevel.Warn);
                     return Enumerable.Empty<object>();
                 }
             });
