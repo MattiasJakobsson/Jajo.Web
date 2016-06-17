@@ -11,7 +11,7 @@ namespace SuperGlue.Logging.NLog
         {
             yield return new ConfigurationSetupResult("superglue.Nlog.LoggingSetup", environment =>
             {
-                environment.RegisterTransient(typeof(ILog), (x, y) => new NLogLogger(LogManager.GetLogger(x.FullName)));
+                environment.RegisterTransient(typeof(ILog), (x, y) => new NLogLogger(LogManager.GetLogger(x?.FullName ?? "")));
 
                 return Task.CompletedTask;
             }, "superglue.LoggingSetup");
