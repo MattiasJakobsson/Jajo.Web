@@ -33,7 +33,7 @@ namespace SuperGlue.StructureMap
                 catch (Exception ex)
                 {
                     var typeName = x != null ? x.FullName : "null";
-                    environment.Log(ex, $"Failed resolving type: {typeName}", LogLevel.Info);
+                    environment.Log(ex, $"Failed resolving type: {typeName}", LogLevel.Debug);
                     return null;
                 }
             });
@@ -47,7 +47,7 @@ namespace SuperGlue.StructureMap
                 catch (Exception ex)
                 {
                     var typeName = x != null ? x.FullName : "null";
-                    environment.Log(ex, $"Failed resolving all instances of type: {typeName}", LogLevel.Info);
+                    environment.Log(ex, $"Failed resolving all instances of type: {typeName}", LogLevel.Debug);
                     return Enumerable.Empty<object>();
                 }
             });
