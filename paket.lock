@@ -76,7 +76,7 @@ NUGET
       Microsoft.Azure.Common (>= 2.0.4 < 3.0)
     Microsoft.WindowsAzure.StorageClient (1.0)
     Newtonsoft.Json (8.0.3)
-    NLog (4.3.4)
+    NLog (4.3.5)
     Owin (1.0)
     RavenDB.Client (3.0.30143)
     RavenDB.Client.Authorization (3.0.30143)
