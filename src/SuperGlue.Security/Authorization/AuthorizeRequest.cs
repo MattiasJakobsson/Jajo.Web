@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using SuperGlue.Configuration;
 using SuperGlue.Security.Authentication;
 
 namespace SuperGlue.Security.Authorization

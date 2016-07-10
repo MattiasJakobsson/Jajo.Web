@@ -6,6 +6,7 @@ using HtmlTags.Conventions.Elements;
 using HtmlTags.Conventions.Elements.Builders;
 using HtmlTags.Reflection;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 using SuperGlue.Web.ModelBinding;
 using SuperGlue.Web.Output.Html.Autocomplete;
 
@@ -17,10 +18,8 @@ namespace SuperGlue.Web.Output.Html
         {
             yield return new ConfigurationSetupResult("superglue.HtmlSetup", environment =>
             {
-                environment.RegisterTransient(typeof(IElementGenerator<>), (x, y) => y.GetHtmlConventionSettings().ElementGeneratorFor(x.GenericTypeArguments.First()));
-                environment.RegisterTransient(typeof(IElementNamingConvention), typeof(DefaultElementNamingConvention));
-                environment.RegisterTransient(typeof(IFindListOf), typeof(DefaultListFinder));
-                environment.RegisterAll(typeof(IAutocompleteSearcher));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IElementGenerator<>), (y, z) => environment.GetHtmlConventionSettings().ElementGeneratorFor(y.GenericTypeArguments.First())));
+
                 environment.CreateRoute("/_autocomplete/{Slug}?s={Search}", typeof(Search).GetMethod("SearchQuery", new[] { typeof(SearchQueryInput) }), new Dictionary<Type, Func<object, IDictionary<string, object>>>
                 {
                     {typeof(SearchQueryInput), x => new Dictionary<string, object>

@@ -46,9 +46,6 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="ICache.cs" />
     <Compile Include="InMemoryCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

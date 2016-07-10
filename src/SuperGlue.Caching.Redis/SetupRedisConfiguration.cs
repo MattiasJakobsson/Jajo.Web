@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using StackExchange.Redis;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Caching.Redis
 {
@@ -11,8 +12,6 @@ namespace SuperGlue.Caching.Redis
         {
             yield return new ConfigurationSetupResult("superglue.Cache.RedisSetup", environment =>
             {
-                environment.RegisterTransient(typeof(ICache), typeof(RedisCacheProvider));
-                environment.RegisterTransient(typeof(IRedisDataSerializer), typeof(DefaultRedisDataSerializer));
                 environment.AlterSettings<RedisCacheSettings>(x =>
                 {
                     var connectionString = environment.Resolve<IApplicationConfiguration>().GetConnectionString("Redis.Cache");
@@ -24,7 +23,9 @@ namespace SuperGlue.Caching.Redis
                         x.UseConnectionString(connectionString);
                 });
 
-                environment.RegisterSingleton(typeof(ConnectionMultiplexer), (x, y) => ConnectionMultiplexer.Connect(y.GetSettings<RedisCacheSettings>().ConnectionString));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(ICache), typeof(RedisCacheProvider))
+                    .Register(typeof(IRedisDataSerializer), typeof(DefaultRedisDataSerializer))
+                    .Register(typeof(ConnectionMultiplexer), (y, z) => ConnectionMultiplexer.Connect(environment.GetSettings<RedisCacheSettings>().ConnectionString), RegistrationLifecycle.Singletone));
 
                 return Task.CompletedTask;
             }, "superglue.CacheSetup");

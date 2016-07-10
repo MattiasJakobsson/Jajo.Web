@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.ApiDiscovery
 {
@@ -10,8 +11,7 @@ namespace SuperGlue.ApiDiscovery
         {
             yield return new ConfigurationSetupResult("superglue.ApiDiscoverySetup", environment =>
             {
-                environment.RegisterAll(typeof(IParseApiResponse));
-                environment.RegisterTransient(typeof(IExecuteApiRequests), typeof(DefaultApiRequestExecutor));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(IParseApiResponse)).Register(typeof(IExecuteApiRequests), typeof(DefaultApiRequestExecutor)));
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");
         }

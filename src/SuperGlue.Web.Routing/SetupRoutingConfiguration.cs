@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Web.Routing
 {
@@ -16,7 +17,7 @@ namespace SuperGlue.Web.Routing
         {
             yield return new ConfigurationSetupResult("superglue.RoutingSetup", environment =>
             {
-                environment.RegisterAll(typeof(ICheckIfRouteExists));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(ICheckIfRouteExists)));
 
                 environment[RouteExtensions.RouteConstants.CreateRouteFunc] = (Action<string, object, IDictionary<Type, Func<object, IDictionary<string, object>>>, string[]>)((pattern, routeTo, inputParameters, methods) =>
                 {

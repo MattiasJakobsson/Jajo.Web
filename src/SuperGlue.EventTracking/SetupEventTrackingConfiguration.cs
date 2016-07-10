@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.EventTracking
 {
@@ -10,7 +11,7 @@ namespace SuperGlue.EventTracking
         {
             yield return new ConfigurationSetupResult("superglue.EventTrackingSetup", environment =>
             {
-                environment.RegisterAll(typeof(IAmInterestedInEventAwareItems));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(IAmInterestedInEventAwareItems)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

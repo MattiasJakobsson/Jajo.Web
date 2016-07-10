@@ -1,4 +1,5 @@
 using HtmlTags;
+using SuperGlue.Configuration;
 using SuperGlue.Web.Output;
 
 namespace SuperGlue.Web.FileUpload

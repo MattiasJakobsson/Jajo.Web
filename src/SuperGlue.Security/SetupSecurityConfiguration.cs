@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 using SuperGlue.Security.Authentication;
 using SuperGlue.Security.Authorization;
 
@@ -12,14 +13,13 @@ namespace SuperGlue.Security
         {
             yield return new ConfigurationSetupResult("superglue.SecuritySetup", environment =>
             {
-                environment.RegisterAll(typeof(IAuthenticationTokenSource));
-                environment.RegisterAll(typeof(IFindRequiredAuthorizationInformationFromRequest));
-                environment.RegisterAllClosing(typeof(IValidateAuthorizationInformation<>));
-                environment.RegisterAll(typeof(IAuthenticationStrategy));
-                environment.RegisterAllClosing(typeof(IAuthenticationStrategy<>));
-
-                environment.RegisterTransient(typeof(IHasher), (x, y) => new DefaultHasher(y.GetSettings<HasherSettings>()));
-                environment.RegisterTransient(typeof(IAuthenticationService), typeof(DefaultAuthenticationService));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(IAuthenticationTokenSource))
+                    .Scan(typeof(IFindRequiredAuthorizationInformationFromRequest))
+                    .Scan(typeof(IAuthenticationStrategy))
+                    .ScanOpenType(typeof(IValidateAuthorizationInformation<>))
+                    .ScanOpenType(typeof(IAuthenticationStrategy<>))
+                    .Register(typeof(IHasher), (y, z) => new DefaultHasher(environment.GetSettings<HasherSettings>()))
+                    .Register(typeof(IAuthenticationService), typeof(DefaultAuthenticationService)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

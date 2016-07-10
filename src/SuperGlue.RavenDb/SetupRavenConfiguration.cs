@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Raven.Client;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 using SuperGlue.RavenDb.Search;
 
 namespace SuperGlue.RavenDb
@@ -16,14 +17,13 @@ namespace SuperGlue.RavenDb
 
                 environment[RavenEnvironmentConstants.DocumentStore] = documentStore;
 
-                environment.RegisterSingleton(typeof(IDocumentStore), documentStore);
-                environment.RegisterTransient(typeof(IRavenSearch), typeof(DefaultRavenSearch));
-                environment.RegisterTransient(typeof(IRavenSessions), typeof(DefaultRavenSessions));
-
-                environment.RegisterAllClosing(typeof(IRavenSearchPart<>));
-                environment.RegisterAllClosing(typeof(IRavenSpecialCommandSearch<>));
-                environment.RegisterAllClosing(typeof(IHandleLeftoverSearchPart<>));
-                environment.RegisterAllClosing(typeof(IRavenFreeTextSearch<>));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IDocumentStore), documentStore)
+                    .Register(typeof(IRavenSearch), typeof(DefaultRavenSearch))
+                    .Register(typeof(IRavenSessions), typeof(DefaultRavenSessions))
+                    .ScanOpenType(typeof(IRavenSearchPart<>))
+                    .ScanOpenType(typeof(IRavenSpecialCommandSearch<>))
+                    .ScanOpenType(typeof(IHandleLeftoverSearchPart<>))
+                    .ScanOpenType(typeof(IRavenFreeTextSearch<>)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

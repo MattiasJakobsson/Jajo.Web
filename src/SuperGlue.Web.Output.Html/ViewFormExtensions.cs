@@ -1,6 +1,7 @@
 ﻿using System.Web;
 using HtmlTags;
 using HtmlTags.Conventions;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.Output.Html
 {

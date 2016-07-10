@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Web.RouteInputValidator
 {
@@ -10,7 +11,7 @@ namespace SuperGlue.Web.RouteInputValidator
         {
             yield return new ConfigurationSetupResult("superglue.RouteInputValidatorSetup", environment =>
             {
-                environment.RegisterAllClosing(typeof(IEnsureExists<>));
+                environment.AlterSettings<IocConfiguration>(x => x.ScanOpenType(typeof(IEnsureExists<>)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

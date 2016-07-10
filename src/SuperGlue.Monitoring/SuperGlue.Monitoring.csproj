@@ -47,9 +47,6 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="HandleHeartBeat.cs" />
     <Compile Include="HeartBeatApplication.cs" />
     <Compile Include="HeartBeatSettings.cs" />

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.EventStore.Subscribers
 {
@@ -10,8 +11,8 @@ namespace SuperGlue.EventStore.Subscribers
         {
             yield return new ConfigurationSetupResult("superglue.EventStoreSubscribersSetup", environment =>
             {
-                environment.RegisterAllClosing(typeof (ISubscribeTo<>));
-                environment.RegisterTransient(typeof(ISubscriberInstaller), typeof(DefaultSubscriberInstaller));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(ISubscriberInstaller), typeof(DefaultSubscriberInstaller))
+                    .Scan(typeof(ISubscribeTo<>)));
 
                 environment.AlterSettings<SubscribersSettings>(x => x.FindPersistentSubscriptionNameUsing((serviceName, stream) => $"{serviceName}-{stream}"));
 

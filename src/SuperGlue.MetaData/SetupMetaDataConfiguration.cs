@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.MetaData
 {
@@ -10,7 +11,7 @@ namespace SuperGlue.MetaData
         {
             yield return new ConfigurationSetupResult("superglue.MetaDataSetup", environment =>
             {
-                environment.RegisterAll(typeof(ISupplyRequestMetaData));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(ISupplyRequestMetaData)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

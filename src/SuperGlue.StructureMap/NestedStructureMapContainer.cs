@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.StructureMap
 {
@@ -20,11 +21,13 @@ namespace SuperGlue.StructureMap
 
         public async Task Invoke(IDictionary<string, object> environment)
         {
-            var parentContainer = environment.GetContainer();
+            var parentContainer = environment.GetStructuremapContainer();
 
             using (var container = parentContainer.GetNestedContainer())
             {
-                environment.SetupContainerInEnvironment(container);
+                var resolver = new StructuremapServiceResolver(container);
+                container.Configure(x => x.For<IResolveServices>().Use(resolver));
+                environment[SetupIocConfiguration.ServiceResolverKey] = resolver;
 
                 await _next(environment).ConfigureAwait(false);
             }

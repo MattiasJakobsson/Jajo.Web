@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Web.Security
 {
@@ -10,8 +11,8 @@ namespace SuperGlue.Web.Security
         {
             yield return new ConfigurationSetupResult("superglue.WebSecuritySetup", environment =>
             {
-                environment.RegisterTransient(typeof(IEncryptionService), typeof(DefaultEncryptionService));
-                environment.RegisterTransient(typeof(IHandleEncryptedCookies), typeof(DefaultCookieEncryptionHandler));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IEncryptionService), typeof(DefaultEncryptionService))
+                    .Register(typeof(IHandleEncryptedCookies), typeof(DefaultCookieEncryptionHandler)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

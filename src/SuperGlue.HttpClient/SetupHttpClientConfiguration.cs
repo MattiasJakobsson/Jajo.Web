@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.HttpClient
 {
@@ -10,8 +11,9 @@ namespace SuperGlue.HttpClient
         {
             yield return new ConfigurationSetupResult("superglue.HttpClientSetup", environment =>
             {
-                environment.RegisterTransient(typeof(IHttpClient), typeof(DefaultHttpClient));
-                environment.RegisterAll(typeof(IParseContentType));
+                environment.AlterSettings<IocConfiguration>(
+                    x => x.Register(typeof(IHttpClient), typeof(DefaultHttpClient))
+                        .Scan(typeof(IParseContentType)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Configuration
 {
@@ -9,7 +10,7 @@ namespace SuperGlue.Configuration
         {
             yield return new ConfigurationSetupResult("superglue.Configuration.MiddlewareWrappersSetup", environment =>
                 {
-                    environment.RegisterAllClosing(typeof(IWrapMiddleware<>));
+                    environment.AlterSettings<IocConfiguration>(x => x.ScanOpenType(typeof(IWrapMiddleware<>)));
 
                     return Task.CompletedTask;
                 }, "superglue.ContainerSetup");

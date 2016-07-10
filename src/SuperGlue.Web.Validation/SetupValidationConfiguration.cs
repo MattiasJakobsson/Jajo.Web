@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Web.Validation
 {
@@ -10,7 +11,7 @@ namespace SuperGlue.Web.Validation
         {
             yield return new ConfigurationSetupResult("superglue.ValidationSetup", environment =>
             {
-                environment.RegisterAll(typeof(IValidateRequest));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(IValidateRequest)));
 
                 return Task.CompletedTask;
             }, "superglue.Container");

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 using SuperGlue.EventStore.Projections;
 using SuperGlue.RavenDb;
 
@@ -19,7 +20,8 @@ namespace SuperGlue.EventStore.StreamManagers.RavenDb
                         x.UsingDatabase(environment.Resolve<IApplicationConfiguration>().GetSetting("StreamManagers.RavenDb.DatabaseName") ?? "");
                 });
 
-                environment.RegisterTransient(typeof(IManageEventNumbersForProjections), (x, y) => new ManageEventNumbersForProjectionsInRavenDb(y.Resolve<IRavenSessions>().GetFor(y.GetSettings<RavenStreamManagerSettings>().DatabaseName)));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IManageEventNumbersForProjections), 
+                    (y, z) => new ManageEventNumbersForProjectionsInRavenDb(z.Resolve<IRavenSessions>().GetFor(environment.GetSettings<RavenStreamManagerSettings>().DatabaseName))));
 
                 return Task.CompletedTask;
             }, "superglue.RavenDb.Configure");

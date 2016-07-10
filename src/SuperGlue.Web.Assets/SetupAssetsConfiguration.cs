@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Web.Assets
 {
@@ -10,8 +11,8 @@ namespace SuperGlue.Web.Assets
         {
             yield return new ConfigurationSetupResult("superglue.AssetsSetup", environment =>
             {
-                environment.RegisterTransient(typeof(IAssetRequirements), typeof(DefaultAssetRequirements));
-                environment.RegisterTransient(typeof(IAssetTagWriter), typeof(DefaultAssetTagWriter));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IAssetRequirements), typeof(DefaultAssetRequirements))
+                    .Register(typeof(IAssetTagWriter), typeof(DefaultAssetTagWriter)));
 
                 //HACK:Hard coded path to assets
                 environment.AlterSettings<AssetSettings>(x => x

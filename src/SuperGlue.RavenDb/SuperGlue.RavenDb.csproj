@@ -46,9 +46,6 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="DocumentSessionExtensions.cs" />
     <Compile Include="QueryableExtensions.cs" />
     <Compile Include="RavenDocumentStore.cs" />

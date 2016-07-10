@@ -54,9 +54,6 @@
     <Compile Include="..\Shared\LogExtensions.cs">
       <Link>LogExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="..\Shared\RouteExtensions.cs">
       <Link>RouteExtensions.cs</Link>
     </Compile>

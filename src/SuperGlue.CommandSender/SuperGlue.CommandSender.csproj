@@ -54,9 +54,6 @@
     <Compile Include="..\Shared\EnvironmentExtensions.cs">
       <Link>EnvironmentExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="CommandPipeline.cs" />
     <Compile Include="DefaultCommandSender.cs" />
     <Compile Include="ExecuteCurrentCommand.cs" />

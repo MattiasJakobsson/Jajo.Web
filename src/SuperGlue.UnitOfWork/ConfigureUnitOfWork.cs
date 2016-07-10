@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.UnitOfWork
 {
@@ -13,8 +14,7 @@ namespace SuperGlue.UnitOfWork
         {
             yield return new ConfigurationSetupResult("superglue.UnitOfWork.Configure", environment =>
             {
-                environment.RegisterAll(typeof(ISuperGlueUnitOfWork));
-                environment.RegisterAll(typeof(IApplicationTask));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(ISuperGlueUnitOfWork)).Scan(typeof(IApplicationTask)));
 
                 environment.SubscribeTo(ConfigurationEvents.BeforeApplicationStart, async x =>
                 {

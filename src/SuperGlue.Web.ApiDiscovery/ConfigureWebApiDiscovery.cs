@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using SuperGlue.ApiDiscovery;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 using SuperGlue.Web.Output;
 
 namespace SuperGlue.Web.ApiDiscovery
@@ -12,7 +13,7 @@ namespace SuperGlue.Web.ApiDiscovery
         {
             yield return new ConfigurationSetupResult("superglue.WebApiDiscoverySetup", environment =>
             {
-                environment.RegisterAll(typeof(IRenderApiOutput));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(IRenderApiOutput)));
 
                 var apiRenderers = environment.ResolveAll<IRenderApiOutput>();
 

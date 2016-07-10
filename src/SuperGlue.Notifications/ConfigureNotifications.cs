@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Notifications
 {
@@ -11,7 +12,7 @@ namespace SuperGlue.Notifications
         {
             yield return new ConfigurationSetupResult("superglue.Notifications.Configured", settings =>
             {
-                settings.RegisterAll(typeof(IRecieveNotifications));
+                settings.AlterSettings<IocConfiguration>(x => x.Scan(typeof(IRecieveNotifications)));
 
                 settings[NotificationExtensions.NotificationConstants.NotifyError] = (Func<string, string, IDictionary<string, object>, Exception, Task>)(async (from, message, environment, exception) =>
                 {

@@ -52,9 +52,6 @@
     <Compile Include="..\Shared\NotificationExtensions.cs">
       <Link>NotificationExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="ConfigureNotifications.cs" />
     <Compile Include="IRecieveNotifications.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

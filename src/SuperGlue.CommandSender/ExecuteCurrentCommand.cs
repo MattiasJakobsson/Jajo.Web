@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading.Tasks;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.CommandSender
 {

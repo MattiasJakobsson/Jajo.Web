@@ -57,9 +57,6 @@
     <Compile Include="..\Shared\NotificationExtensions.cs">
       <Link>NotificationExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="AggregateVersionException.cs" />
     <Compile Include="BaseAggregate.cs" />
     <Compile Include="Data\EventStoreLog.cs" />

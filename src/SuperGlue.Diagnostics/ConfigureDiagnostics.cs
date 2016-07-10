@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Diagnostics
 {
@@ -12,7 +13,7 @@ namespace SuperGlue.Diagnostics
         {
             yield return new ConfigurationSetupResult("superglue.Diagnostics.Configured", environment =>
             {
-                environment.RegisterTransient(typeof(IManageDiagnosticsInformation), typeof(ManageDiagnosticsInformationInMemory));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IManageDiagnosticsInformation), typeof(ManageDiagnosticsInformationInMemory)));
 
                 environment.AlterSettings<DiagnosticsSettings>(x =>
                 {

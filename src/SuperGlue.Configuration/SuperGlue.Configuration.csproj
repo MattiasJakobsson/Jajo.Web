@@ -59,9 +59,6 @@
     <Compile Include="..\Shared\LogExtensions.cs">
       <Link>LogExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="BuildAppFunction.cs" />
     <Compile Include="BuildAppFunctionExtensions.cs" />
     <Compile Include="ChainSettings.cs" />
@@ -84,6 +81,21 @@
     <Compile Include="IDefineChain.cs" />
     <Compile Include="IEndThings.cs" />
     <Compile Include="If.cs" />
+    <Compile Include="IocExtensions.cs" />
+    <Compile Include="Ioc\SetupIocConfiguration.cs" />
+    <Compile Include="Ioc\TinyIoc.cs" />
+    <Compile Include="Ioc\DynamicRegistration.cs" />
+    <Compile Include="Ioc\GenericInterfaceScanRegistration.cs" />
+    <Compile Include="Ioc\InstanceRegistration.cs" />
+    <Compile Include="Ioc\IocConfiguration.cs" />
+    <Compile Include="Ioc\IocConfigurationExtensions.cs" />
+    <Compile Include="Ioc\IResolveServices.cs" />
+    <Compile Include="Ioc\IServiceRegistration.cs" />
+    <Compile Include="Ioc\NormalRegistration.cs" />
+    <Compile Include="Ioc\RegistrationLifecycle.cs" />
+    <Compile Include="Ioc\ScanRegistration.cs" />
+    <Compile Include="Ioc\ServiceResolverExtensions.cs" />
+    <Compile Include="Ioc\TinyIocServiceResolver.cs" />
     <Compile Include="ISetupConfigurations.cs" />
     <Compile Include="IStartApplication.cs" />
     <Compile Include="IWrapMiddleware.cs" />

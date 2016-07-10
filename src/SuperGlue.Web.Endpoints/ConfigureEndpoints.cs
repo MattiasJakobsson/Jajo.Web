@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Web.Endpoints
 {
@@ -10,9 +11,7 @@ namespace SuperGlue.Web.Endpoints
         {
             yield return new ConfigurationSetupResult("superglue.EndpointsSetup", environment =>
             {
-                environment.RegisterAllClosing(typeof(IExecuteTypeOfEndpoint<>));
-
-                environment.RegisterTransient(typeof(IExecuteAnyEndpoint), typeof(DefaultEndpointExecutor));
+                environment.AlterSettings<IocConfiguration>(x => x.ScanOpenType(typeof(IExecuteTypeOfEndpoint<>)).Register(typeof(IExecuteAnyEndpoint), typeof(DefaultEndpointExecutor)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

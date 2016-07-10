@@ -2,6 +2,7 @@
 using System.Linq.Expressions;
 using HtmlTags;
 using HtmlTags.Conventions.Elements;
+using SuperGlue.Configuration;
 
 namespace SuperGlue.Web.Output.Html
 {

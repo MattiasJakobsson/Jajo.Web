@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.FileUpload
 {
@@ -10,7 +11,7 @@ namespace SuperGlue.FileUpload
         {
             yield return new ConfigurationSetupResult("superglue.FileUploadSetup", environment =>
             {
-                environment.RegisterTransient(typeof(IUploadFiles), typeof(DefaultFileUploader));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IUploadFiles), typeof(DefaultFileUploader)));
 
                 environment.AlterSettings<FileUploadSettings>(x => x.UploadTo("/Upload"));
 

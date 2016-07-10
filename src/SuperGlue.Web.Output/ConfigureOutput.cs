@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Web.Output
 {
@@ -19,9 +20,9 @@ namespace SuperGlue.Web.Output
                     .When(y => (y.GetOutput() as Stream) != null).UseRenderer(new RenderStreamOutput())
                     .When(y => (y.GetOutput() as IRedirectable) != null).UseRenderer(new RenderRedirectOutput()));
 
-                environment.RegisterTransient(typeof(IRenderToOutput), typeof(DefaultOutputRenderer));
-                environment.RegisterTransient(typeof(IWriteToOutput), typeof(DefaultOutputWriter));
-	            environment.RegisterAll(typeof(ITransformOutput));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IRenderOutput), typeof(DefaultOutputRenderer))
+                    .Register(typeof(IWriteToOutput), typeof(DefaultOutputWriter))
+                    .Scan(typeof(ITransformOutput)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

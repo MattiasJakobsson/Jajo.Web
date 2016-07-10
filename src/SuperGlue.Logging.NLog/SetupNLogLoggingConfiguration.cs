@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using NLog;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Logging.NLog
 {
@@ -11,7 +12,7 @@ namespace SuperGlue.Logging.NLog
         {
             yield return new ConfigurationSetupResult("superglue.Nlog.LoggingSetup", environment =>
             {
-                environment.RegisterTransient(typeof(ILog), (x, y) => new NLogLogger(LogManager.GetLogger(x?.FullName ?? "")));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(ILog), (y, z) => new NLogLogger(LogManager.GetLogger(y?.FullName ?? ""))));
 
                 return Task.CompletedTask;
             }, "superglue.LoggingSetup");

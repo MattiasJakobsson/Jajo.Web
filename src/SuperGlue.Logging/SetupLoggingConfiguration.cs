@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Logging
 {
@@ -11,7 +12,7 @@ namespace SuperGlue.Logging
         {
             yield return new ConfigurationSetupResult("superglue.LoggingSetup", environment =>
             {
-                environment.RegisterTransient(typeof(ILog), typeof(ConsoleLogger));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(ILog), typeof(ConsoleLogger)));
 
                 environment[LogExtensions.LogConstants.WriteToLogFunction] = (Action<IDictionary<string, object>, Exception, string, string, object[]>)((env, ex, message, logLevel, parameters) =>
                 {

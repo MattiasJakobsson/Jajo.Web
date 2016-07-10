@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.CommandSender
 {
@@ -10,8 +11,7 @@ namespace SuperGlue.CommandSender
         {
             yield return new ConfigurationSetupResult("superglue.CommandSenderSetup", environment =>
             {
-                environment.RegisterAllClosing(typeof(IHandleCommand<>));
-                environment.RegisterTransient(typeof(ISendCommand), typeof(DefaultCommandSender));
+                environment.AlterSettings<IocConfiguration>(x => x.ScanOpenType(typeof(IHandleCommand<>)).Register(typeof(ISendCommand), typeof(DefaultCommandSender)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

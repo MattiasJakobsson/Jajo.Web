@@ -48,9 +48,6 @@
     <Compile Include="..\Shared\LogExtensions.cs">
       <Link>LogExtensions.cs</Link>
     </Compile>
-    <Compile Include="..\Shared\ResolveExtensions.cs">
-      <Link>ResolveExtensions.cs</Link>
-    </Compile>
     <Compile Include="Retry.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="HandleExceptions.cs" />

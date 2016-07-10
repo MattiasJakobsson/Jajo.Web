@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Caching
 {
@@ -10,7 +11,7 @@ namespace SuperGlue.Caching
         {
             yield return new ConfigurationSetupResult("superglue.CacheSetup", environment =>
             {
-                environment.RegisterTransient(typeof(ICache), typeof(InMemoryCache));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(ICache), typeof(InMemoryCache)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

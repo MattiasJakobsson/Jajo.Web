@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.FileSystem
 {
@@ -10,7 +11,7 @@ namespace SuperGlue.FileSystem
         {
             yield return new ConfigurationSetupResult("superglue.FileSystemSetup", environment =>
             {
-                environment.RegisterTransient(typeof(IFileSystem), typeof(FileSystem));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IFileSystem), typeof(FileSystem)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Configuration
 {
@@ -13,11 +14,13 @@ namespace SuperGlue.Configuration
         private readonly ICollection<MiddlewareWithArgs> _middleware = new List<MiddlewareWithArgs>();
         private readonly IDictionary<string, object> _environment;
         private readonly string _chainName;
+        private readonly IResolveServices _resolveServices;
 
         public BuildAppFunction(IDictionary<string, object> environment, string chainName)
         {
             _environment = environment;
             _chainName = chainName;
+            _resolveServices = environment.Get<IResolveServices>(SetupIocConfiguration.ServiceResolverKey);
         }
 
         public IBuildAppFunction Use<TMiddleware>(params object[] args)
@@ -83,7 +86,7 @@ namespace SuperGlue.Configuration
         private IEnumerable<MiddlewareWithArgs> FindWrappersFor(Type middleWareType)
         {
             return from type in FindInheritedTypes(middleWareType)
-                   from wrapper in _environment.ResolveAll(typeof(IWrapMiddleware<>).MakeGenericType(type))
+                   from wrapper in _resolveServices.ResolveAll(typeof(IWrapMiddleware<>).MakeGenericType(type))
                    let optionsConstructor = typeof(WrapMiddlewareOptions<>).MakeGenericType(type).GetConstructor(new[] { typeof(IWrapMiddleware<>).MakeGenericType(type), typeof(Type) })
                    where optionsConstructor != null
                    select new MiddlewareWithArgs(typeof(WrapMiddleware<>).MakeGenericType(type), new[]

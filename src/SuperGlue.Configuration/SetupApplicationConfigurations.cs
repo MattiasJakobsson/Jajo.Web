@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Configuration
 {
@@ -9,11 +10,10 @@ namespace SuperGlue.Configuration
         {
             yield return new ConfigurationSetupResult("superglue.Configuration.ApplicationsConfigured", environment =>
             {
-                environment.RegisterAll(typeof(IStartApplication));
-                environment.RegisterAll(typeof(IConfigurationSource));
-                environment.RegisterAll(typeof(IDefineChain));
-
-                environment.RegisterTransient(typeof(IApplicationConfiguration), typeof(DefaultApplicationConfiguration));
+                environment.AlterSettings<IocConfiguration>(x => x.Scan(typeof(IStartApplication))
+                    .Scan(typeof(IConfigurationSource))
+                    .Scan(typeof(IDefineChain))
+                    .Register(typeof(IApplicationConfiguration), typeof(DefaultApplicationConfiguration)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");

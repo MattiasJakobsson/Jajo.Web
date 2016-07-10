@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using EventStore.ClientAPI;
 using SuperGlue.Configuration;
+using SuperGlue.Configuration.Ioc;
 using SuperGlue.EventStore.ConflictManagement;
 using SuperGlue.EventStore.Timeouts;
 
@@ -28,14 +29,14 @@ namespace SuperGlue.EventStore.Data
                     x.StoreCommands((env, command, id, causationId) => "commands");
                 });
 
-                environment.RegisterSingleton(typeof(IEventStoreConnection), (x, y) => connection);
-                environment.RegisterSingleton(typeof(EventStoreConnectionString), (x, y) => connectionString);
-                environment.RegisterAll(typeof(IManageChanges));
-                environment.RegisterTransient(typeof(IHandleEventSerialization), typeof(DefaultEventSerializer));
-                environment.RegisterTransient(typeof(IRepository), typeof(DefaultRepository));
-                environment.RegisterTransient(typeof(ICheckConflicts), typeof(DefaultConflictChecker));
-                environment.RegisterAllClosing(typeof(ICheckConflict<,>));
-                environment.RegisterTransient(typeof(IManageTimeOuts), typeof(DefaultTimeOutManager));
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IEventStoreConnection), (y, z) => connection, RegistrationLifecycle.Singletone)
+                    .Register(typeof(EventStoreConnectionString), (y, z) => connectionString, RegistrationLifecycle.Singletone)
+                    .Register(typeof(IHandleEventSerialization), typeof(DefaultEventSerializer))
+                    .Register(typeof(IRepository), typeof(DefaultRepository))
+                    .Register(typeof(ICheckConflicts), typeof(DefaultConflictChecker))
+                    .Register(typeof(IManageTimeOuts), typeof(DefaultTimeOutManager))
+                    .Scan(typeof(IManageChanges))
+                    .ScanOpenType(typeof(ICheckConflict<,>)));
 
                 TimeOutManager.Configure(() => new StoreTimeoutsInMemory());
 

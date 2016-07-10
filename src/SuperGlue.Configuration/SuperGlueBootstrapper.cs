@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using SuperGlue.Configuration.Ioc;
 
 namespace SuperGlue.Configuration
 {
@@ -83,20 +84,21 @@ namespace SuperGlue.Configuration
 
             await RunConfigurations(_setups, environment, x => x.StartupAction(Environment)).ConfigureAwait(false);
 
-            var chainDefiners = settings.ResolveAll<IDefineChain>();
+            var settingsConfiguration = new SettingsConfiguration(GetSettings, settings, environment);
+
+            await RunConfigurations(_setups, environment, x => x.ConfigureAction(settingsConfiguration))
+                    .ConfigureAwait(false);
+
+            var serviceResolver = settings.Get<IResolveServices>(SetupIocConfiguration.ServiceResolverKey);
+
+            var chainDefiners = serviceResolver.ResolveAll<IDefineChain>();
 
             foreach (var chainDefiner in chainDefiners)
                 await AddChain(chainDefiner.Name, chainDefiner.Define, chainDefiner.AlterSettings).ConfigureAwait(false);
 
             await Configure(environment).ConfigureAwait(false);
 
-            var settingsConfiguration = new SettingsConfiguration(GetSettings, settings, environment);
-
-            await
-                RunConfigurations(_setups, environment, x => x.ConfigureAction(settingsConfiguration))
-                    .ConfigureAwait(false);
-
-            _appStarters = settings
+            _appStarters = serviceResolver
                 .ResolveAll<IStartApplication>()
                 .ToList();
 
