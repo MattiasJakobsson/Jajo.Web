@@ -20,7 +20,7 @@ namespace SuperGlue.Web.Output
                     .When(y => (y.GetOutput() as Stream) != null).UseRenderer(new RenderStreamOutput())
                     .When(y => (y.GetOutput() as IRedirectable) != null).UseRenderer(new RenderRedirectOutput()));
 
-                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IRenderOutput), typeof(DefaultOutputRenderer))
+                environment.AlterSettings<IocConfiguration>(x => x.Register(typeof(IRenderToOutput), typeof(DefaultOutputRenderer))
                     .Register(typeof(IWriteToOutput), typeof(DefaultOutputWriter))
                     .Scan(typeof(ITransformOutput)));
 

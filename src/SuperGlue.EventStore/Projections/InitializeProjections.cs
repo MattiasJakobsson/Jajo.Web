@@ -93,7 +93,7 @@ namespace SuperGlue.EventStore.Projections
                         .Subscribe(async x => await PushEventsToProjections(chain, currentEventStoreProjection, x, environment).ConfigureAwait(false));
 
                     var eventStoreSubscription = _eventStoreConnection.SubscribeToStreamFrom(currentEventStoreProjection.ProjectionName, 
-                        await eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName, environment).ConfigureAwait(false), true,
+                        await eventNumberManager.GetLastEvent(currentEventStoreProjection.ProjectionName, environment).ConfigureAwait(false), CatchUpSubscriptionSettings.Default,
                         (subscription, evnt) => messageProcessor.OnMessageArrived(_eventSerialization.DeSerialize(evnt)),
                         subscriptionDropped: async (subscription, reason, exception) => await SubscriptionDropped(chain, currentEventStoreProjection, reason, exception, environment).ConfigureAwait(false));
 

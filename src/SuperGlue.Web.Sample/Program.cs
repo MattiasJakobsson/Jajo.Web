@@ -2,11 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using SuperGlue.Configuration;
 using SuperGlue.Web.Validation;
 
 namespace SuperGlue.Web.Sample
 {
     using AppFunc = Func<IDictionary<string, object>, Task>;
+
+    public class Program
+    {
+        public static void Main()
+        {
+            var bootstrapper = SuperGlueBootstrapper.Find();
+
+            bootstrapper.StartApplications(new Dictionary<string, object>(), "local").Wait();
+        }
+    }
 
     public class HandledExceptionMiddleware
     {
