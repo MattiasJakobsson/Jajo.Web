@@ -97,7 +97,7 @@ namespace SuperGlue.StructureMap
 
             public object Resolve(Type service)
             {
-                return _context.GetInstance(service);
+                return _context.TryGetInstance(service);
             }
 
             public IEnumerable<object> ResolveAll(Type service)

@@ -16,6 +16,8 @@ namespace SuperGlue.Web.Sample
             var bootstrapper = SuperGlueBootstrapper.Find();
 
             bootstrapper.StartApplications(new Dictionary<string, object>(), "local").Wait();
+
+            Console.Read();
         }
     }
 
