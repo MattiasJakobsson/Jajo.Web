@@ -18,23 +18,24 @@ namespace SuperGlue.StructureMap
 
             yield return new ConfigurationSetupResult("superglue.StructureMap.ContainerSetup", x =>
             {
-                var assemblies = x.GetAssemblies();
-
                 x[StructuremapEnvironmentExtensions.StructuremapEnvironmentKeys.ContainerKey] = container;
 
-                x.AlterSettings<IocConfiguration>(y => y.RegisterServicesWith(z => RegisterServices(z.ToList(), container, assemblies)));
+                x.AlterSettings<IocConfiguration>(y => y.RegisterServicesWith(z => RegisterServices(z.ToList(), container, x)));
 
                 return Task.CompletedTask;
             }, "superglue.ContainerSetup");
         }
 
-        private IResolveServices RegisterServices(ICollection<IServiceRegistration> serviceRegistrations, IContainer container, IEnumerable<Assembly> assemblies)
+        private IResolveServices RegisterServices(ICollection<IServiceRegistration> serviceRegistrations, IContainer container, IDictionary<string, object> environment)
         {
             var serviceResolver = new StructuremapServiceResolver(container);
+
+            var assemblies = environment.GetAssemblies();
             
             container.Configure(x =>
             {
                 x.For<IResolveServices>().Use(serviceResolver);
+                x.For<IDictionary<string, object>>().Use(environment);
 
                 foreach (var normalRegistration in serviceRegistrations.OfType<NormalRegistration>())
                 {

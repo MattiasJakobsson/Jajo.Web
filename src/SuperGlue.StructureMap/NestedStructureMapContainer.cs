@@ -26,7 +26,14 @@ namespace SuperGlue.StructureMap
             using (var container = parentContainer.GetNestedContainer())
             {
                 var resolver = new StructuremapServiceResolver(container);
-                container.Configure(x => x.For<IResolveServices>().Use(resolver));
+
+                container.Configure(x =>
+                {
+                    x.For<IResolveServices>().Use(resolver);
+                    x.For<IDictionary<string, object>>().Use(environment);
+                });
+
+                environment[StructuremapEnvironmentExtensions.StructuremapEnvironmentKeys.ContainerKey] = container;
                 environment[SetupIocConfiguration.ServiceResolverKey] = resolver;
 
                 await _next(environment).ConfigureAwait(false);
