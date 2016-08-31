@@ -15,7 +15,7 @@ namespace SuperGlue.Consensus
         private readonly IDictionary<Type, NodeRole> _requiredRoles = new Dictionary<Type, NodeRole>();
         private IEnumerable<StateAwareAppStarter> _appStarters;
 
-        protected override Task BeforeApplicationStart(IDictionary<string, object> settings, IEnumerable<IStartApplication> appStarters)
+        protected override Task BeforeApplicationStart(IDictionary<string, object> settings, IEnumerable<IStartApplication> appStarters, IDictionary<string, string[]> hostArguments)
         {
             var appStarterList = appStarters.ToList();
 
@@ -25,9 +25,9 @@ namespace SuperGlue.Consensus
 
             var applicationEvents = settings.Resolve<IApplicationEvents>();
 
-            applicationEvents.Subscribe<NodeRoleTransitioned>(x => TransitionTo(x.NewRole));
+            applicationEvents.Subscribe<NodeRoleTransitioned>(x => TransitionTo(x.NewRole, hostArguments));
 
-            return base.BeforeApplicationStart(settings, appStarterList);
+            return base.BeforeApplicationStart(settings, appStarterList, hostArguments);
         }
 
         protected void RequireRoleFor<TStarter>(NodeRole role) where TStarter : IStartApplication
@@ -35,9 +35,9 @@ namespace SuperGlue.Consensus
             _requiredRoles[typeof(TStarter)] = role;
         }
 
-        protected override Task RunStarters(IEnumerable<IStartApplication> appStarters)
+        protected override Task RunStarters(IEnumerable<IStartApplication> appStarters, IDictionary<string, string[]> hostArguments)
         {
-            return TransitionTo(NodeRole.Follower);
+            return TransitionTo(NodeRole.Follower, hostArguments);
         }
 
         protected override Task RunShutdowns(IEnumerable<IStartApplication> appStarters)
@@ -52,7 +52,7 @@ namespace SuperGlue.Consensus
             return Task.WhenAll(actions);
         }
 
-        private Task TransitionTo(NodeRole newRole)
+        private Task TransitionTo(NodeRole newRole, IDictionary<string, string[]> hostArguments)
         {
             var startTasks = new ConcurrentBag<Task>();
 
@@ -66,7 +66,7 @@ namespace SuperGlue.Consensus
                 chain = chain ?? starter.GetDefaultChain(GetAppFunctionBuilder(starter.Chain), Environment, ApplicationEnvironment);
 
                 if (chain != null)
-                    startTasks.Add(starter.BringToState(chain, Environment, ApplicationEnvironment, newRole));
+                    startTasks.Add(starter.BringToState(chain, Environment, ApplicationEnvironment, newRole, hostArguments));
             });
 
             return Task.WhenAll(startTasks);

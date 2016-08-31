@@ -26,9 +26,9 @@ namespace SuperGlue.Configuration
         protected IDictionary<string, object> Environment;
         protected string ApplicationEnvironment;
 
-        public virtual Task StartApplications(IDictionary<string, object> settings, string environment)
+        public virtual Task StartApplications(IDictionary<string, object> settings, string environment, IDictionary<string, string[]> hostArguments)
         {
-            return Start(settings, environment);
+            return Start(settings, environment, hostArguments);
         }
 
         public virtual async Task ShutDown()
@@ -50,7 +50,7 @@ namespace SuperGlue.Configuration
 
         protected abstract Task Configure(string environment);
 
-        protected virtual async Task Start(IDictionary<string, object> settings, string environment)
+        protected virtual async Task Start(IDictionary<string, object> settings, string environment, IDictionary<string, string[]> hostArguments)
         {
             var stopwatch = Stopwatch.StartNew();
 
@@ -102,11 +102,11 @@ namespace SuperGlue.Configuration
                 .ResolveAll<IStartApplication>()
                 .ToList();
 
-            await BeforeApplicationStart(settings, _appStarters).ConfigureAwait(false);
+            await BeforeApplicationStart(settings, _appStarters, hostArguments).ConfigureAwait(false);
 
             settings["superglue.ApplicationStarters"] = _appStarters;
 
-            await RunStarters(_appStarters).ConfigureAwait(false);
+            await RunStarters(_appStarters, hostArguments).ConfigureAwait(false);
 
             await settings.Publish(ConfigurationEvents.AfterApplicationStart).ConfigureAwait(false);
 
@@ -125,12 +125,12 @@ namespace SuperGlue.Configuration
         }
 
         protected virtual Task BeforeApplicationStart(IDictionary<string, object> settings,
-            IEnumerable<IStartApplication> appStarters)
+            IEnumerable<IStartApplication> appStarters, IDictionary<string, string[]> hostArguments)
         {
             return settings.Publish(ConfigurationEvents.BeforeApplicationStart);
         }
 
-        protected virtual Task RunStarters(IEnumerable<IStartApplication> appStarters)
+        protected virtual Task RunStarters(IEnumerable<IStartApplication> appStarters, IDictionary<string, string[]> hostArguments)
         {
             var startTasks = new ConcurrentBag<Task>();
 
@@ -146,7 +146,7 @@ namespace SuperGlue.Configuration
                             ApplicationEnvironment);
 
                 if (chain != null)
-                    startTasks.Add(starter.Start(chain, Environment, ApplicationEnvironment));
+                    startTasks.Add(starter.Start(chain, Environment, ApplicationEnvironment, hostArguments.ContainsKey(starter.Name) ? hostArguments[starter.Name] : new string[0]));
             });
 
             return Task.WhenAll(startTasks);

@@ -27,9 +27,10 @@ namespace SuperGlue.EventStore.Projections
             _eventStoreConnection = eventStoreConnection;
         }
 
+        public string Name => "projections";
         public string Chain => "chains.Projections";
 
-        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment, string[] arguments)
         {
             settings.Log("Starting projections for environment: {0}", LogLevel.Debug, environment);
 

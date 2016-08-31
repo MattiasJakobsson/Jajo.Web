@@ -21,13 +21,13 @@ namespace SuperGlue.Consensus
 
         public string Chain => _startApplication.Chain;
 
-        public async Task BringToState(AppFunc chain, IDictionary<string, object> settings, string environment, NodeRole role)
+        public async Task BringToState(AppFunc chain, IDictionary<string, object> settings, string environment, NodeRole role, IDictionary<string, string[]> hostArguments)
         {
             var shouldBeStarted = _requiredRole == null || _requiredRole == role;
 
             if (shouldBeStarted && !_started)
             {
-                await _startApplication.Start(chain, settings, environment).ConfigureAwait(false);
+                await _startApplication.Start(chain, settings, environment, hostArguments.ContainsKey(_startApplication.Name) ? hostArguments[_startApplication.Name] : new string[0]).ConfigureAwait(false);
                 _started = true;
             }
             else if (!shouldBeStarted && _started)

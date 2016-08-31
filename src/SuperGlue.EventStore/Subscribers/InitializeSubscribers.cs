@@ -23,9 +23,10 @@ namespace SuperGlue.EventStore.Subscribers
             _eventStoreConnection = eventStoreConnection;
         }
 
+        public string Name => "subscribers";
         public string Chain => "chains.Subscribers";
 
-        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment, string[] arguments)
         {
             settings.Log("Starting subscribers for environment: {0}", LogLevel.Debug, environment);
 

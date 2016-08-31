@@ -9,9 +9,10 @@ namespace SuperGlue.Web.PartialRequests
 
     public class StartPartials : IStartApplication
     {
+        public string Name => "partials";
         public string Chain => "chains.Partials";
 
-        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public Task Start(AppFunc chain, IDictionary<string, object> settings, string environment, string[] arguments)
         {
             Partials.Initialize(chain);
 

@@ -26,9 +26,10 @@ namespace SuperGlue.EventStore.ProcessManagers
             _eventStoreConnection = eventStoreConnection;
         }
 
+        public string Name => "processmanagers";
         public string Chain => "chains.ProcessManagers";
 
-        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment)
+        public async Task Start(AppFunc chain, IDictionary<string, object> settings, string environment, string[] arguments)
         {
             settings.Log("Starting processmanagers for environment: {0}", LogLevel.Debug, environment);
 

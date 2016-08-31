@@ -11,9 +11,10 @@ namespace SuperGlue.Monitoring
     {
         private readonly ICollection<HandleHeartBeat> _handleHeartBeats = new List<HandleHeartBeat>();
 
+        public string Name => "heartbeat";
         public string Chain => "chains.Monitoring.HeartBeat";
 
-        public Task Start(Func<IDictionary<string, object>, Task> chain, IDictionary<string, object> settings, string environment)
+        public Task Start(Func<IDictionary<string, object>, Task> chain, IDictionary<string, object> settings, string environment, string[] arguments)
         {
             foreach (var heartBeatUrl in (settings.GetSettings<HeartBeatSettings>() ?? new HeartBeatSettings()).GetHeartBeatUrls())
                 _handleHeartBeats.Add(new HandleHeartBeat(chain, heartBeatUrl.Item1, heartBeatUrl.Item2));
