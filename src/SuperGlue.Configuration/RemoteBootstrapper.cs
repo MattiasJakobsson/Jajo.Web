@@ -20,17 +20,17 @@ namespace SuperGlue.Configuration
 
         public void Start(string environment, IDictionary<string, string[]> hostArguments)
         {
-            _bootstrapper.StartApplications(new Dictionary<string, object>(), environment, hostArguments).Wait();
+            _bootstrapper?.StartApplications(new Dictionary<string, object>(), environment, hostArguments).Wait();
         }
 
         public void Stop()
         {
-            _bootstrapper.ShutDown().Wait();
+            _bootstrapper?.ShutDown().Wait();
         }
 
         public string GetApplicationName()
         {
-            return _bootstrapper.ApplicationName;
+            return _bootstrapper?.ApplicationName ?? "";
         }
 
         public override object InitializeLifetimeService()
