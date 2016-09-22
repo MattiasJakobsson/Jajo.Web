@@ -29,7 +29,6 @@ nuget RavenDB.Client.Authorization
 nuget Rx-Main
 nuget Should
 nuget Spark
-nuget StackExchange.Redis
 nuget Superscribe
 nuget Topshelf
 nuget structuremap

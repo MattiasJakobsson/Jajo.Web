@@ -251,31 +251,6 @@ NUGET
       Rx-Interfaces (>= 2.2.5)
     Should (1.1.20)
     Spark (1.8.1)
-    StackExchange.Redis (1.1.605)
-      Microsoft.Bcl (>= 1.1.10) - framework: net40
-      Microsoft.Bcl.Async (>= 1.0.168) - framework: net40
-      System.Collections (>= 4.0.11) - framework: >= netstandard15
-      System.Collections.Concurrent (>= 4.0.12) - framework: >= netstandard15
-      System.Collections.NonGeneric (>= 4.0.1) - framework: >= netstandard15
-      System.Diagnostics.Tools (>= 4.0.1) - framework: >= netstandard15
-      System.IO.Compression (>= 4.1) - framework: >= netstandard15
-      System.IO.FileSystem (>= 4.0.1) - framework: >= netstandard15
-      System.Linq (>= 4.1) - framework: >= netstandard15
-      System.Net.NameResolution (>= 4.0) - framework: >= netstandard15
-      System.Net.Security (>= 4.0) - framework: >= netstandard15
-      System.Net.Sockets (>= 4.1) - framework: >= netstandard15
-      System.Reflection.Emit (>= 4.0.1) - framework: >= netstandard15
-      System.Reflection.Emit.Lightweight (>= 4.0.1) - framework: >= netstandard15
-      System.Reflection.TypeExtensions (>= 4.1) - framework: >= netstandard15
-      System.Runtime.Extensions (>= 4.1) - framework: >= netstandard15
-      System.Runtime.InteropServices.RuntimeInformation (>= 4.0) - framework: >= netstandard15
-      System.Security.Cryptography.Algorithms (>= 4.2) - framework: >= netstandard15
-      System.Security.Cryptography.X509Certificates (>= 4.1) - framework: >= netstandard15
-      System.Text.RegularExpressions (>= 4.1) - framework: >= netstandard15
-      System.Threading (>= 4.0.11) - framework: >= netstandard15
-      System.Threading.Thread (>= 4.0) - framework: >= netstandard15
-      System.Threading.ThreadPool (>= 4.0.10) - framework: >= netstandard15
-      System.Threading.Timer (>= 4.0.1) - framework: >= netstandard15
     StructureMap (4.4.1)
       NETStandard.Library (>= 1.6) - framework: netstandard13, >= netstandard15
       System.Collections.Concurrent (>= 4.0.12) - framework: netstandard13, >= netstandard15
