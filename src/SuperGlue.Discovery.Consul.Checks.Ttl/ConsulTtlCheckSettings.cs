@@ -5,8 +5,14 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
 {
     public class ConsulTtlCheckSettings
     {
+        public ConsulTtlCheckSettings(TimeSpan? deregisterCriticalServiceAfter)
+        {
+            DeregisterCriticalServiceAfter = deregisterCriticalServiceAfter;
+        }
+
         public TimeSpan Ttl { get; private set; }
         public TimeSpan RequestInterval { get; private set; }
+        public TimeSpan? DeregisterCriticalServiceAfter { get; private set; }
         public Func<IDictionary<string, object>, CheckResponse> Check { get; private set; }
 
         public ConsulTtlCheckSettings WithTtl(TimeSpan ttl)
@@ -19,6 +25,13 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
         public ConsulTtlCheckSettings WithRequestInterval(TimeSpan interval)
         {
             RequestInterval = interval;
+
+            return this;
+        }
+
+        public ConsulTtlCheckSettings RemoveAfterInterval(TimeSpan? interval)
+        {
+            DeregisterCriticalServiceAfter = interval;
 
             return this;
         }

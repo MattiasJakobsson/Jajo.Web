@@ -15,7 +15,8 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
             {
                 environment.AlterSettings<ConsulTtlCheckSettings>(x =>
                 {
-                    x.WithTtl(TimeSpan.FromSeconds(10)).WithRequestInterval(TimeSpan.FromSeconds(5));
+                    x.WithTtl(TimeSpan.FromSeconds(10)).WithRequestInterval(TimeSpan.FromSeconds(5))
+                        .RemoveAfterInterval(TimeSpan.FromMinutes(1));
                 });
 
                 return Task.CompletedTask;
@@ -27,7 +28,8 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
                     .WithSettings<ConsulServiceSettings>()
                     .WithCheck(new AgentServiceCheck
                     {
-                        TTL = ttlSettings.Ttl
+                        TTL = ttlSettings.Ttl,
+                        DeregisterCriticalServiceAfter = ttlSettings.DeregisterCriticalServiceAfter
                     });
 
                 settings

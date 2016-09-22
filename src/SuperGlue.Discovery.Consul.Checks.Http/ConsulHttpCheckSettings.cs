@@ -8,6 +8,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
         public Func<IDictionary<string, object>, CheckResponse> Check { get; private set; }
         public CheckUrl CheckEndpoint { get; private set; }
         public TimeSpan Interval { get; private set; }
+        public TimeSpan? DeregisterCriticalServiceAfter { get; private set; }
 
         public ConsulHttpCheckSettings WithCheck(Func<IDictionary<string, object>, CheckResponse> check)
         {
@@ -26,6 +27,13 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
         public ConsulHttpCheckSettings WithInterval(TimeSpan interval)
         {
             Interval = interval;
+
+            return this;
+        }
+
+        public ConsulHttpCheckSettings RemoveAfterInterval(TimeSpan? interval)
+        {
+            DeregisterCriticalServiceAfter = interval;
 
             return this;
         }
