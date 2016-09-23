@@ -22,6 +22,7 @@ nuget Microsoft.Owin.SelfHost
 nuget Microsoft.WindowsAzure.Management.Storage
 nuget Microsoft.WindowsAzure.StorageClient
 nuget NLog
+nuget RavenDb.Client
 nuget RavenDB.Client.Authorization
 nuget Should
 nuget Spark

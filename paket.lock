@@ -177,7 +177,7 @@ NUGET
     Newtonsoft.Json (9.0.1)
     NLog (4.3.9)
     Owin (1.0)
-    RavenDB.Client (3.0.30155) - framework: net10, net11, net20, net30, net35, net40, net40-full
+    RavenDB.Client (3.0.30155)
     RavenDB.Client.Authorization (3.0.30155)
       RavenDB.Client (3.0.30155) - framework: net10, net11, net20, net30, net35, net40, net40-full
     runtime.native.System (4.0) - framework: >= netstandard11
