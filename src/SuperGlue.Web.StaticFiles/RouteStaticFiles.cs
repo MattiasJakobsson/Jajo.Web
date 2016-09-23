@@ -34,9 +34,9 @@ namespace SuperGlue.Web.StaticFiles
 
             var fileSystem = environment.Resolve<IFileSystem>();
 
-            var requestedPath = environment.GetRequest().Path;
+            var requestedPath = _options.ChangePath(environment.GetRequest().Path);
 
-            var path = environment.ResolvePath($"~/{_options.BaseDirectory}{requestedPath}");
+            var path = environment.ResolvePath($"~/{requestedPath}");
 
             if (!fileSystem.FileExists(path))
             {
@@ -72,13 +72,13 @@ namespace SuperGlue.Web.StaticFiles
 
     public class RouteStaticFilesOptions
     {
-        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, string baseDirectory = "")
+        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, Func<string, string> changePath = null)
         {
             DefaultFiles = defaultFiles;
-            BaseDirectory = baseDirectory;
+            ChangePath = changePath ?? (x => x);
         }
 
         public IEnumerable<string> DefaultFiles { get; }
-        public string BaseDirectory { get; }
+        public Func<string, string> ChangePath { get; }
     }
 }
