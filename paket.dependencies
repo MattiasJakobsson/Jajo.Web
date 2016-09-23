@@ -22,13 +22,10 @@ nuget Microsoft.Owin.SelfHost
 nuget Microsoft.WindowsAzure.Management.Storage
 nuget Microsoft.WindowsAzure.StorageClient
 nuget NLog
-nuget Newtonsoft.Json
-nuget Owin
-nuget RavenDB.Client
 nuget RavenDB.Client.Authorization
-nuget Rx-Main
 nuget Should
 nuget Spark
 nuget Superscribe
+nuget System.Reactive
 nuget Topshelf
 nuget structuremap
