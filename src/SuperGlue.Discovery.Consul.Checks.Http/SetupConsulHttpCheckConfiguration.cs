@@ -34,8 +34,12 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
                     {
                         var url = new Uri(binding);
 
-                        x
-                            .WithAddress(url.DnsSafeHost)
+                        var address = url.DnsSafeHost;
+
+                        if (address == "localhost")
+                            address = null;
+
+                        x.WithAddress(address)
                             .WithPort(url.Port);
                     });
                 }
