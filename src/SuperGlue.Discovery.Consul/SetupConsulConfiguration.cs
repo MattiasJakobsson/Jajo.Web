@@ -14,7 +14,7 @@ namespace SuperGlue.Discovery.Consul
                 environment.AlterSettings<ConsulServiceSettings>(x =>
                 {
                     var settings = x
-                        .WithId(Guid.NewGuid().ToString())
+                        .WithId($"{Environment.MachineName.ToLower()}-{environment.GetApplicationName().ToLower()}")
                         .WithName(environment.GetApplicationName().ToLower());
 
                     foreach (var tag in environment.GetTags())
