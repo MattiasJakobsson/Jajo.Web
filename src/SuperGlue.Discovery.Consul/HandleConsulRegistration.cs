@@ -26,13 +26,9 @@ namespace SuperGlue.Discovery.Consul
             }).ConfigureAwait(false);
         }
 
-        public async Task ShutDown(IDictionary<string, object> environment)
+        public Task ShutDown(IDictionary<string, object> environment)
         {
-            var settings = environment.GetSettings<ConsulServiceSettings>();
-
-            var client = settings.CreateClient();
-
-            await client.Agent.ServiceDeregister(settings.Id).ConfigureAwait(false);
+            return Task.CompletedTask;
         }
 
         public Task Exception(IDictionary<string, object> environment, Exception exception)
