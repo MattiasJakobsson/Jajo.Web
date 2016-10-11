@@ -1,7 +1,7 @@
 NUGET
   remote: https://www.nuget.org/api/v2
     BCrypt.Net (0.1)
-    Consul (0.7.0.1)
+    Consul (0.7.0.2)
       Newtonsoft.Json (>= 9.0.1) - framework: >= netstandard13
       System.Collections (>= 4.0.11) - framework: >= netstandard13
       System.Linq (>= 4.1) - framework: >= netstandard13
@@ -175,7 +175,7 @@ NUGET
       System.Xml.ReaderWriter (>= 4.0.11) - framework: >= netstandard10
       System.Xml.XDocument (>= 4.0.11) - framework: >= netstandard10
     Newtonsoft.Json (9.0.1)
-    NLog (4.3.9)
+    NLog (4.3.10)
     Owin (1.0)
     RavenDB.Client (3.0.30155)
     RavenDB.Client.Authorization (3.0.30155)
@@ -194,7 +194,7 @@ NUGET
       Microsoft.NETCore.Targets (>= 1.0.1)
     Should (1.1.20)
     Spark (1.8.1)
-    StructureMap (4.4.1)
+    structuremap (4.4.1)
       NETStandard.Library (>= 1.6) - framework: netstandard13, >= netstandard15
       System.Collections.Concurrent (>= 4.0.12) - framework: netstandard13, >= netstandard15
       System.Reflection.TypeExtensions (>= 4.1) - framework: netstandard13, >= netstandard15
