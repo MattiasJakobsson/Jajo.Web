@@ -17,8 +17,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
             {
                 environment.AlterSettings<ConsulHttpCheckSettings>(x =>
                 {
-                    x.WithInterval(TimeSpan.FromSeconds(10)).WithRoute(new HealthCheckInput(), "_healthcheck")
-                        .RemoveAfterInterval(TimeSpan.FromMinutes(1));
+                    x.WithInterval(TimeSpan.FromMinutes(1)).WithRoute(new HealthCheckInput(), "_healthcheck");
                 });
 
                 environment.AlterSettings<RouteSettings>(x =>

@@ -15,8 +15,7 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
             {
                 environment.AlterSettings<ConsulTtlCheckSettings>(x =>
                 {
-                    x.WithTtl(TimeSpan.FromSeconds(10)).WithRequestInterval(TimeSpan.FromSeconds(5))
-                        .RemoveAfterInterval(TimeSpan.FromMinutes(1));
+                    x.WithTtl(TimeSpan.FromSeconds(20)).WithRequestInterval(TimeSpan.FromSeconds(15));
                 });
 
                 return Task.CompletedTask;

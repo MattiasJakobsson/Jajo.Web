@@ -166,6 +166,7 @@ namespace SuperGlue.EventStore.Projections
             }
             catch (Exception ex)
             {
+                //TODO:Mark service as failing to we can report that via consul
                 environment.Log(ex, "Couldn't push events to projection: {0}", LogLevel.Error, projection.ProjectionName);
 
                 StopProjection(projection);
