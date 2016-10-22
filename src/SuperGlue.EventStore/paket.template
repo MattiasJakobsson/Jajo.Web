@@ -9,7 +9,7 @@ files
 dependencies
 	EventStore.Client
 	Newtonsoft.Json
-	Rx-Main
+	System.Reactive
 	SuperGlue.Configuration
 	SuperGlue.UnitOfWork
 	SuperGlue.EventTracking
