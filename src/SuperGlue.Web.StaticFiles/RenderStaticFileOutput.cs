@@ -16,6 +16,8 @@ namespace SuperGlue.Web.StaticFiles
             if (output == null)
                 return new OutputRenderingResult(null, "");
 
+            environment.GetResponse().Headers.CacheControl = output.CacheControl;
+
             var fileSystem = environment.Resolve<IFileSystem>();
 
             return new OutputRenderingResult(await fileSystem.ReadFile(output.FilePath).ConfigureAwait(false), environment.GetRequest().Headers.Accept.Split(',').Select(x => x.Trim()).FirstOrDefault());

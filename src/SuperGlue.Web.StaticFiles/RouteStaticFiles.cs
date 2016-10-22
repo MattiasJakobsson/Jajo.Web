@@ -62,8 +62,10 @@ namespace SuperGlue.Web.StaticFiles
                         {"Found", true}
                     })).ConfigureAwait(false);
 
-                environment.SetRouteDestination(new StaticFileOutput(path), new List<Type>(), new Dictionary<string, object>());
-                environment.SetOutput(new StaticFileOutput(path));
+                var output = new StaticFileOutput(path, _options.GetCacheControl(path));
+
+                environment.SetRouteDestination(output, new List<Type>(), new Dictionary<string, object>());
+                environment.SetOutput(output);
             }
 
             await _next(environment).ConfigureAwait(false);
@@ -72,13 +74,15 @@ namespace SuperGlue.Web.StaticFiles
 
     public class RouteStaticFilesOptions
     {
-        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, Func<string, string> changePath = null)
+        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, Func<string, string> changePath = null, Func<string, string> getCacheControl = null)
         {
             DefaultFiles = defaultFiles;
             ChangePath = changePath ?? (x => x);
+            GetCacheControl = getCacheControl ?? (x => null);
         }
 
         public IEnumerable<string> DefaultFiles { get; }
         public Func<string, string> ChangePath { get; }
+        public Func<string, string> GetCacheControl { get; }
     }
 }
