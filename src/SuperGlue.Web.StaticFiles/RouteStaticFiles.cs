@@ -50,6 +50,20 @@ namespace SuperGlue.Web.StaticFiles
                     path = currentPath;
                     break;
                 }
+
+                if (!fileSystem.FileExists(path))
+                {
+                    foreach (var location in _options.OptionalFileLocations)
+                    {
+                        var currentPath = Path.Combine(location, environment.GetRequest().Path);
+
+                        if(!fileSystem.FileExists(currentPath))
+                            continue;
+
+                        path = currentPath;
+                        break;
+                    }
+                }
             }
 
             if (fileSystem.FileExists(path))
@@ -74,14 +88,16 @@ namespace SuperGlue.Web.StaticFiles
 
     public class RouteStaticFilesOptions
     {
-        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, Func<string, string> changePath = null, Func<string, string> getCacheControl = null)
+        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, IEnumerable<string> optionalFileLocations = null, Func<string, string> changePath = null, Func<string, string> getCacheControl = null)
         {
             DefaultFiles = defaultFiles;
+            OptionalFileLocations = optionalFileLocations ?? new List<string>();
             ChangePath = changePath ?? (x => x);
             GetCacheControl = getCacheControl ?? (x => null);
         }
 
         public IEnumerable<string> DefaultFiles { get; }
+        public IEnumerable<string> OptionalFileLocations { get; }
         public Func<string, string> ChangePath { get; }
         public Func<string, string> GetCacheControl { get; }
     }
