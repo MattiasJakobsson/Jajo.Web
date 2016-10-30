@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using SuperGlue.Configuration;
 using SuperGlue.FileSystem;
@@ -34,49 +34,24 @@ namespace SuperGlue.Web.StaticFiles
 
             var fileSystem = environment.Resolve<IFileSystem>();
 
-            var requestedPath = _options.ChangePath(environment.GetRequest().Path);
+            var fileReaders = _options.FileReaders.ToList();
 
-            var path = environment.ResolvePath($"~/{requestedPath}");
+            if(!fileReaders.Any())
+                fileReaders.Add(new ReadFilesFromFileSystem(fileSystem, environment, _options.DefaultFiles));
 
-            if (!fileSystem.FileExists(path))
-            {
-                foreach (var defaultFile in _options.DefaultFiles)
-                {
-                    var currentPath = Path.Combine(path, defaultFile);
+            var matchingReader = fileReaders.Select(x => x.TryRead(environment.GetRequest().Path)).FirstOrDefault(x => x.Exists);
 
-                    if (!fileSystem.FileExists(currentPath))
-                        continue;
-
-                    path = currentPath;
-                    break;
-                }
-
-                if (!fileSystem.FileExists(path))
-                {
-                    foreach (var location in _options.OptionalFileLocations)
-                    {
-                        var currentPath = Path.Combine(location, environment.GetRequest().Path);
-
-                        if(!fileSystem.FileExists(currentPath))
-                            continue;
-
-                        path = currentPath;
-                        break;
-                    }
-                }
-            }
-
-            if (fileSystem.FileExists(path))
+            if (matchingReader != null)
             {
                 await environment.PushDiagnosticsData(DiagnosticsCategories.RequestsFor(environment), DiagnosticsTypes.RequestExecution, environment.GetCurrentChain().RequestId,
                     new Tuple<string, IDictionary<string, object>>("RequestRouted", new Dictionary<string, object>
                     {
-                        {"RoutedTo", path ?? ""},
+                        {"RoutedTo", matchingReader.Name ?? ""},
                         {"Url", environment.GetRequest().Uri},
                         {"Found", true}
                     })).ConfigureAwait(false);
 
-                var output = new StaticFileOutput(path, _options.GetCacheControl(path));
+                var output = new StaticFileOutput(matchingReader.Read, _options.GetCacheControl(matchingReader.Name));
 
                 environment.SetRouteDestination(output, new List<Type>(), new Dictionary<string, object>());
                 environment.SetOutput(output);
@@ -88,17 +63,15 @@ namespace SuperGlue.Web.StaticFiles
 
     public class RouteStaticFilesOptions
     {
-        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, IEnumerable<string> optionalFileLocations = null, Func<string, string> changePath = null, Func<string, string> getCacheControl = null)
+        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, IEnumerable<IReadFiles> fileReaders = null, Func<string, string> getCacheControl = null)
         {
             DefaultFiles = defaultFiles;
-            OptionalFileLocations = optionalFileLocations ?? new List<string>();
-            ChangePath = changePath ?? (x => x);
+            FileReaders = fileReaders ?? new List<IReadFiles>();
             GetCacheControl = getCacheControl ?? (x => null);
         }
 
         public IEnumerable<string> DefaultFiles { get; }
-        public IEnumerable<string> OptionalFileLocations { get; }
-        public Func<string, string> ChangePath { get; }
+        public IEnumerable<IReadFiles> FileReaders { get; }
         public Func<string, string> GetCacheControl { get; }
     }
 }

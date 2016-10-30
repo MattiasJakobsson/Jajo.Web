@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SuperGlue.Configuration;
-using SuperGlue.FileSystem;
 using SuperGlue.Web.Output;
 
 namespace SuperGlue.Web.StaticFiles
@@ -18,9 +16,7 @@ namespace SuperGlue.Web.StaticFiles
 
             environment.GetResponse().Headers.CacheControl = output.CacheControl;
 
-            var fileSystem = environment.Resolve<IFileSystem>();
-
-            return new OutputRenderingResult(await fileSystem.ReadFile(output.FilePath).ConfigureAwait(false), environment.GetRequest().Headers.Accept.Split(',').Select(x => x.Trim()).FirstOrDefault());
+            return new OutputRenderingResult(await output.ReadContent().ConfigureAwait(false), environment.GetRequest().Headers.Accept.Split(',').Select(x => x.Trim()).FirstOrDefault());
         }
     }
 }

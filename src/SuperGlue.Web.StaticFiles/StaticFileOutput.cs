@@ -1,14 +1,18 @@
-﻿namespace SuperGlue.Web.StaticFiles
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+
+namespace SuperGlue.Web.StaticFiles
 {
     public class StaticFileOutput
     {
-        public StaticFileOutput(string filePath, string cacheControl)
+        public StaticFileOutput(Func<Task<Stream>> readContent, string cacheControl)
         {
-            FilePath = filePath;
             CacheControl = cacheControl;
+            ReadContent = readContent;
         }
 
-        public string FilePath { get; private set; }
+        public Func<Task<Stream>> ReadContent { get; private set; }
         public string CacheControl { get; private set; }
     }
 }
