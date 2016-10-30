@@ -34,7 +34,7 @@ namespace SuperGlue.Web.StaticFiles
 
             var fileSystem = environment.Resolve<IFileSystem>();
 
-            var fileReaders = _options.FileReaders.ToList();
+            var fileReaders = (_options.GetFileReaders ?? (x => new List<IReadFiles> {new ReadFilesFromFileSystem(fileSystem, x, _options.DefaultFiles)}))(environment).ToList();
 
             if(!fileReaders.Any())
                 fileReaders.Add(new ReadFilesFromFileSystem(fileSystem, environment, _options.DefaultFiles));
@@ -63,15 +63,15 @@ namespace SuperGlue.Web.StaticFiles
 
     public class RouteStaticFilesOptions
     {
-        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, IEnumerable<IReadFiles> fileReaders = null, Func<string, string> getCacheControl = null)
+        public RouteStaticFilesOptions(IEnumerable<string> defaultFiles, Func<IDictionary<string, object>, IEnumerable<IReadFiles>> getFileReaders = null, Func<string, string> getCacheControl = null)
         {
             DefaultFiles = defaultFiles;
-            FileReaders = fileReaders ?? new List<IReadFiles>();
+            GetFileReaders = getFileReaders;
             GetCacheControl = getCacheControl ?? (x => null);
         }
 
         public IEnumerable<string> DefaultFiles { get; }
-        public IEnumerable<IReadFiles> FileReaders { get; }
+        public Func<IDictionary<string, object>,  IEnumerable<IReadFiles>> GetFileReaders { get; }
         public Func<string, string> GetCacheControl { get; }
     }
 }
