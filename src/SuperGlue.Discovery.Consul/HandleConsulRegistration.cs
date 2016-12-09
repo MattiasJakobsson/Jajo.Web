@@ -21,9 +21,28 @@ namespace SuperGlue.Discovery.Consul
                 ID = settings.Id,
                 Address = settings.Address,
                 Port = settings.Port,
-                Tags = settings.GetTags(),
-                Checks = settings.GetChecks()
+                Tags = settings.GetTags()
             }).ConfigureAwait(false);
+
+	        foreach (var check in settings.GetChecks())
+	        {
+		        await client.Agent.CheckRegister(new AgentCheckRegistration
+		        {
+					HTTP = check.HTTP,
+			        DeregisterCriticalServiceAfter = check.DeregisterCriticalServiceAfter,
+			        DockerContainerID = check.DockerContainerID,
+			        Interval = check.Interval,
+			        Script = check.Script,
+			        ServiceID = settings.Id,
+			        Name = $"Service '{settings.Name}' check",
+			        ID = $"service:{settings.Id}",
+			        Shell = check.Shell,
+			        Status = check.Status,
+			        TCP = check.TCP,
+			        Timeout = check.Timeout,
+			        TTL = check.TTL
+		        });
+	        }
         }
 
         public Task ShutDown(IDictionary<string, object> environment)
