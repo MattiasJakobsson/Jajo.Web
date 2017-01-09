@@ -61,7 +61,8 @@ namespace SuperGlue.Discovery.Consul.Checks.Http
                     {
                         Interval = httpSettings.Interval,
                         HTTP = new Uri(binding, settings.Settings.RouteTo(httpSettings.CheckEndpoint.Input)).ToString(),
-                        DeregisterCriticalServiceAfter = httpSettings.DeregisterCriticalServiceAfter
+                        DeregisterCriticalServiceAfter = httpSettings.DeregisterCriticalServiceAfter,
+	                    Status = HealthStatus.Passing
                     });
 
                 return Task.CompletedTask;

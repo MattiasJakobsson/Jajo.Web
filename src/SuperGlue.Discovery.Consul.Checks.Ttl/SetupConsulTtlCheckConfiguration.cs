@@ -28,7 +28,8 @@ namespace SuperGlue.Discovery.Consul.Checks.Ttl
                     .WithCheck(new AgentServiceCheck
                     {
                         TTL = ttlSettings.Ttl,
-                        DeregisterCriticalServiceAfter = ttlSettings.DeregisterCriticalServiceAfter
+                        DeregisterCriticalServiceAfter = ttlSettings.DeregisterCriticalServiceAfter,
+	                    Status = HealthStatus.Passing
                     });
 
                 settings
