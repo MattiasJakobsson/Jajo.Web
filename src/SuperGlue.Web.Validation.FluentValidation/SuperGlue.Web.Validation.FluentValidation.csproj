@@ -90,5 +90,14 @@
         </Reference>
       </ItemGroup>
     </When>
+    <When Condition="$(TargetPlatformIdentifier) == 'UAP' And $(TargetPlatformVersion.StartsWith('10.0'))">
+      <ItemGroup>
+        <Reference Include="FluentValidation">
+          <HintPath>..\..\packages\FluentValidation\lib\uap10.0\FluentValidation.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
   </Choose>
 </Project>
