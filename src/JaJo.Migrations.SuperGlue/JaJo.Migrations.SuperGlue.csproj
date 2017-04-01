@@ -74,11 +74,15 @@
     <None Include="paket.references" />
     <None Include="paket.template" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="JaJo.Migrations">
-      <HintPath>..\..\packages\JaJo.Migrations\lib\JaJo.Migrations.dll</HintPath>
-      <Private>True</Private>
-      <Paket>True</Paket>
-    </Reference>
-  </ItemGroup>
+  <Choose>
+    <When Condition="$(TargetFrameworkIdentifier) == '.NETFramework' And ($(TargetFrameworkVersion) == 'v4.6' Or $(TargetFrameworkVersion) == 'v4.6.1')">
+      <ItemGroup>
+        <Reference Include="JaJo.Migrations">
+          <HintPath>..\..\packages\JaJo.Migrations\lib\JaJo.Migrations.dll</HintPath>
+          <Private>True</Private>
+          <Paket>True</Paket>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
 </Project>
